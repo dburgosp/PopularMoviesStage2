@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Popular Movies Stage 1</string>
+    <string name="content_description_poster">Movie Poster</string>
+    <string name="order_popular">Popular</string>
+    <string name="order_top_rated">Top rated</string>
+    <string name="no_title">No title</string>
+    <string name="no_overview">There is no available overview for this movie right now.</string>
+    <string name="no_connection">There is no connection to the internet right now.</string>
+    <string name="no_results">The query has not produced any result.</string>
+    <string name="user_score">User score:</string>
+    <string name="content_description_alpha">Transparent layer for background</string>
+</resources>

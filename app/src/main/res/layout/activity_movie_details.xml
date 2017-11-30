@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.example.android.popularmoviesstage1.MovieDetails">
+
+    <ImageView
+        android:id="@+id/movie_details_background"
+        style="@style/movie_details_background"
+        android:contentDescription="@string/content_description_poster" />
+
+    <ImageView
+        style="@style/movie_details_alpha"
+        android:contentDescription="@string/content_description_alpha" />
+
+    <ScrollView style="@style/movie_details_scrollview">
+
+        <LinearLayout style="@style/movie_details_main_linearlayout">
+
+            <LinearLayout
+                style="@style/movie_details_cardview"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/movie_details_cardview"
+                    style="@style/movie_details_cardview"
+                    app:cardCornerRadius="@dimen/small_padding"
+                    app:cardElevation="@dimen/small_padding">
+
+                    <ImageView
+                        android:id="@+id/movie_details_poster"
+                        style="@style/movie_details_background"
+                        android:contentDescription="@string/content_description_poster"
+                        tools:src="@drawable/no_poster" />
+                </android.support.v7.widget.CardView>
+
+                <RelativeLayout style="@style/movie_details_relativelayout">
+
+                    <TextView
+                        android:id="@+id/movie_details_vote"
+                        style="@style/movie_details_vote"
+                        tools:text="0.0" />
+
+                    <TextView
+                        style="@style/movie_details_user_score"
+                        android:layout_width="match_parent"
+                        android:text="@string/user_score" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout style="@style/movie_details_second_linearlayout">
+
+                <TextView
+                    android:id="@+id/movie_details_title"
+                    style="@style/movie_details_title"
+                    android:text="@string/no_title" />
+
+                <TextView
+                    android:id="@+id/movie_details_date"
+                    style="@style/movie_details_date"
+                    android:layout_marginBottom="@dimen/regular_padding"
+                    android:layout_marginTop="@dimen/regular_padding"
+                    tools:text="2000" />
+
+                <TextView
+                    android:id="@+id/movie_details_overview"
+                    style="@style/movie_details_overview"
+                    android:text="@string/no_overview" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
