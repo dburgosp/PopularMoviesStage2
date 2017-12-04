@@ -28,6 +28,7 @@ public final class NetworkUtils {
     public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     public final static String SORT_ORDER_POPULAR = "popular";
     public final static String SORT_ORDER_TOP_RATED = "top_rated";
+    public final static String SORT_ORDER_FAVORITES = "favorites";
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String BASE_URL = "https://api.themoviedb.org/3/movie";

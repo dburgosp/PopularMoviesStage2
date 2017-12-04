@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import butterknife.ButterKnife;
 
 public class MovieDetails extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.movie_details_background)
@@ -32,10 +34,10 @@ public class MovieDetails extends AppCompatActivity {
     TextView movieDetailsTitle;
     @BindView(R.id.movie_details_overview)
     TextView movieDetailsOverview;
-    @BindView(R.id.movie_details_date)
-    TextView movieDetailsDate;
-    @BindView(R.id.movie_details_vote)
-    TextView movieDetailsVote;
+    @BindView(R.id.movie_details_score)
+    TextView movieDetailsScore;
+    @BindView(R.id.movie_details_score_title)
+    TextView movieDetailsScoreTitle;
     @BindView(R.id.movie_details_cardview)
     CardView posterCardView;
     private String sortOrder;
@@ -52,6 +54,9 @@ public class MovieDetails extends AppCompatActivity {
         // pressing "back" button.
         Intent intent = getIntent();
         sortOrder = intent.getStringExtra("sortOrder");
+
+        // Set title for this activity.
+        this.setTitle(getResources().getString(R.string.movie_details_title));
 
         // Set CardView size depending on the width and height in pixels of the current device. As
         // the parent of the CardView is a LinearLayout, we must use LinearLayout.LayoutParams.
@@ -79,27 +84,29 @@ public class MovieDetails extends AppCompatActivity {
             Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(movieDetailsPoster);
         }
 
-        // Set title.
+        // Set title and release year. If there is no title, we show the default text for title.
         String title = movie.getTitle();
-        if (!title.equals("")) movieDetailsTitle.setText(title);
-
-        // Set overview.
-        String overview = movie.getOverview();
-        if (!overview.equals("")) movieDetailsOverview.setText(overview);
-
-        // Set release year.
         String year = getYear(movie.getReleaseDate());
-        if (year.equals(""))
-            movieDetailsDate.setVisibility(View.INVISIBLE);
-        else
-            movieDetailsDate.setText(year);
+        if (!title.equals(""))
+            if (!year.equals(""))
+                movieDetailsTitle.setText(Html.fromHtml("<strong>" + title + "</strong> <small>(" + year + ")</small>"));
+            else
+                movieDetailsTitle.setText(Html.fromHtml("<strong>" + title + "</strong>"));
 
         // Set users rating.
         String rating = String.valueOf(movie.getVoteAverage());
-        if (rating.equals("0.0"))
-            movieDetailsVote.setVisibility(View.INVISIBLE);
-        else
-            movieDetailsVote.setText(rating);
+        if (rating.equals("0.0")) {
+            movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
+            movieDetailsScore.setVisibility(View.INVISIBLE);
+        } else {
+            movieDetailsScore.setText(rating);
+            movieDetailsScoreTitle.setVisibility(View.VISIBLE);
+            movieDetailsScore.setVisibility(View.VISIBLE);
+        }
+
+        // Set overview. If there is no overview, we show the default text for overview.
+        String overview = movie.getOverview();
+        if (!overview.equals("")) movieDetailsOverview.setText(overview);
     }
 
     /**

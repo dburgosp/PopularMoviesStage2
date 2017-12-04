@@ -1,9 +1,5 @@
 package com.example.android.popularmoviesstage2;
 
-/**
- * Created by David on 22/09/2017.
- */
-
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,12 +19,11 @@ import butterknife.ButterKnife;
 class MoviesViewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = MoviesViewHolder.class.getSimpleName();
-    private Context context;
-
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
     // cast the corresponding views.
-    @BindView(R.id.list_item_image)
+    @BindView(R.id.movie_list_item_image)
     ImageView posterImageView;
+    private Context context;
 
     /**
      * Constructor for our ViewHolder.

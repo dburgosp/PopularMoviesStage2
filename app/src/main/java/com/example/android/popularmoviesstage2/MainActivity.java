@@ -1,11 +1,16 @@
 package com.example.android.popularmoviesstage2;
 
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -25,11 +32,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int VERTICAL_SPAN_COUNT = 3;
     private static final int HORIZONTAL_SPAN_COUNT = 4;
+    private static final int MOVIES_LOADER_ID = 0;
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.activity_main_recycler_view)
@@ -48,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Get sort order and last saved scroll currentPosition if there is extra data (if we come from
-        // MovieDetails activity).
+        // Get sort order and last saved scroll currentPosition if there is extra data (if we come
+        // from MovieDetails activity).
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra("sortOrder")) sortOrder = intent.getStringExtra("sortOrder");
@@ -60,14 +68,12 @@ public class MainActivity extends AppCompatActivity {
         // Set RecyclerView for displaying movie posters on screen.
         setRecyclerView();
 
-        // Create an AsyncTask for getting movie information from internet in a separate thread.
-        if (savedInstanceState == null) {
-            // Here we only fetch results the first time that this activity is created. Otherwise,
-            // setAsyncTask will be called from onRestoreInstanceState. Thus we avoid to fetch data
-            // from TMBD two times if we rotate the device on this activity.
-            setAsyncTask();
-        }
+        // Create an AsyncTaskLoader for getting movie information from internet in a separate
+        // thread.
+        getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
 
+        // Title for this activity.
+        this.setTitle(getResources().getString(R.string.app_name) + " - " + getSortOrderText());
         Log.i(TAG, "(onCreate) Activity created");
     }
 
@@ -141,34 +147,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Helper method to create a new async task for fetching results from TheMovieDB using a
-     * certain sortOrder.
-     */
-    void setAsyncTask() {
-        if (isConnected()) {
-            // There is an available connection. Fetch results from TMDB.
-            progressBar.setVisibility(View.VISIBLE);
-            noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildURL(sortOrder);
-            Log.i(TAG, "(setAsyncTask) Search URL: " + searchURL.toString());
-            new MoviesAsyncTask(new MoviesAsyncTaskCompleteListener()).execute(searchURL);
-        } else {
-            // There is no connection. Show error message.
-            progressBar.setVisibility(View.INVISIBLE);
-            noResultsTextView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
-        }
-    }
-
-    /**
      * Helper method to determine if there is an active network connection.
      *
      * @return true if we are connected to the internet, false otherwise.
      */
-    boolean isConnected() {
+    private boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    /**
+     * Helper method that returns a text string describing the current sort order.
+     *
+     * @return a String with the current sort order.
+     */
+    private String getSortOrderText() {
+        switch (sortOrder) {
+            case NetworkUtils.SORT_ORDER_POPULAR:
+                return getResources().getString(R.string.order_popular);
+
+            case NetworkUtils.SORT_ORDER_TOP_RATED:
+                return getResources().getString(R.string.order_top_rated);
+
+            default:
+                return null;
+        }
     }
 
     /**
@@ -224,29 +228,39 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         Log.i(TAG, "(onOptionsItemSelected) Item ID: " + itemId);
 
-        // Set sort order for the list of movies.
+        // New sort order for the list of movies.
+        String newSortOrder;
         switch (itemId) {
             case R.id.order_popular:
-                sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
+                newSortOrder = NetworkUtils.SORT_ORDER_POPULAR;
                 break;
 
             case R.id.order_top_rated:
-                sortOrder = NetworkUtils.SORT_ORDER_TOP_RATED;
+                newSortOrder = NetworkUtils.SORT_ORDER_TOP_RATED;
                 break;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
 
-        // Restore scroll currentPosition to 0, so the new movies list will be displayed from the top.
-        currentPosition = 0;
+        // Only load new movies array if we are changing the sort order.
+        if (!newSortOrder.equals(sortOrder)) {
+            // Set new global sort order and show it on screen.
+            sortOrder = newSortOrder;
+            String sortOrderText = getSortOrderText();
+            Toast.makeText(this, getResources().getString(R.string.sort_order_changed, sortOrderText), Toast.LENGTH_SHORT).show();
 
-        // Fetch list of movies from TMDB.
-        setAsyncTask();
+            // Update activity title.
+            this.setTitle(getResources().getString(R.string.app_name) + " - " + sortOrderText);
+
+            // Fetch new list of movies from TMDB and restore scroll currentPosition to 0, so the
+            // new movies list will be displayed from the top.
+            getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+            currentPosition = 0;
+        }
 
         return true;
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -289,42 +303,109 @@ public class MainActivity extends AppCompatActivity {
         // Restore sort order and last saved currentPosition in the grid.
         sortOrder = savedInstanceState.getString("sortOrder");
         currentPosition = savedInstanceState.getInt("currentPosition");
-
-        // Retrieve data from TMDB.
-        setAsyncTask();
     }
 
     /**
-     * Inner class for allowing to create a separate file for the MoviesAsyncTask.
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id   The ID whose loader is to be created.
+     * @param args Any arguments supplied by the caller.
+     * @return Return a new Loader instance that is ready to start loading.
      */
-    private class MoviesAsyncTaskCompleteListener implements MoviesAsyncTask.AsyncTaskCompleteListener<ArrayList<Movie>> {
-        @Override
-        public void onTaskComplete(ArrayList<Movie> searchResults) {
-            // Hide progress bar.
+    @Override
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
+        if (isConnected()) {
+            // There is an available connection. Fetch results from TMDB.
+            progressBar.setVisibility(View.VISIBLE);
+            noResultsTextView.setVisibility(View.INVISIBLE);
+            URL searchURL = NetworkUtils.buildURL(sortOrder);
+            Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
+            return new MoviesAsyncTaskLoader(this, searchURL);
+        } else {
+            // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
-
-            // Check if there is an available connection.
-            if (isConnected()) {
-                // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
-                if (searchResults != null && !searchResults.isEmpty()) {
-                    Log.i(TAG, "(onPostExecute) Search results not null.");
-                    moviesAdapter.setMoviesArray(searchResults);
-                    moviesAdapter.notifyDataSetChanged();
-
-                    // Restore last currentPosition in the grid, if previously saved. This won't work if we
-                    // try to restore currentPosition before having displayed the results into the adapter.
-                    recyclerView.getLayoutManager().scrollToPosition(currentPosition);
-                } else {
-                    Log.i(TAG, "(onPostExecute) No search results.");
-                    noResultsTextView.setVisibility(View.VISIBLE);
-                    noResultsTextView.setText(getResources().getString(R.string.no_results));
-                }
-            } else {
-                // There is no connection. Show error message.
-                Log.i(TAG, "(onPostExecute) No connection to internet.");
-                noResultsTextView.setVisibility(View.VISIBLE);
-                noResultsTextView.setText(getResources().getString(R.string.no_connection));
-            }
+            noResultsTextView.setVisibility(View.VISIBLE);
+            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            Log.i(TAG, "(onCreateLoader) No internet connection.");
+            return null;
         }
+    }
+
+    /**
+     * Called when a previously created loader has finished its load.  Note
+     * that normally an application is <em>not</em> allowed to commit fragment
+     * transactions while in this call, since it can happen after an
+     * activity's state is saved.  See {@link FragmentManager#beginTransaction()
+     * FragmentManager.openTransaction()} for further discussion on this.
+     * <p>
+     * <p>This function is guaranteed to be called prior to the release of
+     * the last data that was supplied for this Loader.  At this point
+     * you should remove all use of the old data (since it will be released
+     * soon), but should not do your own release of the data since its Loader
+     * owns it and will take care of that.  The Loader will take care of
+     * management of its data so you don't have to.  In particular:
+     * <p>
+     * <ul>
+     * <li> <p>The Loader will monitor for changes to the data, and report
+     * them to you through new calls here.  You should not monitor the
+     * data yourself.  For example, if the data is a {@link Cursor}
+     * and you place it in a {@link CursorAdapter}, use
+     * the  constructor <em>without</em> passing
+     * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
+     * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
+     * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
+     * from doing its own observing of the Cursor, which is not needed since
+     * when a change happens you will get a new Cursor throw another call
+     * here.
+     * <li> The Loader will release the data once it knows the application
+     * is no longer using it.  For example, if the data is
+     * a {@link Cursor} from a {@link CursorLoader},
+     * you should not call close() on it yourself.  If the Cursor is being placed in a
+     * {@link CursorAdapter}, you should use the
+     * {@link CursorAdapter#swapCursor(Cursor)}
+     * method so that the old Cursor is not closed.
+     * </ul>
+     *
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+        // Hide progress bar.
+        progressBar.setVisibility(View.INVISIBLE);
+
+        // Check if there is an available connection.
+        if (isConnected()) {
+            // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
+            if (data != null && !data.isEmpty()) {
+                Log.i(TAG, "(onLoadFinished) Search results not null.");
+                moviesAdapter.setMoviesArray(data);
+                moviesAdapter.notifyDataSetChanged();
+
+                // Restore last currentPosition in the grid, if previously saved. This won't work if we
+                // try to restore currentPosition before having displayed the results into the adapter.
+                recyclerView.getLayoutManager().scrollToPosition(currentPosition);
+            } else {
+                Log.i(TAG, "(onLoadFinished) No search results.");
+                noResultsTextView.setVisibility(View.VISIBLE);
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            }
+        } else {
+            // There is no connection. Show error message.
+            Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            noResultsTextView.setVisibility(View.VISIBLE);
+            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+        }
+    }
+
+    /**
+     * Called when a previously created loader is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
     }
 }
