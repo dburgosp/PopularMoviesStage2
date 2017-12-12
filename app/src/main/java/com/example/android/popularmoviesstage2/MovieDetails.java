@@ -2,6 +2,8 @@ package com.example.android.popularmoviesstage2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.text.Html;
@@ -23,7 +25,7 @@ import butterknife.ButterKnife;
 
 public class MovieDetails extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-
+    private static Movie movie;
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.movie_details_background)
@@ -32,43 +34,21 @@ public class MovieDetails extends AppCompatActivity {
     ImageView movieDetailsPoster;
     @BindView(R.id.movie_details_title)
     TextView movieDetailsTitle;
-    @BindView(R.id.movie_details_overview)
-    TextView movieDetailsOverview;
+    //@BindView(R.id.movie_details_overview) TextView movieDetailsOverview;
     @BindView(R.id.movie_details_score)
     TextView movieDetailsScore;
-    @BindView(R.id.movie_details_score_title)
-    TextView movieDetailsScoreTitle;
+    //@BindView(R.id.movie_details_score_title) TextView movieDetailsScoreTitle;
     @BindView(R.id.movie_details_cardview)
     CardView posterCardView;
+    @BindView(R.id.movie_details_viewpager)
+    ViewPager viewPager;
+    @BindView(R.id.movie_details_tab_layout)
+    TabLayout tabLayout;
     private String sortOrder;
     private int currentPosition;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
-        ButterKnife.bind(this);
-        Log.i(TAG, "(onCreate) Activity created");
-
-        // Get current sort order for the movie list, in order to pass it back to MainActivity when
-        // pressing "back" button.
-        Intent intent = getIntent();
-        sortOrder = intent.getStringExtra("sortOrder");
-
-        // Set title for this activity.
-        this.setTitle(getResources().getString(R.string.movie_details_title));
-
-        // Set CardView size depending on the width and height in pixels of the current device. As
-        // the parent of the CardView is a LinearLayout, we must use LinearLayout.LayoutParams.
-        int widthPixels = intent.getIntExtra("widthPixels", 0);
-        int heightPixels = intent.getIntExtra("heightPixels", 0);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
-        posterCardView.setLayoutParams(layoutParams);
-
-        // Display movie information and save current movie currentPosition in the grid.
-        Movie movie = intent.getParcelableExtra("movie");
-        setMovieInfo(movie);
-        currentPosition = movie.getPosition();
+    public static Movie getMovieInfo() {
+        return movie;
     }
 
     /**
@@ -96,17 +76,56 @@ public class MovieDetails extends AppCompatActivity {
         // Set users rating.
         String rating = String.valueOf(movie.getVoteAverage());
         if (rating.equals("0.0")) {
-            movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
+            //movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
             movieDetailsScore.setVisibility(View.INVISIBLE);
         } else {
             movieDetailsScore.setText(rating);
-            movieDetailsScoreTitle.setVisibility(View.VISIBLE);
+            //movieDetailsScoreTitle.setVisibility(View.VISIBLE);
             movieDetailsScore.setVisibility(View.VISIBLE);
         }
 
         // Set overview. If there is no overview, we show the default text for overview.
         String overview = movie.getOverview();
-        if (!overview.equals("")) movieDetailsOverview.setText(overview);
+        //if (!overview.equals("")) movieDetailsOverview.setText(overview);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_movie_details);
+        ButterKnife.bind(this);
+        Log.i(TAG, "(onCreate) Activity created");
+
+        // Get current sort order for the movie list, in order to pass it back to MainActivity when
+        // pressing "back" button.
+        Intent intent = getIntent();
+        sortOrder = intent.getStringExtra("sortOrder");
+
+        // Set title for this activity.
+        this.setTitle(getResources().getString(R.string.movie_details_title));
+
+        // Set CardView size depending on the width and height in pixels of the current device. As
+        // the parent of the CardView is a LinearLayout, we must use LinearLayout.LayoutParams.
+        int widthPixels = intent.getIntExtra("widthPixels", 0);
+        int heightPixels = intent.getIntExtra("heightPixels", 0);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
+        posterCardView.setLayoutParams(layoutParams);
+
+        // Display movie information and save current movie currentPosition in the grid.
+        movie = intent.getParcelableExtra("movie");
+        setMovieInfo(movie);
+        currentPosition = movie.getPosition();
+
+        // Create an adapter that knows which fragment should be shown on each page.
+        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), this);
+
+        // Set the adapter onto the view pager and go to the current page.
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
+
+        // Give the TabLayout the ViewPager.
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     }
 
     /**

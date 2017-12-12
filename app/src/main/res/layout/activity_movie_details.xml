@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context="com.example.android.popularmoviesstage2.MovieDetails">
 
     <ImageView
@@ -16,24 +16,24 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.9"
+        android:alpha="0.85"
         android:background="@color/colorAccent"
         android:contentDescription="@string/content_description_alpha" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/regular_padding"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_margin="@dimen/regular_padding"
+                android:orientation="horizontal">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/movie_details_cardview"
@@ -51,109 +51,68 @@
                         tools:src="@drawable/no_poster" />
                 </android.support.v7.widget.CardView>
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/regular_padding">
-
-                    <ImageView
-                        android:id="@+id/movie_details_favorites_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:contentDescription="@string/content_description_alpha"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_favorite_border_white_24dp" />
+                    android:layout_marginStart="@dimen/regular_padding"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/movie_details_favorites_text"
+                        android:id="@+id/movie_details_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/small_padding"
-                        android:layout_toEndOf="@id/movie_details_favorites_image"
-                        android:text="@string/add_to_favorites"
-                        android:textColor="@color/colorWhite" />
-                </RelativeLayout>
+                        android:text="@string/no_title"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="24sp" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/movie_details_videos_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/regular_padding"
-                    android:paddingTop="@dimen/regular_padding"
-                    android:scrollbars="vertical" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/regular_padding"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/movie_details_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/circle"
+                            android:gravity="center"
+                            android:padding="@dimen/small_padding"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="0.0" />
+
+                        <ImageView
+                            android:id="@+id/movie_details_favorites_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/small_padding"
+                            android:contentDescription="@string/content_description_favorites"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_favorite_border_white_24dp" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.design.widget.TabLayout
+                android:id="@+id/movie_details_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorGrey" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/movie_details_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/white" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/regular_padding"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/movie_details_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/regular_padding"
-                    android:layout_marginEnd="@dimen/small_padding"
-                    android:text="@string/no_title"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="24sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/regular_padding">
-
-                    <TextView
-                        android:id="@+id/movie_details_score"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/circle"
-                        android:gravity="center"
-                        android:padding="@dimen/small_padding"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="0.0" />
-
-                    <TextView
-                        android:id="@+id/movie_details_score_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="@dimen/small_padding"
-                        android:layout_toStartOf="@id/movie_details_score"
-                        android:text="@string/user_score"
-                        android:textColor="@color/colorWhite" />
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/movie_details_overview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/regular_padding"
-                    android:text="@string/no_overview"
-                    android:textColor="@color/colorWhite" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:text="@string/reviews_title"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18sp" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/movie_details_reviews_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="@dimen/regular_padding"
-                    android:scrollbars="vertical" />
-            </LinearLayout>
+                android:text="edewdweewewdewe" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

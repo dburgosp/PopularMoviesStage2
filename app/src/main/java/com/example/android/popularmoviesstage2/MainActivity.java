@@ -60,9 +60,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // from MovieDetails activity).
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra("sortOrder")) sortOrder = intent.getStringExtra("sortOrder");
-            if (intent.hasExtra("currentPosition"))
-                currentPosition = intent.getIntExtra("currentPosition", 0);
+            if (intent.hasExtra("sortOrder"))
+                sortOrder = intent.getStringExtra("sortOrder");
+//            if (intent.hasExtra("currentPosition"))
+//                currentPosition = intent.getIntExtra("currentPosition", 0);
         }
 
         // Set RecyclerView for displaying movie posters on screen.
