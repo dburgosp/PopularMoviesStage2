@@ -1,37 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_marginBottom="@dimen/regular_padding">
 
-    <TextView
-        android:id="@+id/movie_details_overview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/regular_padding"
-        android:layout_marginTop="@dimen/regular_padding"
-        android:text="@string/no_overview" />
-
-    <TextView
-        android:id="@+id/movie_details_reviews_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
-        android:text="@string/reviews_title"
-        android:textSize="18sp" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/movie_details_reviews_recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/regular_padding"
-        android:scrollbars="vertical" />
+        android:layout_margin="@dimen/regular_padding"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/movie_details_videos_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/regular_padding"
-        android:paddingTop="@dimen/regular_padding"
-        android:scrollbars="vertical" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/movie_details_overview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/regular_padding"
+            android:text="@string/no_overview" />
+    </LinearLayout>
+</ScrollView>

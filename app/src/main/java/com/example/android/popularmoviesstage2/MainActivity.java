@@ -94,16 +94,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         int spanCount;
         final int detailsPosterlWidthPixels;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // The device orientation is portrait.
             Log.i(TAG, "(setRecyclerView) Portrait orientation");
             spanCount = VERTICAL_SPAN_COUNT;
-            detailsPosterlWidthPixels = (displaWidthPixels / 2) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
+            detailsPosterlWidthPixels = (displaWidthPixels  / 3) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
         } else {
+            // The device orientation is landscape.
             Log.i(TAG, "(setRecyclerView) Landscape orientation");
             spanCount = HORIZONTAL_SPAN_COUNT;
 
             // When display orientation is landscape, we use screen height for setting the poster
             // width for the movie details activity.
-            detailsPosterlWidthPixels = (displayHeightPixels / 2) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
+            detailsPosterlWidthPixels = (displayHeightPixels / 3) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
         }
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
 

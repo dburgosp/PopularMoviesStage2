@@ -1,13 +1,14 @@
 package com.example.android.popularmoviesstage2;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +35,8 @@ public class MovieDetails extends AppCompatActivity {
     ImageView movieDetailsPoster;
     @BindView(R.id.movie_details_title)
     TextView movieDetailsTitle;
+    @BindView(R.id.movie_details_year)
+    TextView movieDetailsReleaseYear;
     //@BindView(R.id.movie_details_overview) TextView movieDetailsOverview;
     @BindView(R.id.movie_details_score)
     TextView movieDetailsScore;
@@ -64,7 +67,15 @@ public class MovieDetails extends AppCompatActivity {
             Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(movieDetailsPoster);
         }
 
-        // Set title and release year. If there is no title, we show the default text for title.
+        // Set title and release year.
+        String title = movie.getTitle();
+        if (!title.equals(""))
+            movieDetailsTitle.setText(title);
+        else {
+            // If there is no title, we show the default text for title.
+            movieDetailsTitle.setText(getResources().getString(R.string.no_title));
+        }
+        /*
         String title = movie.getTitle();
         String year = getYear(movie.getReleaseDate());
         if (!title.equals(""))
@@ -72,21 +83,41 @@ public class MovieDetails extends AppCompatActivity {
                 movieDetailsTitle.setText(Html.fromHtml("<strong>" + title + "</strong> <small>(" + year + ")</small>"));
             else
                 movieDetailsTitle.setText(Html.fromHtml("<strong>" + title + "</strong>"));
+        */
+
+        // Set release year.
+        String year = getYear(movie.getReleaseDate());
+        if (!year.equals("")) {
+            movieDetailsReleaseYear.setText(year);
+            movieDetailsReleaseYear.setVisibility(View.VISIBLE);
+        } else {
+            // If there is no year, we hide the corresponding TextView.
+            movieDetailsReleaseYear.setVisibility(View.INVISIBLE);
+        }
 
         // Set users rating.
         String rating = String.valueOf(movie.getVoteAverage());
-        if (rating.equals("0.0")) {
-            //movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
-            movieDetailsScore.setVisibility(View.INVISIBLE);
-        } else {
+        if (!rating.equals("0.0")) {
             movieDetailsScore.setText(rating);
-            //movieDetailsScoreTitle.setVisibility(View.VISIBLE);
             movieDetailsScore.setVisibility(View.VISIBLE);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                // We only show the score title when the device orientation is landscape.
+                //movieDetailsScoreTitle.setVisibility(View.VISIBLE);
+            } //else
+                //movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
+        } else {
+            // Clear and hide score section if we get "0.0", which means that there is no score for
+            // the current movie.
+            movieDetailsScore.setText("");
+            movieDetailsScore.setVisibility(View.INVISIBLE);
+            //movieDetailsScoreTitle.setVisibility(View.INVISIBLE);
         }
 
         // Set overview. If there is no overview, we show the default text for overview.
+        /*
         String overview = movie.getOverview();
-        //if (!overview.equals("")) movieDetailsOverview.setText(overview);
+        if (!overview.equals("")) movieDetailsOverview.setText(overview);
+        */
     }
 
     @Override
@@ -96,13 +127,20 @@ public class MovieDetails extends AppCompatActivity {
         ButterKnife.bind(this);
         Log.i(TAG, "(onCreate) Activity created");
 
+        // Set transparent status bar.
+/*        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }*/
+
         // Get current sort order for the movie list, in order to pass it back to MainActivity when
         // pressing "back" button.
         Intent intent = getIntent();
         sortOrder = intent.getStringExtra("sortOrder");
 
         // Set title for this activity.
-        this.setTitle(getResources().getString(R.string.movie_details_title));
+        //this.setTitle(getResources().getString(R.string.movie_details_title));
+        this.setTitle("");
 
         // Set CardView size depending on the width and height in pixels of the current device. As
         // the parent of the CardView is a LinearLayout, we must use LinearLayout.LayoutParams.
@@ -117,7 +155,7 @@ public class MovieDetails extends AppCompatActivity {
         currentPosition = movie.getPosition();
 
         // Create an adapter that knows which fragment should be shown on each page.
-        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), this);
+        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), MovieDetails.this);
 
         // Set the adapter onto the view pager and go to the current page.
         viewPager.setAdapter(adapter);
@@ -184,6 +222,38 @@ public class MovieDetails extends AppCompatActivity {
         this.startActivity(returnIntent);
         */
         finish();
+        return true;
+    }
+
+    /**
+     * Initialize the contents of the Activity's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.
+     * <p>
+     * <p>This is only called once, the first time the options menu is
+     * displayed.  To update the menu every time it is displayed, see
+     * {@link #onPrepareOptionsMenu}.
+     * <p>
+     * <p>The default implementation populates the menu with standard system
+     * menu items.  These are placed in the {@link Menu#CATEGORY_SYSTEM} group so that
+     * they will be correctly ordered with application-defined menu items.
+     * Deriving classes should always call through to the base implementation.
+     * <p>
+     * <p>You can safely hold on to <var>menu</var> (and any items created
+     * from it), making modifications to it as desired, until the next
+     * time onCreateOptionsMenu() is called.
+     * <p>
+     * <p>When you add items to the menu, you can implement the Activity's
+     * {@link #onOptionsItemSelected} method to handle them there.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details, menu);
         return true;
     }
 }

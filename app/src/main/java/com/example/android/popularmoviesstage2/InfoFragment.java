@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesstage2;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -34,9 +33,6 @@ public class InfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_info, container, false);
         ButterKnife.bind(this, rootView);
-        String name, imageName;
-        Drawable image;
-        int resourceId, imageId;
 
         // Set overview. If there is no overview, we show the default text for overview.
         String overview = MovieDetails.getMovieInfo().getOverview();
