@@ -1,20 +1,16 @@
 package com.example.android.popularmoviesstage2;
 
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesstage2.adapters.MoviesAdapter;
+import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.net.URL;
@@ -35,8 +35,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int VERTICAL_SPAN_COUNT = 3;
-    private static final int HORIZONTAL_SPAN_COUNT = 4;
     private static final int MOVIES_LOADER_ID = 0;
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         ButterKnife.bind(this);
 
         // Get sort order and last saved scroll currentPosition if there is extra data (if we come
-        // from MovieDetails activity).
+        // from MovieDetailsActivity activity).
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra("sortOrder"))
@@ -73,8 +71,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // thread.
         getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
 
-        // Title for this activity.
-        this.setTitle(getResources().getString(R.string.app_name) + " - " + getSortOrderText());
+        // Title and icon for this activity.
+        this.setTitle(getSortOrderText());
+        ActionBar menu = getSupportActionBar();
+        menu.setDisplayShowHomeEnabled(true);
+        menu.setIcon(R.mipmap.ic_launcher);
+
         Log.i(TAG, "(onCreate) Activity created");
     }
 
@@ -83,31 +85,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * arrangement.
      */
     void setRecyclerView() {
-        // Get current display metrics.
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        final int displaWidthPixels = metrics.widthPixels;
-        final int displayHeightPixels = metrics.heightPixels;
+        // Get current display metrics, depending on device rotation.
+        final DisplayUtils displayUtils = new DisplayUtils(this);
 
         // Vertical GridLayoutManager for displaying movie posters with a number of columns
         // determined by the current orientation of the device.
-        int spanCount;
-        final int detailsPosterlWidthPixels;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // The device orientation is portrait.
-            Log.i(TAG, "(setRecyclerView) Portrait orientation");
-            spanCount = VERTICAL_SPAN_COUNT;
-            detailsPosterlWidthPixels = (displaWidthPixels  / 3) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
-        } else {
-            // The device orientation is landscape.
-            Log.i(TAG, "(setRecyclerView) Landscape orientation");
-            spanCount = HORIZONTAL_SPAN_COUNT;
-
-            // When display orientation is landscape, we use screen height for setting the poster
-            // width for the movie details activity.
-            detailsPosterlWidthPixels = (displayHeightPixels / 3) - ((getResources().getDimensionPixelSize(R.dimen.regular_padding)) * 2);
-        }
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
 
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -117,47 +100,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         MoviesAdapter.OnItemClickListener listener = new MoviesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
-                // Start "MovieDetails" activity to show movie details when the current element is
-                // clicked.
-                Intent intent = new Intent(MainActivity.this, MovieDetails.class);
+                // Start "MovieDetailsActivity" activity to show movie details when the current
+                // element is clicked.
+                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                intent.putExtra("widthPixels", displayUtils.getDetailsPosterWidthPixels());
+                intent.putExtra("heightPixels", displayUtils.getDetailsPosterHeightPixels());
                 intent.putExtra("sortOrder", sortOrder);
+                intent.putExtra("sortOrderText", getSortOrderText());
                 intent.putExtra("movie", movie);
                 currentPosition = movie.getPosition();
-
-                // Set sizes for the poster in the movie details activity.
-                int detailsPosterHeightPixels = 750 * detailsPosterlWidthPixels / 500;
-                Log.i(TAG, "(setRecyclerView) Poster width for movie details activity: " + detailsPosterlWidthPixels);
-                Log.i(TAG, "(setRecyclerView) Poster height for movie details activity: " + detailsPosterHeightPixels);
-                intent.putExtra("widthPixels", detailsPosterlWidthPixels);
-                intent.putExtra("heightPixels", detailsPosterHeightPixels);
-
                 startActivity(intent);
             }
         };
 
-        // Number of columns for the movies list in the RecyclerView (spanCount) is different
-        // depending on device rotation, so poster width for this list also depends on device
-        // rotation.
-        int listPosterWidthPixels = displaWidthPixels / spanCount;
-        int listPosterHeightPixels = 750 * listPosterWidthPixels / 500;
-        Log.i(TAG, "(setRecyclerView) Poster width for movies list: " + listPosterWidthPixels);
-        Log.i(TAG, "(setRecyclerView) Poster height for movies list: " + listPosterHeightPixels);
-
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
-        moviesAdapter = new MoviesAdapter(new ArrayList<Movie>(), listPosterWidthPixels, listPosterHeightPixels, listener);
+        moviesAdapter = new MoviesAdapter(new ArrayList<Movie>(),
+                displayUtils.getListPosterWidthPixels(),
+                displayUtils.getListPosterHeightPixels(),
+                listener);
         recyclerView.setAdapter(moviesAdapter);
-    }
-
-    /**
-     * Helper method to determine if there is an active network connection.
-     *
-     * @return true if we are connected to the internet, false otherwise.
-     */
-    private boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     /**
@@ -317,13 +279,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
-        if (isConnected()) {
+        if (NetworkUtils.isConnected(this)) {
             // There is an available connection. Fetch results from TMDB.
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildURL(sortOrder);
+            URL searchURL = NetworkUtils.buildFetchMoviesListURL(sortOrder);
             Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-            return new MoviesAsyncTaskLoader(this, searchURL);
+            return new MoviesAsyncTaskLoader(this, searchURL, NetworkUtils.OPERATION_GET_MOVIES_LIST);
         } else {
             // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
@@ -378,11 +340,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         progressBar.setVisibility(View.INVISIBLE);
 
         // Check if there is an available connection.
-        if (isConnected()) {
+        if (NetworkUtils.isConnected(this)) {
             // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
-                moviesAdapter.setMoviesArray(data);
+                moviesAdapter.setMoviesArrayList(data);
                 moviesAdapter.notifyDataSetChanged();
 
                 // Restore last currentPosition in the grid, if previously saved. This won't work if we

@@ -5,10 +5,10 @@
     <string name="content_description_favorites">Add to favorites icon</string>
     <string name="content_description_play">Play video icon</string>
     <string name="content_description_poster">Movie Poster</string>
-    <string name="movie_details_1">Info</string>
-    <string name="movie_details_2">Cast &amp; Crew</string>
-    <string name="movie_details_3">Reviews</string>
-    <string name="movie_details_4">Media</string>
+    <string name="movie_details_info">Info</string>
+    <string name="movie_details_cast_crew">Cast &amp; Crew</string>
+    <string name="movie_details_reviews">Reviews</string>
+    <string name="movie_details_media">Media</string>
     <string name="movie_details_title">Movie details</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
     <string name="no_overview">There is no available overview for this movie right now.</string>

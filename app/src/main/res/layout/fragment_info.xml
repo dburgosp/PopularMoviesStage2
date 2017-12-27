@@ -1,20 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/regular_padding">
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/info_main_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/regular_padding"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/regular_padding"
+        android:layout_marginEnd="@dimen/regular_padding"
+        android:layout_marginTop="@dimen/regular_padding">
 
         <TextView
-            android:id="@+id/movie_details_overview"
+            android:id="@+id/info_no_result_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="18sp"
+            tools:text="Message to display when there are no search results" />
+
+        <ProgressBar
+            android:id="@+id/info_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/info_tagline_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            tools:text="Tagline" />
+
+        <TextView
+            android:id="@+id/info_overview_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_tagline_textview"
             android:layout_marginBottom="@dimen/regular_padding"
-            android:text="@string/no_overview" />
-    </LinearLayout>
+            tools:text="@string/no_overview" />
+
+        <TextView
+            android:id="@+id/info_runtime_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_overview_textview"
+            tools:text="Runtime" />
+
+        <TextView
+            android:id="@+id/info_genres_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_runtime_textview"
+            tools:text="Genres" />
+
+        <TextView
+            android:id="@+id/info_release_date_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_genres_textview"
+            tools:text="Release date" />
+
+        <TextView
+            android:id="@+id/info_status_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_release_date_textview"
+            tools:text="Status" />
+
+        <TextView
+            android:id="@+id/info_original_title_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_status_textview"
+            tools:text="Original title" />
+
+        <TextView
+            android:id="@+id/info_original_language_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_original_title_textview"
+            tools:text="Original Language" />
+
+        <TextView
+            android:id="@+id/info_budget_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_original_language_textview"
+            tools:text="Budget" />
+
+        <TextView
+            android:id="@+id/info_revenue_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_budget_textview"
+            tools:text="Revenue" />
+
+        <!-- Empty TextView for adding a bottom margin to the ScrollView -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_revenue_textview"
+            android:layout_marginBottom="@dimen/regular_padding"
+            android:text="" />
+    </RelativeLayout>
 </ScrollView>

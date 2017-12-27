@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Poster sizes -->
-
     <!-- Paddings and margins -->
     <dimen name="tiny_padding">4dp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="regular_padding">16dp</dimen>
+
+    <!-- Poster sizes -->
+
+    <!-- Number of columns for the main movie list depending on the device orientation. -->
+    <integer name="default_vertical_span_count">3</integer>
+    <integer name="default_horizontal_span_count">4</integer>
+
+    <!-- Default values for display metrics. -->
+    <integer name="default_display_width_pixels">480</integer>
+    <integer name="default_display_height_pixels">800</integer>
+    <string name="default_display_density">1.5</string>
+    <string name="default_display_scaled_density">1.5</string>
+    <integer name="default_display_density_dpi">240</integer>
+    <string name="default_display_xdpi">203.0</string>
+    <string name="default_display_ydpi">203.0</string>
 </resources>

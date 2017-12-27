@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/small_padding"
+    android:layout_marginStart="@dimen/small_padding"
+    android:layout_marginTop="@dimen/small_padding"
+    android:background="@color/colorWhite"
+    app:cardCornerRadius="@dimen/small_padding"
+    app:cardElevation="@dimen/tiny_padding">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/cast_crew_frame_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/cast_crew_image"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:background="@color/colorWhite"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_person" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical"
+            android:padding="@dimen/small_padding">
+
+            <TextView
+                android:id="@+id/cast_crew_character"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                tools:text="Character name in more than one line" />
+
+            <TextView
+                android:id="@+id/cast_crew_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                tools:text="Artist name in more than one line" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

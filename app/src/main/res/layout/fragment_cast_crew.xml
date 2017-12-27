@@ -1,14 +1,72 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/regular_padding"
-    tools:context="com.example.android.popularmoviesstage2.CastCrewFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_marginBottom="@dimen/regular_padding"
+        android:layout_marginTop="@dimen/regular_padding"
+        tools:context="com.example.android.popularmoviesstage2.fragments.CastCrewFragment">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/cast_crew_no_result_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:textSize="18sp"
+            tools:text="Message to display when there are no search results" />
+
+        <ProgressBar
+            android:id="@+id/cast_crew_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <TextView
+            android:id="@+id/cast_crew_title1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/tiny_padding"
+            android:layout_marginStart="@dimen/regular_padding"
+            android:text="Cast of characters"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cast_crew_recycler_view1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cast_crew_title1"
+            android:paddingBottom="@dimen/regular_padding"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:id="@+id/cast_crew_title2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cast_crew_recycler_view1"
+            android:layout_marginBottom="@dimen/tiny_padding"
+            android:layout_marginStart="@dimen/regular_padding"
+            android:text="Film crew"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/cast_crew_recycler_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cast_crew_title2"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cast_crew_recycler_view2"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:text="" />
+    </RelativeLayout>
+</ScrollView>
