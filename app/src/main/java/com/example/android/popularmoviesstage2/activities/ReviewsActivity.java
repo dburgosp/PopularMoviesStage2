@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage2;
+package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Review;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
@@ -29,10 +30,10 @@ public class ReviewsActivity extends AppCompatActivity {
     @BindView(R.id.reviews_content_text_view)
     TextView contentTextView;
 
-    Review review;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Review review;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
         ButterKnife.bind(this);
@@ -41,17 +42,11 @@ public class ReviewsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         review = intent.getParcelableExtra("review");
 
-        // Set left paddings according to poster width.
-        int regularPadding = getResources().getDimensionPixelSize(R.dimen.regular_padding);
-        int paddingStart = getResources().getInteger(R.integer.movie_details_poster_width) + regularPadding * 2;
-        authorTextView.setPadding(paddingStart, regularPadding, regularPadding, regularPadding);
-        contentTextView.setPadding(paddingStart, regularPadding, regularPadding, 0);
-
-        // Set backdrop height depending on device orientation.
+        // If device orientation is portrait, set backdrop height to match_parent.
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int height = backgroundImageView.getLayoutParams().width;
-            int width = LayoutParams.MATCH_PARENT;
-            LayoutParams params = new LayoutParams(height, width);
+            int width = backgroundImageView.getLayoutParams().width;
+            int height = LayoutParams.MATCH_PARENT;
+            LayoutParams params = new LayoutParams(width, height);
             backgroundImageView.setLayoutParams(params);
         }
 

@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage2;
+package com.example.android.popularmoviesstage2.activities;
 
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
@@ -33,9 +33,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
-
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MOVIES_LOADER_ID = 0;
+
+    private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
+    private MoviesAdapter moviesAdapter;
+    private int currentPosition = 0;
+
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.activity_main_recycler_view)
@@ -44,9 +48,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView noResultsTextView;
     @BindView(R.id.activity_main_loading_indicator)
     ProgressBar progressBar;
-    private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
-    private MoviesAdapter moviesAdapter;
-    private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Title and icon for this activity.
         this.setTitle(getSortOrderText());
-        ActionBar menu = getSupportActionBar();
-        menu.setDisplayShowHomeEnabled(true);
-        menu.setIcon(R.mipmap.ic_launcher);
+        // ActionBar menu = getSupportActionBar();
+        // menu.setDisplayShowHomeEnabled(true);
+        // menu.setIcon(R.mipmap.ic_launcher);
 
         Log.i(TAG, "(onCreate) Activity created");
     }
@@ -103,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // Start "MovieDetailsActivity" activity to show movie details when the current
                 // element is clicked.
                 Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra("widthPixels", displayUtils.getDetailsPosterWidthPixels());
-                intent.putExtra("heightPixels", displayUtils.getDetailsPosterHeightPixels());
                 intent.putExtra("sortOrder", sortOrder);
                 intent.putExtra("sortOrderText", getSortOrderText());
                 intent.putExtra("movie", movie);
@@ -238,7 +237,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // position (we have not clicked on a movie poster, so currentPosition contains the default
         // value 0) we must read the current position in the adapter from the helper method
         // {@link MoviesAdapter#getPosition()}.
-        if (currentPosition == 0) currentPosition = moviesAdapter.getPosition();
+        if (currentPosition == 0)
+            currentPosition = moviesAdapter.getPosition();
         outState.putInt("currentPosition", currentPosition);
     }
 
@@ -364,9 +364,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     /**
-     * Called when a previously created loader is being reset, and thus
-     * making its data unavailable.  The application should at this point
-     * remove any references it has to the Loader's data.
+     * Called when a previously created loader is being reset, and thus making its data unavailable.
+     * The application should at this point remove any references it has to the Loader's data.
      *
      * @param loader The Loader that is being reset.
      */

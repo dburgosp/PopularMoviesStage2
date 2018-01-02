@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ellipsize="end"
+            android:fontFamily="sans-serif"
             android:maxLines="4"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
 
@@ -39,6 +40,7 @@
             android:alpha="0.5"
             android:drawableEnd="@drawable/ic_person_pin_black_18dp"
             android:drawablePadding="@dimen/tiny_padding"
+            android:fontFamily="sans-serif-smallcaps"
             android:gravity="end"
             android:textColor="@color/colorBlack"
             android:textStyle="bold"

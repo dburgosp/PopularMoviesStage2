@@ -37,10 +37,9 @@
             android:alpha="0.5"
             android:drawablePadding="@dimen/tiny_padding"
             android:drawableStart="@drawable/ic_person_black_18dp"
+            android:fontFamily="sans-serif-smallcaps"
             android:text="@string/cast_of_characters"
-            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
@@ -61,10 +60,9 @@
             android:alpha="0.5"
             android:drawablePadding="@dimen/tiny_padding"
             android:drawableStart="@drawable/ic_person_black_18dp"
+            android:fontFamily="sans-serif-smallcaps"
             android:text="@string/film_crew"
-            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView

@@ -9,25 +9,12 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
  * Public class for managing all the data about movie collections.
  */
 public class MovieCollection implements Parcelable {
-    public static final Parcelable.Creator<MovieCollection> CREATOR = new Parcelable.Creator<MovieCollection>() {
-        @Override
-        public MovieCollection createFromParcel(Parcel source) {
-            return new MovieCollection(source);
-        }
-
-        @Override
-        public MovieCollection[] newArray(int size) {
-            return new MovieCollection[size];
-        }
-    };
     private int id;
     private String name;
     private String overview;
     private String poster_path;
     private String backdrop_path;
     private Movie parts;
-
-    // Getters and setters.
 
     /**
      * Constructor for MovieCollection class objects.
@@ -54,14 +41,7 @@ public class MovieCollection implements Parcelable {
         this.parts = parts;
     }
 
-    protected MovieCollection(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.overview = in.readString();
-        this.poster_path = in.readString();
-        this.backdrop_path = in.readString();
-        this.parts = in.readParcelable(Movie.class.getClassLoader());
-    }
+    // Getters and setters.
 
     public int getId() {
         return id;
@@ -111,6 +91,17 @@ public class MovieCollection implements Parcelable {
         this.parts = parts;
     }
 
+    // Parcelable configuration.
+
+    protected MovieCollection(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.overview = in.readString();
+        this.poster_path = in.readString();
+        this.backdrop_path = in.readString();
+        this.parts = in.readParcelable(Movie.class.getClassLoader());
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -125,4 +116,16 @@ public class MovieCollection implements Parcelable {
         dest.writeString(this.backdrop_path);
         dest.writeParcelable(this.parts, flags);
     }
+
+    public static final Parcelable.Creator<MovieCollection> CREATOR = new Parcelable.Creator<MovieCollection>() {
+        @Override
+        public MovieCollection createFromParcel(Parcel source) {
+            return new MovieCollection(source);
+        }
+
+        @Override
+        public MovieCollection[] newArray(int size) {
+            return new MovieCollection[size];
+        }
+    };
 }

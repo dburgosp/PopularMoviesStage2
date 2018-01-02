@@ -9,17 +9,6 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
  * Public class for managing information about companies related to movies.
  */
 public class MovieCompany implements Parcelable {
-    public static final Parcelable.Creator<MovieCompany> CREATOR = new Parcelable.Creator<MovieCompany>() {
-        @Override
-        public MovieCompany createFromParcel(Parcel source) {
-            return new MovieCompany(source);
-        }
-
-        @Override
-        public MovieCompany[] newArray(int size) {
-            return new MovieCompany[size];
-        }
-    };
     private String description;
     private String headquarters;
     private String homepage;
@@ -27,8 +16,6 @@ public class MovieCompany implements Parcelable {
     private String logo_path;
     private String name;
     private MovieCompany parent_company;
-
-    // Getters and setters.
 
     /**
      * Constructor for MovieCompany class objects.
@@ -56,15 +43,7 @@ public class MovieCompany implements Parcelable {
         this.parent_company = parent_company;
     }
 
-    protected MovieCompany(Parcel in) {
-        this.description = in.readString();
-        this.headquarters = in.readString();
-        this.homepage = in.readString();
-        this.id = in.readInt();
-        this.logo_path = in.readString();
-        this.parent_company = in.readParcelable(MovieCompany.class.getClassLoader());
-        this.name = in.readString();
-    }
+    // Getters and setters.
 
     public String getDescription() {
         return description;
@@ -122,6 +101,18 @@ public class MovieCompany implements Parcelable {
         this.parent_company = parent_company;
     }
 
+    // Parcelable configuration.
+
+    protected MovieCompany(Parcel in) {
+        this.description = in.readString();
+        this.headquarters = in.readString();
+        this.homepage = in.readString();
+        this.id = in.readInt();
+        this.logo_path = in.readString();
+        this.parent_company = in.readParcelable(MovieCompany.class.getClassLoader());
+        this.name = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,4 +128,16 @@ public class MovieCompany implements Parcelable {
         dest.writeParcelable(this.parent_company, flags);
         dest.writeString(this.name);
     }
+
+    public static final Parcelable.Creator<MovieCompany> CREATOR = new Parcelable.Creator<MovieCompany>() {
+        @Override
+        public MovieCompany createFromParcel(Parcel source) {
+            return new MovieCompany(source);
+        }
+
+        @Override
+        public MovieCompany[] newArray(int size) {
+            return new MovieCompany[size];
+        }
+    };
 }

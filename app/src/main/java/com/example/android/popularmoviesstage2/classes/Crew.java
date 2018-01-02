@@ -7,17 +7,6 @@ import android.os.Parcelable;
  * Public class for managing the crew of a movie.
  */
 public class Crew implements Parcelable {
-    public static final Parcelable.Creator<Crew> CREATOR = new Parcelable.Creator<Crew>() {
-        @Override
-        public Crew createFromParcel(Parcel source) {
-            return new Crew(source);
-        }
-
-        @Override
-        public Crew[] newArray(int size) {
-            return new Crew[size];
-        }
-    };
     private String credit_id;
     private String department;
     private int gender;
@@ -46,8 +35,6 @@ public class Crew implements Parcelable {
         this.profile_path = profile_path;
     }
 
-    // Getters and setters.
-
     /**
      * Public constructor for new instances of objects of this class, with complete information.
      *
@@ -71,15 +58,7 @@ public class Crew implements Parcelable {
         this.profile_path = profile_path;
     }
 
-    protected Crew(Parcel in) {
-        this.credit_id = in.readString();
-        this.department = in.readString();
-        this.gender = in.readInt();
-        this.id = in.readInt();
-        this.job = in.readString();
-        this.name = in.readString();
-        this.profile_path = in.readString();
-    }
+    // Getters and setters.
 
     public String getCredit_id() {
         return credit_id;
@@ -137,6 +116,18 @@ public class Crew implements Parcelable {
         this.profile_path = profile_path;
     }
 
+    // Parcelable configuration.
+
+    protected Crew(Parcel in) {
+        this.credit_id = in.readString();
+        this.department = in.readString();
+        this.gender = in.readInt();
+        this.id = in.readInt();
+        this.job = in.readString();
+        this.name = in.readString();
+        this.profile_path = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -152,4 +143,16 @@ public class Crew implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.profile_path);
     }
+
+    public static final Parcelable.Creator<Crew> CREATOR = new Parcelable.Creator<Crew>() {
+        @Override
+        public Crew createFromParcel(Parcel source) {
+            return new Crew(source);
+        }
+
+        @Override
+        public Crew[] newArray(int size) {
+            return new Crew[size];
+        }
+    };
 }

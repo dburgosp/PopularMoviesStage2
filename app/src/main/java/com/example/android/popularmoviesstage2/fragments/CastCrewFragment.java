@@ -118,12 +118,6 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
         // Get current display metrics, depending on device rotation.
         DisplayUtils displayUtils = new DisplayUtils(getContext());
 
-        // Photo height and width are different depending on device rotation too.
-        int photoWidthPixels = 3 * displayUtils.getDetailsPosterWidthPixels() / 2;
-        int photoHeightPixels = 5 * photoWidthPixels / 4;
-        Log.i(TAG, "(setRecyclerViews) Poster width for movies list: " + photoWidthPixels);
-        Log.i(TAG, "(setRecyclerViews) Poster height for movies list: " + photoHeightPixels);
-
         // Set the listeners for click events in the CastAdapters.
         CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
             @Override
@@ -163,8 +157,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Set the Adapters for the RecyclerViews, according to the current display size and
         // orientation.
-        castAdapter = new CastAdapter(new ArrayList<Cast>(), photoWidthPixels, photoWidthPixels, castListener);
-        crewAdapter = new CrewAdapter(new ArrayList<Crew>(), photoWidthPixels, photoWidthPixels, crewListener);
+        castAdapter = new CastAdapter(new ArrayList<Cast>(), castListener);
+        crewAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
         castRecyclerView.setAdapter(castAdapter);
         crewRecyclerView.setAdapter(crewAdapter);
     }

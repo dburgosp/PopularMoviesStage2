@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="horizontal"
-    tools:context="com.example.android.popularmoviesstage2.ReviewsActivity">
+    tools:context="com.example.android.popularmoviesstage2.activities.ReviewsActivity">
 
     <ImageView
         android:id="@+id/reviews_background"
@@ -46,6 +46,7 @@
             android:id="@+id/reviews_author_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-smallcaps"
             android:paddingBottom="@dimen/regular_padding"
             android:paddingEnd="@dimen/regular_padding"
             android:paddingStart="107dp"

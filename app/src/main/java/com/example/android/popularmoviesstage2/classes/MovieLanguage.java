@@ -7,21 +7,8 @@ import android.os.Parcelable;
  * Public class for managing the languages related to the movies.
  */
 public class MovieLanguage implements Parcelable {
-    public static final Parcelable.Creator<MovieLanguage> CREATOR = new Parcelable.Creator<MovieLanguage>() {
-        @Override
-        public MovieLanguage createFromParcel(Parcel source) {
-            return new MovieLanguage(source);
-        }
-
-        @Override
-        public MovieLanguage[] newArray(int size) {
-            return new MovieLanguage[size];
-        }
-    };
     private String iso_639_1;
     private String name;
-
-    // Getters and setters.
 
     /**
      * @param iso_639_1 is the ISO 639-1 code for identifying the language.
@@ -33,10 +20,7 @@ public class MovieLanguage implements Parcelable {
         this.name = name;
     }
 
-    protected MovieLanguage(Parcel in) {
-        this.iso_639_1 = in.readString();
-        this.name = in.readString();
-    }
+    // Getters and setters.
 
     public String getIso_639_1() {
         return iso_639_1;
@@ -54,6 +38,13 @@ public class MovieLanguage implements Parcelable {
         this.name = name;
     }
 
+    // Parcelable configuration.
+
+    protected MovieLanguage(Parcel in) {
+        this.iso_639_1 = in.readString();
+        this.name = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -64,4 +55,16 @@ public class MovieLanguage implements Parcelable {
         dest.writeString(this.iso_639_1);
         dest.writeString(this.name);
     }
+
+    public static final Parcelable.Creator<MovieLanguage> CREATOR = new Parcelable.Creator<MovieLanguage>() {
+        @Override
+        public MovieLanguage createFromParcel(Parcel source) {
+            return new MovieLanguage(source);
+        }
+
+        @Override
+        public MovieLanguage[] newArray(int size) {
+            return new MovieLanguage[size];
+        }
+    };
 }

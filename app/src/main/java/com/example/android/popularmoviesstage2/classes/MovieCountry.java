@@ -7,21 +7,8 @@ import android.os.Parcelable;
  * Public class for managing the countries related to movies.
  */
 public class MovieCountry implements Parcelable {
-    public static final Parcelable.Creator<MovieCountry> CREATOR = new Parcelable.Creator<MovieCountry>() {
-        @Override
-        public MovieCountry createFromParcel(Parcel source) {
-            return new MovieCountry(source);
-        }
-
-        @Override
-        public MovieCountry[] newArray(int size) {
-            return new MovieCountry[size];
-        }
-    };
     private String iso_3166_1;
     private String name;
-
-    // Getters and setters.
 
     /**
      * Constructor for MovieCountry class objects.
@@ -35,10 +22,7 @@ public class MovieCountry implements Parcelable {
         this.name = name;
     }
 
-    protected MovieCountry(Parcel in) {
-        this.iso_3166_1 = in.readString();
-        this.name = in.readString();
-    }
+    // Getters and setters.
 
     public String getIso_3166_1() {
         return iso_3166_1;
@@ -56,6 +40,13 @@ public class MovieCountry implements Parcelable {
         this.name = name;
     }
 
+    // Parcelable configuration.
+
+    protected MovieCountry(Parcel in) {
+        this.iso_3166_1 = in.readString();
+        this.name = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,4 +57,16 @@ public class MovieCountry implements Parcelable {
         dest.writeString(this.iso_3166_1);
         dest.writeString(this.name);
     }
+
+    public static final Parcelable.Creator<MovieCountry> CREATOR = new Parcelable.Creator<MovieCountry>() {
+        @Override
+        public MovieCountry createFromParcel(Parcel source) {
+            return new MovieCountry(source);
+        }
+
+        @Override
+        public MovieCountry[] newArray(int size) {
+            return new MovieCountry[size];
+        }
+    };
 }

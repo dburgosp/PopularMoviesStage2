@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif-smallcaps"
             android:gravity="center"
             android:textSize="18sp"
             tools:text="Message to display when there are no search results" />
@@ -34,7 +35,9 @@
             android:id="@+id/info_tagline_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-smallcaps"
             android:textStyle="bold"
+            android:textColor="@color/colorBlack"
             tools:text="Tagline" />
 
         <TextView
@@ -107,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/info_revenue_textview"
             android:layout_marginBottom="@dimen/regular_padding"
+            android:fontFamily="sans-serif-smallcaps"
             android:text="" />
     </RelativeLayout>
 </ScrollView>

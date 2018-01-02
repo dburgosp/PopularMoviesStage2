@@ -4,17 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Review implements Parcelable {
-    public static final Parcelable.Creator<Review> CREATOR = new Parcelable.Creator<Review>() {
-        @Override
-        public Review createFromParcel(Parcel source) {
-            return new Review(source);
-        }
-
-        @Override
-        public Review[] newArray(int size) {
-            return new Review[size];
-        }
-    };
     private String id;
     private String author;
     private String content;
@@ -22,8 +11,6 @@ public class Review implements Parcelable {
     private String movieTitle;
     private String posterPath;
     private String backdropPath;
-
-    // Getters and setters.
 
     /**
      * Constructor for this class.
@@ -47,15 +34,7 @@ public class Review implements Parcelable {
         this.backdropPath = backdropPath;
     }
 
-    protected Review(Parcel in) {
-        this.id = in.readString();
-        this.author = in.readString();
-        this.content = in.readString();
-        this.url = in.readString();
-        this.movieTitle = in.readString();
-        this.posterPath = in.readString();
-        this.backdropPath = in.readString();
-    }
+    // Getters and setters.
 
     public String getId() {
         return id;
@@ -113,6 +92,18 @@ public class Review implements Parcelable {
         this.backdropPath = backdropPath;
     }
 
+    // Parcelable configuration.
+
+    protected Review(Parcel in) {
+        this.id = in.readString();
+        this.author = in.readString();
+        this.content = in.readString();
+        this.url = in.readString();
+        this.movieTitle = in.readString();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,4 +119,16 @@ public class Review implements Parcelable {
         dest.writeString(this.posterPath);
         dest.writeString(this.backdropPath);
     }
+
+    public static final Parcelable.Creator<Review> CREATOR = new Parcelable.Creator<Review>() {
+        @Override
+        public Review createFromParcel(Parcel source) {
+            return new Review(source);
+        }
+
+        @Override
+        public Review[] newArray(int size) {
+            return new Review[size];
+        }
+    };
 }

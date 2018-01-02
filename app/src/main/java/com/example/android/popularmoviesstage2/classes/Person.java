@@ -6,17 +6,6 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class Person implements Parcelable {
-    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
-        @Override
-        public Person createFromParcel(Parcel source) {
-            return new Person(source);
-        }
-
-        @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
-        }
-    };
     private boolean adult;
     private ArrayList<Integer> also_known_as;
     private String biography;
@@ -49,22 +38,7 @@ public class Person implements Parcelable {
         this.profile_path = profile_path;
     }
 
-    protected Person(Parcel in) {
-        this.adult = in.readByte() != 0;
-        this.also_known_as = new ArrayList<Integer>();
-        in.readList(this.also_known_as, Integer.class.getClassLoader());
-        this.biography = in.readString();
-        this.birthday = in.readString();
-        this.deathday = in.readString();
-        this.gender = in.readInt();
-        this.homepage = in.readString();
-        this.id = in.readInt();
-        this.imdb_id = in.readString();
-        this.name = in.readString();
-        this.place_of_birth = in.readString();
-        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
-        this.profile_path = in.readString();
-    }
+    // Getters and setters.
 
     public boolean isAdult() {
         return adult;
@@ -170,6 +144,25 @@ public class Person implements Parcelable {
         this.profile_path = profile_path;
     }
 
+    // Parcelable configuration.
+
+    protected Person(Parcel in) {
+        this.adult = in.readByte() != 0;
+        this.also_known_as = new ArrayList<Integer>();
+        in.readList(this.also_known_as, Integer.class.getClassLoader());
+        this.biography = in.readString();
+        this.birthday = in.readString();
+        this.deathday = in.readString();
+        this.gender = in.readInt();
+        this.homepage = in.readString();
+        this.id = in.readInt();
+        this.imdb_id = in.readString();
+        this.name = in.readString();
+        this.place_of_birth = in.readString();
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.profile_path = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -191,4 +184,16 @@ public class Person implements Parcelable {
         dest.writeValue(this.popularity);
         dest.writeString(this.profile_path);
     }
+
+    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
+        @Override
+        public Person createFromParcel(Parcel source) {
+            return new Person(source);
+        }
+
+        @Override
+        public Person[] newArray(int size) {
+            return new Person[size];
+        }
+    };
 }

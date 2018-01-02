@@ -9,22 +9,9 @@ import java.util.ArrayList;
  * Public class for managing the cast & crew of a movie.
  */
 public class CastCrew implements Parcelable {
-    public static final Parcelable.Creator<CastCrew> CREATOR = new Parcelable.Creator<CastCrew>() {
-        @Override
-        public CastCrew createFromParcel(Parcel source) {
-            return new CastCrew(source);
-        }
-
-        @Override
-        public CastCrew[] newArray(int size) {
-            return new CastCrew[size];
-        }
-    };
     private int id;
     private ArrayList<Cast> cast;
     private ArrayList<Crew> crew;
-
-    // Getters and setters.
 
     /**
      * Public constructor for new instances of objects of this class.
@@ -39,11 +26,7 @@ public class CastCrew implements Parcelable {
         this.crew = crew;
     }
 
-    protected CastCrew(Parcel in) {
-        this.id = in.readInt();
-        this.cast = in.createTypedArrayList(Cast.CREATOR);
-        this.crew = in.createTypedArrayList(Crew.CREATOR);
-    }
+    // Getters and setters.
 
     public int getId() {
         return id;
@@ -69,6 +52,14 @@ public class CastCrew implements Parcelable {
         this.crew = crew;
     }
 
+    // Parcelable configuration.
+
+    protected CastCrew(Parcel in) {
+        this.id = in.readInt();
+        this.cast = in.createTypedArrayList(Cast.CREATOR);
+        this.crew = in.createTypedArrayList(Crew.CREATOR);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -80,4 +71,16 @@ public class CastCrew implements Parcelable {
         dest.writeTypedList(this.cast);
         dest.writeTypedList(this.crew);
     }
+
+    public static final Parcelable.Creator<CastCrew> CREATOR = new Parcelable.Creator<CastCrew>() {
+        @Override
+        public CastCrew createFromParcel(Parcel source) {
+            return new CastCrew(source);
+        }
+
+        @Override
+        public CastCrew[] newArray(int size) {
+            return new CastCrew[size];
+        }
+    };
 }

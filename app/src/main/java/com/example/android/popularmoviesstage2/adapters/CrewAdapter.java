@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -18,21 +17,17 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     private static final String TAG = CrewAdapter.class.getSimpleName();
     private final CrewAdapter.OnItemClickListener listener;
     private ArrayList<Crew> crewArrayList;
-    private LinearLayout.LayoutParams layoutParams;
     //private int position = 0;
 
     /**
      * Constructor for this class.
      *
      * @param crewArrayList is the list of persons that will be represented into the adapter.
-     * @param widthPixels   is the width in pixels of a movie poster.
-     * @param heightPixels  is the height in pixels of a movie poster.
      * @param listener      is the listener for receiving the clicks.
      */
-    public CrewAdapter(ArrayList<Crew> crewArrayList, int widthPixels, int heightPixels, CrewAdapter.OnItemClickListener listener) {
+    public CrewAdapter(ArrayList<Crew> crewArrayList, CrewAdapter.OnItemClickListener listener) {
         this.crewArrayList = crewArrayList;
         this.listener = listener;
-        layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
         Log.i(TAG, "(CrewAdapter) Object created");
     }
 
@@ -79,7 +74,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     public CrewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.cast_crew_list_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item_cast_crew, parent, false);
         return new CrewViewHolder(view);
     }
 
@@ -111,7 +106,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
             //currentCrew.setPosition(position);
 
             // Update CrewViewHolder with the person details at current position in the adapter.
-            viewHolder.bind(currentCrew, listener, layoutParams);
+            viewHolder.bind(currentCrew, listener);
 
             // Save current position.
             //this.position = viewHolder.getAdapterPosition();

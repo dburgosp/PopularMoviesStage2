@@ -11,17 +11,6 @@ import java.util.ArrayList;
  * Public class for managing the complete information of a movie.
  */
 public class Movie implements Parcelable {
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel source) {
-            return new Movie(source);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
     private int id;
     private boolean adult;
     private String backdrop_path;
@@ -134,8 +123,6 @@ public class Movie implements Parcelable {
         this.position = position;
     }
 
-    // Getters and setters.
-
     /**
      * Constructor for objects of this class, containing a subset of information about a movie.
      *
@@ -196,34 +183,7 @@ public class Movie implements Parcelable {
         this.position = position;
     }
 
-    protected Movie(Parcel in) {
-        this.id = in.readInt();
-        this.adult = in.readByte() != 0;
-        this.backdrop_path = in.readString();
-        this.belongs_to_collection = in.readParcelable(MovieCollection.class.getClassLoader());
-        this.budget = in.readInt();
-        this.genres = in.createTypedArrayList(MovieGenre.CREATOR);
-        this.homepage = in.readString();
-        this.imdb_id = in.readString();
-        this.original_language = in.readString();
-        this.original_title = in.readString();
-        this.overview = in.readString();
-        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
-        this.poster_path = in.readString();
-        this.production_companies = in.createTypedArrayList(MovieCompany.CREATOR);
-        this.production_countries = in.createTypedArrayList(MovieCountry.CREATOR);
-        this.release_date = in.readString();
-        this.revenue = in.readInt();
-        this.runtime = in.readInt();
-        this.spoken_languages = in.createTypedArrayList(MovieLanguage.CREATOR);
-        this.status = in.readString();
-        this.tagline = in.readString();
-        this.title = in.readString();
-        this.video = in.readByte() != 0;
-        this.vote_average = (Double) in.readValue(Double.class.getClassLoader());
-        this.vote_count = in.readInt();
-        this.position = in.readInt();
-    }
+    // Getters and setters.
 
     public int getId() {
         return id;
@@ -433,6 +393,37 @@ public class Movie implements Parcelable {
         this.position = position;
     }
 
+    // Parcelable configuration.
+
+    protected Movie(Parcel in) {
+        this.id = in.readInt();
+        this.adult = in.readByte() != 0;
+        this.backdrop_path = in.readString();
+        this.belongs_to_collection = in.readParcelable(MovieCollection.class.getClassLoader());
+        this.budget = in.readInt();
+        this.genres = in.createTypedArrayList(MovieGenre.CREATOR);
+        this.homepage = in.readString();
+        this.imdb_id = in.readString();
+        this.original_language = in.readString();
+        this.original_title = in.readString();
+        this.overview = in.readString();
+        this.popularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.poster_path = in.readString();
+        this.production_companies = in.createTypedArrayList(MovieCompany.CREATOR);
+        this.production_countries = in.createTypedArrayList(MovieCountry.CREATOR);
+        this.release_date = in.readString();
+        this.revenue = in.readInt();
+        this.runtime = in.readInt();
+        this.spoken_languages = in.createTypedArrayList(MovieLanguage.CREATOR);
+        this.status = in.readString();
+        this.tagline = in.readString();
+        this.title = in.readString();
+        this.video = in.readByte() != 0;
+        this.vote_average = (Double) in.readValue(Double.class.getClassLoader());
+        this.vote_count = in.readInt();
+        this.position = in.readInt();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -467,4 +458,16 @@ public class Movie implements Parcelable {
         dest.writeInt(this.vote_count);
         dest.writeInt(this.position);
     }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

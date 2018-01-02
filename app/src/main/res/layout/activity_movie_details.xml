@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context="com.example.android.popularmoviesstage2.MovieDetailsActivity">
+    tools:context="com.example.android.popularmoviesstage2.activities.MovieDetailsActivity">
 
     <ImageView
         android:id="@+id/movie_details_background"
@@ -26,8 +26,8 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/movie_details_cardview"
-            android:layout_width="75dp"
-            android:layout_height="112dp"
+            android:layout_width="@dimen/poster_width"
+            android:layout_height="@dimen/poster_height"
             android:background="@color/colorWhite"
             app:cardCornerRadius="@dimen/small_padding"
             app:cardElevation="@dimen/small_padding">
@@ -53,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-smallcaps"
                 android:maxLines="2"
                 android:textColor="@color/colorWhite"
                 android:textSize="20sp"
@@ -77,6 +78,19 @@
                     android:textSize="14sp"
                     tools:text="2000" />
 
+                <TextView
+                    android:id="@+id/movie_details_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:alpha="0.8"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="@dimen/tiny_padding"
+                    android:drawableStart="@drawable/ic_access_time_white_18dp"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14sp"
+                    tools:text="0h 0m" />
+
                 <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/movie_details_score_progress"
                     android:layout_width="50dp"
@@ -89,7 +103,7 @@
                     app:donut_finished_stroke_width="4dp"
                     app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                     app:donut_progress="0"
-                    app:donut_text=""
+                    app:donut_text="N/A"
                     app:donut_text_color="@color/colorWhite"
                     app:donut_text_size="16sp"
                     app:donut_unfinished_color="@color/colorPrimary"
@@ -108,7 +122,8 @@
             android:id="@+id/movie_details_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorWhite" />
+            android:background="@color/colorWhite"
+            android:fontFamily="sans-serif-smallcaps" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/movie_details_viewpager"

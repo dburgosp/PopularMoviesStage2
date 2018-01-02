@@ -76,7 +76,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     public ReviewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.review_list_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item_review, parent, false);
         return new ReviewsViewHolder(view);
     }
 

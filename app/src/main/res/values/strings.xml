@@ -1,10 +1,14 @@
 <resources>
+    <string name="a_review_by">A review by</string>
     <string name="add_to_favorites">Add to favorites</string>
     <string name="app_name">TMDB</string>
+    <string name="cast_of_characters">Cast of characters</string>
     <string name="content_description_alpha">Transparent layer for background</string>
     <string name="content_description_favorites">Add to favorites icon</string>
+    <string name="content_description_person_image">Person image</string>
     <string name="content_description_play">Play video icon</string>
     <string name="content_description_poster">Movie Poster</string>
+    <string name="film_crew">Film crew</string>
     <string name="movie_details_info">Info</string>
     <string name="movie_details_cast_crew">Cast &amp; Crew</string>
     <string name="movie_details_reviews">Reviews</string>
@@ -21,9 +25,6 @@
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="user_score">TMDB score</string>
     <string name="videos_title">Related videos</string>
-    <string name="cast_of_characters">Cast of characters</string>
-    <string name="film_crew">Film crew</string>
-    <string name="a_review_by">A review by</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

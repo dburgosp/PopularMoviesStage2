@@ -7,17 +7,6 @@ import android.os.Parcelable;
  * Public class for managing the cast of a movie.
  */
 public class Cast implements Parcelable {
-    public static final Parcelable.Creator<Cast> CREATOR = new Parcelable.Creator<Cast>() {
-        @Override
-        public Cast createFromParcel(Parcel source) {
-            return new Cast(source);
-        }
-
-        @Override
-        public Cast[] newArray(int size) {
-            return new Cast[size];
-        }
-    };
     private int cast_id;
     private String character;
     private String credit_id;
@@ -28,8 +17,8 @@ public class Cast implements Parcelable {
     private String profile_path;
 
     /**
-     * Public constructor for new instances of objects of this class, with very limited
-     * information for a simple cast list.
+     * Public constructor for new instances of objects of this class, with limited information for a
+     * simple cast list.
      *
      * @param character    is the character name of this person in the current movie/tv show.
      * @param id           is the unique identifier of the {@link Person}.
@@ -47,8 +36,6 @@ public class Cast implements Parcelable {
         this.order = 0;
         this.profile_path = profile_path;
     }
-
-    // Getters and setters.
 
     /**
      * Public constructor for new instances of objects of this class, with complete information.
@@ -76,16 +63,7 @@ public class Cast implements Parcelable {
         this.profile_path = profile_path;
     }
 
-    protected Cast(Parcel in) {
-        this.cast_id = in.readInt();
-        this.character = in.readString();
-        this.credit_id = in.readString();
-        this.gender = in.readInt();
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.order = in.readInt();
-        this.profile_path = in.readString();
-    }
+    // Getters and setters.
 
     public int getCast_id() {
         return cast_id;
@@ -151,6 +129,19 @@ public class Cast implements Parcelable {
         this.profile_path = profile_path;
     }
 
+    // Parcelable configuration.
+
+    protected Cast(Parcel in) {
+        this.cast_id = in.readInt();
+        this.character = in.readString();
+        this.credit_id = in.readString();
+        this.gender = in.readInt();
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.order = in.readInt();
+        this.profile_path = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -167,4 +158,16 @@ public class Cast implements Parcelable {
         dest.writeInt(this.order);
         dest.writeString(this.profile_path);
     }
+
+    public static final Parcelable.Creator<Cast> CREATOR = new Parcelable.Creator<Cast>() {
+        @Override
+        public Cast createFromParcel(Parcel source) {
+            return new Cast(source);
+        }
+
+        @Override
+        public Cast[] newArray(int size) {
+            return new Cast[size];
+        }
+    };
 }

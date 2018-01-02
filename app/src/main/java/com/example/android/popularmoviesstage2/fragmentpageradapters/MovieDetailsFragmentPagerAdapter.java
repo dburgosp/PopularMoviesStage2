@@ -27,8 +27,8 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
         this.movie = movie;
         tabTitles[0] = context.getString(R.string.movie_details_info);
         tabTitles[1] = context.getString(R.string.movie_details_cast_crew);
-        tabTitles[2] = context.getString(R.string.movie_details_reviews);
-        tabTitles[3] = context.getString(R.string.movie_details_media);
+        tabTitles[2] = context.getString(R.string.movie_details_media);
+        tabTitles[3] = context.getString(R.string.movie_details_reviews);
     }
 
     @Override
@@ -39,9 +39,9 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return CastCrewFragment.newInstance(movie);
             case 2:
-                return ReviewsFragment.newInstance(movie);
-            default:
                 return new MediaFragment();
+            default:
+                return ReviewsFragment.newInstance(movie);
         }
     }
 

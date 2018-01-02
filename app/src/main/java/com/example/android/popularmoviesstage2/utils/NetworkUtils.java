@@ -49,6 +49,7 @@ public final class NetworkUtils {
     private final static String CREDITS_PATH = "credits";
     private final static String REVIEWS_PATH = "reviews";
     private final static String PARAM_API_KEY = "api_key";
+
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published
     // on GitHub.

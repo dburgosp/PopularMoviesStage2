@@ -18,10 +18,10 @@
 
         <ImageView
             android:id="@+id/cast_crew_image"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_marginTop="@dimen/small_padding"
+            android:layout_width="@dimen/poster_height"
+            android:layout_height="@dimen/poster_height"
             android:background="@color/colorWhite"
+            android:contentDescription="@string/content_description_person_image"
             android:scaleType="centerCrop"
             android:src="@drawable/no_person" />
 
@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/tiny_padding"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-smallcaps"
                 android:maxLines="3"
                 android:paddingBottom="@dimen/tiny_padding"
                 android:paddingEnd="@dimen/small_padding"
@@ -50,12 +51,12 @@
                 android:textSize="12sp"
                 tools:text="Character name in more than one line" />
 
-
             <TextView
                 android:id="@+id/cast_crew_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:fontFamily="sans-serif-smallcaps"
                 android:maxLines="2"
                 android:paddingBottom="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"

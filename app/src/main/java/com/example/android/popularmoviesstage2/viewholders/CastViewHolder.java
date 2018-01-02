@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -51,9 +50,8 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
      *
      * @param currentPerson is the Cast object attached to the current CastViewHolder element.
      * @param listener      is the listener for click events.
-     * @param layoutParams  contains the width and height for displaying the profile image.
      */
-    public void bind(final Cast currentPerson, final CastAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
+    public void bind(final Cast currentPerson, final CastAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current CastViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.
@@ -63,7 +61,6 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
             Picasso.with(context).load(posterPath).into(posterImageView);
         } else
             posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));
-        posterImageView.setLayoutParams(layoutParams);
 
         // Set person name.
         nameTextView.setText(currentPerson.getName());

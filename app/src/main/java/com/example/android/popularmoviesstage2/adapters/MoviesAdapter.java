@@ -20,6 +20,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     private ArrayList<Movie> moviesArrayList;
     private FrameLayout.LayoutParams layoutParams;
     private int position = 0;
+    private int lastPosition = 0;
 
     /**
      * Constructor for this class.
@@ -79,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.movie_list_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item_movie, parent, false);
         return new MoviesViewHolder(view);
     }
 
@@ -104,6 +105,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     @Override
     public void onBindViewHolder(MoviesViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        if ((lastPosition > 0) && (position == lastPosition)) {
+
+        }
+
         if (!moviesArrayList.isEmpty()) {
             Movie currentMovie = moviesArrayList.get(position);
 
@@ -117,6 +122,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
             //this.position = position;
             this.position = viewHolder.getAdapterPosition();
         }
+        lastPosition = position;
     }
 
     /**

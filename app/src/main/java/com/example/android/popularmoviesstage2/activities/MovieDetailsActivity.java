@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage2;
+package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -11,9 +11,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
@@ -48,7 +48,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     DonutProgress userScore;
 
     private String sortOrder, sortOrderText;
-    private int currentPosition, widthPixels, heightPixels;
+    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,26 +62,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Set title for this activity.
         this.setTitle(sortOrderText);
 
-        // Set CardView size depending on the width and height in pixels of the current device. As
-        // the parent of the CardView is a LinearLayout, we must use LinearLayout.LayoutParams.
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
-        posterCardView.setLayoutParams(layoutParams);
-
-        // Set left paddings according to poster width if the device is in landscape orientation.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int regularPadding = getResources().getDimensionPixelSize(R.dimen.regular_padding);
-            int paddingStart = widthPixels + regularPadding * 2;
-            movieDetailsTitle.setPadding(paddingStart, regularPadding, regularPadding, regularPadding);
-            tabLayout.setPadding(paddingStart, 0, 0, 0);
-            viewPager.setPadding(paddingStart, 0, 0, 0);
-        }
-
         // Write the basic movie info on activity_movie_details.xml header.
         setMovieInfo();
 
         // Give the TabLayout the ViewPager.
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        else
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         // Create an adapter that knows which fragment should be shown on each page, set the adapter
         // onto the view pager and go to the current page.
@@ -105,10 +94,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Get sort order string for setting the title of this activity.
         sortOrderText = intent.getStringExtra("sortOrderText");
 
-        // Get width and height for the movie poster.
-        widthPixels = intent.getIntExtra("widthPixels", 0);
-        heightPixels = intent.getIntExtra("heightPixels", 0);
-
         // Get current movie simple information.
         movie = intent.getParcelableExtra("movie");
     }
@@ -119,14 +104,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     void setMovieInfo() {
         Log.i(TAG, "(setMovieInfo) Display movie information on the header");
 
-        // Set poster. If there is no poster, set the default poster.
+        // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
             Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(movieDetailsPoster);
-        else
-            movieDetailsBackground.setImageDrawable(getDrawable(R.drawable.no_poster));
 
-        // Set background image. If there is no background image, we don't set anything.
+        // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
             Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(movieDetailsBackground);

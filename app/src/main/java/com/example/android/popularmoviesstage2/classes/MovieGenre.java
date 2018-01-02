@@ -4,21 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class MovieGenre implements Parcelable {
-    public static final Parcelable.Creator<MovieGenre> CREATOR = new Parcelable.Creator<MovieGenre>() {
-        @Override
-        public MovieGenre createFromParcel(Parcel source) {
-            return new MovieGenre(source);
-        }
-
-        @Override
-        public MovieGenre[] newArray(int size) {
-            return new MovieGenre[size];
-        }
-    };
     private int id;
     private String name;
-
-    // Getters and setters.
 
     /**
      * Constructor for MovieGenre class objects.
@@ -32,10 +19,7 @@ public class MovieGenre implements Parcelable {
         this.name = name;
     }
 
-    protected MovieGenre(Parcel in) {
-        this.id = in.readInt();
-        this.name = in.readString();
-    }
+    // Getters and setters.
 
     public int getId() {
         return id;
@@ -53,6 +37,13 @@ public class MovieGenre implements Parcelable {
         this.name = name;
     }
 
+    // Parcelable configuration.
+
+    protected MovieGenre(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -63,4 +54,16 @@ public class MovieGenre implements Parcelable {
         dest.writeInt(this.id);
         dest.writeString(this.name);
     }
+
+    public static final Parcelable.Creator<MovieGenre> CREATOR = new Parcelable.Creator<MovieGenre>() {
+        @Override
+        public MovieGenre createFromParcel(Parcel source) {
+            return new MovieGenre(source);
+        }
+
+        @Override
+        public MovieGenre[] newArray(int size) {
+            return new MovieGenre[size];
+        }
+    };
 }

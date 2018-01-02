@@ -19,12 +19,6 @@ public class DisplayUtils {
     private int listPosterWidthPixels;
     private int listPosterHeightPixels;
 
-    // Width and height in pixels for posters in the main movie list, depending on display
-    // dimensions, current device orientation and desired number of elements to be displayed for
-    // each column ("vertical_span_count" and "horizontal_span_count" defined in dimens.xml).
-    private int detailsPosterWidthPixels;
-    private int detailsPosterHeightPixels;
-
     // Number of column elements to be displayed in a vertical GridLayoutManager showing the main
     // list of movies.
     private int spanCount;
@@ -86,19 +80,14 @@ public class DisplayUtils {
         if (resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // When display orientation is portrait, we use screen width for setting the width of
             // the photographs.
-            detailsPosterWidthPixels = (displayWidthPixels / 3) - ((resources.getDimensionPixelSize(R.dimen.regular_padding)) * 2);
             spanCount = (int) resources.getInteger(R.integer.default_vertical_span_count);
             Log.i(TAG, "Portrait orientation");
         } else {
             // When display orientation is landscape, we use screen height for setting the width of
             // the photographs.
-            detailsPosterWidthPixels = (displayHeightPixels / 3) - ((resources.getDimensionPixelSize(R.dimen.regular_padding)) * 2);
             spanCount = (int) resources.getInteger(R.integer.default_horizontal_span_count);
             Log.i(TAG, "Landscape orientation");
         }
-        detailsPosterHeightPixels = 3 * detailsPosterWidthPixels / 2;
-        Log.i(TAG, "Poster width for details activity: " + detailsPosterWidthPixels);
-        Log.i(TAG, "Poster height for details activity: " + detailsPosterHeightPixels);
 
         // Number of columns for the movies list in the RecyclerView (spanCount) is different
         // depending on device rotation, so poster width and height for this list also depend on
@@ -117,14 +106,6 @@ public class DisplayUtils {
 
     public int getListPosterHeightPixels() {
         return listPosterHeightPixels;
-    }
-
-    public int getDetailsPosterWidthPixels() {
-        return detailsPosterWidthPixels;
-    }
-
-    public int getDetailsPosterHeightPixels() {
-        return detailsPosterHeightPixels;
     }
 
     public int getSpanCount() {

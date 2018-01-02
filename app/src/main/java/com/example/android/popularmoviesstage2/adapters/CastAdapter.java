@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -18,21 +17,17 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     private static final String TAG = CastAdapter.class.getSimpleName();
     private final CastAdapter.OnItemClickListener listener;
     private ArrayList<Cast> castArrayList;
-    private LinearLayout.LayoutParams layoutParams;
     //private int position = 0;
 
     /**
      * Constructor for this class.
      *
      * @param castArrayList is the list of persons that will be represented into the adapter.
-     * @param widthPixels   is the width in pixels of a movie poster.
-     * @param heightPixels  is the height in pixels of a movie poster.
      * @param listener      is the listener for receiving the clicks.
      */
-    public CastAdapter(ArrayList<Cast> castArrayList, int widthPixels, int heightPixels, OnItemClickListener listener) {
+    public CastAdapter(ArrayList<Cast> castArrayList, OnItemClickListener listener) {
         this.castArrayList = castArrayList;
         this.listener = listener;
-        layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
         Log.i(TAG, "(CastAdapter) Object created");
     }
 
@@ -79,7 +74,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     public CastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.cast_crew_list_item, parent, false);
+        View view = inflater.inflate(R.layout.list_item_cast_crew, parent, false);
         return new CastViewHolder(view);
     }
 
@@ -111,7 +106,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
             //currentCast.setPosition(position);
 
             // Update CastViewHolder with the person details at current position in the adapter.
-            viewHolder.bind(currentCast, listener, layoutParams);
+            viewHolder.bind(currentCast, listener);
 
             // Save current position.
             //this.position = viewHolder.getAdapterPosition();

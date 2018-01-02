@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.ReviewsActivity;
+import com.example.android.popularmoviesstage2.activities.ReviewsActivity;
 import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.ReviewsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
