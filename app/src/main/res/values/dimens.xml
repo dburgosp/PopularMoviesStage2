@@ -5,7 +5,13 @@
     <dimen name="small_padding">8dp</dimen>
     <dimen name="regular_padding">16dp</dimen>
 
-    <!-- Poster sizes -->
+    <!-- Poster sizes for MovieDetailsActivity -->
+    <integer name="movie_details_poster_width">112</integer>
+    <integer name="movie_details_poster_height">168</integer>
+
+    <!-- Image sizes for people in MovieDetailsActivity -->
+    <integer name="movie_details_people_image_width">168</integer>
+    <integer name="movie_details_people_image_height">168</integer>
 
     <!-- Number of columns for the main movie list depending on the device orientation. -->
     <integer name="default_vertical_span_count">3</integer>

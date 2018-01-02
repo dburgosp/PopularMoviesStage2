@@ -85,7 +85,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Create an adapter that knows which fragment should be shown on each page, set the adapter
         // onto the view pager and go to the current page.
-        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), MovieDetailsActivity.this, movie.getId());
+        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), MovieDetailsActivity.this, movie);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 

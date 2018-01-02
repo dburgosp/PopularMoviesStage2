@@ -18,6 +18,7 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
             android:gravity="center"
+            android:padding="@dimen/regular_padding"
             android:textSize="18sp"
             tools:text="Message to display when there are no search results" />
 
@@ -33,8 +34,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/tiny_padding"
-            android:layout_marginStart="@dimen/regular_padding"
-            android:text="Cast of characters"
+            android:alpha="0.5"
+            android:drawablePadding="@dimen/tiny_padding"
+            android:drawableStart="@drawable/ic_person_black_18dp"
+            android:text="@string/cast_of_characters"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView
@@ -49,10 +55,16 @@
             android:id="@+id/cast_crew_title2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/cast_crew_recycler_view1"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/cast_crew_recycler_view1"
             android:layout_marginBottom="@dimen/tiny_padding"
-            android:layout_marginStart="@dimen/regular_padding"
-            android:text="Film crew"
+            android:alpha="0.5"
+            android:drawablePadding="@dimen/tiny_padding"
+            android:drawableStart="@drawable/ic_person_black_18dp"
+            android:text="@string/film_crew"
+            android:textAllCaps="true"
+            android:textColor="@color/colorBlack"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
         <android.support.v7.widget.RecyclerView

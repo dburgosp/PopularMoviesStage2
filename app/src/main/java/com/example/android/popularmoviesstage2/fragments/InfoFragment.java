@@ -2,19 +2,20 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -22,6 +23,7 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskL
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -37,6 +39,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final String TAG = InfoFragment.class.getSimpleName();
     private static final int MOVIE_DETAILS_LOADER_ID = 1;
     private static Movie movie;
+
     @BindView(R.id.info_overview_textview)
     TextView infoOverviewTextView;
     @BindView(R.id.info_tagline_textview)
@@ -61,6 +64,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     TextView noResultsTextView;
     @BindView(R.id.info_loading_indicator)
     ProgressBar progressBar;
+    @BindView(R.id.info_main_layout)
+    RelativeLayout mainLayout;
+
     private int movieId;
 
     /**
@@ -72,12 +78,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param movieId is the unique identifier of the movie.
+     * @param movie is the {@link Movie} object.
      * @return a new instance of fragment InfoFragment.
      */
-    public static InfoFragment newInstance(int movieId) {
+    public static InfoFragment newInstance(Movie movie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", movieId);
+        bundle.putInt("id", movie.getId());
         InfoFragment fragment = new InfoFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -97,6 +103,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (getArguments() != null) {
             movieId = getArguments().getInt("id");
         }
+
+        // Set left paddings if the device is in portrait orientation.
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            mainLayout.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
 
         // Create an AsyncTaskLoader for retrieving complete movie information from internet in a
         // separate thread.
@@ -129,7 +139,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         int runtime = movie.getRuntime();
         if (runtime > 0) {
             String html = "<strong>Runtime: </strong>" + runtime + " min.";
-            setHtmlText(html, infoRuntimeTextView);
+            TextUtils.setHtmlText(infoRuntimeTextView, html);
             infoRuntimeTextView.setVisibility(View.VISIBLE);
         } else
             infoRuntimeTextView.setVisibility(View.GONE);
@@ -150,7 +160,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
                 html = "" + stringBuilder;
             }
-            setHtmlText(html, infoGenresTextView);
+            TextUtils.setHtmlText(infoGenresTextView, html);
             infoGenresTextView.setVisibility(View.VISIBLE);
         } else
             infoGenresTextView.setVisibility(View.GONE);
@@ -159,7 +169,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String releaseDate = movie.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
             String html = "<strong>Release date: </strong>" + releaseDate;
-            setHtmlText(html, infoReleaseDateTextView);
+            TextUtils.setHtmlText(infoReleaseDateTextView, html);
             infoReleaseDateTextView.setVisibility(View.VISIBLE);
         } else
             infoReleaseDateTextView.setVisibility(View.GONE);
@@ -168,7 +178,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String status = movie.getStatus();
         if (status != null && !status.equals("") && !status.isEmpty()) {
             String html = "<strong>Status: </strong>" + status;
-            setHtmlText(html, infoStatusTextView);
+            TextUtils.setHtmlText(infoStatusTextView, html);
             infoStatusTextView.setVisibility(View.VISIBLE);
         } else
             infoStatusTextView.setVisibility(View.GONE);
@@ -177,7 +187,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String originalTitle = movie.getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             String html = "<strong>Original title: </strong>" + originalTitle;
-            setHtmlText(html, infoOriginalTitleTextView);
+            TextUtils.setHtmlText(infoOriginalTitleTextView, html);
             infoOriginalTitleTextView.setVisibility(View.VISIBLE);
         } else
             infoOriginalTitleTextView.setVisibility(View.GONE);
@@ -186,7 +196,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String originalLanguage = movie.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             String html = "<strong>Original language: </strong>" + originalLanguage;
-            setHtmlText(html, infoOriginalLanguageTextView);
+            TextUtils.setHtmlText(infoOriginalLanguageTextView, html);
             infoOriginalLanguageTextView.setVisibility(View.VISIBLE);
         } else
             infoOriginalLanguageTextView.setVisibility(View.GONE);
@@ -196,7 +206,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (budget > 0) {
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
             String html = "<strong>Budget: </strong>" + decimalFormat.format(budget) + " $";
-            setHtmlText(html, infoBudgetTextView);
+            TextUtils.setHtmlText(infoBudgetTextView, html);
             infoBudgetTextView.setVisibility(View.VISIBLE);
         } else
             infoBudgetTextView.setVisibility(View.GONE);
@@ -206,25 +216,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (revenue > 0) {
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
             String html = "<strong>Revenue: </strong>" + decimalFormat.format(revenue) + " $";
-            setHtmlText(html, infoRevenueTextView);
+            TextUtils.setHtmlText(infoRevenueTextView, html);
             infoRevenueTextView.setVisibility(View.VISIBLE);
         } else
             infoRevenueTextView.setVisibility(View.GONE);
-    }
-
-    /**
-     * Helper method to set text in a TextView using HTML sintax and to avoid deprecated use of
-     * Html.fromHtml depending on the current Android version.
-     *
-     * @param html     is the text containing HTML sintax.
-     * @param textView is the TextView to be set.
-     */
-    private void setHtmlText(String html, TextView textView) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            textView.setText(Html.fromHtml(html));
-        }
     }
 
     /**

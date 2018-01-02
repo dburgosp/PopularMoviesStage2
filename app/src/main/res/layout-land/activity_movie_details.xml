@@ -4,21 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     tools:context="com.example.android.popularmoviesstage2.MovieDetailsActivity">
 
     <ImageView
         android:id="@+id/movie_details_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0.3"
         android:contentDescription="@string/content_description_poster"
-        android:scaleType="centerCrop" />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.8"
-        android:background="@color/colorPrimaryDark"
-        android:contentDescription="@string/content_description_alpha" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/tmdb_backdrop" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,8 +72,8 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/movie_details_cardview"
-            android:layout_width="112dp"
-            android:layout_height="168dp"
+            android:layout_width="75dp"
+            android:layout_height="112dp"
             app:cardCornerRadius="@dimen/small_padding"
             app:cardElevation="@dimen/small_padding">
 

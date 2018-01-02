@@ -21,6 +21,7 @@ import com.example.android.popularmoviesstage2.classes.MovieCompany;
 import com.example.android.popularmoviesstage2.classes.MovieCountry;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
 import com.example.android.popularmoviesstage2.classes.MovieLanguage;
+import com.example.android.popularmoviesstage2.classes.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,8 +44,10 @@ public final class NetworkUtils {
     public final static int OPERATION_GET_MOVIE_DETAILS = 2;
 
     private final static String TAG = NetworkUtils.class.getSimpleName();
-    private final static String BASE_URL = "https://api.themoviedb.org/3/movie";
-    private final static String MOVIE_CREDITS_PATH = "credits";
+    private final static String BASE_URL = "https://api.themoviedb.org/3";
+    private final static String MOVIE_PATH = "movie";
+    private final static String CREDITS_PATH = "credits";
+    private final static String REVIEWS_PATH = "reviews";
     private final static String PARAM_API_KEY = "api_key";
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published
@@ -85,6 +88,7 @@ public final class NetworkUtils {
 
         // Build Uri from BASE_URL, sort order and API_KEY.
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
                 .appendPath(sortOrder)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
@@ -113,6 +117,7 @@ public final class NetworkUtils {
 
         // Build Uri from BASE_URL, movie ID and API_KEY.
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
@@ -122,7 +127,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the movie id and the MOVIE_CREDITS_PATH to
+     * Creates an URL from {@link #BASE_URL} appending the movie id and the CREDITS_PATH to
      * the base path and using the {@link #API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
@@ -131,10 +136,11 @@ public final class NetworkUtils {
     public static URL buildFetchCastCrewListURL(int movieId) {
         Log.i(TAG, "(buildFetchCastCrewListURL) Movie ID: " + movieId);
 
-        // Build Uri from BASE_URL, sort order and API_KEY.
+        // Build Uri from BASE_URL, movie ID, CREDITS_PATH and API_KEY.
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
-                .appendPath(MOVIE_CREDITS_PATH)
+                .appendPath(CREDITS_PATH)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
                 .build();
 
@@ -147,6 +153,36 @@ public final class NetworkUtils {
         }
 
         Log.i(TAG, "(buildFetchCastCrewListURL) URL: " + url);
+        return url;
+    }
+
+    /**
+     * Creates an URL from {@link #BASE_URL} appending the movie id and the REVIEWS_PATH to
+     * the base path and using the {@link #API_KEY} for authentication.
+     *
+     * @param movieId is the identifier of the movie.
+     * @return an URL for fetching a movie cast & crew information from TheMovieDB.
+     */
+    public static URL buildFetchReviewsListURL(int movieId) {
+        Log.i(TAG, "(buildFetchReviewsListURL) Movie ID: " + movieId);
+
+        // Build Uri from BASE_URL, sort order and API_KEY.
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
+                .appendPath(Integer.toString(movieId))
+                .appendPath(REVIEWS_PATH)
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .build();
+
+        // Build URL from Uri.
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "(buildFetchReviewsListURL) Error building URL: " + e);
+        }
+
+        Log.i(TAG, "(buildFetchReviewsListURL) URL: " + url);
         return url;
     }
 
@@ -217,8 +253,29 @@ public final class NetworkUtils {
             Log.e(TAG, "(fetchCastCrew) Error retrieving JSON response: ", e);
         }
 
-        // Parse JSON document into an array of {@link Movie} objects.
+        // Parse JSON document into an array of {@link CastCrew} objects.
         return parseGetCastCrewListJSON(JSONresponse);
+    }
+
+    /**
+     * Fetches reviews about a movie from TheMovieDB.
+     *
+     * @param url is the URL at TheMovieDB.
+     * @return an ArrayList of {@link Review} objects.
+     */
+    public static ArrayList<Review> fetchReviews(URL url) {
+        Log.i(TAG, "(fetchReviews) URL: " + url);
+
+        // Connect to TheMovieDB and get the JSON document with the results of the query.
+        String JSONresponse = null;
+        try {
+            JSONresponse = getJSONresponse(url);
+        } catch (java.io.IOException e) {
+            Log.e(TAG, "(fetchReviews) Error retrieving JSON response: ", e);
+        }
+
+        // Parse JSON document into an array of {@link Movie} objects.
+        return parseGetReviewsListJSON(JSONresponse);
     }
 
     /**
@@ -616,6 +673,67 @@ public final class NetworkUtils {
 
         // Return the CastCrew object.
         return castCrew;
+    }
+
+    /**
+     * Return a list of {@link Review} objects that has been built up from parsing the JSON response
+     * given from a call to TMDB API returning a list of elements.
+     *
+     * @param JSONresponse is the JSON object to be parsed and converted to a list of {@link Review}
+     *                     objects.
+     * @return the list of {@link Review} objects parsed form the input JSON object.
+     */
+    private static ArrayList<Review> parseGetReviewsListJSON(String JSONresponse) {
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG, "(parseGetReviewsListJSON) The JSON string is empty.");
+            return null;
+        }
+
+        // Create an empty ArrayList that we can start adding Reviews to.
+        ArrayList<Review> reviews = new ArrayList<>();
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown. Catch the exception so the
+        // app doesn't crash, and print the error message to the logs.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("results")) {
+                Log.i(TAG, "(parseGetReviewsListJSON) No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
+            JSONObject baseJSONResponse;
+            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results.
+                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+
+                // Extract the required values for the corresponding keys.
+                String id = getStringFromJSON(baseJSONResponse, "id");
+                String author = getStringFromJSON(baseJSONResponse, "author");
+                String content = getStringFromJSON(baseJSONResponse, "content");
+                String url = getStringFromJSON(baseJSONResponse, "url");
+
+                // Create a new {@link Review} object with the data retrieved from the JSON response.
+                Review review = new Review(id, author, content, url, "", "", "");
+
+                // Add the new {@link Review} to the list of reviews.
+                reviews.add(review);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash. Print a log message with the
+            // message from the exception.
+            Log.e(TAG, "(parseGetReviewsListJSON) Error parsing the JSON response: ", e);
+        }
+
+        // Return the list of reviews.
+        return reviews;
     }
 
     /**

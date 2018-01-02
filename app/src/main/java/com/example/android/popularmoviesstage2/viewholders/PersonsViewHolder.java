@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -52,7 +52,7 @@ public class PersonsViewHolder extends RecyclerView.ViewHolder {
      * @param listener      is the listener for click events.
      * @param layoutParams  contains the width and height for displaying the profile image.
      */
-    public void bind(final Person currentPerson, final PersonsAdapter.OnItemClickListener listener, FrameLayout.LayoutParams layoutParams) {
+    public void bind(final Person currentPerson, final PersonsAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
         Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.

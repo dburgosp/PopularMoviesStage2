@@ -6,7 +6,7 @@
     android:layout_marginBottom="@dimen/regular_padding">
 
     <RelativeLayout
-        android:id="@+id/info_main_textview"
+        android:id="@+id/info_main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/regular_padding"

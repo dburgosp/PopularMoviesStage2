@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.CastCrewAsyncTas
 import com.example.android.popularmoviesstage2.classes.Cast;
 import com.example.android.popularmoviesstage2.classes.CastCrew;
 import com.example.android.popularmoviesstage2.classes.Crew;
+import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -51,6 +53,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     TextView noResultsTextView;
     @BindView(R.id.cast_crew_loading_indicator)
     ProgressBar progressBar;
+
     private int movieId;
     private CastAdapter castAdapter;
     private CrewAdapter crewAdapter;
@@ -64,12 +67,12 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param movieId is the unique identifier of the movie.
+     * @param movie is the {@link Movie} object.
      * @return a new instance of fragment CastCrewFragment.
      */
-    public static CastCrewFragment newInstance(int movieId) {
+    public static CastCrewFragment newInstance(Movie movie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", movieId);
+        bundle.putInt("id", movie.getId());
         CastCrewFragment fragment = new CastCrewFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -90,10 +93,16 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
             movieId = getArguments().getInt("id");
         }
 
+        // Set left paddings if the device is in portrait orientation.
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            castCrewTitle1TextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
+            castCrewTitle2TextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
+        }
+
         // Set RecyclerViews for displaying cast & crew photos.
         setRecyclerViews();
 
-        // Create an AsyncTaskLoader for retrieving complete movie information from internet in a
+        // Create an AsyncTaskLoader for retrieving cast & crew information from internet in a
         // separate thread.
         getLoaderManager().initLoader(CAST_CREW_LOADER_ID, null, this);
 

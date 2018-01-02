@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.fragments.CastCrewFragment;
 import com.example.android.popularmoviesstage2.fragments.InfoFragment;
 import com.example.android.popularmoviesstage2.fragments.MediaFragment;
@@ -18,12 +19,12 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_PAGES = 4;
     private String tabTitles[] = new String[NUM_PAGES];
     private Context context;
-    private int movieId;
+    private Movie movie;
 
-    public MovieDetailsFragmentPagerAdapter(FragmentManager fm, Context context, int movieId) {
+    public MovieDetailsFragmentPagerAdapter(FragmentManager fm, Context context, Movie movie) {
         super(fm);
         this.context = context;
-        this.movieId = movieId;
+        this.movie = movie;
         tabTitles[0] = context.getString(R.string.movie_details_info);
         tabTitles[1] = context.getString(R.string.movie_details_cast_crew);
         tabTitles[2] = context.getString(R.string.movie_details_reviews);
@@ -34,11 +35,11 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return InfoFragment.newInstance(movieId);
+                return InfoFragment.newInstance(movie);
             case 1:
-                return CastCrewFragment.newInstance(movieId);
+                return CastCrewFragment.newInstance(movie);
             case 2:
-                return new ReviewsFragment();
+                return ReviewsFragment.newInstance(movie);
             default:
                 return new MediaFragment();
         }

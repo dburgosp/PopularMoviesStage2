@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reviews_relative_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="@dimen/regular_padding">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/reviews_no_result_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:padding="@dimen/regular_padding"
+        android:textSize="18sp"
+        tools:text="Message to display when there are no search results" />
 
-        <TextView
-            android:id="@+id/movie_details_reviews_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/small_padding"
-            android:text="@string/reviews_title"
-            android:textSize="18sp" />
+    <ProgressBar
+        android:id="@+id/reviews_loading_indicator"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/movie_details_reviews_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/regular_padding"
-            android:scrollbars="vertical" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/movie_details_videos_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/regular_padding"
-            android:paddingTop="@dimen/regular_padding"
-            android:scrollbars="vertical" />
-    </LinearLayout>
-</ScrollView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/reviews_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+</RelativeLayout>

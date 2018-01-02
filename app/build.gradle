@@ -38,7 +38,11 @@ dependencies {
     compile 'com.github.lzyzsd:circleprogress:1.2.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    compile 'ru.noties:markwon:1.0.1'
+    compile 'ru.noties:markwon-image-loader:1.0.1'
+    compile 'ru.noties:markwon-view:1.0.1'
 }
+
 
 
 

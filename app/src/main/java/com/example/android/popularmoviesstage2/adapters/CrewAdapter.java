@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -18,7 +18,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     private static final String TAG = CrewAdapter.class.getSimpleName();
     private final CrewAdapter.OnItemClickListener listener;
     private ArrayList<Crew> crewArrayList;
-    private FrameLayout.LayoutParams layoutParams;
+    private LinearLayout.LayoutParams layoutParams;
     //private int position = 0;
 
     /**
@@ -32,7 +32,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     public CrewAdapter(ArrayList<Crew> crewArrayList, int widthPixels, int heightPixels, CrewAdapter.OnItemClickListener listener) {
         this.crewArrayList = crewArrayList;
         this.listener = listener;
-        layoutParams = new FrameLayout.LayoutParams(widthPixels, heightPixels);
+        layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
         Log.i(TAG, "(CrewAdapter) Object created");
     }
 

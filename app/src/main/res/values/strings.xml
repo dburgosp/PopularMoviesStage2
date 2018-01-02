@@ -21,6 +21,9 @@
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="user_score">TMDB score</string>
     <string name="videos_title">Related videos</string>
+    <string name="cast_of_characters">Cast of characters</string>
+    <string name="film_crew">Film crew</string>
+    <string name="a_review_by">A review by</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

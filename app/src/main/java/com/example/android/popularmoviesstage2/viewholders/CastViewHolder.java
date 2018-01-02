@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -30,6 +30,7 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.cast_crew_character)
     TextView characterTextView;
     private Context context;
+    private View viewHolder;
 
     /**
      * Constructor for our ViewHolder.
@@ -39,6 +40,7 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
     public CastViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        viewHolder = itemView;
         context = itemView.getContext();
         Log.i(TAG, "(CastViewHolder) New ViewHolder created");
     }
@@ -51,7 +53,7 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
      * @param listener      is the listener for click events.
      * @param layoutParams  contains the width and height for displaying the profile image.
      */
-    public void bind(final Cast currentPerson, final CastAdapter.OnItemClickListener listener, FrameLayout.LayoutParams layoutParams) {
+    public void bind(final Cast currentPerson, final CastAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
         Log.i(TAG, "(bind) Binding data for the current CastViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.
@@ -70,7 +72,7 @@ public class CastViewHolder extends RecyclerView.ViewHolder {
         characterTextView.setText(currentPerson.getCharacter());
 
         // Set the listener for click events.
-        itemView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onItemClick(currentPerson);

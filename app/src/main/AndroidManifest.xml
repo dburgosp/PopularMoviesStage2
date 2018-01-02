@@ -27,7 +27,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".fragments.InfoFragment"></activity>
+        <activity
+            android:name=".ReviewsActivity"
+            android:parentActivityName=".MovieDetailsActivity"
+            android:theme="@style/AppTheme.ActionBar.Transparent">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

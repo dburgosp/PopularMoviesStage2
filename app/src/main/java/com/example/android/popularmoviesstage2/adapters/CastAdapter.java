@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -18,7 +18,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     private static final String TAG = CastAdapter.class.getSimpleName();
     private final CastAdapter.OnItemClickListener listener;
     private ArrayList<Cast> castArrayList;
-    private FrameLayout.LayoutParams layoutParams;
+    private LinearLayout.LayoutParams layoutParams;
     //private int position = 0;
 
     /**
@@ -32,7 +32,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     public CastAdapter(ArrayList<Cast> castArrayList, int widthPixels, int heightPixels, OnItemClickListener listener) {
         this.castArrayList = castArrayList;
         this.listener = listener;
-        layoutParams = new FrameLayout.LayoutParams(widthPixels, heightPixels);
+        layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
         Log.i(TAG, "(CastAdapter) Object created");
     }
 

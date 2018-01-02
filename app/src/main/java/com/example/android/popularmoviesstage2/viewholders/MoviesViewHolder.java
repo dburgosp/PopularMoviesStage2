@@ -27,6 +27,7 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.movie_list_item_image)
     ImageView posterImageView;
     private Context context;
+    private View viewHolder;
 
     /**
      * Constructor for our ViewHolder.
@@ -37,6 +38,7 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
         context = itemView.getContext();
+        viewHolder = itemView;
         Log.i(TAG, "(MoviesViewHolder) New ViewHolder created");
     }
 
@@ -57,7 +59,7 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
         posterImageView.setLayoutParams(layoutParams);
 
         // Set the listener for click events.
-        itemView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onItemClick(currentMovie);
