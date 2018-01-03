@@ -30,15 +30,12 @@
             android:id="@+id/movie_details_cardview"
             android:layout_width="@dimen/poster_width"
             android:layout_height="@dimen/poster_height"
-            android:background="@color/colorWhite"
-            app:cardCornerRadius="@dimen/small_padding"
             app:cardElevation="@dimen/small_padding">
 
             <ImageView
                 android:id="@+id/movie_details_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorGrey"
                 android:contentDescription="@string/content_description_poster"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_poster" />

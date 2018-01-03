@@ -167,7 +167,7 @@ public final class NetworkUtils {
      * the base path and using the {@link #API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
-     * @return an URL for fetching a movie cast & crew information from TheMovieDB.
+     * @return an URL for fetching a movie cast & reviews information from TheMovieDB.
      */
     public static URL buildFetchReviewsListURL(int movieId) {
         Log.i(TAG, "(buildFetchReviewsListURL) Movie ID: " + movieId);
@@ -648,6 +648,9 @@ public final class NetworkUtils {
                     crewJSONResponse = crewArrayJSONResponse.getJSONObject(n);
 
                     // Extract the required values from the corresponding keys.
+                    String credit_id = getStringFromJSON(crewJSONResponse, "credit_id");
+                    String department = getStringFromJSON(crewJSONResponse, "department");
+                    int gender = getIntFromJSON(crewJSONResponse, "gender");
                     int person_id = getIntFromJSON(crewJSONResponse, "id");
                     String job = getStringFromJSON(crewJSONResponse, "job");
                     String name = getStringFromJSON(crewJSONResponse, "name");
@@ -655,7 +658,7 @@ public final class NetworkUtils {
 
                     // Create a new {@link Crew} object with the data retrieved from the JSON
                     // response.
-                    Crew crew = new Crew(person_id, job, name, profile_path);
+                    Crew crew = new Crew(credit_id, department, gender, person_id, job, name, profile_path);
 
                     // Add the new {@link Movie} to the list of persons from the movie cast.
                     crewArrayList.add(crew);
