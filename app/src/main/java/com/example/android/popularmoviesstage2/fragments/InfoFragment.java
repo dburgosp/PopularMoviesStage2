@@ -22,6 +22,7 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 
@@ -136,13 +137,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             infoOverviewTextView.setText(R.string.no_overview);
 
         // Set runtime. If there is no available runtime info, we hide this section.
-        int runtime = movie.getRuntime();
-        if (runtime > 0) {
-            String html = "<strong>Runtime: </strong>" + runtime + " min.";
+        String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
+        if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
+            String html = "<strong>Runtime: </strong>" + runtime;
             TextUtils.setHtmlText(infoRuntimeTextView, html);
             infoRuntimeTextView.setVisibility(View.VISIBLE);
-        } else
+        } else {
             infoRuntimeTextView.setVisibility(View.GONE);
+        }
 
         // Set genres. If there is no available genres info, we hide this section.
         ArrayList<MovieGenre> movieGenres = movie.getGenres();

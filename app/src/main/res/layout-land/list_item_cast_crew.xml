@@ -14,6 +14,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal">
 
         <ImageView
@@ -24,11 +25,6 @@
             android:contentDescription="@string/content_description_person_image"
             android:scaleType="centerCrop"
             android:src="@drawable/no_person" />
-
-        <View
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent" />
 
         <LinearLayout
             android:layout_width="120dp"
@@ -44,12 +40,19 @@
                 android:layout_marginTop="@dimen/tiny_padding"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
-                android:maxLines="3"
-                android:paddingBottom="@dimen/tiny_padding"
+                android:gravity="bottom"
+                android:lines="3"
                 android:paddingEnd="@dimen/small_padding"
                 android:paddingStart="@dimen/small_padding"
                 android:textSize="12sp"
                 tools:text="Character name in more than one line" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separator"
+                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginTop="@dimen/tiny_padding"
+                android:background="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/cast_crew_name"
@@ -57,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
-                android:maxLines="2"
+                android:gravity="top"
+                android:lines="2"
                 android:paddingBottom="@dimen/small_padding"
                 android:paddingEnd="@dimen/small_padding"
                 android:paddingStart="@dimen/small_padding"

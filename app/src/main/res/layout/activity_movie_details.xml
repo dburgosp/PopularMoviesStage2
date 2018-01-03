@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/movie_details_background"
         android:layout_width="match_parent"
-        android:layout_height="216dp"
+        android:layout_height="@dimen/backdrop_height"
         android:alpha="0.3"
         android:contentDescription="@string/content_description_poster"
         android:scaleType="centerCrop"
@@ -20,9 +20,11 @@
         android:id="@+id/movie_details_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/regular_padding"
-        android:orientation="horizontal"
-        android:paddingTop="64dp">
+        android:layout_marginBottom="@dimen/regular_padding"
+        android:layout_marginEnd="@dimen/regular_padding"
+        android:layout_marginStart="@dimen/regular_padding"
+        android:layout_marginTop="@dimen/header_padding"
+        android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
             android:id="@+id/movie_details_cardview"
@@ -78,19 +80,6 @@
                     android:textSize="14sp"
                     tools:text="2000" />
 
-                <TextView
-                    android:id="@+id/movie_details_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:alpha="0.8"
-                    android:layout_centerInParent="true"
-                    android:drawablePadding="@dimen/tiny_padding"
-                    android:drawableStart="@drawable/ic_access_time_white_18dp"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="14sp"
-                    tools:text="0h 0m" />
-
                 <com.github.lzyzsd.circleprogress.DonutProgress
                     android:id="@+id/movie_details_score_progress"
                     android:layout_width="50dp"
@@ -123,7 +112,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
-            android:fontFamily="sans-serif-smallcaps" />
+            android:fontFamily="sans-serif-smallcaps"
+            app:tabMode="scrollable" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/movie_details_viewpager"

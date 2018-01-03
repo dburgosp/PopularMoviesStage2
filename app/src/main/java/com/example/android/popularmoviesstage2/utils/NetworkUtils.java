@@ -73,7 +73,12 @@ public final class NetworkUtils {
      */
     public static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        NetworkInfo activeNetwork = null;
+        try {
+            activeNetwork = cm.getActiveNetworkInfo();
+        } catch (NullPointerException e) {
+            Log.e(TAG, "(isConnected) Error getting active network info: " + e);
+        }
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 

@@ -1,6 +1,9 @@
 package com.example.android.popularmoviesstage2.utils;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.example.android.popularmoviesstage2.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,11 +24,11 @@ public final class DateTimeUtils {
     /**
      * Helper method to extract the year from a string representing a date in "yyyy-mm-dd" format.
      *
-     * @param dateString is the "releaseDate" obtained from the TMDB API.
+     * @param dateString is the date in "yyyy-mm-dd" format.
      * @return the year extracted from the date, or an empty string if there has been any problem.
      */
     public static String getYear(String dateString) {
-        Log.i(TAG, "(getYear) Release date: " + dateString);
+        Log.i(TAG, "(getYear) Date: " + dateString);
         Calendar calendar = Calendar.getInstance();
         String year = "";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
@@ -39,5 +42,28 @@ public final class DateTimeUtils {
 
         Log.i(TAG, "(getYear) Year: " + year);
         return year;
+    }
+
+    /**
+     * Helper method to convert minutes to a string with hours and minutes.
+     *
+     * @param minutes is the number of minutes.
+     * @return the hours and minutes string formatted from the minutes, or an empty string if there
+     * has been any problem.
+     */
+    public static String getHoursAndMinutes(Context context, int minutes) {
+        Log.i(TAG, "(getHoursAndMinutes) Minutes: " + minutes);
+
+        String stringHours = "";
+        if (minutes >= 60)
+            stringHours = minutes / 60 + context.getResources().getString(R.string.string_hours);
+
+        String stringMinutes = "";
+        if (minutes % 60 != 0)
+            stringMinutes = minutes % 60 + context.getResources().getString(R.string.string_minutes);
+
+        String hoursAndMinutes = stringHours + " " + stringMinutes;
+        Log.i(TAG, "(getHoursAndMinutes) Hours and minutes: " + hoursAndMinutes);
+        return hoursAndMinutes;
     }
 }

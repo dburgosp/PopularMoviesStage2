@@ -8,6 +8,19 @@
     <string name="content_description_person_image">Person image</string>
     <string name="content_description_play">Play video icon</string>
     <string name="content_description_poster">Movie Poster</string>
+    <string name="department_actors">Actors</string>
+    <string name="department_art">Art</string>
+    <string name="department_camera">Camera</string>
+    <string name="department_costume_makeup">Costume &#038; Make-Up</string>
+    <string name="department_crew">Crew</string>
+    <string name="department_directing">Directing</string>
+    <string name="department_editing">Editing</string>
+    <string name="department_lighting">Lighting</string>
+    <string name="department_other">Other</string>
+    <string name="department_production">Production</string>
+    <string name="department_visual_effects">Visual Effects</string>
+    <string name="department_sound">Sound</string>
+    <string name="department_writing">Writing</string>
     <string name="film_crew">Film crew</string>
     <string name="movie_details_info">Info</string>
     <string name="movie_details_cast_crew">Cast &amp; Crew</string>
@@ -23,6 +36,8 @@
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="reviews_title">User reviews</string>
     <string name="sort_order_changed">Sort order changed to %s</string>
+    <string name="string_hours">h</string>
+    <string name="string_minutes">m</string>
     <string name="user_score">TMDB score</string>
     <string name="videos_title">Related videos</string>
 

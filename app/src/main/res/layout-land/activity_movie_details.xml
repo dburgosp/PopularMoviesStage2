@@ -33,7 +33,7 @@
             android:marqueeRepeatLimit="marquee_forever"
             android:paddingBottom="@dimen/regular_padding"
             android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="107dp"
+            android:paddingStart="@dimen/padding_with_poster"
             android:paddingTop="@dimen/regular_padding"
             android:scrollHorizontally="true"
             android:singleLine="true"
@@ -52,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
                 android:fontFamily="sans-serif-smallcaps"
-                android:paddingStart="107dp" />
+                android:paddingStart="@dimen/padding_with_poster"
+                app:tabMode="scrollable" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/movie_details_viewpager"
@@ -60,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@id/movie_details_tab_layout"
                 android:background="@color/colorGrey"
-                android:paddingStart="107dp" />
+                android:paddingStart="@dimen/padding_with_poster" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -105,20 +106,6 @@
                 android:textColor="@color/colorBlack"
                 android:textSize="14sp"
                 tools:text="2000" />
-
-            <TextView
-                android:id="@+id/movie_details_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/small_padding"
-                android:alpha="0.6"
-                android:layout_centerInParent="true"
-                android:drawablePadding="@dimen/tiny_padding"
-                android:drawableStart="@drawable/ic_access_time_black_18dp"
-                android:textColor="@color/colorBlack"
-                android:textSize="14sp"
-                tools:text="0h 0m" />
 
             <com.github.lzyzsd.circleprogress.DonutProgress
                 android:id="@+id/movie_details_score_progress"

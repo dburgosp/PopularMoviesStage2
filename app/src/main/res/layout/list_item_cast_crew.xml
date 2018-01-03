@@ -13,6 +13,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical">
 
         <ImageView
@@ -23,15 +24,11 @@
             android:scaleType="centerCrop"
             android:src="@drawable/no_person" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/colorAccent" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="top"
+            android:layout_margin="@dimen/small_padding"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -41,13 +38,15 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="center"
-                android:maxLines="2"
+                android:lines="2"
                 android:paddingBottom="@dimen/tiny_padding"
-                android:paddingEnd="@dimen/tiny_padding"
-                android:paddingStart="@dimen/tiny_padding"
-                android:paddingTop="@dimen/small_padding"
                 android:textSize="12sp"
                 tools:text="Character name" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separator"
+                android:background="@color/colorAccent" />
 
             <TextView
                 android:id="@+id/cast_crew_name"
@@ -56,10 +55,8 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="center"
-                android:maxLines="2"
-                android:paddingBottom="@dimen/small_padding"
-                android:paddingEnd="@dimen/tiny_padding"
-                android:paddingStart="@dimen/tiny_padding"
+                android:lines="2"
+                android:paddingTop="@dimen/tiny_padding"
                 android:textColor="@color/colorBlack"
                 android:textSize="13sp"
                 android:textStyle="bold"

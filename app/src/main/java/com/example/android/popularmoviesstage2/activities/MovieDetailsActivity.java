@@ -1,7 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -67,10 +66,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Give the TabLayout the ViewPager.
         tabLayout.setupWithViewPager(viewPager);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-            tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        else
-            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         // Create an adapter that knows which fragment should be shown on each page, set the adapter
         // onto the view pager and go to the current page.
