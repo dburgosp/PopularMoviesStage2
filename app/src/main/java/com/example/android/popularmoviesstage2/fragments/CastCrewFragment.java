@@ -355,19 +355,20 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 }
 
                 // Film crew.
-                setCrewByDepartment(data.getCrew(), "Directing", directingDepartmentAdapter, directingDepartmentTextView, directingDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Production", productionDepartmentAdapter, productionDepartmentTextView, productionDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Writing", writingDepartmentAdapter, writingDepartmentTextView, writingDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Actors", actorsDepartmentAdapter, actorsDepartmentTextView, actorsDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Camera", cameraDepartmentAdapter, cameraDepartmentTextView, cameraDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Editing", editingDepartmentAdapter, editingDepartmentTextView, editingDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Art", artDepartmentAdapter, artDepartmentTextView, artDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Costume & Make-Up", costumeMakeupDepartmentAdapter, costumeMakeupDepartmentTextView, costumeMakeupDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Sound", soundDepartmentAdapter, soundDepartmentTextView, soundDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Visual Effects", visualEffectsDepartmentAdapter, visualEffectsDepartmentTextView, visualEffectsDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Crew", crewDepartmentAdapter, crewDepartmentTextView, crewDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), "Lighting", lightingDepartmentAdapter, lightingDepartmentTextView, lightingDepartmentRecyclerView);
-                setCrewByDepartment(data.getCrew(), null, otherDepartmentAdapter, otherDepartmentTextView, otherDepartmentRecyclerView);
+                ArrayList<Crew> crewArrayList = data.getCrew();
+                crewArrayList = setCrewByDepartment(crewArrayList, "Directing", directingDepartmentAdapter, directingDepartmentTextView, directingDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Production", productionDepartmentAdapter, productionDepartmentTextView, productionDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Writing", writingDepartmentAdapter, writingDepartmentTextView, writingDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Actors", actorsDepartmentAdapter, actorsDepartmentTextView, actorsDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Camera", cameraDepartmentAdapter, cameraDepartmentTextView, cameraDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Editing", editingDepartmentAdapter, editingDepartmentTextView, editingDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Art", artDepartmentAdapter, artDepartmentTextView, artDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Costume & Make-Up", costumeMakeupDepartmentAdapter, costumeMakeupDepartmentTextView, costumeMakeupDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Sound", soundDepartmentAdapter, soundDepartmentTextView, soundDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Visual Effects", visualEffectsDepartmentAdapter, visualEffectsDepartmentTextView, visualEffectsDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Crew", crewDepartmentAdapter, crewDepartmentTextView, crewDepartmentRecyclerView);
+                crewArrayList = setCrewByDepartment(crewArrayList, "Lighting", lightingDepartmentAdapter, lightingDepartmentTextView, lightingDepartmentRecyclerView);
+                setCrewByDepartment(crewArrayList, null, otherDepartmentAdapter, otherDepartmentTextView, otherDepartmentRecyclerView);
             } else {
                 // Loader has not returned a valid list of {@link CastCrew} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
@@ -398,21 +399,27 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     /**
      * Helper method to manage Crew elements filtered by department.
      *
-     * @param crewArrayList is the complete array of Crew elements.
-     * @param department    is the department to filter the array. If this value is null or empty,
-     *                      we filter by hypothetical not listed departments.
-     * @param crewAdapter   is the adapter for displaying results.
-     * @param textView      is the title of the current crew section.
-     * @param recyclerView  the view for containing results.
+     * @param crewArrayListIn is the original array of Crew elements.
+     * @param department      is the department to filter the array. If this value is null or empty,
+     *                        we filter by hypothetical not listed departments.
+     * @param crewAdapter     is the adapter for displaying results.
+     * @param textView        is the title of the current crew section.
+     * @param recyclerView    the view for containing results.
+     * @return the modified crewArrayListIn, without the elements deleted within this method.
      */
-    void setCrewByDepartment(ArrayList<Crew> crewArrayList, String department, CrewAdapter crewAdapter, TextView textView, RecyclerView recyclerView) {
+    ArrayList<Crew> setCrewByDepartment(ArrayList<Crew> crewArrayListIn, String department, CrewAdapter crewAdapter, TextView textView, RecyclerView recyclerView) {
+        // Make a copy of the original array of Crew elements, in order to remove the elements
+        // found into the next loop.
+        ArrayList<Crew> crewArrayListOut = (ArrayList<Crew>) crewArrayListIn.clone();
+
         // Get an array of Crew elements filtered by department.
-        ArrayList<Crew> crewByDepartment = new ArrayList<>();
-        for (Crew element : crewArrayList) {
+        ArrayList<Crew> crewArrayListByDepartment = new ArrayList<>();
+        boolean found = false;
+        for (Crew element : crewArrayListIn) {
             if (department != null && !department.isEmpty()) {
                 // Filter by given department.
                 if (element.getDepartment().equals(department))
-                    crewByDepartment.add(element);
+                    found = true;
             } else {
                 // Filter by hypothetical not listed departments.
                 if (!element.getDepartment().equals("Directing") &&
@@ -427,18 +434,31 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                         !element.getDepartment().equals("Visual Effects") &&
                         !element.getDepartment().equals("Crew") &&
                         !element.getDepartment().equals("Lighting"))
-                    crewByDepartment.add(element);
+                    found = true;
+            }
+
+            if (found) {
+                // Add the current element to the temporary array of Crew elements filtered by
+                // department and remove it from the copy of the original array passed to this
+                // method, which will be returned on exit.
+                crewArrayListByDepartment.add(element);
+                crewArrayListOut.remove(element);
+                found = false;
             }
         }
 
         // Set the corresponding crew section if there is data.
-        if (crewByDepartment.size() > 0) {
-            crewAdapter.setCrewArray(crewByDepartment);
+        if (crewArrayListByDepartment.size() > 0) {
+            crewAdapter.setCrewArray(crewArrayListByDepartment);
             crewAdapter.notifyDataSetChanged();
         } else {
             // Hide crew section if there is no information for the current department.
             textView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
         }
+
+        // Return the copy of the original ArrayList<Crew> without the elements removed previously
+        // into the loop.
+        return crewArrayListOut;
     }
 }

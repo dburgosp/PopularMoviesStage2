@@ -44,7 +44,7 @@
                 android:lines="3"
                 android:paddingEnd="@dimen/small_padding"
                 android:paddingStart="@dimen/small_padding"
-                android:textSize="12sp"
+                android:textSize="@dimen/normal_text_size"
                 tools:text="Character name in more than one line" />
 
             <View
@@ -66,7 +66,7 @@
                 android:paddingEnd="@dimen/small_padding"
                 android:paddingStart="@dimen/small_padding"
                 android:textColor="@color/colorBlack"
-                android:textSize="13sp"
+                android:textSize="@dimen/normal_plus_text_size"
                 android:textStyle="bold"
                 tools:text="Artist name in more than one line" />
         </LinearLayout>

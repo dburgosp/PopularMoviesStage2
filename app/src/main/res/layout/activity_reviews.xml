@@ -29,7 +29,6 @@
             android:layout_marginEnd="@dimen/regular_padding"
             android:layout_marginStart="@dimen/regular_padding"
             android:background="@color/colorWhite"
-            app:cardCornerRadius="@dimen/small_padding"
             app:cardElevation="@dimen/small_padding">
 
             <ImageView
@@ -51,7 +50,7 @@
             android:paddingEnd="@dimen/regular_padding"
             android:paddingStart="@dimen/padding_with_poster"
             android:textColor="@color/colorWhite"
-            android:textSize="16sp"
+            android:textSize="@dimen/title_text_size"
             tools:text="A review by Username" />
 
         <View

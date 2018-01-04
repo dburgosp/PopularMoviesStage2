@@ -13,7 +13,7 @@
         android:layout_gravity="center_vertical"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
-        android:textSize="18sp"
+        android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 
     <ProgressBar

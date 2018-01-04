@@ -55,7 +55,7 @@
                 android:fontFamily="sans-serif-smallcaps"
                 android:maxLines="2"
                 android:textColor="@color/colorWhite"
-                android:textSize="20sp"
+                android:textSize="@dimen/title_text_size"
                 android:textStyle="bold"
                 tools:text="@string/no_title" />
 
@@ -74,7 +74,7 @@
                     android:drawablePadding="@dimen/tiny_padding"
                     android:drawableStart="@drawable/ic_date_range_white_18dp"
                     android:textColor="@color/colorWhite"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/subtitle_text_size"
                     tools:text="2000" />
 
                 <com.github.lzyzsd.circleprogress.DonutProgress
@@ -91,7 +91,7 @@
                     app:donut_progress="0"
                     app:donut_text="N/A"
                     app:donut_text_color="@color/colorWhite"
-                    app:donut_text_size="16sp"
+                    app:donut_text_size="@dimen/alert_text_size"
                     app:donut_unfinished_color="@color/colorPrimary"
                     app:donut_unfinished_stroke_width="4dp" />
             </RelativeLayout>

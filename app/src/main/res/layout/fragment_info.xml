@@ -19,9 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
-            android:fontFamily="sans-serif-smallcaps"
             android:gravity="center"
-            android:textSize="18sp"
+            android:textSize="@dimen/alert_text_size"
             tools:text="Message to display when there are no search results" />
 
         <ProgressBar
