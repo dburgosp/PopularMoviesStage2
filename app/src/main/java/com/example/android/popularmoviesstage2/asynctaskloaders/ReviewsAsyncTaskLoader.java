@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
     private final String TAG = ReviewsAsyncTaskLoader.class.getSimpleName();
-    private ArrayList<Review> moviesArray;
+    private ArrayList<Review> reviewArrayList;
     private URL url;
 
     /**
@@ -35,9 +35,9 @@ public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
      */
     @Override
     protected void onStartLoading() {
-        if (moviesArray != null) {
+        if (reviewArrayList != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(moviesArray);
+            deliverResult(reviewArrayList);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -94,7 +94,7 @@ public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
             Log.i(TAG, "(deliverResult) No results to deliver.");
         else
             Log.i(TAG, "(deliverResult) " + data.size() + " element(s) delivered.");
-        moviesArray = data;
+        reviewArrayList = data;
         super.deliverResult(data);
     }
 }

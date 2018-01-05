@@ -37,6 +37,8 @@ public class Movie implements Parcelable {
     private Double vote_average;
     private int vote_count;
     private int position;
+    private int page;
+    private int total_pages;
 
     /**
      * Constructor for objects of this class, containing the whole information of a movie.
@@ -85,7 +87,9 @@ public class Movie implements Parcelable {
      *                              video for the movie.
      * @param vote_average          is the current users rating for the movie, from 0 to 10.
      * @param vote_count            is the number of persons who have voted for the movie.
-     * @param position              is the position of the movie into the list.
+     * @param position              is the position of the movie into the current page.
+     * @param page                  is the current page in the list of movies.
+     * @param total_pages           is the total number of movie pages.
      */
     public Movie(int id, boolean adult, String backdrop_path, MovieCollection belongs_to_collection,
                  int budget, ArrayList<MovieGenre> genres, String homepage, String imdb_id,
@@ -94,7 +98,7 @@ public class Movie implements Parcelable {
                  ArrayList<MovieCountry> production_countries, String release_date, int revenue,
                  int runtime, ArrayList<MovieLanguage> spoken_languages, String status,
                  String tagline, String title, boolean video, Double vote_average, int vote_count,
-                 int position) {
+                 int position, int page, int total_pages) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -121,6 +125,8 @@ public class Movie implements Parcelable {
         this.vote_average = vote_average;
         this.vote_count = vote_count;
         this.position = position;
+        this.page = page;
+        this.total_pages = total_pages;
     }
 
     /**
@@ -150,11 +156,14 @@ public class Movie implements Parcelable {
      * @param vote_average      is the current users rating for the movie, from 0 to 10.
      * @param vote_count        is the number of persons who have voted for the movie.
      * @param position          is the position of the movie into the list.
+     * @param position              is the position of the movie into the current page.
+     * @param page                  is the current page in the list of movies.
+     * @param total_pages           is the total number of movie pages.
      */
     public Movie(int id, boolean adult, String backdrop_path, ArrayList<MovieGenre> genres,
                  String original_language, String original_title, String overview, Double popularity,
                  String poster_path, String release_date, String title, boolean video,
-                 Double vote_average, int vote_count, int position) {
+                 Double vote_average, int vote_count, int position, int page, int total_pages) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -181,6 +190,8 @@ public class Movie implements Parcelable {
         this.vote_average = vote_average;
         this.vote_count = vote_count;
         this.position = position;
+        this.page = page;
+        this.total_pages = total_pages;
     }
 
     // Getters and setters.
@@ -385,12 +396,28 @@ public class Movie implements Parcelable {
         this.vote_count = vote_count;
     }
 
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
     public int getPosition() {
         return position;
     }
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getTotal_pages() {
+        return total_pages;
+    }
+
+    public void setTotal_pages(int total_pages) {
+        this.total_pages = total_pages;
     }
 
     // Parcelable configuration.
@@ -422,6 +449,8 @@ public class Movie implements Parcelable {
         this.vote_average = (Double) in.readValue(Double.class.getClassLoader());
         this.vote_count = in.readInt();
         this.position = in.readInt();
+        this.page = in.readInt();
+        this.total_pages = in.readInt();
     }
 
     @Override
@@ -457,6 +486,8 @@ public class Movie implements Parcelable {
         dest.writeValue(this.vote_average);
         dest.writeInt(this.vote_count);
         dest.writeInt(this.position);
+        dest.writeInt(this.page);
+        dest.writeInt(this.total_pages);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {

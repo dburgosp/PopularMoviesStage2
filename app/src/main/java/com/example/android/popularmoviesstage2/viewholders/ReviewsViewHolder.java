@@ -56,6 +56,7 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder {
         int page = currentReview.getPage();
         int position = currentReview.getPosition();
         if (page == 1 && position == 0) {
+            Log.i(TAG, "(bind) Page " + page + ", position " + position + ". Adding top padding to review by " + currentReview.getAuthor() + ".");
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) reviewsCardView.getLayoutParams();
             layoutParams.setMargins(0,
                     context.getResources().getDimensionPixelSize(R.dimen.regular_padding),

@@ -36,10 +36,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MOVIES_LOADER_ID = 0;
 
-    private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
-    private MoviesAdapter moviesAdapter;
-    private int currentPosition = 0;
-
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.activity_main_recycler_view)
@@ -48,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView noResultsTextView;
     @BindView(R.id.activity_main_loading_indicator)
     ProgressBar progressBar;
+
+    private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
+    private MoviesAdapter moviesAdapter;
+    private int currentPosition = 0, currentPage = 1;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Vertical GridLayoutManager for displaying movie posters with a number of columns
         // determined by the current orientation of the device.
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
 
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -119,6 +120,50 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 displayUtils.getListPosterHeightPixels(),
                 listener);
         recyclerView.setAdapter(moviesAdapter);
+
+        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
+        // load another page of results.
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Callback method to be invoked when RecyclerView's scroll state changes.
+             *
+             * @param recyclerView The RecyclerView whose scroll state has changed.
+             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
+             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
+             */
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            /**
+             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
+             * called after the scroll has completed.
+             * <p>
+             * This callback will also be called if visible item range changes after a layout
+             * calculation. In that case, dx and dy will be 0.
+             *
+             * @param recyclerView The RecyclerView which scrolled.
+             * @param dx           The amount of horizontal scroll.
+             * @param dy           The amount of vertical scroll.
+             */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = gridLayoutManager.getChildCount();
+                int totalItemCount = gridLayoutManager.getItemCount();
+                int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
+                int totalPages = moviesAdapter.getTotalPages();
+
+                if (!isLoading) {
+                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                        // Load next page of results.
+                        currentPage++;
+                        getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -281,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(this)) {
             // There is an available connection. Fetch results from TMDB.
+            isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
             URL searchURL = NetworkUtils.buildFetchMoviesListURL(sortOrder);
@@ -338,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
+        isLoading = false;
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(this)) {
@@ -371,5 +418,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+        isLoading = false;
     }
 }

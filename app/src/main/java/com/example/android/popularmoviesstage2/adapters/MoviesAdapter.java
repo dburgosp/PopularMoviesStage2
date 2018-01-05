@@ -19,8 +19,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     private final OnItemClickListener listener;
     private ArrayList<Movie> moviesArrayList;
     private FrameLayout.LayoutParams layoutParams;
-    private int position = 0;
-    private int lastPosition = 0;
+    private int currentPosition, currentPage, totalPages;
 
     /**
      * Constructor for this class.
@@ -34,6 +33,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
         Log.i(TAG, "(MoviesAdapter) Object created");
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
+        this.currentPage = 0;
+        this.currentPosition = 0;
+        this.totalPages = 0;
         layoutParams = new FrameLayout.LayoutParams(widthPixels, heightPixels);
     }
 
@@ -47,13 +49,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
         this.moviesArrayList = moviesArrayList;
     }
 
+    // Getter methods.
+
     /**
-     * Getter method to obtain the last position saved at {@link #onBindViewHolder}.
-     *
-     * @return current position.
+     * @return the current position into the current page.
      */
-    public int getPosition() {
-        return position;
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    /**
+     * @return the number of the last page of reviews.
+     */
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    /**
+     * @return the total number of pages of reviews.
+     */
+    public int getTotalPages() {
+        return totalPages;
     }
 
     /**
@@ -105,24 +121,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     @Override
     public void onBindViewHolder(MoviesViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
-        if ((lastPosition > 0) && (position == lastPosition)) {
-
-        }
-
         if (!moviesArrayList.isEmpty()) {
-            Movie currentMovie = moviesArrayList.get(position);
-
-            // Set position in the adapter for current movie.
-            currentMovie.setPosition(position);
-
             // Update MoviesViewHolder with the movie details at current position in the adapter.
+            Movie currentMovie = moviesArrayList.get(position);
             viewHolder.bind(currentMovie, listener, layoutParams);
 
-            // Save current position.
-            //this.position = position;
-            this.position = viewHolder.getAdapterPosition();
+            // Set private variables in order to manage paging information.
+            currentPosition = currentMovie.getPosition();
+            currentPage = currentMovie.getPage();
+            totalPages = currentMovie.getTotal_pages();
         }
-        lastPosition = position;
     }
 
     /**

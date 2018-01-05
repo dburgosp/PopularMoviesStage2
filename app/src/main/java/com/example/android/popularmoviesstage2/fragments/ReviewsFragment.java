@@ -49,11 +49,9 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.reviews_loading_indicator)
     ProgressBar progressBar;
 
-    private int movieId;
-    private int currentPage = 1;
-    private String movieTitle;
-    private String posterPath;
-    private String backdropPath;
+    private boolean isLoading = false;
+    private int movieId, currentPage = 1;
+    private String movieTitle, posterPath, backdropPath;
     private ReviewsAdapter reviewsAdapter;
 
     /**
@@ -123,7 +121,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         reviewsRecyclerView.setHasFixedSize(true);
 
         // Set the listener for click events in the Review.
-        ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
+        final ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Review item) {
                 // Set movie title and images from the info passed to the fragment when instantiated.
@@ -175,28 +173,14 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                 int visibleItemCount = linearLayoutManager.getChildCount();
                 int totalItemCount = linearLayoutManager.getItemCount();
                 int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                int totalPages = reviewsAdapter.getTotalPages();
 
-                if (!isLoading && !isLastPage) {
-                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                            && firstVisibleItemPosition >= 0
-                            && totalItemCount >= NetworkUtils.REVIEWS_PER_PAGE) {
-                        loadMoreItems();
-                    }
-                }
-
-                // https://medium.com/@etiennelawlor/pagination-with-recyclerview-1cb7e66a502b
-
-                int page = reviewsAdapter.getPage();
-                switch (page) {
-                    case ReviewsAdapter.REVIEWS_NEXT_PAGE:
+                if (!isLoading) {
+                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                        // Load next page of results.
                         currentPage++;
                         getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
-                        break;
-
-                    case ReviewsAdapter.REVIEWS_PREVIOUS_PAGE:
-                        currentPage--;
-                        getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
-                        break;
+                    }
                 }
             }
         });
@@ -213,6 +197,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     public Loader<ArrayList<Review>> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
+            isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
             URL searchURL = NetworkUtils.buildFetchReviewsListURL(movieId, Integer.toString(currentPage));
@@ -270,12 +255,14 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
+        isLoading = false;
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
-            // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
+            // If there is a valid list of {@link Review} objects, then add them to the adapter's
+            // data set.
             if (data != null) {
-                Log.i(TAG, "(onLoadFinished) Search results not null.");
+                Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
                 reviewsAdapter.setReviewsArray(data);
                 reviewsAdapter.notifyDataSetChanged();
             } else {
@@ -300,5 +287,6 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      */
     @Override
     public void onLoaderReset(Loader<ArrayList<Review>> loader) {
+        isLoading = false;
     }
 }
