@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.viewholders.ReviewsViewHolder;
 
 import java.util.ArrayList;
@@ -19,7 +20,11 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     private final ReviewsAdapter.OnItemClickListener listener;
     private ArrayList<Review> reviewArrayList;
     private LinearLayout.LayoutParams layoutParams;
-    //private int position = 0;
+    private int page;
+
+    public static final int REVIEWS_NEXT_PAGE = 1;
+    public static final int REVIEWS_CURRENT_PAGE = 0;
+    public static final int REVIEWS_PREVIOUS_PAGE = -1;
 
     /**
      * Constructor for this class.
@@ -30,6 +35,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     public ReviewsAdapter(ArrayList<Review> reviewArrayList, ReviewsAdapter.OnItemClickListener listener) {
         this.reviewArrayList = reviewArrayList;
         this.listener = listener;
+        this.page = 0;
         Log.i(TAG, "(ReviewsAdapter) Object created");
     }
 
@@ -39,18 +45,19 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      * @param reviewsArrayList is the new list of reviews.
      */
     public void setReviewsArray(ArrayList<Review> reviewsArrayList) {
-        this.reviewArrayList = reviewsArrayList;
+        this.reviewArrayList.addAll(reviewsArrayList);
         Log.i(TAG, "(setReviewsArray) Review list updated");
     }
 
     /**
-     * Getter method to obtain the last position saved at {@link #onBindViewHolder}.
+     * Getter method to obtain the page private variable of this adapter.
      *
-     * @return current position.
+     * @return one of the following values: 0 for the current page, 1 for the next page and -1 for
+     * the previous page.
      */
-/*    int getPosition() {
-        return position;
-    }*/
+    public int getPage() {
+        return page;
+    }
 
     /**
      * Called when RecyclerView needs a new {@link ReviewsViewHolder} of the given type to represent
@@ -102,17 +109,21 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     public void onBindViewHolder(ReviewsViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!reviewArrayList.isEmpty()) {
-            // Get current review object.
+            // Get current review object and update the view holder with the review details at
+            // current position in the adapter.
             Review currentReview = reviewArrayList.get(position);
-
-            // Set position in the adapter for current person.
-            //currentReview.setPosition(position);
-
-            // Update ReviewsViewHolder with the person details at current position in the adapter.
             viewHolder.bind(currentReview, listener);
 
-            // Save current position.
-            //this.position = viewHolder.getAdapterPosition();
+            // Prepare results from next or previous page, if necessary.
+            if (currentReview.getPosition() == (NetworkUtils.REVIEWS_PER_PAGE - 1) &&
+                    currentReview.getPage() < currentReview.getTotal_pages()) {
+                page = REVIEWS_NEXT_PAGE;
+            } else {
+                if (currentReview.getPosition() == 0 && currentReview.getPage() > 1) {
+                    page = REVIEWS_PREVIOUS_PAGE;
+                } else
+                    page = REVIEWS_CURRENT_PAGE;
+            }
         }
     }
 

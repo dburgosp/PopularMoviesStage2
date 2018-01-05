@@ -20,7 +20,7 @@
     <!-- Text sizes. -->
     <dimen name="title_text_size">20sp</dimen>
     <dimen name="alert_text_size">16sp</dimen>
-    <dimen name="subtitle_text_size">140sp</dimen>
+    <dimen name="subtitle_text_size">14sp</dimen>
     <dimen name="normal_plus_text_size">13sp</dimen>
     <dimen name="normal_text_size">12sp</dimen>
 

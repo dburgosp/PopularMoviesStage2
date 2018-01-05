@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage2.viewholders;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -16,12 +17,16 @@ import butterknife.ButterKnife;
 
 public class ReviewsViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = ReviewsViewHolder.class.getSimpleName();
+
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
     // cast the corresponding views.
     @BindView(R.id.reviews_content_text_view)
     TextView contentTextView;
     @BindView(R.id.reviews_author_text_view)
     TextView authorTextView;
+    @BindView(R.id.reviews_cardview)
+    CardView reviewsCardView;
+
     private Context context;
     private View viewHolder;
 
@@ -46,6 +51,18 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder {
      */
     public void bind(final Review currentReview, final ReviewsAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
+
+        // If this is the first element, add a top padding to the CardView.
+        int page = currentReview.getPage();
+        int position = currentReview.getPosition();
+        if (page == 1 && position == 0) {
+            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) reviewsCardView.getLayoutParams();
+            layoutParams.setMargins(0,
+                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding),
+                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding),
+                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding));
+            reviewsCardView.setLayoutParams(layoutParams);
+        }
 
         // Set content for the current review. This text is stored in Markdown format.
         TextUtils.setMarkdownText(contentTextView, currentReview.getContent());

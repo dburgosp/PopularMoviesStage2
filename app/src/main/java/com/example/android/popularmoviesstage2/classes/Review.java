@@ -11,6 +11,9 @@ public class Review implements Parcelable {
     private String movieTitle;
     private String posterPath;
     private String backdropPath;
+    private int page;
+    private int position;
+    private int total_pages;
 
     /**
      * Constructor for this class.
@@ -23,8 +26,12 @@ public class Review implements Parcelable {
      * @param posterPath   is the path to append to the base url for getting the movie poster image.
      * @param backdropPath is the path to append to the base url for getting the movie backdrop
      *                     image.
+     * @param page         is the current page of this review into the set of results.
+     * @param position     is the position of this review into its page.
+     * @param total_pages  is the number of pages containing rewievs for the current movie.
      */
-    public Review(String id, String author, String content, String url, String movieTitle, String posterPath, String backdropPath) {
+    public Review(String id, String author, String content, String url, String movieTitle,
+                  String posterPath, String backdropPath, int page, int position, int total_pages) {
         this.id = id;
         this.author = author;
         this.content = content;
@@ -32,6 +39,9 @@ public class Review implements Parcelable {
         this.movieTitle = movieTitle;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
+        this.page = page;
+        this.position = position;
+        this.total_pages = total_pages;
     }
 
     // Getters and setters.
@@ -84,24 +94,36 @@ public class Review implements Parcelable {
         this.posterPath = posterPath;
     }
 
-    public String getbackdropPath() {
+    public String getBackdropPath() {
         return backdropPath;
     }
 
-    public void setbackdropPath(String backdropPath) {
+    public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
     }
 
-    // Parcelable configuration.
+    public int getPage() {
+        return page;
+    }
 
-    protected Review(Parcel in) {
-        this.id = in.readString();
-        this.author = in.readString();
-        this.content = in.readString();
-        this.url = in.readString();
-        this.movieTitle = in.readString();
-        this.posterPath = in.readString();
-        this.backdropPath = in.readString();
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getTotal_pages() {
+        return total_pages;
+    }
+
+    public void setTotal_pages(int total_pages) {
+        this.total_pages = total_pages;
     }
 
     @Override
@@ -118,6 +140,22 @@ public class Review implements Parcelable {
         dest.writeString(this.movieTitle);
         dest.writeString(this.posterPath);
         dest.writeString(this.backdropPath);
+        dest.writeInt(this.page);
+        dest.writeInt(this.position);
+        dest.writeInt(this.total_pages);
+    }
+
+    protected Review(Parcel in) {
+        this.id = in.readString();
+        this.author = in.readString();
+        this.content = in.readString();
+        this.url = in.readString();
+        this.movieTitle = in.readString();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.page = in.readInt();
+        this.position = in.readInt();
+        this.total_pages = in.readInt();
     }
 
     public static final Parcelable.Creator<Review> CREATOR = new Parcelable.Creator<Review>() {

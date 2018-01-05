@@ -50,6 +50,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     ProgressBar progressBar;
 
     private int movieId;
+    private int currentPage = 1;
     private String movieTitle;
     private String posterPath;
     private String backdropPath;
@@ -117,7 +118,8 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
-        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
 
         // Set the listener for click events in the Review.
@@ -127,7 +129,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                 // Set movie title and images from the info passed to the fragment when instantiated.
                 item.setMovieTitle(movieTitle);
                 item.setPosterPath(posterPath);
-                item.setbackdropPath(backdropPath);
+                item.setBackdropPath(backdropPath);
 
                 // Start "ReviewsActivity" activity to show the complete review when the current
                 // element is clicked.
@@ -140,6 +142,64 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         // Set the Adapter for the RecyclerView.
         reviewsAdapter = new ReviewsAdapter(new ArrayList<Review>(), reviewListener);
         reviewsRecyclerView.setAdapter(reviewsAdapter);
+
+        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
+        // load another page of results.
+        reviewsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Callback method to be invoked when RecyclerView's scroll state changes.
+             *
+             * @param recyclerView The RecyclerView whose scroll state has changed.
+             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
+             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
+             */
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            /**
+             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
+             * called after the scroll has completed.
+             * <p>
+             * This callback will also be called if visible item range changes after a layout
+             * calculation. In that case, dx and dy will be 0.
+             *
+             * @param recyclerView The RecyclerView which scrolled.
+             * @param dx           The amount of horizontal scroll.
+             * @param dy           The amount of vertical scroll.
+             */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+
+                if (!isLoading && !isLastPage) {
+                    if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                            && firstVisibleItemPosition >= 0
+                            && totalItemCount >= NetworkUtils.REVIEWS_PER_PAGE) {
+                        loadMoreItems();
+                    }
+                }
+
+                // https://medium.com/@etiennelawlor/pagination-with-recyclerview-1cb7e66a502b
+
+                int page = reviewsAdapter.getPage();
+                switch (page) {
+                    case ReviewsAdapter.REVIEWS_NEXT_PAGE:
+                        currentPage++;
+                        getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        break;
+
+                    case ReviewsAdapter.REVIEWS_PREVIOUS_PAGE:
+                        currentPage--;
+                        getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -155,7 +215,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
             // There is an available connection. Fetch results from TMDB.
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildFetchReviewsListURL(movieId);
+            URL searchURL = NetworkUtils.buildFetchReviewsListURL(movieId, Integer.toString(currentPage));
             Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
             return new ReviewsAsyncTaskLoader(getContext(), searchURL);
         } else {
@@ -218,10 +278,6 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
                 reviewsAdapter.setReviewsArray(data);
                 reviewsAdapter.notifyDataSetChanged();
-
-                // Restore last currentPosition in the grid, if previously saved. This won't work if we
-                // try to restore currentPosition before having displayed the results into the adapter.
-                //recyclerView.getLayoutManager().scrollToPosition(currentPosition);
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);

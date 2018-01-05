@@ -35,20 +35,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public final class NetworkUtils {
+    private final static String TAG = NetworkUtils.class.getSimpleName();
     public final static String THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
     public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     public final static String SORT_ORDER_POPULAR = "popular";
     public final static String SORT_ORDER_TOP_RATED = "top_rated";
     public final static String SORT_ORDER_FAVORITES = "favorites";
-    public final static int OPERATION_GET_MOVIES_LIST = 1;
-    public final static int OPERATION_GET_MOVIE_DETAILS = 2;
-
-    private final static String TAG = NetworkUtils.class.getSimpleName();
     private final static String BASE_URL = "https://api.themoviedb.org/3";
     private final static String MOVIE_PATH = "movie";
     private final static String CREDITS_PATH = "credits";
     private final static String REVIEWS_PATH = "reviews";
+    private final static String PARAM_PATH = "page";
     private final static String PARAM_API_KEY = "api_key";
+
+    public final static int OPERATION_GET_MOVIES_LIST = 1;
+    public final static int OPERATION_GET_MOVIE_DETAILS = 2;
+    public final static int REVIEWS_PER_PAGE = 5;
 
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published
@@ -166,10 +168,11 @@ public final class NetworkUtils {
      * Creates an URL from {@link #BASE_URL} appending the movie id and the REVIEWS_PATH to
      * the base path and using the {@link #API_KEY} for authentication.
      *
-     * @param movieId is the identifier of the movie.
+     * @param movieId     is the identifier of the movie.
+     * @param currentPage is the page for searching reviews of the movie.
      * @return an URL for fetching a movie cast & reviews information from TheMovieDB.
      */
-    public static URL buildFetchReviewsListURL(int movieId) {
+    public static URL buildFetchReviewsListURL(int movieId, String currentPage) {
         Log.i(TAG, "(buildFetchReviewsListURL) Movie ID: " + movieId);
 
         // Build Uri from BASE_URL, sort order and API_KEY.
@@ -178,6 +181,7 @@ public final class NetworkUtils {
                 .appendPath(Integer.toString(movieId))
                 .appendPath(REVIEWS_PATH)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_PATH, currentPage)
                 .build();
 
         // Build URL from Uri.
@@ -716,6 +720,11 @@ public final class NetworkUtils {
                 return null;
             }
 
+            // Extract the value of the current page and the total number of pages from the base
+            // JSON document.
+            int page = getIntFromJSON(resultsJSONResponse, "page");
+            int total_pages = getIntFromJSON(resultsJSONResponse, "total_pages");
+
             JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
             JSONObject baseJSONResponse;
             for (int n = 0; n < arrayJSONResponse.length(); n++) {
@@ -729,7 +738,7 @@ public final class NetworkUtils {
                 String url = getStringFromJSON(baseJSONResponse, "url");
 
                 // Create a new {@link Review} object with the data retrieved from the JSON response.
-                Review review = new Review(id, author, content, url, "", "", "");
+                Review review = new Review(id, author, content, url, "", "", "", page, n, total_pages);
 
                 // Add the new {@link Review} to the list of reviews.
                 reviews.add(review);

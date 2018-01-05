@@ -58,7 +58,7 @@ public class ReviewsActivity extends AppCompatActivity {
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 
         // Set background image. If there is no background image, set the default image.
-        String backdropPath = review.getbackdropPath();
+        String backdropPath = review.getBackdropPath();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
             Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
         else

@@ -89,7 +89,7 @@
                     app:donut_finished_stroke_width="4dp"
                     app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                     app:donut_progress="0"
-                    app:donut_text="N/A"
+                    app:donut_text="n/a"
                     app:donut_text_color="@color/colorWhite"
                     app:donut_text_size="@dimen/alert_text_size"
                     app:donut_unfinished_color="@color/colorPrimary"
