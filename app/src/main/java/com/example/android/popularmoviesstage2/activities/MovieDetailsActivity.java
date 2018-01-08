@@ -59,7 +59,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         getParameters();
 
         // Set title for this activity.
-        this.setTitle(sortOrderText);
+        //this.setTitle(sortOrderText);
+        this.setTitle("");
 
         // Write the basic movie info on activity_movie_details.xml header.
         setMovieInfo();

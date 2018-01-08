@@ -19,7 +19,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     private final OnItemClickListener listener;
     private ArrayList<Movie> moviesArrayList;
     private FrameLayout.LayoutParams layoutParams;
-    private int currentPosition, currentPage, totalPages;
+    private int currentScrollPosition, currentPage, totalPages;
 
     /**
      * Constructor for this class.
@@ -34,9 +34,23 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
         this.currentPage = 0;
-        this.currentPosition = 0;
+        this.currentScrollPosition = 0;
         this.totalPages = 0;
         layoutParams = new FrameLayout.LayoutParams(widthPixels, heightPixels);
+    }
+
+    /**
+     * Public helper method to clear the current movies arrayList.
+     */
+    public void clearMoviesArrayList() {
+        this.moviesArrayList.clear();
+        this.currentScrollPosition = 0;
+        this.currentPage = 1;
+        this.totalPages = 0;
+    }
+
+    public ArrayList<Movie> getMoviesArrayList() {
+        return moviesArrayList;
     }
 
     /**
@@ -44,18 +58,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      *
      * @param moviesArrayList is the new list of movies.
      */
-    public void setMoviesArrayList(ArrayList<Movie> moviesArrayList) {
-        Log.i(TAG, "(setMoviesArrayList) Movie list updated");
-        this.moviesArrayList = moviesArrayList;
+    public void updateMoviesArrayList(ArrayList<Movie> moviesArrayList) {
+        this.moviesArrayList.addAll(moviesArrayList);
+        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " + this.moviesArrayList.size());
     }
 
     // Getter methods.
 
     /**
-     * @return the current position into the current page.
+     * @return the current position into the movie list. Notice that this value is not the relative
+     * position of the element into the current page, but the current scroll position.
      */
-    public int getCurrentPosition() {
-        return currentPosition;
+    public int getCurrentScrollPosition() {
+        return currentScrollPosition;
     }
 
     /**
@@ -127,7 +142,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
             viewHolder.bind(currentMovie, listener, layoutParams);
 
             // Set private variables in order to manage paging information.
-            currentPosition = currentMovie.getPosition();
+            currentScrollPosition = viewHolder.getAdapterPosition();
             currentPage = currentMovie.getPage();
             totalPages = currentMovie.getTotal_pages();
         }

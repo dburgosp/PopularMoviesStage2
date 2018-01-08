@@ -35,7 +35,6 @@
                 android:id="@+id/reviews_poster"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorGrey"
                 android:contentDescription="@string/content_description_poster"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_poster" />
@@ -53,24 +52,19 @@
             android:textSize="@dimen/title_text_size"
             tools:text="A review by Username" />
 
-        <View
-            android:id="@+id/reviews_separator"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separator"
-            android:layout_below="@id/reviews_author_text_view"
-            android:background="@color/colorAccent" />
-
         <ScrollView
             android:id="@+id/reviews_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/reviews_separator"
-            android:background="@color/colorWhite">
+            android:layout_below="@id/reviews_author_text_view"
+            android:background="@color/colorAccent"
+            android:paddingTop="@dimen/separator">
 
             <TextView
                 android:id="@+id/reviews_content_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
                 android:paddingEnd="@dimen/regular_padding"
                 android:paddingStart="@dimen/padding_with_poster"
                 android:paddingTop="@dimen/regular_padding"

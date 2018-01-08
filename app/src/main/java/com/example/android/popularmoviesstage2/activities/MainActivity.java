@@ -32,6 +32,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MOVIES_LOADER_ID = 0;
@@ -47,8 +51,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
     private MoviesAdapter moviesAdapter;
-    private int currentPosition = 0, currentPage = 1;
+    private int currentPage = 1, currentScrollPosition = 0, scrollDy = 0;
     private boolean isLoading = false;
+    private ArrayList<Movie> moviesArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,28 +61,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // Get sort order and last saved scroll currentPosition if there is extra data (if we come
-        // from MovieDetailsActivity activity).
+        // Get sort order if there is extra data (if we come back here from another activity).
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra("sortOrder"))
                 sortOrder = intent.getStringExtra("sortOrder");
-//            if (intent.hasExtra("currentPosition"))
-//                currentPosition = intent.getIntExtra("currentPosition", 0);
         }
 
-        // Set RecyclerView for displaying movie posters on screen.
-        setRecyclerView();
-
-        // Create an AsyncTaskLoader for getting movie information from internet in a separate
-        // thread.
-        getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
-
-        // Title and icon for this activity.
+        // Set the title for this activity, using the sort order.
         this.setTitle(getSortOrderText());
-        // ActionBar menu = getSupportActionBar();
-        // menu.setDisplayShowHomeEnabled(true);
-        // menu.setIcon(R.mipmap.ic_launcher);
+
+        // After re-creating this activity (for example, after rotating the device) we do not want
+        // to configure the RecyclerView nor initialize the loader here. These tasks will be
+        // performed later in the onRestoreInstanceState method, which runs after the onCreate
+        // method.
+        if (savedInstanceState == null) {
+            // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
+            // getting movie information from TMDB in a separate thread.
+            setRecyclerView();
+            getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
+        }
 
         Log.i(TAG, "(onCreate) Activity created");
     }
@@ -108,14 +111,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 intent.putExtra("sortOrder", sortOrder);
                 intent.putExtra("sortOrderText", getSortOrderText());
                 intent.putExtra("movie", movie);
-                currentPosition = movie.getPosition();
                 startActivity(intent);
             }
         };
 
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
-        moviesAdapter = new MoviesAdapter(new ArrayList<Movie>(),
+        moviesAdapter = new MoviesAdapter(moviesArrayList,
                 displayUtils.getListPosterWidthPixels(),
                 displayUtils.getListPosterHeightPixels(),
                 listener);
@@ -134,6 +136,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                switch (newState) {
+                    case SCROLL_STATE_IDLE:
+                        break;
+                    case SCROLL_STATE_DRAGGING:
+                        break;
+                    case SCROLL_STATE_SETTLING:
+                        break;
+                }
             }
 
             /**
@@ -155,11 +165,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
                 int totalPages = moviesAdapter.getTotalPages();
 
+                scrollDy = dy;
+
                 if (!isLoading) {
+                    // Load next page of results, if we are at the bottom of the current list and
+                    // there are more pages to load.
                     if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
-                        // Load next page of results.
                         currentPage++;
-                        getLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+                        getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
                     }
                 }
             }
@@ -260,12 +273,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Toast.makeText(this, getResources().getString(R.string.sort_order_changed, sortOrderText), Toast.LENGTH_SHORT).show();
 
             // Update activity title.
-            this.setTitle(getResources().getString(R.string.app_name) + " - " + sortOrderText);
+            this.setTitle(sortOrderText);
 
-            // Fetch new list of movies from TMDB and restore scroll currentPosition to 0, so the
-            // new movies list will be displayed from the top.
+            // Clear the current moviesAdapter and fetch the new list of movies from TMDB from the
+            // first page, and show it on the adapter from the first position.
+            currentScrollPosition = 0;
+            currentPage = 1;
+            moviesAdapter.clearMoviesArrayList();
             getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
-            currentPosition = 0;
         }
 
         return true;
@@ -275,16 +290,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // Save current sort order.
+        // Save current sort order, current page and current scroll position.
+        moviesArrayList = moviesAdapter.getMoviesArrayList();
+        currentScrollPosition = moviesAdapter.getCurrentScrollPosition();
+        currentPage = moviesAdapter.getCurrentPage();
+        outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
         outState.putString("sortOrder", sortOrder);
-
-        // Save current position in the grid. If there is no positive stored value for the current
-        // position (we have not clicked on a movie poster, so currentPosition contains the default
-        // value 0) we must read the current position in the adapter from the helper method
-        // {@link MoviesAdapter#getPosition()}.
-        if (currentPosition == 0)
-            currentPosition = moviesAdapter.getPosition();
-        outState.putInt("currentPosition", currentPosition);
+        outState.putInt("currentPage", currentPage);
+        outState.putInt("currentScrollPosition", currentScrollPosition);
     }
 
     /**
@@ -310,9 +323,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        // Restore sort order and last saved currentPosition in the grid.
+        // Restore sort order, last saved page and last saved position in the grid.
+        moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
         sortOrder = savedInstanceState.getString("sortOrder");
-        currentPosition = savedInstanceState.getInt("currentPosition");
+        currentPage = savedInstanceState.getInt("currentPage");
+        currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
+
+        // After restoring previous movies array and scroll position, we set the RecyclerView for
+        // displaying movie posters and try to create the AsyncTaskLoader for getting movie
+        // information from internet in a separate thread.
+        setRecyclerView();
+        getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
+
+        // Restore last currentPosition in the grid.
+        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
     }
 
     /**
@@ -329,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildFetchMoviesListURL(sortOrder);
+            URL searchURL = NetworkUtils.buildFetchMoviesListURL(sortOrder, Integer.toString(currentPage));
             Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
             return new MoviesAsyncTaskLoader(this, searchURL, NetworkUtils.OPERATION_GET_MOVIES_LIST);
         } else {
@@ -391,12 +415,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
-                moviesAdapter.setMoviesArrayList(data);
+                moviesAdapter.updateMoviesArrayList(data);
                 moviesAdapter.notifyDataSetChanged();
-
-                // Restore last currentPosition in the grid, if previously saved. This won't work if we
-                // try to restore currentPosition before having displayed the results into the adapter.
-                recyclerView.getLayoutManager().scrollToPosition(currentPosition);
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);

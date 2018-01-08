@@ -1,9 +1,5 @@
 package com.example.android.popularmoviesstage2.utils;
 
-/*
- * Created by David on 25/09/2017.
- */
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -45,7 +41,7 @@ public final class NetworkUtils {
     private final static String MOVIE_PATH = "movie";
     private final static String CREDITS_PATH = "credits";
     private final static String REVIEWS_PATH = "reviews";
-    private final static String PARAM_PATH = "page";
+    private final static String PARAM_PAGE = "page";
     private final static String PARAM_API_KEY = "api_key";
 
     public final static int OPERATION_GET_MOVIES_LIST = 1;
@@ -91,7 +87,7 @@ public final class NetworkUtils {
      * @param sortOrder is the sort order for the movie list.
      * @return an URL for fetching data from TheMovieDB using the given sort order.
      */
-    public static URL buildFetchMoviesListURL(String sortOrder) {
+    public static URL buildFetchMoviesListURL(String sortOrder, String page) {
         Log.i(TAG, "(buildFetchMoviesListURL) Sort order: " + sortOrder);
 
         // Build Uri from BASE_URL, sort order and API_KEY.
@@ -99,6 +95,7 @@ public final class NetworkUtils {
                 .appendPath(MOVIE_PATH)
                 .appendPath(sortOrder)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_PAGE, page)
                 .build();
 
         // Build URL from Uri.
@@ -181,7 +178,7 @@ public final class NetworkUtils {
                 .appendPath(Integer.toString(movieId))
                 .appendPath(REVIEWS_PATH)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
-                .appendQueryParameter(PARAM_PATH, currentPage)
+                .appendQueryParameter(PARAM_PAGE, currentPage)
                 .build();
 
         // Build URL from Uri.
@@ -349,6 +346,11 @@ public final class NetworkUtils {
                 return null;
             }
 
+            // Get paging info.
+            int page = getIntFromJSON(resultsJSONResponse, "page");
+            int total_pages = getIntFromJSON(resultsJSONResponse, "total_pages");
+
+            // Get results array.
             JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
             JSONObject baseJSONResponse;
             for (int n = 0; n < arrayJSONResponse.length(); n++) {
@@ -395,7 +397,7 @@ public final class NetworkUtils {
                 // Create a new {@link Movie} object with the data retrieved from the JSON response.
                 Movie movie = new Movie(id, adult, backdrop_path, genres, original_language,
                         original_title, overview, popularity, poster_path, release_date, title,
-                        video, vote_average, vote_count, 0);
+                        video, vote_average, vote_count, n, page, total_pages);
 
                 // Add the new {@link Movie} to the list of movies.
                 movies.add(movie);
@@ -574,7 +576,7 @@ public final class NetworkUtils {
                     homepage, imdb_id, original_language, original_title, overview, popularity,
                     poster_path, production_companies, production_countries, release_date, revenue,
                     runtime, spoken_languages, status, tagline, title, video, vote_average,
-                    vote_count, 0);
+                    vote_count, 0, 0, 0);
 
             // Add the new {@link Movie} to the list of movies.
             movies.add(movie);

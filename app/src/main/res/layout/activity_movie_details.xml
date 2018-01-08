@@ -30,6 +30,7 @@
             android:id="@+id/movie_details_cardview"
             android:layout_width="@dimen/poster_width"
             android:layout_height="@dimen/poster_height"
+            android:background="@color/colorWhite"
             app:cardElevation="@dimen/small_padding">
 
             <ImageView
@@ -99,6 +100,8 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:background="@color/colorAccent"
+        android:paddingTop="@dimen/separator"
         android:id="@+id/movie_details_info"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
