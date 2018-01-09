@@ -52,23 +52,30 @@
             android:textSize="@dimen/title_text_size"
             tools:text="A review by Username" />
 
+        <View
+            android:id="@+id/reviews_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separator"
+            android:layout_below="@id/reviews_author_text_view"
+            android:background="@color/colorAccent" />
+
         <ScrollView
             android:id="@+id/reviews_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/reviews_author_text_view"
-            android:background="@color/colorAccent"
+            android:layout_below="@id/reviews_separator"
+            android:background="@color/colorWhite"
             android:paddingTop="@dimen/separator">
 
             <TextView
                 android:id="@+id/reviews_content_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorWhite"
+                android:paddingBottom="@dimen/regular_padding"
                 android:paddingEnd="@dimen/regular_padding"
                 android:paddingStart="@dimen/padding_with_poster"
                 android:paddingTop="@dimen/regular_padding"
-                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.\n\nDonec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.." />
+                tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus." />
         </ScrollView>
     </RelativeLayout>
 </RelativeLayout>

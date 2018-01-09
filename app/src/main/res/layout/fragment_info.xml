@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/regular_padding">
+    android:layout_marginBottom="@dimen/regular_padding"
+    android:fillViewport="true">
 
     <RelativeLayout
         android:id="@+id/info_main_layout"
@@ -35,8 +36,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-smallcaps"
-            android:textStyle="bold"
             android:textColor="@color/colorBlack"
+            android:textStyle="bold"
             tools:text="Tagline" />
 
         <TextView
@@ -112,4 +113,4 @@
             android:fontFamily="sans-serif-smallcaps"
             android:text="" />
     </RelativeLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
                     // there are more pages to load.
-                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                    if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
                         getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
                     }
@@ -406,6 +406,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+        if (moviesArrayList.size() > 0 && currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
+            return;
+
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         isLoading = false;

@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -45,6 +46,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.movie_details_score_progress)
     DonutProgress userScore;
+    @BindView(R.id.movie_details_toolbar)
+    Toolbar toolbar;
 
     private String sortOrder, sortOrderText;
     private int currentPosition;
@@ -54,6 +57,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
 
         // Get parameters from intent.
         getParameters();

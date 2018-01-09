@@ -1,8 +1,9 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/regular_padding"
+    android:fillViewport="true"
     tools:context="com.example.android.popularmoviesstage2.fragments.MediaFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,4 +12,4 @@
         android:layout_height="match_parent"
         android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+</android.support.v4.widget.NestedScrollView>
