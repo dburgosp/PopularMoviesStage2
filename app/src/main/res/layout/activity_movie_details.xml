@@ -11,7 +11,8 @@
         android:id="@+id/movie_details_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/movie_details_collapsing_toolbar_layout"
@@ -20,27 +21,34 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimaryDark"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
+            app:toolbarId="@id/movie_details_toolbar">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="22dp">
 
                 <RelativeLayout
                     android:id="@+id/movie_details_header"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/backdrop_height"
                     android:background="@color/colorPrimaryDark">
 
                     <ImageView
                         android:id="@+id/movie_details_background"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/backdrop_height"
-                        android:alpha="0.3"
+                        android:layout_height="match_parent"
+                        android:alpha="0.7"
+                        android:background="@color/colorPrimary"
                         android:contentDescription="@string/content_description_poster"
+                        android:scaleType="centerCrop" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/tmdb_backdrop" />
+                        android:src="@drawable/gradient_bg" />
 
                     <android.support.v7.widget.CardView
                         android:id="@+id/movie_details_cardview"
@@ -54,99 +62,65 @@
                             android:id="@+id/movie_details_poster"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_alignBottom="@+id/textView"
+                            android:layout_alignParentEnd="true"
                             android:contentDescription="@string/content_description_poster"
                             android:scaleType="centerCrop"
                             android:src="@drawable/no_poster" />
                     </android.support.v7.widget.CardView>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/movie_details_score_progress"
-                        android:layout_marginEnd="@dimen/small_padding"
-                        android:layout_marginTop="15dp"
-                        android:layout_toStartOf="@+id/movie_details_score_progress"
-                        android:alpha="0.8"
-                        android:text="TMDB score:"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/subtitle_text_size" />
-
-                    <com.github.lzyzsd.circleprogress.DonutProgress
-                        android:id="@+id/movie_details_score_progress"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
                         android:layout_alignBottom="@+id/movie_details_cardview"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/regular_padding"
-                        android:background="@drawable/circle"
-                        app:donut_circle_starting_degree="270"
-                        app:donut_finished_color="@color/colorAccent"
-                        app:donut_finished_stroke_width="4dp"
-                        app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
-                        app:donut_progress="0"
-                        app:donut_text="n/a"
-                        app:donut_text_color="@color/colorWhite"
-                        app:donut_text_size="@dimen/alert_text_size"
-                        app:donut_unfinished_color="@color/colorPrimary"
-                        app:donut_unfinished_stroke_width="4dp" />
+                        android:layout_toEndOf="@id/movie_details_cardview">
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="@dimen/small_padding"
+                            android:layout_marginStart="@dimen/regular_padding"
+                            android:layout_toStartOf="@+id/movie_details_score_progress"
+                            android:gravity="end"
+                            android:text="TMDB score:"
+                            android:textColor="@color/colorGrey"
+                            android:textSize="@dimen/subtitle_text_size" />
+
+                        <com.github.lzyzsd.circleprogress.DonutProgress
+                            android:id="@+id/movie_details_score_progress"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_alignParentEnd="true"
+                            android:background="@drawable/circle"
+                            app:donut_circle_starting_degree="270"
+                            app:donut_finished_color="@color/colorAccent"
+                            app:donut_finished_stroke_width="4dp"
+                            app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
+                            app:donut_progress="0"
+                            app:donut_text="n/a"
+                            app:donut_text_color="@color/colorWhite"
+                            app:donut_text_size="@dimen/alert_text_size"
+                            app:donut_unfinished_color="@color/colorPrimary"
+                            app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
+                    </RelativeLayout>
                 </RelativeLayout>
 
                 <TextView
-
-                    android:background="@color/colorPrimary"
                     android:id="@+id/movie_details_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/tiny_padding"
-                    android:paddingTop="@dimen/tiny_padding"
-                    android:paddingStart="@dimen/regular_padding"
-                    android:paddingEnd="@dimen/regular_padding"
+                    android:background="@color/colorPrimaryDark"
                     android:fontFamily="sans-serif-smallcaps"
+                    android:paddingBottom="@dimen/regular_padding"
+                    android:paddingEnd="@dimen/regular_padding"
+                    android:paddingStart="@dimen/regular_padding"
                     android:textColor="@color/colorWhite"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
+                    android:textSize="20sp"
                     tools:text="@string/no_title" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/tiny_padding"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Duración: 1h 25m" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="País: USA" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Dirección: George Lucas" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Reparto: " />
-
-                    <TextView
-                        android:id="@+id/movie_details_year"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Estreno: 12/12/2007" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separator"
-                    android:background="@color/colorAccent" />
             </LinearLayout>
 
             <!-- android:layout_height="?attr/actionBarSize" -->

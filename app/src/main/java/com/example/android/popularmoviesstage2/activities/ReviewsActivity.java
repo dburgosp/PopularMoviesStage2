@@ -57,12 +57,10 @@ public class ReviewsActivity extends AppCompatActivity {
         else
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 
-        // Set background image. If there is no background image, set the default image.
+        // Set background image.
         String backdropPath = review.getBackdropPath();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
             Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
-        else
-            backgroundImageView.setImageDrawable(getDrawable(R.drawable.tmdb_backdrop));
 
         // Set title for this activity. Otherwise, we show the default text for title.
         String title = review.getMovieTitle();

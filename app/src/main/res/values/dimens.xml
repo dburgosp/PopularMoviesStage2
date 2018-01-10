@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Image sizes. -->
-<!--    <dimen name="poster_width">74dp</dimen> -->
-    <!--      <dimen name="poster_height">111dp</dimen> -->
+    <!--    <dimen name="poster_width">74dp</dimen> -->
+    <!--    <dimen name="poster_height">111dp</dimen> -->
     <dimen name="poster_width">100dp</dimen>
     <dimen name="poster_height">150dp</dimen>
-    <dimen name="backdrop_height">216dp</dimen>
+    <dimen name="backdrop_height">212dp</dimen>
+    <dimen name="photo_width_height">118dp</dimen>
 
     <!-- Paddings and margins. -->
     <dimen name="separator">2dp</dimen>
@@ -21,7 +22,7 @@
 
     <!-- Text sizes. -->
     <dimen name="title_text_size">20sp</dimen>
-    <dimen name="alert_text_size">16sp</dimen>
+    <dimen name="alert_text_size">15sp</dimen>
     <dimen name="subtitle_text_size">14sp</dimen>
     <dimen name="normal_plus_text_size">13sp</dimen>
     <dimen name="normal_text_size">12sp</dimen>

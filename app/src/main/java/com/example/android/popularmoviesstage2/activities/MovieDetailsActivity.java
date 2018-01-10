@@ -2,7 +2,10 @@ package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -18,6 +21,7 @@ import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
@@ -36,8 +40,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     ImageView movieDetailsPoster;
     @BindView(R.id.movie_details_title)
     TextView movieDetailsTitle;
-    @BindView(R.id.movie_details_year)
-    TextView movieDetailsReleaseYear;
     @BindView(R.id.movie_details_cardview)
     CardView posterCardView;
     @BindView(R.id.movie_details_viewpager)
@@ -48,6 +50,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     DonutProgress userScore;
     @BindView(R.id.movie_details_toolbar)
     Toolbar toolbar;
+    @BindView(R.id.movie_details_collapsing_toolbar_layout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.movie_details_appbar_layout)
+    AppBarLayout appBarLayout;
 
     private String sortOrder, sortOrderText;
     private int currentPosition;
@@ -65,7 +71,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set title for this activity.
         //this.setTitle(sortOrderText);
-        this.setTitle("");
+        AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+                    // CollapsingToolbar esta colapsado
+                    //title.animate().alpha(1).setDuration(600);
+                    if (getSupportActionBar() != null) {
+                        setTitle("Título de la película");
+                        //getSupportActionBar().show();
+                    }
+                } else {
+                    // CollapsingToolbar esta expandido
+                    //title.animate().alpha(0).setDuration(600);
+                    if (getSupportActionBar() != null) {
+                        setTitle(" ");
+                    }
+                }
+            }
+        };
+        appBarLayout.addOnOffsetChangedListener(listener);
 
         // Write the basic movie info on activity_movie_details.xml header.
         setMovieInfo();
@@ -115,26 +140,35 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
             Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(movieDetailsBackground);
 
-        // Set title. Otherwise, we show the default text for title.
+        // Set movie title and year.
         String title = movie.getTitle();
+        String year = DateTimeUtils.getYear(movie.getRelease_date());
         if (title != null && !title.equals("") && !title.isEmpty())
-            movieDetailsTitle.setText(title);
+            if (year != null && !year.equals("") && !year.isEmpty()) {
+                int labelColor = getResources().getColor(R.color.colorGrey);
+                String сolorString = String.format("%X", labelColor).substring(2);
+                TextUtils.setHtmlText(movieDetailsTitle, "<strong><big>" + title + " </big></strong>" +
+                        "<small><font color=\"#" + сolorString + "\">(" + year + ")</font></small>");
+            } else
+                TextUtils.setHtmlText(movieDetailsTitle, "<strong><big>" + title + "</big></strong>");
         else
             movieDetailsTitle.setText(getResources().getString(R.string.no_title));
-
-        // Set release year. Otherwise, we hide the corresponding section.
-        String year = DateTimeUtils.getYear(movie.getRelease_date());
-        if (year != null && !year.equals("") && !year.isEmpty()) {
-            movieDetailsReleaseYear.setText(year);
-            movieDetailsReleaseYear.setVisibility(View.VISIBLE);
-        } else
-            movieDetailsReleaseYear.setVisibility(View.INVISIBLE);
 
         // Set users rating.
         String rating = String.valueOf(movie.getVote_average());
         if (!rating.equals("0.0")) {
             // Set custom progress bar.
             int scorePercent = Math.round(10 * Float.parseFloat(rating));
+            if (scorePercent < 40) {
+                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorLowScoreBackground));
+                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorLowScoreForeground));
+            } else if (scorePercent < 70) {
+                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreBackground));
+                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreForeground));
+            } else {
+                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorHighScoreBackground));
+                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorHighScoreForeground));
+            }
             userScore.setText(rating);
             userScore.setDonut_progress(Integer.toString(scorePercent));
             userScore.setVisibility(View.VISIBLE);

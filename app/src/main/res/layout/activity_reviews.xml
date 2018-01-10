@@ -14,8 +14,7 @@
         android:layout_height="@dimen/backdrop_height"
         android:alpha="0.3"
         android:contentDescription="@string/content_description_poster"
-        android:scaleType="centerCrop"
-        android:src="@drawable/tmdb_backdrop" />
+        android:scaleType="centerCrop" />
 
     <RelativeLayout
         android:layout_width="match_parent"
