@@ -64,10 +64,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-
         // Get parameters from intent.
         getParameters();
+
+        // Set the custom tool bar, show the back button.
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set title for this activity.
         //this.setTitle(sortOrderText);
