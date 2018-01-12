@@ -4,15 +4,124 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/regular_padding"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context="com.example.android.popularmoviesstage2.fragments.CastCrewFragment">
 
     <RelativeLayout
         android:id="@+id/info_main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/regular_padding"
-        android:layout_marginEnd="@dimen/regular_padding"
-        android:layout_marginTop="@dimen/regular_padding">
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/info_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/info_runtime_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:paddingTop="@dimen/regular_padding"
+                tools:text="Runtime" />
+
+            <TextView
+                android:id="@+id/info_genres_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                tools:text="Genres" />
+
+            <TextView
+                android:id="@+id/info_release_date_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/regular_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                tools:text="Release date" />
+
+            <TextView
+                android:id="@+id/info_tagline_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="italic"
+                tools:text="Tagline" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/separator"
+                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/tiny_padding"
+                android:background="@color/colorGrey" />
+
+            <TextView
+                android:id="@+id/info_overview_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/regular_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="italic"
+                tools:text="@string/no_overview" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/info_separator_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separator"
+            android:layout_below="@id/info_header"
+            android:background="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/info_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/info_separator_1"
+            android:layout_margin="@dimen/regular_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/info_status_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Status" />
+
+            <TextView
+                android:id="@+id/info_original_title_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Original title" />
+
+            <TextView
+                android:id="@+id/info_original_language_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Original Language" />
+
+            <TextView
+                android:id="@+id/info_budget_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Budget" />
+
+            <TextView
+                android:id="@+id/info_revenue_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Revenue" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/info_no_result_text_view"
@@ -20,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/regular_padding"
             android:gravity="center"
             android:textSize="@dimen/alert_text_size"
             tools:text="Message to display when there are no search results" />
@@ -30,87 +140,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
-
-        <TextView
-            android:id="@+id/info_tagline_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-smallcaps"
-            android:textColor="@color/colorBlack"
-            android:textStyle="bold"
-            tools:text="Tagline" />
-
-        <TextView
-            android:id="@+id/info_overview_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_tagline_textview"
-            android:layout_marginBottom="@dimen/regular_padding"
-            tools:text="@string/no_overview" />
-
-        <TextView
-            android:id="@+id/info_runtime_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_overview_textview"
-            tools:text="Runtime" />
-
-        <TextView
-            android:id="@+id/info_genres_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_runtime_textview"
-            tools:text="Genres" />
-
-        <TextView
-            android:id="@+id/info_release_date_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_genres_textview"
-            tools:text="Release date" />
-
-        <TextView
-            android:id="@+id/info_status_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_release_date_textview"
-            tools:text="Status" />
-
-        <TextView
-            android:id="@+id/info_original_title_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_status_textview"
-            tools:text="Original title" />
-
-        <TextView
-            android:id="@+id/info_original_language_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_original_title_textview"
-            tools:text="Original Language" />
-
-        <TextView
-            android:id="@+id/info_budget_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_original_language_textview"
-            tools:text="Budget" />
-
-        <TextView
-            android:id="@+id/info_revenue_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_budget_textview"
-            tools:text="Revenue" />
-
-        <!-- Empty TextView for adding a bottom margin to the ScrollView -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_revenue_textview"
-            android:layout_marginBottom="@dimen/regular_padding"
-            android:fontFamily="sans-serif-smallcaps"
-            android:text="" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

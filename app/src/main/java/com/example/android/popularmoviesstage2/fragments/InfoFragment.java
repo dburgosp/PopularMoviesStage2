@@ -2,7 +2,6 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -104,10 +103,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (getArguments() != null) {
             movieId = getArguments().getInt("id");
         }
-
-        // Set left paddings if the device is in portrait orientation.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            mainLayout.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
 
         // Create an AsyncTaskLoader for retrieving complete movie information from internet in a
         // separate thread.

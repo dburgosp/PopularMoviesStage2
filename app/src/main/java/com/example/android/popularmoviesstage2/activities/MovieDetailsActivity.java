@@ -25,6 +25,8 @@ import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,19 +37,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.movie_details_background)
-    ImageView movieDetailsBackground;
+    ImageView backgroundImageView;
     @BindView(R.id.movie_details_poster)
-    ImageView movieDetailsPoster;
+    ImageView posterImageView;
     @BindView(R.id.movie_details_title)
-    TextView movieDetailsTitle;
+    TextView titleTextView;
+    @BindView(R.id.movie_details_score_votes)
+    TextView votesTextView;
+    @BindView(R.id.movie_details_score_title)
+    TextView scoreTextView;
     @BindView(R.id.movie_details_cardview)
     CardView posterCardView;
     @BindView(R.id.movie_details_viewpager)
     ViewPager viewPager;
     @BindView(R.id.movie_details_tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.movie_details_score_progress)
-    DonutProgress userScore;
+    @BindView(R.id.movie_details_score)
+    DonutProgress scoreDonutProgress;
     @BindView(R.id.movie_details_toolbar)
     Toolbar toolbar;
     @BindView(R.id.movie_details_collapsing_toolbar_layout)
@@ -72,24 +78,27 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set title for this activity.
-        //this.setTitle(sortOrderText);
+        // Set title for this activity, depending on the collapsing state of the toolbar..
+        setTitle("");
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-                    // CollapsingToolbar esta colapsado
-                    //title.animate().alpha(1).setDuration(600);
-                    if (getSupportActionBar() != null) {
-                        setTitle("Título de la película");
-                        //getSupportActionBar().show();
-                    }
+                    // CollapsingToolbar is collapsed. Show title.
+                    String title = movie.getTitle();
+                    String year = DateTimeUtils.getYear(movie.getRelease_date());
+                    if (title != null && !title.equals("") && !title.isEmpty())
+                        if (year != null && !year.equals("") && !year.isEmpty())
+                            collapsingToolbarLayout.setTitle(movie.getTitle() + " (" + DateTimeUtils.getYear(movie.getRelease_date()) + ")");
+                        else
+                            collapsingToolbarLayout.setTitle(movie.getTitle());
+                    else
+                        collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
+
+
                 } else {
-                    // CollapsingToolbar esta expandido
-                    //title.animate().alpha(0).setDuration(600);
-                    if (getSupportActionBar() != null) {
-                        setTitle(" ");
-                    }
+                    // CollapsingToolbar is expanded. Hide title.
+                    collapsingToolbarLayout.setTitle("");
                 }
             }
         };
@@ -103,7 +112,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Create an adapter that knows which fragment should be shown on each page, set the adapter
         // onto the view pager and go to the current page.
-        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(), MovieDetailsActivity.this, movie);
+        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(),
+                MovieDetailsActivity.this, movie);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
@@ -136,12 +146,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(movieDetailsPoster);
+            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
 
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(movieDetailsBackground);
+            Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
 
         // Set movie title and year.
         String title = movie.getTitle();
@@ -150,12 +160,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
             if (year != null && !year.equals("") && !year.isEmpty()) {
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
-                TextUtils.setHtmlText(movieDetailsTitle, "<strong><big>" + title + " </big></strong>" +
+                TextUtils.setHtmlText(titleTextView, "<strong><big>" + title + " </big></strong>" +
                         "<small><font color=\"#" + сolorString + "\">(" + year + ")</font></small>");
             } else
-                TextUtils.setHtmlText(movieDetailsTitle, "<strong><big>" + title + "</big></strong>");
+                TextUtils.setHtmlText(titleTextView, "<strong><big>" + title + "</big></strong>");
         else
-            movieDetailsTitle.setText(getResources().getString(R.string.no_title));
+            titleTextView.setText(getResources().getString(R.string.no_title));
 
         // Set users rating.
         String rating = String.valueOf(movie.getVote_average());
@@ -163,23 +173,35 @@ public class MovieDetailsActivity extends AppCompatActivity {
             // Set custom progress bar.
             int scorePercent = Math.round(10 * Float.parseFloat(rating));
             if (scorePercent < 40) {
-                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorLowScoreBackground));
-                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorLowScoreForeground));
+                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorLowScoreBackground));
+                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorLowScoreForeground));
             } else if (scorePercent < 70) {
-                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreBackground));
-                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreForeground));
+                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreBackground));
+                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreForeground));
             } else {
-                userScore.setUnfinishedStrokeColor(getResources().getColor(R.color.colorHighScoreBackground));
-                userScore.setFinishedStrokeColor(getResources().getColor(R.color.colorHighScoreForeground));
+                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorHighScoreBackground));
+                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorHighScoreForeground));
             }
-            userScore.setText(rating);
-            userScore.setDonut_progress(Integer.toString(scorePercent));
-            userScore.setVisibility(View.VISIBLE);
+            scoreDonutProgress.setText(rating);
+            scoreDonutProgress.setDonut_progress(Integer.toString(scorePercent));
+            scoreDonutProgress.setVisibility(View.VISIBLE);
+
+            // Set number of votes with decimal separator according to the current regional
+            // configuration.
+            int votes = movie.getVote_count();
+            if (votes > 0) {
+                NumberFormat numberFormat = NumberFormat.getNumberInstance();
+                votesTextView.setText(getResources().getQuantityString(R.plurals.score_votes, votes, numberFormat.format(votes)));
+            } else {
+                votesTextView.setVisibility(View.GONE);
+            }
         } else {
             // Clear and hide score section if we get "0.0", which means that there is no score for
             // the current movie.
-            userScore.setVisibility(View.INVISIBLE);
-            userScore.setDonut_progress("0");
+            scoreTextView.setVisibility(View.GONE);
+            votesTextView.setVisibility(View.GONE);
+            scoreDonutProgress.setVisibility(View.GONE);
+            scoreDonutProgress.setDonut_progress("0");
         }
     }
 

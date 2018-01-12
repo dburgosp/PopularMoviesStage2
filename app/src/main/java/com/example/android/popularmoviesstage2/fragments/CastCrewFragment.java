@@ -2,7 +2,6 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +29,8 @@ import com.example.android.popularmoviesstage2.classes.Cast;
 import com.example.android.popularmoviesstage2.classes.CastCrew;
 import com.example.android.popularmoviesstage2.classes.Crew;
 import com.example.android.popularmoviesstage2.classes.Movie;
-import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,83 +41,50 @@ import butterknife.ButterKnife;
 public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCallbacks<CastCrew> {
     private static final String TAG = CastCrewFragment.class.getSimpleName();
     private static final int CAST_CREW_LOADER_ID = 2;
+    private static final int CAST_CREW_MAX_ELEMENTS = 10;
 
     @BindView(R.id.cast_crew_no_result_text_view)
     TextView noResultsTextView;
     @BindView(R.id.cast_crew_loading_indicator)
     ProgressBar progressBar;
-    @BindView(R.id.cast_crew_title1)
+    @BindView(R.id.cast_linear_layout)
+    LinearLayout castLinearLayout;
+    @BindView(R.id.cast_title)
     TextView castTitleTextView;
-    @BindView(R.id.cast_crew_recycler_view1)
+    @BindView(R.id.cast_view_all)
+    TextView viewAllCastTextView;
+    @BindView(R.id.cast_recycler_view)
     RecyclerView castRecyclerView;
-    @BindView(R.id.cast_crew_title2)
-    TextView directingDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view2)
+    @BindView(R.id.cast_relative_layout)
+    RelativeLayout castRelativeLayout;
+    @BindView(R.id.cast_crew_separator)
+    View separatorView;
+    @BindView(R.id.crew_linear_layout)
+    LinearLayout crewLinearLayout;
+    @BindView(R.id.crew_title)
+    TextView crewTextView;
+    @BindView(R.id.crew_view_all)
+    TextView viewAllCrewTextView;
+    @BindView(R.id.crew_recycler_view)
     RecyclerView directingDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title3)
-    TextView productionDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view3)
-    RecyclerView productionDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title4)
+    @BindView(R.id.crew_relative_layout)
+    RelativeLayout crewRelativeLayout;
+    @BindView(R.id.writing_title)
+    TextView writingDepartmentTitleTextView;
+    @BindView(R.id.writing_content)
     TextView writingDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view4)
-    RecyclerView writingDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title5)
-    TextView actorsDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view5)
-    RecyclerView actorsDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title6)
-    TextView cameraDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view6)
-    RecyclerView cameraDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title7)
-    TextView editingDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view7)
-    RecyclerView editingDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title8)
-    TextView artDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view8)
-    RecyclerView artDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title9)
-    TextView costumeMakeupDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view9)
-    RecyclerView costumeMakeupDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title10)
-    TextView soundDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view10)
-    RecyclerView soundDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title11)
-    TextView visualEffectsDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view11)
-    RecyclerView visualEffectsDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title12)
-    TextView crewDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view12)
-    RecyclerView crewDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title13)
-    TextView lightingDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view13)
-    RecyclerView lightingDepartmentRecyclerView;
-    @BindView(R.id.cast_crew_title14)
-    TextView otherDepartmentTextView;
-    @BindView(R.id.cast_crew_recycler_view14)
-    RecyclerView otherDepartmentRecyclerView;
+    @BindView(R.id.production_title)
+    TextView productionDepartmentTitleTextView;
+    @BindView(R.id.production_content)
+    TextView productionDepartmentTextView;
+    @BindView(R.id.writing_linear_layout)
+    LinearLayout writingLinearLayout;
+    @BindView(R.id.production_linear_layout)
+    LinearLayout productionLinearLayout;
 
     private int movieId;
     private CastAdapter castAdapter;
     private CrewAdapter directingDepartmentAdapter;
-    private CrewAdapter productionDepartmentAdapter;
-    private CrewAdapter writingDepartmentAdapter;
-    private CrewAdapter actorsDepartmentAdapter;
-    private CrewAdapter cameraDepartmentAdapter;
-    private CrewAdapter editingDepartmentAdapter;
-    private CrewAdapter artDepartmentAdapter;
-    private CrewAdapter costumeMakeupDepartmentAdapter;
-    private CrewAdapter soundDepartmentAdapter;
-    private CrewAdapter visualEffectsDepartmentAdapter;
-    private CrewAdapter crewDepartmentAdapter;
-    private CrewAdapter lightingDepartmentAdapter;
-    private CrewAdapter otherDepartmentAdapter;
 
     /**
      * Required empty public constructor.
@@ -153,24 +121,6 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
             movieId = getArguments().getInt("id");
         }
 
-        // Set left paddings if the device is in portrait orientation.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            castTitleTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            directingDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            productionDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            writingDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            actorsDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            cameraDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            editingDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            artDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            costumeMakeupDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            soundDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            visualEffectsDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            crewDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            lightingDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-            otherDepartmentTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
-        }
-
         // Set RecyclerViews for displaying cast & crew photos.
         setRecyclerViews();
 
@@ -187,39 +137,11 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
      * arrangement.
      */
     void setRecyclerViews() {
-        // Get current display metrics, depending on device rotation.
-        DisplayUtils displayUtils = new DisplayUtils(getContext());
-
         // Set the LayoutManager for the RecyclerViews.
         castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        productionDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        writingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        actorsDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        cameraDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        editingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        artDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        costumeMakeupDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        soundDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        visualEffectsDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        crewDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        lightingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        otherDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
         castRecyclerView.setHasFixedSize(true);
         directingDepartmentRecyclerView.setHasFixedSize(true);
-        productionDepartmentRecyclerView.setHasFixedSize(true);
-        writingDepartmentRecyclerView.setHasFixedSize(true);
-        actorsDepartmentRecyclerView.setHasFixedSize(true);
-        cameraDepartmentRecyclerView.setHasFixedSize(true);
-        editingDepartmentRecyclerView.setHasFixedSize(true);
-        artDepartmentRecyclerView.setHasFixedSize(true);
-        costumeMakeupDepartmentRecyclerView.setHasFixedSize(true);
-        soundDepartmentRecyclerView.setHasFixedSize(true);
-        visualEffectsDepartmentRecyclerView.setHasFixedSize(true);
-        crewDepartmentRecyclerView.setHasFixedSize(true);
-        lightingDepartmentRecyclerView.setHasFixedSize(true);
-        otherDepartmentRecyclerView.setHasFixedSize(true);
 
         // Set the listeners for click events in the CastAdapters.
         CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
@@ -238,33 +160,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
         // Set the Adapters for the RecyclerViews.
         castAdapter = new CastAdapter(new ArrayList<Cast>(), castListener);
         directingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        productionDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        writingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        actorsDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        cameraDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        editingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        artDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        costumeMakeupDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        soundDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        visualEffectsDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        crewDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        lightingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        otherDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-
         castRecyclerView.setAdapter(castAdapter);
         directingDepartmentRecyclerView.setAdapter(directingDepartmentAdapter);
-        productionDepartmentRecyclerView.setAdapter(productionDepartmentAdapter);
-        writingDepartmentRecyclerView.setAdapter(writingDepartmentAdapter);
-        actorsDepartmentRecyclerView.setAdapter(actorsDepartmentAdapter);
-        cameraDepartmentRecyclerView.setAdapter(cameraDepartmentAdapter);
-        editingDepartmentRecyclerView.setAdapter(editingDepartmentAdapter);
-        artDepartmentRecyclerView.setAdapter(artDepartmentAdapter);
-        costumeMakeupDepartmentRecyclerView.setAdapter(costumeMakeupDepartmentAdapter);
-        soundDepartmentRecyclerView.setAdapter(soundDepartmentAdapter);
-        visualEffectsDepartmentRecyclerView.setAdapter(visualEffectsDepartmentAdapter);
-        crewDepartmentRecyclerView.setAdapter(crewDepartmentAdapter);
-        lightingDepartmentRecyclerView.setAdapter(lightingDepartmentAdapter);
-        otherDepartmentRecyclerView.setAdapter(otherDepartmentAdapter);
     }
 
     /**
@@ -343,45 +240,93 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 // adapters' data sets.
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                // Cast of characters.
+                /* ------------------ */
+                /* Cast of characters */
+                /* ------------------ */
                 ArrayList<Cast> castArrayList = data.getCast();
                 if (castArrayList != null && castArrayList.size() > 0) {
-                    castAdapter.setCastArray(castArrayList);
+                    // Show only the first CAST_CREW_MAX_ELEMENTS elements of this array list.
+                    ArrayList<Cast> castArrayListAux = new ArrayList<>();
+                    int i = 0;
+                    while ((i < CAST_CREW_MAX_ELEMENTS) && (i < castArrayList.size())) {
+                        castArrayListAux.add(castArrayList.get(i));
+                        i++;
+                    }
+                    castAdapter.setCastArray(castArrayListAux);
                     castAdapter.notifyDataSetChanged();
+
+                    // Set "view all" button.
+                    setViewAllButton(viewAllCastTextView, castArrayList.size());
                 } else {
                     // Hide section if there is no cast information for this movie.
-                    castTitleTextView.setVisibility(View.GONE);
-                    castRecyclerView.setVisibility(View.GONE);
+                    castLinearLayout.setVisibility(View.GONE);
+                    separatorView.setVisibility(View.GONE);
                 }
 
-                // Film crew.
+                /* --------- */
+                /* Film crew */
+                /* --------- */
                 ArrayList<Crew> crewArrayList = data.getCrew();
-                crewArrayList = setCrewByDepartment(crewArrayList, "Directing", directingDepartmentAdapter, directingDepartmentTextView, directingDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Production", productionDepartmentAdapter, productionDepartmentTextView, productionDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Writing", writingDepartmentAdapter, writingDepartmentTextView, writingDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Actors", actorsDepartmentAdapter, actorsDepartmentTextView, actorsDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Camera", cameraDepartmentAdapter, cameraDepartmentTextView, cameraDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Editing", editingDepartmentAdapter, editingDepartmentTextView, editingDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Art", artDepartmentAdapter, artDepartmentTextView, artDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Costume & Make-Up", costumeMakeupDepartmentAdapter, costumeMakeupDepartmentTextView, costumeMakeupDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Sound", soundDepartmentAdapter, soundDepartmentTextView, soundDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Visual Effects", visualEffectsDepartmentAdapter, visualEffectsDepartmentTextView, visualEffectsDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Crew", crewDepartmentAdapter, crewDepartmentTextView, crewDepartmentRecyclerView);
-                crewArrayList = setCrewByDepartment(crewArrayList, "Lighting", lightingDepartmentAdapter, lightingDepartmentTextView, lightingDepartmentRecyclerView);
-                setCrewByDepartment(crewArrayList, null, otherDepartmentAdapter, otherDepartmentTextView, otherDepartmentRecyclerView);
+                if (crewArrayList != null && crewArrayList.size() > 0) {
+                    // Set "view all" button.
+                    setViewAllButton(viewAllCrewTextView, crewArrayList.size());
+
+                    /* -------------------- */
+                    /* Directing department */
+                    /* -------------------- */
+
+                    // Get an array list with only the Crew members of the directing department.
+                    ArrayList<Crew> crewDirectingArrayList = getFilteredCrewArrayList(crewArrayList, "Directing");
+
+                    // Set the corresponding crew section if there is data.
+                    if (crewDirectingArrayList.size() > 0) {
+                        directingDepartmentAdapter.setCrewArray(crewDirectingArrayList);
+                        directingDepartmentAdapter.notifyDataSetChanged();
+                    } else {
+                        // Hide recycler view if there is no information for the current department.
+                        directingDepartmentRecyclerView.setVisibility(View.GONE);
+                    }
+
+                    /* ------------------ */
+                    /* Writing department */
+                    /* ------------------ */
+
+                    // Get an array list with only the Crew members of the writing department.
+                    ArrayList<Crew> crewWritingArrayList = getFilteredCrewArrayList(crewArrayList, "Writing");
+
+                    // Set the corresponding crew section if there is data.
+                    setCrewTextView(crewWritingArrayList, writingDepartmentTextView, writingLinearLayout);
+
+                    /* --------------------- */
+                    /* Production department */
+                    /* --------------------- */
+
+                    // Get an array list with only the Crew members of the production department.
+                    ArrayList<Crew> crewProductionArrayList = getFilteredCrewArrayList(crewArrayList, "Production");
+
+                    // Set the corresponding crew section if there is data.
+                    setCrewTextView(crewProductionArrayList, productionDepartmentTextView, productionLinearLayout);
+                } else {
+                    // Hide section if there is no crew information for this movie.
+                    separatorView.setVisibility(View.GONE);
+                    crewLinearLayout.setVisibility(View.GONE);
+                }
             } else {
                 // Loader has not returned a valid list of {@link CastCrew} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
             }
-        } else
-
-        {
+        } else {
             // There is no connection. Show error message.
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
+
+            // Hide cast and crew sections.
+            castLinearLayout.setVisibility(View.GONE);
+            separatorView.setVisibility(View.GONE);
+            crewLinearLayout.setVisibility(View.GONE);
         }
 
     }
@@ -397,68 +342,70 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     /**
+     * Helper method to set a "View all" button in this layout.
+     *
+     * @param textView is the TextView to be set.
+     * @param size     is the number of elements to show in the TextView.
+     */
+    private void setViewAllButton(TextView textView, int size) {
+        int labelColor = getResources().getColor(R.color.colorBlack);
+        String сolorString = String.format("%X", labelColor).substring(2);
+        TextUtils.setHtmlText(textView, "<font color=\"#" + сolorString + "\"><strong>" +
+                getResources().getString(R.string.view_all) + "</strong></font> (" + size + ")");
+    }
+
+    /**
      * Helper method to manage Crew elements filtered by department.
      *
-     * @param crewArrayListIn is the original array of Crew elements.
-     * @param department      is the department to filter the array. If this value is null or empty,
-     *                        we filter by hypothetical not listed departments.
-     * @param crewAdapter     is the adapter for displaying results.
-     * @param textView        is the title of the current crew section.
-     * @param recyclerView    the view for containing results.
-     * @return the modified crewArrayListIn, without the elements deleted within this method.
+     * @param crewArrayList is the original array of Crew elements.
+     * @param department    is the department to filter the array.
+     * @return an ArrayList containing at most CAST_CREW_MAX_ELEMENTS Crew elements filtered by the
+     * given department.
      */
-    ArrayList<Crew> setCrewByDepartment(ArrayList<Crew> crewArrayListIn, String department, CrewAdapter crewAdapter, TextView textView, RecyclerView recyclerView) {
-        // Make a copy of the original array of Crew elements, in order to remove the elements
-        // found into the next loop.
-        ArrayList<Crew> crewArrayListOut = (ArrayList<Crew>) crewArrayListIn.clone();
-
-        // Get an array of Crew elements filtered by department.
+    ArrayList<Crew> getFilteredCrewArrayList(ArrayList<Crew> crewArrayList, String department) {
         ArrayList<Crew> crewArrayListByDepartment = new ArrayList<>();
-        boolean found = false;
-        for (Crew element : crewArrayListIn) {
-            if (department != null && !department.isEmpty()) {
-                // Filter by given department.
-                if (element.getDepartment().equals(department))
-                    found = true;
-            } else {
-                // Filter by hypothetical not listed departments.
-                if (!element.getDepartment().equals("Directing") &&
-                        !element.getDepartment().equals("Production") &&
-                        !element.getDepartment().equals("Writing") &&
-                        !element.getDepartment().equals("Actors") &&
-                        !element.getDepartment().equals("Camera") &&
-                        !element.getDepartment().equals("Editing") &&
-                        !element.getDepartment().equals("Art") &&
-                        !element.getDepartment().equals("Costume & Make-Up") &&
-                        !element.getDepartment().equals("Sound") &&
-                        !element.getDepartment().equals("Visual Effects") &&
-                        !element.getDepartment().equals("Crew") &&
-                        !element.getDepartment().equals("Lighting"))
-                    found = true;
-            }
 
-            if (found) {
+        // The output array will contain at most CAST_CREW_MAX_ELEMENTS Crew elements.
+        int i = 0;
+        while ((i < CAST_CREW_MAX_ELEMENTS) && (i < crewArrayList.size())) {
+            // Filter by given department.
+            if (crewArrayList.get(i).getDepartment().equals(department)) {
                 // Add the current element to the temporary array of Crew elements filtered by
                 // department and remove it from the copy of the original array passed to this
                 // method, which will be returned on exit.
-                crewArrayListByDepartment.add(element);
-                crewArrayListOut.remove(element);
-                found = false;
+                crewArrayListByDepartment.add(crewArrayList.get(i));
             }
+            i++;
         }
 
-        // Set the corresponding crew section if there is data.
-        if (crewArrayListByDepartment.size() > 0) {
-            crewAdapter.setCrewArray(crewArrayListByDepartment);
-            crewAdapter.notifyDataSetChanged();
+        // Return a new array of Crew elements containing only members of the given department.
+        return crewArrayListByDepartment;
+    }
+
+    /**
+     * Helper method to write crew members on a comma-separated TextView.
+     *
+     * @param crewArrayList is the ArrayList containing the Crew elements to be shown.
+     * @param textView      is the TextView where the Crew elements are going to be written.
+     * @param linearLayout  is the LinearLayout that contains the current Crew section.
+     */
+    private void setCrewTextView(ArrayList<Crew> crewArrayList, TextView textView, LinearLayout linearLayout) {
+        if (crewArrayList.size() > 0) {
+            String text = "";
+            int labelColor = getResources().getColor(R.color.colorBlack);
+            String сolorString = String.format("%X", labelColor).substring(2);
+            for (int i = 0; i < crewArrayList.size(); i++) {
+                // Add members of the current department to the corresponding TextView.
+                if (i > 0)
+                    text = text + ", ";
+                text = text + "<font color=\"#" + сolorString + "\"><strong>" +
+                        crewArrayList.get(i).getName() + "</strong></font> (" +
+                        crewArrayList.get(i).getJob() + ")";
+            }
+            TextUtils.setHtmlText(textView, text);
         } else {
             // Hide crew section if there is no information for the current department.
-            textView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.GONE);
         }
-
-        // Return the copy of the original ArrayList<Crew> without the elements removed previously
-        // into the loop.
-        return crewArrayListOut;
     }
 }

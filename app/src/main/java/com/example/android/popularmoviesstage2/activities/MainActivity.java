@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Clear the current moviesAdapter and fetch the new list of movies from TMDB from the
             // first page, and show it on the adapter from the first position.
             currentScrollPosition = 0;
+            recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
             currentPage = 1;
             moviesAdapter.clearMoviesArrayList();
             getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
