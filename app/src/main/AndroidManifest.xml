@@ -33,7 +33,7 @@
         <activity
             android:name=".activities.ReviewsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActionBar.Transparent"
+            android:theme="@style/AppTheme"
             android:parentActivityName=".activities.MovieDetailsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

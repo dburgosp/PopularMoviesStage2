@@ -5,6 +5,8 @@
     <!--    <dimen name="poster_height">111dp</dimen> -->
     <dimen name="poster_width">100dp</dimen>
     <dimen name="poster_height">150dp</dimen>
+    <dimen name="small_poster_width">60dp</dimen>
+    <dimen name="small_poster_height">90dp</dimen>
     <dimen name="backdrop_height">212dp</dimen>
     <dimen name="photo_width_height">118dp</dimen>
 
@@ -13,7 +15,7 @@
     <dimen name="tiny_padding">4dp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="regular_padding">12dp</dimen>
-    <dimen name="padding_with_poster">107dp</dimen>
+    <dimen name="padding_with_small_poster">84dp</dimen>
     <dimen name="header_padding">80dp</dimen>
 
     <!-- Number of columns for the main movie list depending on the device orientation. -->

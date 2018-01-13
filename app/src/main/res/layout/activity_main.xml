@@ -6,11 +6,17 @@
     android:background="@color/colorBlack"
     tools:context="com.example.android.popularmoviesstage2.activities.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_main_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_main_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_main_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <TextView
         android:id="@+id/activity_main_no_result_text_view"

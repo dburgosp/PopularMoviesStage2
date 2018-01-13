@@ -17,18 +17,18 @@ import java.util.ArrayList;
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     private static final String TAG = ReviewsAdapter.class.getSimpleName();
     private final ReviewsAdapter.OnItemClickListener listener;
-    private ArrayList<Review> reviewArrayList;
+    private ArrayList<Review> reviewsArrayList;
     private LinearLayout.LayoutParams layoutParams;
     private int currentPosition, currentPage, totalPages;
 
     /**
      * Constructor for this class.
      *
-     * @param reviewArrayList is the list of reviews that will be represented into the adapter.
-     * @param listener        is the listener for receiving the clicks.
+     * @param reviewsArrayList is the list of reviews that will be represented into the adapter.
+     * @param listener         is the listener for receiving the clicks.
      */
-    public ReviewsAdapter(ArrayList<Review> reviewArrayList, ReviewsAdapter.OnItemClickListener listener) {
-        this.reviewArrayList = reviewArrayList;
+    public ReviewsAdapter(ArrayList<Review> reviewsArrayList, ReviewsAdapter.OnItemClickListener listener) {
+        this.reviewsArrayList = reviewsArrayList;
         this.listener = listener;
         this.currentPosition = 0;
         this.currentPage = 0;
@@ -63,10 +63,16 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      * Setter method for updating the list of reviews in the adapter.
      *
      * @param reviewsArrayList is the new list of reviews.
+     * @param appendToEnd      if true, the new list will be appended to the end of the current
+     *                         reviewsArrayList; if false, the new list will be appended to the
+     *                         start.
      */
-    public void setReviewsArray(ArrayList<Review> reviewsArrayList) {
-        this.reviewArrayList.addAll(reviewsArrayList);
-        Log.i(TAG, "(setReviewsArray) Review list updated");
+    public void updateReviewsArray(ArrayList<Review> reviewsArrayList, boolean appendToEnd) {
+        if (appendToEnd)
+            this.reviewsArrayList.addAll(reviewsArrayList);
+        else
+            this.reviewsArrayList.addAll(0, reviewsArrayList);
+        Log.i(TAG, "(updateReviewsArray) Review list updated. Current size is " + this.reviewsArrayList.size());
     }
 
     /**
@@ -118,10 +124,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     @Override
     public void onBindViewHolder(ReviewsViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
-        if (!reviewArrayList.isEmpty()) {
+        if (!reviewsArrayList.isEmpty()) {
             // Get current review object and update the view holder with the review details at
             // current position in the adapter.
-            Review currentReview = reviewArrayList.get(position);
+            Review currentReview = reviewsArrayList.get(position);
             viewHolder.bind(currentReview, listener);
 
             // Set private variables in order to manage paging information.
@@ -138,7 +144,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      */
     @Override
     public int getItemCount() {
-        int itemCount = reviewArrayList.size();
+        int itemCount = reviewsArrayList.size();
         Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
         return itemCount;
     }

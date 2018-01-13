@@ -5,8 +5,10 @@
     android:id="@+id/reviews_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/regular_padding"
+    android:layout_marginBottom="@dimen/small_padding"
     android:layout_marginEnd="@dimen/regular_padding"
+    android:layout_marginStart="@dimen/regular_padding"
+    android:layout_marginTop="@dimen/small_padding"
     android:background="@color/colorWhite"
     app:cardCornerRadius="@dimen/small_padding"
     app:cardElevation="@dimen/tiny_padding">

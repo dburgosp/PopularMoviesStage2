@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView noResultsTextView;
     @BindView(R.id.activity_main_loading_indicator)
     ProgressBar progressBar;
+    @BindView(R.id.activity_main_swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
     private MoviesAdapter moviesAdapter;
-    private int currentPage = 1, currentScrollPosition = 0, scrollDy = 0;
-    private boolean isLoading = false;
+    private int currentPage, currentScrollPosition;
+    private boolean isLoading = false, appendToEnd = true;
     private ArrayList<Movie> moviesArrayList = new ArrayList<>();
 
     @Override
@@ -75,10 +78,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // to configure the RecyclerView nor initialize the loader here. These tasks will be
         // performed later in the onRestoreInstanceState method, which runs after the onCreate
         // method.
+        currentPage = 1;
+        currentScrollPosition = 0;
         if (savedInstanceState == null) {
             // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
             // getting movie information from TMDB in a separate thread.
             setRecyclerView();
+            appendToEnd = true;
             getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
         }
 
@@ -165,18 +171,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
                 int totalPages = moviesAdapter.getTotalPages();
 
-                scrollDy = dy;
-
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
                     // there are more pages to load.
                     if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
+                        appendToEnd = true;
                         getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
                     }
                 }
             }
         });
+
+        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
+        // are at the top of the RecyclerViews and we need to reload previous movies.
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        int currentShownPage = moviesAdapter.getCurrentPage();
+
+                        if (!isLoading && currentShownPage > 1) {
+                            // If we are at the top of the list and we are showing a page number
+                            // bigger than 1, we need to reload the previous page of results. The
+                            // fetched movies will be appended to the start of the RecyclerView.
+                            currentPage = currentShownPage - 1;
+                            appendToEnd = false;
+                            getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
+                        } else
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
     }
 
     /**
@@ -277,9 +303,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // Clear the current moviesAdapter and fetch the new list of movies from TMDB from the
             // first page, and show it on the adapter from the first position.
+            currentPage = 1;
+            appendToEnd = true;
             currentScrollPosition = 0;
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
-            currentPage = 1;
             moviesAdapter.clearMoviesArrayList();
             getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
         }
@@ -333,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // After restoring previous movies array and scroll position, we set the RecyclerView for
         // displaying movie posters and try to create the AsyncTaskLoader for getting movie
         // information from internet in a separate thread.
+        appendToEnd = true;
         setRecyclerView();
         getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
 
@@ -407,19 +435,22 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        if (moviesArrayList.size() > 0 && currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
-            return;
-
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         isLoading = false;
+        swipeRefreshLayout.setRefreshing(false);
+
+        // Loaders issue? onLoadFinished triggers sometimes twice returning the same page. Avoid
+        // adding the same page to the list of movies.
+        if (moviesArrayList.size() > 0 && currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
+            return;
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(this)) {
             // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
-                moviesAdapter.updateMoviesArrayList(data);
+                moviesAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");

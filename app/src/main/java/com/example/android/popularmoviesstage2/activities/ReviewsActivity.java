@@ -1,12 +1,11 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.view.Menu;
 import android.widget.ImageView;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -23,8 +22,6 @@ public class ReviewsActivity extends AppCompatActivity {
     CardView posterCardView;
     @BindView(R.id.reviews_poster)
     ImageView posterImageView;
-    @BindView(R.id.reviews_background)
-    ImageView backgroundImageView;
     @BindView(R.id.reviews_author_text_view)
     TextView authorTextView;
     @BindView(R.id.reviews_content_text_view)
@@ -33,6 +30,7 @@ public class ReviewsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Review review;
+        String movieYear;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
@@ -41,14 +39,7 @@ public class ReviewsActivity extends AppCompatActivity {
         // Get parameters from intent.
         Intent intent = getIntent();
         review = intent.getParcelableExtra("review");
-
-        // If device orientation is portrait, set backdrop height to match_parent.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int width = backgroundImageView.getLayoutParams().width;
-            int height = LayoutParams.MATCH_PARENT;
-            LayoutParams params = new LayoutParams(width, height);
-            backgroundImageView.setLayoutParams(params);
-        }
+        movieYear = intent.getStringExtra("year");
 
         // Set poster. If there is no poster, set the default poster.
         String posterPath = review.getPosterPath();
@@ -57,13 +48,8 @@ public class ReviewsActivity extends AppCompatActivity {
         else
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 
-        // Set background image.
-        String backdropPath = review.getBackdropPath();
-        if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
-
         // Set title for this activity. Otherwise, we show the default text for title.
-        String title = review.getMovieTitle();
+        String title = review.getMovieTitle() + " (" + movieYear + ")";
         if (title != null && !title.equals("") && !title.isEmpty())
             setTitle(title);
         else
@@ -112,6 +98,38 @@ public class ReviewsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         // Just finish this activity.
         finish();
+        return true;
+    }
+
+    /**
+     * Initialize the contents of the Activity's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.
+     * <p>
+     * <p>This is only called once, the first time the options menu is
+     * displayed.  To update the menu every time it is displayed, see
+     * {@link #onPrepareOptionsMenu}.
+     * <p>
+     * <p>The default implementation populates the menu with standard system
+     * menu items.  These are placed in the {@link Menu#CATEGORY_SYSTEM} group so that
+     * they will be correctly ordered with application-defined menu items.
+     * Deriving classes should always call through to the base implementation.
+     * <p>
+     * <p>You can safely hold on to <var>menu</var> (and any items created
+     * from it), making modifications to it as desired, until the next
+     * time onCreateOptionsMenu() is called.
+     * <p>
+     * <p>When you add items to the menu, you can implement the Activity's
+     * {@link #onOptionsItemSelected} method to handle them there.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.review, menu);
         return true;
     }
 }

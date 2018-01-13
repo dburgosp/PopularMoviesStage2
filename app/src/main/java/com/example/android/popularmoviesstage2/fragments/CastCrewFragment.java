@@ -256,7 +256,9 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                     castAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    setViewAllButton(viewAllCastTextView, castArrayList.size());
+                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
+                            "</strong> (" + castArrayList.size() + ")";
+                    TextUtils.setHtmlText(viewAllCastTextView, viewAllText);
                 } else {
                     // Hide section if there is no cast information for this movie.
                     castLinearLayout.setVisibility(View.GONE);
@@ -269,7 +271,9 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 ArrayList<Crew> crewArrayList = data.getCrew();
                 if (crewArrayList != null && crewArrayList.size() > 0) {
                     // Set "view all" button.
-                    setViewAllButton(viewAllCrewTextView, crewArrayList.size());
+                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
+                            "</strong> (" + crewArrayList.size() + ")";
+                    TextUtils.setHtmlText(viewAllCrewTextView, viewAllText);
 
                     /* -------------------- */
                     /* Directing department */
@@ -339,19 +343,6 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoaderReset(Loader<CastCrew> loader) {
-    }
-
-    /**
-     * Helper method to set a "View all" button in this layout.
-     *
-     * @param textView is the TextView to be set.
-     * @param size     is the number of elements to show in the TextView.
-     */
-    private void setViewAllButton(TextView textView, int size) {
-        int labelColor = getResources().getColor(R.color.colorBlack);
-        String сolorString = String.format("%X", labelColor).substring(2);
-        TextUtils.setHtmlText(textView, "<font color=\"#" + сolorString + "\"><strong>" +
-                getResources().getString(R.string.view_all) + "</strong></font> (" + size + ")");
     }
 
     /**

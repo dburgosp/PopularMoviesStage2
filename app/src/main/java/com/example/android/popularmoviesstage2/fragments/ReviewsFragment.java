@@ -3,13 +3,13 @@ package com.example.android.popularmoviesstage2.fragments;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +27,7 @@ import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.ReviewsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.net.URL;
@@ -48,10 +49,12 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     TextView noResultsTextView;
     @BindView(R.id.reviews_loading_indicator)
     ProgressBar progressBar;
+    @BindView(R.id.reviews_swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    private boolean isLoading = false;
-    private int movieId, currentPage = 1;
-    private String movieTitle, posterPath, backdropPath;
+    private boolean isLoading = false, appendToEnd = true;
+    private int movieId, currentPage;
+    private String movieTitle, posterPath, movieYear;
     private ReviewsAdapter reviewsAdapter;
 
     /**
@@ -71,7 +74,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         bundle.putInt("id", movie.getId());
         bundle.putString("title", movie.getTitle());
         bundle.putString("poster", movie.getPoster_path());
-        bundle.putString("backdrop", movie.getBackdrop_path());
+        bundle.putString("year", DateTimeUtils.getYear(movie.getRelease_date()));
         ReviewsFragment fragment = new ReviewsFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -92,19 +95,16 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
             movieId = getArguments().getInt("id");
             movieTitle = getArguments().getString("title");
             posterPath = getArguments().getString("poster");
-            backdropPath = getArguments().getString("backdrop");
-        }
-
-        // Set left padding if the device is in portrait orientation.
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mainLayout.setPadding(getResources().getDimensionPixelSize(R.dimen.regular_padding), 0, 0, 0);
+            movieYear = getArguments().getString("year");
         }
 
         // Set RecyclerViews for displaying cast & crew photos.
         setRecyclerViews();
 
         // Create an AsyncTaskLoader for retrieving reviews information from internet in a separate
-        // thread.
+        // thread. We start at page 1 and we will append reviews to the end of the RecyclerView.
+        currentPage = 1;
+        appendToEnd = true;
         getLoaderManager().initLoader(REVIEWS_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
@@ -127,11 +127,11 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                 // Set movie title and images from the info passed to the fragment when instantiated.
                 item.setMovieTitle(movieTitle);
                 item.setPosterPath(posterPath);
-                item.setBackdropPath(backdropPath);
 
                 // Start "ReviewsActivity" activity to show the complete review when the current
                 // element is clicked.
                 Intent intent = new Intent(getContext(), ReviewsActivity.class);
+                intent.putExtra("year", movieYear);
                 intent.putExtra("review", item);
                 startActivity(intent);
             }
@@ -177,13 +177,36 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
                 if (!isLoading) {
                     if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
-                        // Load next page of results.
+                        // Load next page of results. The fetched reviews will be appended at the
+                        // end of the RecyclerView.
                         currentPage++;
+                        appendToEnd = true;
                         getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
                     }
                 }
             }
         });
+
+        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
+        // are at the top of the RecyclerViews and we need to reload previous reviews.
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        int currentShownPage = reviewsAdapter.getCurrentPage();
+
+                        if (!isLoading && currentShownPage > 1) {
+                            // If we are at the top of the list and we are showing a page number
+                            // bigger than 1, we need to reload the previous page of results. The
+                            // fetched reviews will be appended to the start of the RecyclerView.
+                            currentPage = currentShownPage - 1;
+                            appendToEnd = false;
+                            getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        } else
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
     }
 
     /**
@@ -253,17 +276,18 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      */
     @Override
     public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
-        // Hide progress bar.
-        progressBar.setVisibility(View.INVISIBLE);
+        // Hide progress bar and stop refreshing animation.
         isLoading = false;
+        progressBar.setVisibility(View.INVISIBLE);
+        swipeRefreshLayout.setRefreshing(false);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link Review} objects, then add them to the adapter's
             // data set.
-            if (data != null) {
+            if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
-                reviewsAdapter.setReviewsArray(data);
+                reviewsAdapter.updateReviewsArray(data, appendToEnd);
                 reviewsAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");

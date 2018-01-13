@@ -57,9 +57,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * Setter method for updating the list of movies in the adapter.
      *
      * @param moviesArrayList is the new list of movies.
+     * @param appendToEnd     if true, the new list will be appended to the end of the current
+     *                        moviesArrayList; if false, the new list will be appended to the
+     *                        start.
      */
-    public void updateMoviesArrayList(ArrayList<Movie> moviesArrayList) {
-        this.moviesArrayList.addAll(moviesArrayList);
+    public void updateMoviesArrayList(ArrayList<Movie> moviesArrayList, boolean appendToEnd) {
+        if (appendToEnd)
+            this.moviesArrayList.addAll(moviesArrayList);
+        else
+            this.moviesArrayList.addAll(0, moviesArrayList);
         Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " + this.moviesArrayList.size());
     }
 

@@ -52,19 +52,6 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder {
     public void bind(final Review currentReview, final ReviewsAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
 
-        // If this is the first element, add a top padding to the CardView.
-        int page = currentReview.getPage();
-        int position = currentReview.getPosition();
-        if (page == 1 && position == 0) {
-            Log.i(TAG, "(bind) Page " + page + ", position " + position + ". Adding top padding to review by " + currentReview.getAuthor() + ".");
-            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) reviewsCardView.getLayoutParams();
-            layoutParams.setMargins(0,
-                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding),
-                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding),
-                    context.getResources().getDimensionPixelSize(R.dimen.regular_padding));
-            reviewsCardView.setLayoutParams(layoutParams);
-        }
-
         // Set content for the current review. This text is stored in Markdown format.
         TextUtils.setMarkdownText(contentTextView, currentReview.getContent());
 

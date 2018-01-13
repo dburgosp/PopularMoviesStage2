@@ -50,6 +50,7 @@
                     android:paddingStart="@dimen/regular_padding"
                     android:paddingTop="@dimen/tiny_padding"
                     android:text="@string/view_all"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/normal_text_size" />
             </RelativeLayout>
 
@@ -109,6 +110,7 @@
                     android:paddingStart="@dimen/regular_padding"
                     android:paddingTop="@dimen/tiny_padding"
                     android:text="@string/view_all"
+                    android:textColor="@color/colorWhite"
                     android:textSize="@dimen/normal_text_size" />
             </RelativeLayout>
 
@@ -204,7 +206,6 @@
             android:id="@+id/cast_crew_no_result_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
             android:gravity="center"
             android:padding="@dimen/regular_padding"
@@ -216,6 +217,7 @@
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/regular_padding" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
