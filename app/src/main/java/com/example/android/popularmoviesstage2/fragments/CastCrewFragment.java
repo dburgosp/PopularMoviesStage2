@@ -133,8 +133,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     /**
-     * Helper method for setting the RecyclerViews in order to display a list of persons with a grid
-     * arrangement.
+     * Helper method for setting the RecyclerViews in order to display lists of film crew and cast
+     * with a horizontal arrangement.
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.

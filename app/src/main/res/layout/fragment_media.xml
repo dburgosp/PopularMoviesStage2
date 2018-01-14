@@ -1,15 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/regular_padding"
     android:fillViewport="true"
     tools:context="com.example.android.popularmoviesstage2.fragments.MediaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/videos_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorWhite"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/regular_padding">
+
+            <RelativeLayout
+                android:id="@+id/videos_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/tiny_padding">
+
+                <TextView
+                    android:id="@+id/videos_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/videos_title"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/videos_view_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/regular_padding"
+                    android:text="@string/view_all"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/videos_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/regular_padding"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/media_separator_1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separator"
+            android:layout_below="@id/videos_linear_layout"
+            android:background="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/posters_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/media_separator_1"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/regular_padding"
+            android:paddingTop="@dimen/regular_padding">
+
+            <RelativeLayout
+                android:id="@+id/posters_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/tiny_padding">
+
+                <TextView
+                    android:id="@+id/posters_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/posters_title"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/posters_view_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/regular_padding"
+                    android:text="@string/view_all"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/posters_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/tiny_padding"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/media_separator_2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/separator"
+            android:layout_below="@id/posters_linear_layout"
+            android:background="@color/colorAccent" />
+
+        <LinearLayout
+            android:id="@+id/backdrops_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/media_separator_2"
+            android:background="@color/colorWhite"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/regular_padding">
+
+            <RelativeLayout
+                android:id="@+id/backdrops_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/tiny_padding">
+
+                <TextView
+                    android:id="@+id/backdrops_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/backdrops_title"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/backdrops_view_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/regular_padding"
+                    android:text="@string/view_all"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/backdrops_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/regular_padding"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/media_no_result_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:padding="@dimen/regular_padding"
+            android:textSize="@dimen/alert_text_size"
+            tools:text="Message to display when there are no search results" />
+
+        <ProgressBar
+            android:id="@+id/media_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/regular_padding" />
+    </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

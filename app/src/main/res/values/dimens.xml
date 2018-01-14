@@ -3,11 +3,17 @@
     <!-- Image sizes. -->
     <!--    <dimen name="poster_width">74dp</dimen> -->
     <!--    <dimen name="poster_height">111dp</dimen> -->
-    <dimen name="poster_width">100dp</dimen>
-    <dimen name="poster_height">150dp</dimen>
+    <dimen name="poster_info_width">100dp</dimen>
+    <dimen name="poster_info_height">150dp</dimen>
+    <dimen name="poster_width">120dp</dimen>
+    <dimen name="poster_height">180dp</dimen>
     <dimen name="small_poster_width">60dp</dimen>
     <dimen name="small_poster_height">90dp</dimen>
-    <dimen name="backdrop_height">212dp</dimen>
+    <dimen name="backdrop_info_height">212dp</dimen>
+    <dimen name="backdrop_width">178dp</dimen>
+    <dimen name="backdrop_height">100dp</dimen>
+    <dimen name="youtube_video_width">178dp</dimen>
+    <dimen name="youtube_video_height">100dp</dimen>
     <dimen name="photo_width_height">118dp</dimen>
 
     <!-- Paddings and margins. -->

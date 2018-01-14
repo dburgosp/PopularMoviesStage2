@@ -1,0 +1,137 @@
+package com.example.android.popularmoviesstage2.classes;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Public class for managing the images (posters and backdrops) related to a movie.
+ */
+public class Image implements Parcelable {
+    private Double aspect_ratio;
+    private String file_path;
+    private int height;
+    private String iso_639_1;
+    private int vote_average;
+    private int vote_count;
+    private int width;
+
+    /**
+     * Public constructor for new instances of objects of this class.
+     *
+     * @param aspect_ratio is the aspect ratio of the image.
+     * @param file_path    is the path to append to the base url for getting this image.
+     * @param height       is the height of the file.
+     * @param iso_639_1    is the ISO 639-1 code with the country related to this image.
+     * @param vote_average is the user score for this image.
+     * @param vote_count   is the number of people who have voted this image.
+     * @param width        is the width of the image.
+     */
+    public Image(Double aspect_ratio, String file_path, int height, String iso_639_1,
+                 int vote_average, int vote_count, int width) {
+        this.aspect_ratio = aspect_ratio;
+        this.file_path = file_path;
+        this.height = height;
+        this.iso_639_1 = iso_639_1;
+        this.vote_average = vote_average;
+        this.vote_count = vote_count;
+        this.width = width;
+    }
+
+    // Getters and setters.
+
+    public Double getAspect_ratio() {
+        return aspect_ratio;
+    }
+
+    public void setAspect_ratio(Double aspect_ratio) {
+        this.aspect_ratio = aspect_ratio;
+    }
+
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public String getIso_639_1() {
+        return iso_639_1;
+    }
+
+    public void setIso_639_1(String iso_639_1) {
+        this.iso_639_1 = iso_639_1;
+    }
+
+    public int getVote_average() {
+        return vote_average;
+    }
+
+    public void setVote_average(int vote_average) {
+        this.vote_average = vote_average;
+    }
+
+    public int getVote_count() {
+        return vote_count;
+    }
+
+    public void setVote_count(int vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    // Parcelable configuration.
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.aspect_ratio);
+        dest.writeString(this.file_path);
+        dest.writeInt(this.height);
+        dest.writeString(this.iso_639_1);
+        dest.writeInt(this.vote_average);
+        dest.writeInt(this.vote_count);
+        dest.writeInt(this.width);
+    }
+
+    protected Image(Parcel in) {
+        this.aspect_ratio = (Double) in.readValue(Double.class.getClassLoader());
+        this.file_path = in.readString();
+        this.height = in.readInt();
+        this.iso_639_1 = in.readString();
+        this.vote_average = in.readInt();
+        this.vote_count = in.readInt();
+        this.width = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+        @Override
+        public Image createFromParcel(Parcel source) {
+            return new Image(source);
+        }
+
+        @Override
+        public Image[] newArray(int size) {
+            return new Image[size];
+        }
+    };
+}

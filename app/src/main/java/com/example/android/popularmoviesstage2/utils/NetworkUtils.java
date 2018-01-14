@@ -11,6 +11,8 @@ import com.example.android.popularmoviesstage2.BuildConfig;
 import com.example.android.popularmoviesstage2.classes.Cast;
 import com.example.android.popularmoviesstage2.classes.CastCrew;
 import com.example.android.popularmoviesstage2.classes.Crew;
+import com.example.android.popularmoviesstage2.classes.Image;
+import com.example.android.popularmoviesstage2.classes.Media;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.MovieCollection;
 import com.example.android.popularmoviesstage2.classes.MovieCompany;
@@ -18,6 +20,7 @@ import com.example.android.popularmoviesstage2.classes.MovieCountry;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
 import com.example.android.popularmoviesstage2.classes.MovieLanguage;
 import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.classes.Video;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,17 +35,25 @@ import java.util.Scanner;
 
 public final class NetworkUtils {
     private final static String TAG = NetworkUtils.class.getSimpleName();
+
+    private final static String BASE_URL = "https://api.themoviedb.org/3";
     public final static String THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
     public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
-    public final static String SORT_ORDER_POPULAR = "popular";
-    public final static String SORT_ORDER_TOP_RATED = "top_rated";
-    public final static String SORT_ORDER_FAVORITES = "favorites";
-    private final static String BASE_URL = "https://api.themoviedb.org/3";
+    public final static String YOUTUBE_VIDEO_PREVIEW_URL = "https://img.youtube.com/vi/";
+    public final static String YOUTUBE_VIDEO_PREVIEW_IMAGE = "/mqdefault.jpg";
+
+    public final static String POPULAR_PATH = "popular";
+    public final static String TOP_RATED_PATH = "top_rated";
+    public final static String FAVORITES_PATH = "favorites";
     private final static String MOVIE_PATH = "movie";
     private final static String CREDITS_PATH = "credits";
     private final static String REVIEWS_PATH = "reviews";
-    private final static String PARAM_PAGE = "page";
+    private final static String VIDEOS_PATH = "videos";
+    private final static String IMAGES_PATH = "images";
+
     private final static String PARAM_API_KEY = "api_key";
+    private final static String PARAM_PAGE = "page";
+    private final static String PARAM_APPEND_TO_RESPONSE = "append_to_response";
 
     public final static int OPERATION_GET_MOVIES_LIST = 1;
     public final static int OPERATION_GET_MOVIE_DETAILS = 2;
@@ -170,7 +181,7 @@ public final class NetworkUtils {
      * @return an URL for fetching a movie cast & reviews information from TheMovieDB.
      */
     public static URL buildFetchReviewsListURL(int movieId, String currentPage) {
-        Log.i(TAG, "(buildFetchReviewsListURL) Movie ID: " + movieId);
+        Log.i(TAG, "(buildFetchReviewsListURL) Movie ID " + movieId + ", page " + currentPage);
 
         // Build Uri from BASE_URL, sort order and API_KEY.
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
@@ -190,6 +201,36 @@ public final class NetworkUtils {
         }
 
         Log.i(TAG, "(buildFetchReviewsListURL) URL: " + url);
+        return url;
+    }
+
+    /**
+     * Creates an URL from {@link #BASE_URL} appending the movie id and the VIDEOS_PATH to
+     * the base path, using the {@link #API_KEY} for authentication and appending videos and images.
+     *
+     * @param movieId is the identifier of the movie.
+     * @return an URL for fetching movie videos information from TheMovieDB.
+     */
+    public static URL buildFetchMediaListURL(int movieId) {
+        Log.i(TAG, "(buildFetchMediaListURL) Movie ID " + movieId);
+
+        // Build Uri from BASE_URL, sort order and API_KEY.
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
+                .appendPath(Integer.toString(movieId))
+                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(PARAM_APPEND_TO_RESPONSE, "videos,images")
+                .build();
+
+        // Build URL from Uri.
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "(buildFetchMediaListURL) Error building URL: " + e);
+        }
+
+        Log.i(TAG, "(buildFetchMediaListURL) URL: " + url);
         return url;
     }
 
@@ -286,7 +327,28 @@ public final class NetworkUtils {
     }
 
     /**
-     * Retrieves a JSON document from the URL created previously in {@link #buildFetchMoviesListURL(String)}.
+     * Fetches videos and images related to a movie from TheMovieDB.
+     *
+     * @param url is the URL at TheMovieDB.
+     * @return an ArrayList of {@link Media} objects.
+     */
+    public static Media fetchMedia(URL url) {
+        Log.i(TAG, "(fetchMedia) URL: " + url);
+
+        // Connect to TheMovieDB and get the JSON document with the results of the query.
+        String JSONresponse = null;
+        try {
+            JSONresponse = getJSONresponse(url);
+        } catch (java.io.IOException e) {
+            Log.e(TAG, "(fetchMedia) Error retrieving JSON response: ", e);
+        }
+
+        // Parse JSON document into an array of {@link Media} objects.
+        return parseGetMediaJSON(JSONresponse);
+    }
+
+    /**
+     * Retrieves a JSON document from an URL previously created.
      *
      * @param url is the URL for retrieving the JSON document.
      * @return a String with the JSON document.
@@ -754,6 +816,148 @@ public final class NetworkUtils {
 
         // Return the list of reviews.
         return reviews;
+    }
+
+    /**
+     * Return a {@link Media} object that has been built up from parsing the JSON response given
+     * from a call to TMDB API returning a list of elements.
+     *
+     * @param JSONresponse is the JSON object to be parsed and converted to a {@link Media} object.
+     * @return a {@link Media} object parsed form the input JSON object.
+     */
+    private static Media parseGetMediaJSON(String JSONresponse) {
+        // Create an null Media object.
+        Media media = null;
+
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG, "(parseGetMediaJSON) The JSON string is empty.");
+            return null;
+        }
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown. Catch the exception so the
+        // app doesn't crash, and print the error message to the logs.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
+            // If there is no "videos" or "images" section exit returning null. Otherwise, create a
+            // new JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("videos") && resultsJSONResponse.isNull("images")) {
+                Log.i(TAG, "(parseGetMediaJSON) No \"videos\" or \"images\" sections in the JSON string.");
+                return null;
+            }
+
+            // Get the movie id.
+            int movie_id = getIntFromJSON(resultsJSONResponse, "id");
+
+            // Create an empty ArrayList that we can start adding Videos to, and extract the
+            // "videos" array, if exists.
+            ArrayList<Video> videos = new ArrayList<>();
+            if (!resultsJSONResponse.isNull("videos")) {
+                JSONObject videosSectionJSONResponse = resultsJSONResponse.getJSONObject("videos");
+                if (!videosSectionJSONResponse.isNull("results")) {
+                    JSONArray videosArrayJSONResponse = videosSectionJSONResponse.getJSONArray("results");
+                    JSONObject videoJSONResponse;
+                    for (int n = 0; n < videosArrayJSONResponse.length(); n++) {
+                        // Get a single result at position n within the list of results.
+                        videoJSONResponse = videosArrayJSONResponse.getJSONObject(n);
+
+                        // Extract the required values for the corresponding keys.
+                        String id = getStringFromJSON(videoJSONResponse, "id");
+                        String iso_639_1 = getStringFromJSON(videoJSONResponse, "iso_639_1");
+                        String iso_3166_1 = getStringFromJSON(videoJSONResponse, "iso_3166_1");
+                        String key = getStringFromJSON(videoJSONResponse, "key");
+                        String name = getStringFromJSON(videoJSONResponse, "name");
+                        String site = getStringFromJSON(videoJSONResponse, "site");
+                        int size = getIntFromJSON(videoJSONResponse, "size");
+                        String type = getStringFromJSON(videoJSONResponse, "type");
+
+                        // Create a new {@link Media} object with the data retrieved from the JSON response.
+                        Video video = new Video(id, iso_639_1, iso_3166_1, key, name, site, size, type);
+
+                        // Add the new {@link Media} to the list of media.
+                        videos.add(video);
+                    }
+                }
+
+                // Create two empty ArrayLists that we can start adding posters and backdrops Images
+                // to, and extract the "images" array, if exists.
+                ArrayList<Image> posters = new ArrayList<>();
+                ArrayList<Image> backdrops = new ArrayList<>();
+                if (!resultsJSONResponse.isNull("images")) {
+                    JSONObject imagesSectionJSONResponse = resultsJSONResponse.getJSONObject("images");
+
+                    // Extract posters information.
+                    if (!imagesSectionJSONResponse.isNull("posters")) {
+                        posters = getImagesArrayList(imagesSectionJSONResponse, "posters");
+                    }
+                    // Extract backdrops information.
+                    if (!imagesSectionJSONResponse.isNull("backdrops")) {
+                        backdrops = getImagesArrayList(imagesSectionJSONResponse, "backdrops");
+                    }
+                }
+
+                // Add info to the Media object.
+                media = new Media(movie_id, videos, posters, backdrops);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash. Print a log message with the
+            // message from the exception.
+            Log.e(TAG, "(parseGetMediaJSON) Error parsing the JSON response: ", e);
+        }
+
+        // Return the list of media.
+        return media;
+    }
+
+    /**
+     * Helper method to get an array list of Image objects from a JSON object given by a .
+     *
+     * @param resultsJSONResponse is the JSON object to be parsed.
+     * @param key                 is the key tobe searched into the JSON object. Available values:
+     *                            "posters" and "backdrops".
+     * @return an array list of Image objects.
+     */
+    static private ArrayList<Image> getImagesArrayList(JSONObject resultsJSONResponse, String key) {
+        // Create an empty array of Image elements.
+        ArrayList<Image> images = new ArrayList<>();
+
+        try {
+            JSONArray imagesArrayJSONResponse = resultsJSONResponse.getJSONArray(key);
+            JSONObject imageJSONResponse;
+            for (int n = 0; n < imagesArrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results.
+                imageJSONResponse = imagesArrayJSONResponse.getJSONObject(n);
+
+                // Extract the required values for the corresponding keys.
+                Double aspect_ratio = getDoubleFromJSON(imageJSONResponse, "aspect_ratio");
+                String file_path = getStringFromJSON(imageJSONResponse, "file_path");
+                int height = getIntFromJSON(imageJSONResponse, "height");
+                String iso_639_1 = getStringFromJSON(imageJSONResponse, "iso_639_1");
+                int vote_average = getIntFromJSON(imageJSONResponse, "vote_average");
+                int vote_count = getIntFromJSON(imageJSONResponse, "vote_count");
+                int width = getIntFromJSON(imageJSONResponse, "width");
+
+                // Create a new {@link Image} object with the data retrieved from the JSON response.
+                Image image = new Image(aspect_ratio, file_path, height, iso_639_1, vote_average,
+                        vote_count, width);
+
+                // Add the new {@link Media} to the list of media.
+                images.add(image);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash. Print a log message with the
+            // message from the exception.
+            Log.e(TAG, "(parseGetMediaJSON) Error parsing the JSON response: ", e);
+        }
+
+        // Return the previously created array. If the loop in the try/catch statement has produced
+        // no result, this array will be empty.
+        return images;
     }
 
     /**

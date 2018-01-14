@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.activity_main_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private String sortOrder = NetworkUtils.SORT_ORDER_POPULAR;
+    private String sortOrder = NetworkUtils.POPULAR_PATH;
     private MoviesAdapter moviesAdapter;
     private int currentPage, currentScrollPosition;
     private boolean isLoading = false, appendToEnd = true;
@@ -212,10 +212,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private String getSortOrderText() {
         switch (sortOrder) {
-            case NetworkUtils.SORT_ORDER_POPULAR:
+            case NetworkUtils.POPULAR_PATH:
                 return getResources().getString(R.string.order_popular);
 
-            case NetworkUtils.SORT_ORDER_TOP_RATED:
+            case NetworkUtils.TOP_RATED_PATH:
                 return getResources().getString(R.string.order_top_rated);
 
             default:
@@ -280,11 +280,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String newSortOrder;
         switch (itemId) {
             case R.id.order_popular:
-                newSortOrder = NetworkUtils.SORT_ORDER_POPULAR;
+                newSortOrder = NetworkUtils.POPULAR_PATH;
                 break;
 
             case R.id.order_top_rated:
-                newSortOrder = NetworkUtils.SORT_ORDER_TOP_RATED;
+                newSortOrder = NetworkUtils.TOP_RATED_PATH;
                 break;
 
             default:

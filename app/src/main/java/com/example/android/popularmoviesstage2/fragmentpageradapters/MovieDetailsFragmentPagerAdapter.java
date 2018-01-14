@@ -39,7 +39,7 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return CastCrewFragment.newInstance(movie);
             case 2:
-                return new MediaFragment();
+                return MediaFragment.newInstance(movie);
             default:
                 return ReviewsFragment.newInstance(movie);
         }
