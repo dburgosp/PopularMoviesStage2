@@ -94,8 +94,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                             collapsingToolbarLayout.setTitle(movie.getTitle());
                     else
                         collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
-
-
                 } else {
                     // CollapsingToolbar is expanded. Hide title.
                     collapsingToolbarLayout.setTitle("");
@@ -230,13 +228,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        // Back to parent activity with extra data.
-        /*
-        Intent returnIntent = new Intent(this, MainActivity.class);
-        returnIntent.putExtra("sortOrder", sortOrder);
-        returnIntent.putExtra("currentPosition", currentPosition);
-        this.startActivity(returnIntent);
-        */
         finish();
         return true;
     }

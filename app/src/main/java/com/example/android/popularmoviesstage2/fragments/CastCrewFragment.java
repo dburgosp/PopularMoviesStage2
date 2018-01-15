@@ -256,9 +256,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                     castAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
-                            "</strong> (" + castArrayList.size() + ")";
-                    TextUtils.setHtmlText(viewAllCastTextView, viewAllText);
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" + castArrayList.size() + ")";
+                    viewAllCastTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no cast information for this movie.
                     castLinearLayout.setVisibility(View.GONE);
@@ -271,9 +270,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 ArrayList<Crew> crewArrayList = data.getCrew();
                 if (crewArrayList != null && crewArrayList.size() > 0) {
                     // Set "view all" button.
-                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
-                            "</strong> (" + crewArrayList.size() + ")";
-                    TextUtils.setHtmlText(viewAllCrewTextView, viewAllText);
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" + crewArrayList.size() + ")";
+                    viewAllCrewTextView.setText(viewAllText);
 
                     /* -------------------- */
                     /* Directing department */

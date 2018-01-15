@@ -14,7 +14,7 @@
             android:id="@+id/cast_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
+            android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingTop="@dimen/regular_padding">
 
@@ -22,7 +22,7 @@
                 android:id="@+id/cast_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginBottom="@dimen/small_padding"
                 android:layout_marginEnd="@dimen/regular_padding"
                 android:layout_marginStart="@dimen/regular_padding"
                 android:layout_marginTop="@dimen/tiny_padding">
@@ -44,14 +44,11 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/regular_padding"
-                    android:background="@drawable/rounded_button"
-                    android:paddingBottom="@dimen/tiny_padding"
-                    android:paddingEnd="@dimen/regular_padding"
-                    android:paddingStart="@dimen/regular_padding"
-                    android:paddingTop="@dimen/tiny_padding"
                     android:text="@string/view_all"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_text_size" />
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -65,15 +62,16 @@
         <View
             android:id="@+id/cast_crew_separator"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/separator"
+            android:layout_height="1dp"
             android:layout_below="@id/cast_linear_layout"
-            android:background="@color/colorAccent" />
+            android:background="@color/colorLightGrey" />
 
         <LinearLayout
             android:id="@+id/crew_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/cast_crew_separator"
+            android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingBottom="@dimen/regular_padding"
             android:paddingTop="@dimen/regular_padding">
@@ -82,7 +80,7 @@
                 android:id="@+id/crew_relative_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginBottom="@dimen/small_padding"
                 android:layout_marginEnd="@dimen/regular_padding"
                 android:layout_marginStart="@dimen/regular_padding"
                 android:layout_marginTop="@dimen/tiny_padding">
@@ -104,14 +102,11 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/regular_padding"
-                    android:background="@drawable/rounded_button"
-                    android:paddingBottom="@dimen/tiny_padding"
-                    android:paddingEnd="@dimen/regular_padding"
-                    android:paddingStart="@dimen/regular_padding"
-                    android:paddingTop="@dimen/tiny_padding"
                     android:text="@string/view_all"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_text_size" />
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    android:textStyle="bold" />
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView

@@ -31,7 +31,6 @@ import com.example.android.popularmoviesstage2.classes.Media;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.Video;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -141,7 +140,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
     }
 
     /**
-     * Helper method for setting the RecyclerViews in order to display lists of videos and images 
+     * Helper method for setting the RecyclerViews in order to display lists of videos and images
      * with a horizontal arrangement.
      */
     void setRecyclerViews() {
@@ -268,9 +267,8 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     videosAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
-                            "</strong> (" + videosArrayList.size() + ")";
-                    TextUtils.setHtmlText(viewAllVideosTextView, viewAllText);
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" + videosArrayList.size() + ")";
+                    viewAllVideosTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no Video information for this movie.
                     videosLinearLayout.setVisibility(View.GONE);
@@ -285,11 +283,10 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     // Add the array of elements to the adapter.
                     postersAdapter.setImageArray(postersArrayList);
                     postersAdapter.notifyDataSetChanged();
-                    
+
                     // Set "view all" button.
-                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
-                            "</strong> (" + postersArrayList.size() + ")";
-                    TextUtils.setHtmlText(viewAllPostersTextView, viewAllText);
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" + postersArrayList.size() + ")";
+                    viewAllPostersTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no crew information for this movie.
                     separatorView1.setVisibility(View.GONE);
@@ -306,9 +303,8 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     backdropsAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = "<strong>" + getResources().getString(R.string.view_all) +
-                            "</strong> (" + backdropsArrayList.size() + ")";
-                    TextUtils.setHtmlText(viewAllBackdropsTextView, viewAllText);
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" + backdropsArrayList.size() + ")";
+                    viewAllBackdropsTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no backdrop information for this movie.
                     separatorView2.setVisibility(View.GONE);

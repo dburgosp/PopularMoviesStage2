@@ -11,6 +11,7 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.BackdropsAdapter;
 import com.example.android.popularmoviesstage2.classes.Image;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -67,10 +68,11 @@ public class BackdropsViewHolder extends RecyclerView.ViewHolder {
         // Set language.
         String language = currentImage.getIso_639_1();
         if (language != null && !language.equals(""))
-            language = context.getResources().getString(R.string.language) + ": " + language;
+            language = context.getResources().getString(R.string.language) + ": <strong>" + language+"</strong>";
         else
             language = context.getResources().getString(R.string.no_language);
-        languageTextView.setText(language);
+        TextUtils.setHtmlText(languageTextView, language);
+        //languageTextView.setText(language);
 
         // Set size.
         String size = currentImage.getHeight() + "x" + currentImage.getWidth();

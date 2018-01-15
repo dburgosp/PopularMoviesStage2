@@ -11,6 +11,7 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.PostersAdapter;
 import com.example.android.popularmoviesstage2.classes.Image;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -27,8 +28,6 @@ public class PostersViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     @BindView(R.id.poster_language)
     TextView languageTextView;
-    @BindView(R.id.poster_size)
-    TextView sizeTextView;
 
     private Context context;
     private View viewHolder;
@@ -66,13 +65,11 @@ public class PostersViewHolder extends RecyclerView.ViewHolder {
 
         // Set language.
         String language = currentImage.getIso_639_1();
-        if (language == null || language.equals(""))
-            language = "";
-        languageTextView.setText(language);
-
-        // Set size.
-        String size = currentImage.getHeight() + "x" + currentImage.getWidth();
-        sizeTextView.setText(size);
+        if (language != null && !language.equals(""))
+            language = context.getResources().getString(R.string.language) + ": <strong>" + language + "</strong>";
+        else
+            language = context.getResources().getString(R.string.no_language);
+        TextUtils.setHtmlText(languageTextView, language);
 
         // Set the listener for click events.
         viewHolder.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.VideosAdapter;
 import com.example.android.popularmoviesstage2.classes.Video;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -70,10 +71,10 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
         // Set video language.
         String language = currentVideo.getIso_639_1();
         if (language != null && !language.equals(""))
-            language = context.getResources().getString(R.string.language) + ": " + language;
+            language = context.getResources().getString(R.string.language) + ": <strong>" + language+"</strong>";
         else
             language = context.getResources().getString(R.string.no_language);
-        languageTextView.setText(language);
+        TextUtils.setHtmlText(languageTextView, language);
 
         // Set video resolution.
         String resolution = Integer.toString(currentVideo.getSize());

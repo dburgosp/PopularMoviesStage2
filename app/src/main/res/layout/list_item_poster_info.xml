@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/small_padding"
+    android:layout_marginEnd="@dimen/tiny_padding"
     android:layout_marginStart="@dimen/small_padding"
     android:layout_marginTop="@dimen/small_padding"
     app:cardCornerRadius="@dimen/small_padding"
@@ -29,29 +30,15 @@
             android:layout_height="@dimen/separator"
             android:background="@color/colorAccent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/poster_language"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:paddingBottom="@dimen/tiny_padding"
             android:paddingEnd="@dimen/small_padding"
             android:paddingStart="@dimen/small_padding"
-            android:paddingTop="@dimen/tiny_padding">
-
-            <TextView
-                android:id="@+id/poster_language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/normal_text_size"
-                tools:text="en" />
-
-            <TextView
-                android:id="@+id/poster_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:textSize="@dimen/normal_text_size"
-                tools:text="800x600" />
-        </LinearLayout>
+            android:paddingTop="@dimen/tiny_padding"
+            android:textSize="@dimen/normal_text_size"
+            tools:text="Language: en" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

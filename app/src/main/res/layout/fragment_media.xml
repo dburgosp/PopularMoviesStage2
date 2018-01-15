@@ -14,7 +14,7 @@
             android:id="@+id/videos_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorWhite"
+            android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingTop="@dimen/regular_padding">
 
@@ -32,6 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/tiny_padding"
                     android:text="@string/videos_title"
                     android:textAllCaps="true"
                     android:textSize="@dimen/normal_plus_text_size"
@@ -43,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/regular_padding"
+                    android:layout_marginStart="@dimen/tiny_padding"
                     android:text="@string/view_all"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
@@ -62,15 +63,16 @@
         <View
             android:id="@+id/media_separator_1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/separator"
+            android:layout_height="1dp"
             android:layout_below="@id/videos_linear_layout"
-            android:background="@color/colorAccent" />
+            android:background="@color/colorLightGrey" />
 
         <LinearLayout
             android:id="@+id/posters_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/media_separator_1"
+            android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingBottom="@dimen/regular_padding"
             android:paddingTop="@dimen/regular_padding">
@@ -89,6 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/tiny_padding"
                     android:text="@string/posters_title"
                     android:textAllCaps="true"
                     android:textSize="@dimen/normal_plus_text_size"
@@ -100,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/regular_padding"
+                    android:layout_marginStart="@dimen/tiny_padding"
                     android:text="@string/view_all"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
@@ -119,16 +122,16 @@
         <View
             android:id="@+id/media_separator_2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/separator"
+            android:layout_height="1dp"
             android:layout_below="@id/posters_linear_layout"
-            android:background="@color/colorAccent" />
+            android:background="@color/colorLightGrey" />
 
         <LinearLayout
             android:id="@+id/backdrops_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/media_separator_2"
-            android:background="@color/colorWhite"
+            android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingTop="@dimen/regular_padding">
 
@@ -146,6 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/tiny_padding"
                     android:text="@string/backdrops_title"
                     android:textAllCaps="true"
                     android:textSize="@dimen/normal_plus_text_size"
@@ -157,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/regular_padding"
+                    android:layout_marginStart="@dimen/tiny_padding"
                     android:text="@string/view_all"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
