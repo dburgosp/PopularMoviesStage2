@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:background="@color/colorBlack"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -9,5 +10,5 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/content_description_poster"
         android:scaleType="centerCrop"
-        android:src="@drawable/no_poster" />
+        android:background="@drawable/powered_by_tmdb" />
 </FrameLayout>

@@ -41,6 +41,15 @@ public class PostersAdapter extends RecyclerView.Adapter<PostersViewHolder> {
     }
 
     /**
+     * Getter method to retrieve the complete posters array.
+     *
+     * @return the posters array, imagesArrayList.
+     */
+    public ArrayList<Image> getImagesArrayList() {
+        return imagesArrayList;
+    }
+
+    /**
      * Called when RecyclerView needs a new {@link PostersViewHolder} of the given type to represent
      * an item.
      * <p>
@@ -90,9 +99,9 @@ public class PostersAdapter extends RecyclerView.Adapter<PostersViewHolder> {
     public void onBindViewHolder(PostersViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!imagesArrayList.isEmpty()) {
-            Image currentImage = imagesArrayList.get(position);
-
             // Update PostersViewHolder with the item details at current position in the adapter.
+            Image currentImage = imagesArrayList.get(position);
+            currentImage.setPosition(position);
             viewHolder.bind(currentImage, listener);
         }
     }

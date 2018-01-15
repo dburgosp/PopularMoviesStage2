@@ -91,6 +91,7 @@ public class BackdropsAdapter extends RecyclerView.Adapter<BackdropsViewHolder> 
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!imagesArrayList.isEmpty()) {
             Image currentImage = imagesArrayList.get(position);
+            currentImage.setPosition(position);
 
             // Update BackdropsViewHolder with the item details at current position in the adapter.
             viewHolder.bind(currentImage, listener);

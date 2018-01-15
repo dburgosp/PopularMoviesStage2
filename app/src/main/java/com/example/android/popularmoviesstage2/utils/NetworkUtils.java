@@ -36,9 +36,10 @@ import java.util.Scanner;
 public final class NetworkUtils {
     private final static String TAG = NetworkUtils.class.getSimpleName();
 
-    private final static String BASE_URL = "https://api.themoviedb.org/3";
+    private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
     public final static String THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
     public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    public final static String YOUTUBE_BASE_URL = "https://youtube.com/watch?v=";
     public final static String YOUTUBE_VIDEO_PREVIEW_URL = "https://img.youtube.com/vi/";
     public final static String YOUTUBE_VIDEO_PREVIEW_IMAGE = "/mqdefault.jpg";
 
@@ -92,7 +93,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the sort order to the path and using the
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the sort order to the path and using the
      * {@link #API_KEY} for authentication.
      *
      * @param sortOrder is the sort order for the movie list.
@@ -101,8 +102,8 @@ public final class NetworkUtils {
     public static URL buildFetchMoviesListURL(String sortOrder, String page) {
         Log.i(TAG, "(buildFetchMoviesListURL) Sort order: " + sortOrder);
 
-        // Build Uri from BASE_URL, sort order and API_KEY.
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
                 .appendPath(sortOrder)
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
@@ -122,7 +123,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the movie id to the path and using the
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id to the path and using the
      * {@link #API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
@@ -131,8 +132,8 @@ public final class NetworkUtils {
     public static URL buildFetchMovieDetailsURL(int movieId) {
         Log.i(TAG, "(buildFetchMovieDetailsURL) Movie ID: " + movieId);
 
-        // Build Uri from BASE_URL, movie ID and API_KEY.
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+        // Build Uri from TMDB_BASE_URL, movie ID and API_KEY.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)
@@ -143,7 +144,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the movie id and the CREDITS_PATH to
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the CREDITS_PATH to
      * the base path and using the {@link #API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
@@ -152,8 +153,8 @@ public final class NetworkUtils {
     public static URL buildFetchCastCrewListURL(int movieId) {
         Log.i(TAG, "(buildFetchCastCrewListURL) Movie ID: " + movieId);
 
-        // Build Uri from BASE_URL, movie ID, CREDITS_PATH and API_KEY.
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+        // Build Uri from TMDB_BASE_URL, movie ID, CREDITS_PATH and API_KEY.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendPath(CREDITS_PATH)
@@ -173,7 +174,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the movie id and the REVIEWS_PATH to
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the REVIEWS_PATH to
      * the base path and using the {@link #API_KEY} for authentication.
      *
      * @param movieId     is the identifier of the movie.
@@ -183,8 +184,8 @@ public final class NetworkUtils {
     public static URL buildFetchReviewsListURL(int movieId, String currentPage) {
         Log.i(TAG, "(buildFetchReviewsListURL) Movie ID " + movieId + ", page " + currentPage);
 
-        // Build Uri from BASE_URL, sort order and API_KEY.
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendPath(REVIEWS_PATH)
@@ -205,7 +206,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #BASE_URL} appending the movie id and the VIDEOS_PATH to
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the VIDEOS_PATH to
      * the base path, using the {@link #API_KEY} for authentication and appending videos and images.
      *
      * @param movieId is the identifier of the movie.
@@ -214,8 +215,8 @@ public final class NetworkUtils {
     public static URL buildFetchMediaListURL(int movieId) {
         Log.i(TAG, "(buildFetchMediaListURL) Movie ID " + movieId);
 
-        // Build Uri from BASE_URL, sort order and API_KEY.
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendQueryParameter(PARAM_API_KEY, API_KEY)

@@ -14,6 +14,7 @@ public class Image implements Parcelable {
     private int vote_average;
     private int vote_count;
     private int width;
+    private int position; // Relative to the adapter that contains this image.
 
     /**
      * Public constructor for new instances of objects of this class.
@@ -35,6 +36,7 @@ public class Image implements Parcelable {
         this.vote_average = vote_average;
         this.vote_count = vote_count;
         this.width = width;
+        this.position = 0;
     }
 
     // Getters and setters.
@@ -95,6 +97,14 @@ public class Image implements Parcelable {
         this.width = width;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     // Parcelable configuration.
 
     @Override
@@ -111,6 +121,7 @@ public class Image implements Parcelable {
         dest.writeInt(this.vote_average);
         dest.writeInt(this.vote_count);
         dest.writeInt(this.width);
+        dest.writeInt(this.position);
     }
 
     protected Image(Parcel in) {
@@ -121,6 +132,7 @@ public class Image implements Parcelable {
         this.vote_average = in.readInt();
         this.vote_count = in.readInt();
         this.width = in.readInt();
+        this.position = in.readInt();
     }
 
     public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {

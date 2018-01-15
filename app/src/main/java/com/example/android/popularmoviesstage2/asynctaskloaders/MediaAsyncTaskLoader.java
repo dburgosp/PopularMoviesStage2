@@ -16,6 +16,8 @@ public class MediaAsyncTaskLoader extends AsyncTaskLoader<Media> {
     private Media media;
     private URL url;
 
+    public static final int LOADER_ID = 4;
+
     /**
      * Constructor for this class.
      *

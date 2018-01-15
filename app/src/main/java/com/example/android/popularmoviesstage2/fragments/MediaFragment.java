@@ -2,7 +2,9 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.PostersActivity;
 import com.example.android.popularmoviesstage2.adapters.BackdropsAdapter;
 import com.example.android.popularmoviesstage2.adapters.PostersAdapter;
 import com.example.android.popularmoviesstage2.adapters.VideosAdapter;
@@ -40,9 +43,6 @@ import butterknife.ButterKnife;
 
 public class MediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<Media> {
     private static final String TAG = MediaFragment.class.getSimpleName();
-    private static final int VIDEO_LOADER_ID = 4;
-    private static final int VIDEO_MAX_ELEMENTS = 10;
-    private static final int IMAGE_MAX_ELEMENTS = 10;
 
     @BindView(R.id.media_no_result_text_view)
     TextView noResultsTextView;
@@ -133,7 +133,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
 
         // Create AsyncTaskLoaders for retrieving Video & Image information from internet in
         // separate threads.
-        getLoaderManager().initLoader(VIDEO_LOADER_ID, null, this);
+        getLoaderManager().initLoader(MediaAsyncTaskLoader.LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -152,19 +152,29 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         postersRecyclerView.setHasFixedSize(true);
         backdropsRecyclerView.setHasFixedSize(true);
 
-        // Set the listeners for click events in the adapters.
+        // Set the listener for click events in the videos adapter.
         VideosAdapter.OnItemClickListener videoListener = new VideosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Video item) {
-                Toast.makeText(getContext(), "Video item clicked", Toast.LENGTH_SHORT).show();
+                // Implicit intent for playing the YouTube video.
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(NetworkUtils.YOUTUBE_BASE_URL + item.getKey()));
+                startActivity(intent);
             }
         };
-        PostersAdapter.OnItemClickListener posterListener = new PostersAdapter.OnItemClickListener() {
+
+        // Set the listener for click events in the posters adapter.
+        final PostersAdapter.OnItemClickListener posterListener = new PostersAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Image item) {
-                Toast.makeText(getContext(), "Poster item clicked", Toast.LENGTH_SHORT).show();
+                // Explicit intent to open PostersActivity and show current poster at full screen.
+                Intent intent = new Intent(getContext(), PostersActivity.class);
+                intent.putExtra("postersArray", postersAdapter.getImagesArrayList());
+                intent.putExtra("currentPoster", item.getPosition());
+                startActivity(intent);
             }
         };
+
+        // Set the listener for click events in the backdrops adapter.
         BackdropsAdapter.OnItemClickListener backdropListener = new BackdropsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Image item) {
