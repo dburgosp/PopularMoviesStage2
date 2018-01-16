@@ -33,10 +33,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
-
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int MOVIES_LOADER_ID = 0;
@@ -132,26 +128,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to
         // load another page of results.
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            /**
-             * Callback method to be invoked when RecyclerView's scroll state changes.
-             *
-             * @param recyclerView The RecyclerView whose scroll state has changed.
-             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
-             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
-             */
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                switch (newState) {
-                    case SCROLL_STATE_IDLE:
-                        break;
-                    case SCROLL_STATE_DRAGGING:
-                        break;
-                    case SCROLL_STATE_SETTLING:
-                        break;
-                }
-            }
-
             /**
              * Callback method to be invoked when the RecyclerView has been scrolled. This will be
              * called after the scroll has completed.

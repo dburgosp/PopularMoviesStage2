@@ -64,7 +64,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
     public VideosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_video_info, parent, false);
+        View view = inflater.inflate(R.layout.list_item_video_thumbnail, parent, false);
         return new VideosViewHolder(view);
     }
 

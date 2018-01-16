@@ -381,15 +381,23 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     private void setCrewTextView(ArrayList<Crew> crewArrayList, TextView textView, LinearLayout linearLayout) {
         if (crewArrayList.size() > 0) {
             String text = "";
-            int labelColor = getResources().getColor(R.color.colorBlack);
-            String сolorString = String.format("%X", labelColor).substring(2);
+            String color = String.format("%X", getResources().getColor(R.color.colorBlack)).substring(2);
             for (int i = 0; i < crewArrayList.size(); i++) {
                 // Add members of the current department to the corresponding TextView.
-                if (i > 0)
-                    text = text + ", ";
-                text = text + "<font color=\"#" + сolorString + "\"><strong>" +
-                        crewArrayList.get(i).getName() + "</strong></font> (" +
-                        crewArrayList.get(i).getJob() + ")";
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(text);
+                stringBuilder.append("<font color=\"#");
+                stringBuilder.append(color);
+                stringBuilder.append("\"><strong>");
+                stringBuilder.append(crewArrayList.get(i).getName());
+                stringBuilder.append("</strong></font> (");
+                stringBuilder.append(crewArrayList.get(i).getJob());
+                stringBuilder.append(")");
+                if (i < (crewArrayList.size() - 1)) {
+                    // Don't append newline character to the last element.
+                    stringBuilder.append("<br>");
+                }
+                text = stringBuilder.toString();
             }
             TextUtils.setHtmlText(textView, text);
         } else {

@@ -23,6 +23,7 @@
     <string name="department_sound">Sound</string>
     <string name="department_writing">Writing</string>
     <string name="film_crew">Film crew</string>
+    <string name="full_size_image_description">Full size image</string>
     <string name="language">Language</string>
     <string name="movie_details_info">Info</string>
     <string name="movie_details_cast_crew">Cast &amp; Crew</string>
@@ -45,6 +46,7 @@
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
+    <string name="thumbnail_description">Thumbnail image</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
     <string name="view_all_crew">View complete Film Crew</string>

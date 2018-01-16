@@ -21,12 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.PostersActivity;
-import com.example.android.popularmoviesstage2.adapters.BackdropsAdapter;
-import com.example.android.popularmoviesstage2.adapters.PostersAdapter;
+import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
+import com.example.android.popularmoviesstage2.adapters.ImagesAdapter;
 import com.example.android.popularmoviesstage2.adapters.VideosAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.MediaAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Image;
@@ -90,8 +88,8 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private int movieId;
     private VideosAdapter videosAdapter;
-    private PostersAdapter postersAdapter;
-    private BackdropsAdapter backdropsAdapter;
+    private ImagesAdapter imagesAdapter;
+    private ImagesAdapter backdropsAdapter;
 
     /**
      * Required empty public constructor.
@@ -163,31 +161,37 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         };
 
         // Set the listener for click events in the posters adapter.
-        final PostersAdapter.OnItemClickListener posterListener = new PostersAdapter.OnItemClickListener() {
+        final ImagesAdapter.OnItemClickListener posterListener = new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Image item) {
-                // Explicit intent to open PostersActivity and show current poster at full screen.
-                Intent intent = new Intent(getContext(), PostersActivity.class);
-                intent.putExtra("postersArray", postersAdapter.getImagesArrayList());
-                intent.putExtra("currentPoster", item.getPosition());
+                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
+                intent.putExtra("imagesArrayList", imagesAdapter.getImagesArrayList());
+                intent.putExtra("currenImage", item.getPosition());
+                intent.putExtra("imageType", FullSizeImageActivity.IMAGE_TYPE_POSTER);
                 startActivity(intent);
             }
         };
 
         // Set the listener for click events in the backdrops adapter.
-        BackdropsAdapter.OnItemClickListener backdropListener = new BackdropsAdapter.OnItemClickListener() {
+        final ImagesAdapter.OnItemClickListener backdropListener = new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Image item) {
-                Toast.makeText(getContext(), "Backdrop item clicked", Toast.LENGTH_SHORT).show();
+                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
+                intent.putExtra("imagesArrayList", backdropsAdapter.getImagesArrayList());
+                intent.putExtra("currenImage", item.getPosition());
+                intent.putExtra("imageType", FullSizeImageActivity.IMAGE_TYPE_BACKDROP);
+                startActivity(intent);
             }
         };
 
         // Set the Adapters for the RecyclerViews.
         videosAdapter = new VideosAdapter(new ArrayList<Video>(), videoListener);
-        postersAdapter = new PostersAdapter(new ArrayList<Image>(), posterListener);
-        backdropsAdapter = new BackdropsAdapter(new ArrayList<Image>(), backdropListener);
+        imagesAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
+        backdropsAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
         videosRecyclerView.setAdapter(videosAdapter);
-        postersRecyclerView.setAdapter(postersAdapter);
+        postersRecyclerView.setAdapter(imagesAdapter);
         backdropsRecyclerView.setAdapter(backdropsAdapter);
     }
 
@@ -291,8 +295,8 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                 ArrayList<Image> postersArrayList = data.getPosters();
                 if (postersArrayList != null && postersArrayList.size() > 0) {
                     // Add the array of elements to the adapter.
-                    postersAdapter.setImageArray(postersArrayList);
-                    postersAdapter.notifyDataSetChanged();
+                    imagesAdapter.setImageArray(postersArrayList);
+                    imagesAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
                     String viewAllText = getResources().getString(R.string.view_all) + " (" + postersArrayList.size() + ")";

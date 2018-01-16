@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.android.popularmoviesstage2.classes.Image;
-import com.example.android.popularmoviesstage2.fragments.FullSizePosterFragment;
+import com.example.android.popularmoviesstage2.fragments.FullSizeImageFragment;
 
 import java.util.ArrayList;
 
@@ -25,7 +25,7 @@ public class PostersFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return FullSizePosterFragment.newInstance(imageArrayList.get(position));
+        return FullSizeImageFragment.newInstance(imageArrayList.get(position));
     }
 
     @Override

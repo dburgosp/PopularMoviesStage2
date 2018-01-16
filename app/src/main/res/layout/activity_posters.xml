@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.popularmoviesstage2.activities.PostersActivity">
+    android:background="@color/colorBlack"
+    tools:context="com.example.android.popularmoviesstage2.activities.FullSizeImageActivity">
 
     <TextView
         android:id="@+id/full_posters_result_text_view"
@@ -12,6 +13,7 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
+        android:textColor="@color/colorGrey"
         android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 

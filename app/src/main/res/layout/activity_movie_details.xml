@@ -65,9 +65,10 @@
                             android:layout_height="match_parent"
                             android:layout_alignBottom="@+id/movie_details_score_title"
                             android:layout_alignParentEnd="true"
+                            android:background="@color/colorBlack"
                             android:contentDescription="@string/content_description_poster"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/no_poster" />
+                            android:src="@drawable/default_poster" />
                     </android.support.v7.widget.CardView>
 
                     <RelativeLayout

@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage2.classes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * Public class for managing the images (posters and backdrops) related to a movie.
@@ -27,7 +28,7 @@ public class Image implements Parcelable {
      * @param vote_count   is the number of people who have voted this image.
      * @param width        is the width of the image.
      */
-    public Image(Double aspect_ratio, String file_path, int height, String iso_639_1,
+    public Image(Double aspect_ratio, @NonNull String file_path, int height, String iso_639_1,
                  int vote_average, int vote_count, int width) {
         this.aspect_ratio = aspect_ratio;
         this.file_path = file_path;

@@ -127,9 +127,8 @@
             android:id="@+id/info_no_result_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="@dimen/regular_padding"
             android:gravity="center"
+            android:padding="@dimen/regular_padding"
             android:textSize="@dimen/alert_text_size"
             tools:text="Message to display when there are no search results" />
 
@@ -138,7 +137,7 @@
             style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/regular_padding" />
+            android:layout_below="@+id/info_no_result_text_view"
+            android:layout_centerHorizontal="true" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

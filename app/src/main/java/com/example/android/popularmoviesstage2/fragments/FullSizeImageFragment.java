@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Image;
@@ -16,31 +15,34 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static android.support.v4.content.ContextCompat.getDrawable;
 
-public class FullSizePosterFragment extends Fragment {
-    private static final String TAG = FullSizePosterFragment.class.getSimpleName();
+public class FullSizeImageFragment extends Fragment {
+    private static final String TAG = FullSizeImageFragment.class.getSimpleName();
 
     @BindView(R.id.full_posters_image)
     ImageView imageView;
 
+    private Unbinder unbinder;
+
     /**
      * Required empty public constructor.
      */
-    public FullSizePosterFragment() {
+    public FullSizeImageFragment() {
     }
 
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
      * @param image is the {@link Image} object.
-     * @return a new instance of fragment FullSizePosterFragment.
+     * @return a new instance of fragment FullSizeImageFragment.
      */
-    public static FullSizePosterFragment newInstance(Image image) {
+    public static FullSizeImageFragment newInstance(Image image) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("image", image);
-        FullSizePosterFragment fragment = new FullSizePosterFragment();
+        FullSizeImageFragment fragment = new FullSizeImageFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -52,10 +54,10 @@ public class FullSizePosterFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_poster, container, false);
-        ButterKnife.bind(this, rootView);
+        View rootView = inflater.inflate(R.layout.fragment_full_size_image, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
-        // Get arguments from calling activity.
+        // Get arguments from calling activity, in order to extract image information.
         if (getArguments() != null) {
             // Get image info and show it.
             Image image = getArguments().getParcelable("image");
@@ -64,23 +66,27 @@ public class FullSizePosterFragment extends Fragment {
                 String posterPath = NetworkUtils.FULL_IMAGE_URL + imagePath;
                 Picasso.with(getContext()).load(posterPath).into(imageView);
             } else
-                imageView.setImageDrawable(getDrawable(getContext(), R.drawable.no_poster));
-
-            // Show message with some info about the image.
-            String text;
-            String language = image.getIso_639_1();
-            if (language != null && !language.equals(""))
-                text = getContext().getResources().getString(R.string.language) + ": " + language;
-            else
-                text = getContext().getResources().getString(R.string.no_language);
-            int height = image.getHeight();
-            int width = image.getWidth();
-            if (height > 0 && width > 0)
-                text = text + "\n" + getContext().getResources().getString(R.string.size) + Integer.toString(width) + "x" + Integer.toString(height);
-            Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+                imageView.setImageDrawable(getDrawable(getContext(), R.drawable.default_poster));
         }
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
+    }
+
+    /**
+     * Called when the view previously created by {@link #onCreateView} has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
+     * <em>regardless</em> of whether {@link #onCreateView} returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
+     */
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // Release resources for freeing up memory.
+        unbinder.unbind();
     }
 }
