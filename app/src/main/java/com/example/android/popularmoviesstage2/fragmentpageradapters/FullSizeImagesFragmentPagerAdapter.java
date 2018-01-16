@@ -13,11 +13,11 @@ import java.util.ArrayList;
 /**
  * Provides the appropriate {@link Fragment} for a view pager.
  */
-public class PostersFragmentPagerAdapter extends FragmentPagerAdapter {
+public class FullSizeImagesFragmentPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private ArrayList<Image> imageArrayList;
 
-    public PostersFragmentPagerAdapter(FragmentManager fm, Context context, ArrayList<Image> imageArrayList) {
+    public FullSizeImagesFragmentPagerAdapter(FragmentManager fm, Context context, ArrayList<Image> imageArrayList) {
         super(fm);
         this.context = context;
         this.imageArrayList = imageArrayList;

@@ -32,10 +32,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int MOVIES_LOADER_ID = 0;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -53,12 +53,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private int currentPage, currentScrollPosition;
     private boolean isLoading = false, appendToEnd = true;
     private ArrayList<Movie> moviesArrayList = new ArrayList<>();
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         // Get sort order if there is extra data (if we come back here from another activity).
         Intent intent = getIntent();
@@ -81,122 +82,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // getting movie information from TMDB in a separate thread.
             setRecyclerView();
             appendToEnd = true;
-            getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
+            getSupportLoaderManager().initLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
         }
 
         Log.i(TAG, "(onCreate) Activity created");
-    }
-
-    /**
-     * Helper method for setting the RecyclerView in order to display a list of movies with a grid
-     * arrangement.
-     */
-    void setRecyclerView() {
-        // Get current display metrics, depending on device rotation.
-        final DisplayUtils displayUtils = new DisplayUtils(this);
-
-        // Vertical GridLayoutManager for displaying movie posters with a number of columns
-        // determined by the current orientation of the device.
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
-
-        // Set the LayoutManager for the RecyclerView.
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setHasFixedSize(true);
-
-        // Set the listener for click events in the Adapter.
-        MoviesAdapter.OnItemClickListener listener = new MoviesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Movie movie) {
-                // Start "MovieDetailsActivity" activity to show movie details when the current
-                // element is clicked.
-                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra("sortOrder", sortOrder);
-                intent.putExtra("sortOrderText", getSortOrderText());
-                intent.putExtra("movie", movie);
-                startActivity(intent);
-            }
-        };
-
-        // Set the Adapter for the RecyclerView, according to the current display size and
-        // orientation.
-        moviesAdapter = new MoviesAdapter(moviesArrayList,
-                displayUtils.getListPosterWidthPixels(),
-                displayUtils.getListPosterHeightPixels(),
-                listener);
-        recyclerView.setAdapter(moviesAdapter);
-
-        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
-        // load another page of results.
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            /**
-             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
-             * called after the scroll has completed.
-             * <p>
-             * This callback will also be called if visible item range changes after a layout
-             * calculation. In that case, dx and dy will be 0.
-             *
-             * @param recyclerView The RecyclerView which scrolled.
-             * @param dx           The amount of horizontal scroll.
-             * @param dy           The amount of vertical scroll.
-             */
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = gridLayoutManager.getChildCount();
-                int totalItemCount = gridLayoutManager.getItemCount();
-                int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
-                int totalPages = moviesAdapter.getTotalPages();
-
-                if (!isLoading) {
-                    // Load next page of results, if we are at the bottom of the current list and
-                    // there are more pages to load.
-                    if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
-                        currentPage++;
-                        appendToEnd = true;
-                        getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
-                    }
-                }
-            }
-        });
-
-        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
-        // are at the top of the RecyclerViews and we need to reload previous movies.
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        int currentShownPage = moviesAdapter.getCurrentPage();
-
-                        if (!isLoading && currentShownPage > 1) {
-                            // If we are at the top of the list and we are showing a page number
-                            // bigger than 1, we need to reload the previous page of results. The
-                            // fetched movies will be appended to the start of the RecyclerView.
-                            currentPage = currentShownPage - 1;
-                            appendToEnd = false;
-                            getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, MainActivity.this);
-                        } else
-                            swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-        );
-    }
-
-    /**
-     * Helper method that returns a text string describing the current sort order.
-     *
-     * @return a String with the current sort order.
-     */
-    private String getSortOrderText() {
-        switch (sortOrder) {
-            case NetworkUtils.POPULAR_PATH:
-                return getResources().getString(R.string.order_popular);
-
-            case NetworkUtils.TOP_RATED_PATH:
-                return getResources().getString(R.string.order_top_rated);
-
-            default:
-                return null;
-        }
     }
 
     /**
@@ -284,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             currentScrollPosition = 0;
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
             moviesAdapter.clearMoviesArrayList();
-            getSupportLoaderManager().restartLoader(MOVIES_LOADER_ID, null, this);
+            getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
         }
 
         return true;
@@ -338,11 +227,21 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // information from internet in a separate thread.
         appendToEnd = true;
         setRecyclerView();
-        getSupportLoaderManager().initLoader(MOVIES_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
 
         // Restore last currentPosition in the grid.
         recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+    
+    /* ------ */
+    /* LOADER */
+    /* ------ */
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -450,5 +349,119 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
         isLoading = false;
+    }
+    
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Helper method for setting the RecyclerView in order to display a list of movies with a grid
+     * arrangement.
+     */
+    void setRecyclerView() {
+        // Get current display metrics, depending on device rotation.
+        final DisplayUtils displayUtils = new DisplayUtils(this);
+
+        // Vertical GridLayoutManager for displaying movie posters with a number of columns
+        // determined by the current orientation of the device.
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
+
+        // Set the LayoutManager for the RecyclerView.
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setHasFixedSize(true);
+
+        // Set the listener for click events in the Adapter.
+        MoviesAdapter.OnItemClickListener listener = new MoviesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Movie movie) {
+                // Start "MovieDetailsActivity" activity to show movie details when the current
+                // element is clicked.
+                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
+                startActivity(intent);
+            }
+        };
+
+        // Set the Adapter for the RecyclerView, according to the current display size and
+        // orientation.
+        moviesAdapter = new MoviesAdapter(moviesArrayList,
+                displayUtils.getListPosterWidthPixels(),
+                displayUtils.getListPosterHeightPixels(),
+                listener);
+        recyclerView.setAdapter(moviesAdapter);
+
+        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
+        // load another page of results.
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
+             * called after the scroll has completed.
+             * <p>
+             * This callback will also be called if visible item range changes after a layout
+             * calculation. In that case, dx and dy will be 0.
+             *
+             * @param recyclerView The RecyclerView which scrolled.
+             * @param dx           The amount of horizontal scroll.
+             * @param dy           The amount of vertical scroll.
+             */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = gridLayoutManager.getChildCount();
+                int totalItemCount = gridLayoutManager.getItemCount();
+                int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
+                int totalPages = moviesAdapter.getTotalPages();
+
+                if (!isLoading) {
+                    // Load next page of results, if we are at the bottom of the current list and
+                    // there are more pages to load.
+                    if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
+                        currentPage++;
+                        appendToEnd = true;
+                        getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, MainActivity.this);
+                    }
+                }
+            }
+        });
+
+        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
+        // are at the top of the RecyclerViews and we need to reload previous movies.
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        int currentShownPage = moviesAdapter.getCurrentPage();
+
+                        if (!isLoading && currentShownPage > 1) {
+                            // If we are at the top of the list and we are showing a page number
+                            // bigger than 1, we need to reload the previous page of results. The
+                            // fetched movies will be appended to the start of the RecyclerView.
+                            currentPage = currentShownPage - 1;
+                            appendToEnd = false;
+                            getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, MainActivity.this);
+                        } else
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Helper method that returns a text string describing the current sort order.
+     *
+     * @return a String with the current sort order.
+     */
+    private String getSortOrderText() {
+        switch (sortOrder) {
+            case NetworkUtils.POPULAR_PATH:
+                return getResources().getString(R.string.order_popular);
+
+            case NetworkUtils.TOP_RATED_PATH:
+                return getResources().getString(R.string.order_top_rated);
+
+            default:
+                return null;
+        }
     }
 }

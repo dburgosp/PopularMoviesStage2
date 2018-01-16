@@ -10,7 +10,7 @@ import android.view.WindowManager;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Image;
-import com.example.android.popularmoviesstage2.fragmentpageradapters.PostersFragmentPagerAdapter;
+import com.example.android.popularmoviesstage2.fragmentpageradapters.FullSizeImagesFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.pagetransformers.DepthPageTransformer;
 import com.example.android.popularmoviesstage2.pagetransformers.ZoomOutPageTransformer;
 
@@ -28,8 +28,14 @@ public class FullSizeImageActivity extends AppCompatActivity {
     @BindView(R.id.full_posters_viewpager)
     ViewPager viewPager;
 
+    // Public Image types.
     public static final int IMAGE_TYPE_POSTER = 1;
     public static final int IMAGE_TYPE_BACKDROP = 2;
+
+    // Public extra strings.
+    public static final String EXTRA_PARAM_IMAGES_ARRAYLIST = "imagesArrayList";
+    public static final String EXTRA_PARAM_CURRENT_IMAGE = "currentImage";
+    public static final String EXTRA_PARAM_IMAGE_TYPE = "imageType";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +48,9 @@ public class FullSizeImageActivity extends AppCompatActivity {
 
         // Get arguments from calling intent.
         if (getIntent() != null) {
-            imagesArrayList = getIntent().getParcelableArrayListExtra("imagesArrayList");
-            currentImage = getIntent().getIntExtra("currentImage", 0);
-            imageType = getIntent().getIntExtra("imageType", 1);
+            imagesArrayList = getIntent().getParcelableArrayListExtra(EXTRA_PARAM_IMAGES_ARRAYLIST);
+            currentImage = getIntent().getIntExtra(EXTRA_PARAM_CURRENT_IMAGE, 0);
+            imageType = getIntent().getIntExtra(EXTRA_PARAM_IMAGE_TYPE, 1);
         }
 
         // Set layout orientation and animation between ViewPager elements according to image type.
@@ -61,7 +67,7 @@ public class FullSizeImageActivity extends AppCompatActivity {
         }
 
         // Create an adapter that knows which fragment should be shown on each page.
-        PostersFragmentPagerAdapter adapter = new PostersFragmentPagerAdapter(getSupportFragmentManager(),
+        FullSizeImagesFragmentPagerAdapter adapter = new FullSizeImagesFragmentPagerAdapter(getSupportFragmentManager(),
                 FullSizeImageActivity.this, imagesArrayList);
 
         // Set the adapter onto the view pager and go to the current page.

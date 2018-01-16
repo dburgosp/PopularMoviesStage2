@@ -35,11 +35,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 
 public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Review>> {
     private static final String TAG = ReviewsFragment.class.getSimpleName();
-    private static final int REVIEWS_LOADER_ID = 3;
 
     @BindView(R.id.reviews_relative_layout)
     RelativeLayout mainLayout;
@@ -56,6 +56,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     private int movieId, currentPage;
     private String movieTitle, posterPath, movieYear;
     private ReviewsAdapter reviewsAdapter;
+    private Unbinder unbinder;
 
     /**
      * Required empty public constructor.
@@ -88,7 +89,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_reviews, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -105,109 +106,30 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         // thread. We start at page 1 and we will append reviews to the end of the RecyclerView.
         currentPage = 1;
         appendToEnd = true;
-        getLoaderManager().initLoader(REVIEWS_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.REVIEWS_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
     }
 
     /**
-     * Helper method for setting the RecyclerViews in order to display a vertical list of reviews.
+     * Called when the view previously created by {@link #onCreateView} has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
+     * <em>regardless</em> of whether {@link #onCreateView} returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
      */
-    void setRecyclerViews() {
-        // Set the LayoutManager for the RecyclerViews.
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        reviewsRecyclerView.setLayoutManager(linearLayoutManager);
-        reviewsRecyclerView.setHasFixedSize(true);
-
-        // Set the listener for click events in the Review.
-        final ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Review item) {
-                // Set movie title and images from the info passed to the fragment when instantiated.
-                item.setMovieTitle(movieTitle);
-                item.setPosterPath(posterPath);
-
-                // Start "ReviewsActivity" activity to show the complete review when the current
-                // element is clicked.
-                Intent intent = new Intent(getContext(), ReviewsActivity.class);
-                intent.putExtra("year", movieYear);
-                intent.putExtra("review", item);
-                startActivity(intent);
-            }
-        };
-
-        // Set the Adapter for the RecyclerView.
-        reviewsAdapter = new ReviewsAdapter(new ArrayList<Review>(), reviewListener);
-        reviewsRecyclerView.setAdapter(reviewsAdapter);
-
-        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
-        // load another page of results.
-        reviewsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            /**
-             * Callback method to be invoked when RecyclerView's scroll state changes.
-             *
-             * @param recyclerView The RecyclerView whose scroll state has changed.
-             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
-             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
-             */
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            /**
-             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
-             * called after the scroll has completed.
-             * <p>
-             * This callback will also be called if visible item range changes after a layout
-             * calculation. In that case, dx and dy will be 0.
-             *
-             * @param recyclerView The RecyclerView which scrolled.
-             * @param dx           The amount of horizontal scroll.
-             * @param dy           The amount of vertical scroll.
-             */
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
-                int totalPages = reviewsAdapter.getTotalPages();
-
-                if (!isLoading) {
-                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
-                        // Load next page of results. The fetched reviews will be appended at the
-                        // end of the RecyclerView.
-                        currentPage++;
-                        appendToEnd = true;
-                        getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
-                    }
-                }
-            }
-        });
-
-        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
-        // are at the top of the RecyclerViews and we need to reload previous reviews.
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        int currentShownPage = reviewsAdapter.getCurrentPage();
-
-                        if (!isLoading && currentShownPage > 1) {
-                            // If we are at the top of the list and we are showing a page number
-                            // bigger than 1, we need to reload the previous page of results. The
-                            // fetched reviews will be appended to the start of the RecyclerView.
-                            currentPage = currentShownPage - 1;
-                            appendToEnd = false;
-                            getLoaderManager().restartLoader(REVIEWS_LOADER_ID, null, ReviewsFragment.this);
-                        } else
-                            swipeRefreshLayout.setRefreshing(false);
-                    }
-                }
-        );
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
+
+    /* ------ */
+    /* LOADER */
+    /* ------ */
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -312,5 +234,107 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<ArrayList<Review>> loader) {
         isLoading = false;
+    }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Helper method for setting the RecyclerViews in order to display a vertical list of reviews.
+     */
+    void setRecyclerViews() {
+        // Set the LayoutManager for the RecyclerViews.
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        reviewsRecyclerView.setLayoutManager(linearLayoutManager);
+        reviewsRecyclerView.setHasFixedSize(true);
+
+        // Set the listener for click events in the Review.
+        final ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Review item) {
+                // Set movie title and images from the info passed to the fragment when instantiated.
+                item.setMovieTitle(movieTitle);
+                item.setPosterPath(posterPath);
+
+                // Start "ReviewsActivity" activity to show the complete review when the current
+                // element is clicked.
+                Intent intent = new Intent(getContext(), ReviewsActivity.class);
+                intent.putExtra(ReviewsActivity.EXTRA_PARAM_REVIEW, item);
+                intent.putExtra(ReviewsActivity.EXTRA_PARAM_YEAR, movieYear);
+                startActivity(intent);
+            }
+        };
+
+        // Set the Adapter for the RecyclerView.
+        reviewsAdapter = new ReviewsAdapter(new ArrayList<Review>(), reviewListener);
+        reviewsRecyclerView.setAdapter(reviewsAdapter);
+
+        // Listen for scroll changes on the recycler view, in order to know if it is necessary to
+        // load another page of results.
+        reviewsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            /**
+             * Callback method to be invoked when RecyclerView's scroll state changes.
+             *
+             * @param recyclerView The RecyclerView whose scroll state has changed.
+             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
+             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
+             */
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            /**
+             * Callback method to be invoked when the RecyclerView has been scrolled. This will be
+             * called after the scroll has completed.
+             * <p>
+             * This callback will also be called if visible item range changes after a layout
+             * calculation. In that case, dx and dy will be 0.
+             *
+             * @param recyclerView The RecyclerView which scrolled.
+             * @param dx           The amount of horizontal scroll.
+             * @param dy           The amount of vertical scroll.
+             */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+                int totalPages = reviewsAdapter.getTotalPages();
+
+                if (!isLoading) {
+                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                        // Load next page of results. The fetched reviews will be appended at the
+                        // end of the RecyclerView.
+                        currentPage++;
+                        appendToEnd = true;
+                        getLoaderManager().restartLoader(NetworkUtils.REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                    }
+                }
+            }
+        });
+
+        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
+        // are at the top of the RecyclerViews and we need to reload previous reviews.
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        int currentShownPage = reviewsAdapter.getCurrentPage();
+
+                        if (!isLoading && currentShownPage > 1) {
+                            // If we are at the top of the list and we are showing a page number
+                            // bigger than 1, we need to reload the previous page of results. The
+                            // fetched reviews will be appended to the start of the RecyclerView.
+                            currentPage = currentShownPage - 1;
+                            appendToEnd = false;
+                            getLoaderManager().restartLoader(NetworkUtils.REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        } else
+                            swipeRefreshLayout.setRefreshing(false);
+                    }
+                }
+        );
     }
 }

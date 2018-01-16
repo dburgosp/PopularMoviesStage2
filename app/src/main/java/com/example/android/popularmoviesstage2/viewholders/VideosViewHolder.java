@@ -60,7 +60,7 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
         // Draw backdrop image for current video.
         String videoImagePath = currentVideo.getKey();
         if (videoImagePath != null && !videoImagePath.equals("") && !videoImagePath.isEmpty()) {
-            String posterPath = NetworkUtils.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + NetworkUtils.YOUTUBE_VIDEO_PREVIEW_IMAGE;
+            String posterPath = NetworkUtils.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + NetworkUtils.YOUTUBE_VIDEO_MQDEFAULT_IMAGE;
             Picasso.with(context).load(posterPath).into(videoImageView);
         } else
             videoImageView.setImageDrawable(getDrawable(context, R.drawable.no_movie));

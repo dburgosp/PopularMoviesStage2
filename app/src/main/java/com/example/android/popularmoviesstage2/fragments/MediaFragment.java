@@ -38,6 +38,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<Media> {
     private static final String TAG = MediaFragment.class.getSimpleName();
@@ -88,8 +89,9 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private int movieId;
     private VideosAdapter videosAdapter;
-    private ImagesAdapter imagesAdapter;
+    private ImagesAdapter postersAdapter;
     private ImagesAdapter backdropsAdapter;
+    private Unbinder unbinder;
 
     /**
      * Required empty public constructor.
@@ -119,7 +121,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_media, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -131,69 +133,30 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
 
         // Create AsyncTaskLoaders for retrieving Video & Image information from internet in
         // separate threads.
-        getLoaderManager().initLoader(MediaAsyncTaskLoader.LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.MEDIA_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
     }
 
     /**
-     * Helper method for setting the RecyclerViews in order to display lists of videos and images
-     * with a horizontal arrangement.
+     * Called when the view previously created by {@link #onCreateView} has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
+     * <em>regardless</em> of whether {@link #onCreateView} returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
      */
-    void setRecyclerViews() {
-        // Set the LayoutManagers for the RecyclerViews.
-        videosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        postersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        backdropsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        videosRecyclerView.setHasFixedSize(true);
-        postersRecyclerView.setHasFixedSize(true);
-        backdropsRecyclerView.setHasFixedSize(true);
-
-        // Set the listener for click events in the videos adapter.
-        VideosAdapter.OnItemClickListener videoListener = new VideosAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Video item) {
-                // Implicit intent for playing the YouTube video.
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(NetworkUtils.YOUTUBE_BASE_URL + item.getKey()));
-                startActivity(intent);
-            }
-        };
-
-        // Set the listener for click events in the posters adapter.
-        final ImagesAdapter.OnItemClickListener posterListener = new ImagesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Image item) {
-                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
-                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
-                intent.putExtra("imagesArrayList", imagesAdapter.getImagesArrayList());
-                intent.putExtra("currenImage", item.getPosition());
-                intent.putExtra("imageType", FullSizeImageActivity.IMAGE_TYPE_POSTER);
-                startActivity(intent);
-            }
-        };
-
-        // Set the listener for click events in the backdrops adapter.
-        final ImagesAdapter.OnItemClickListener backdropListener = new ImagesAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Image item) {
-                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
-                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
-                intent.putExtra("imagesArrayList", backdropsAdapter.getImagesArrayList());
-                intent.putExtra("currenImage", item.getPosition());
-                intent.putExtra("imageType", FullSizeImageActivity.IMAGE_TYPE_BACKDROP);
-                startActivity(intent);
-            }
-        };
-
-        // Set the Adapters for the RecyclerViews.
-        videosAdapter = new VideosAdapter(new ArrayList<Video>(), videoListener);
-        imagesAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
-        backdropsAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
-        videosRecyclerView.setAdapter(videosAdapter);
-        postersRecyclerView.setAdapter(imagesAdapter);
-        backdropsRecyclerView.setAdapter(backdropsAdapter);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
+
+    /* ------ */
+    /* LOADER */
+    /* ------ */
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -295,8 +258,8 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                 ArrayList<Image> postersArrayList = data.getPosters();
                 if (postersArrayList != null && postersArrayList.size() > 0) {
                     // Add the array of elements to the adapter.
-                    imagesAdapter.setImageArray(postersArrayList);
-                    imagesAdapter.notifyDataSetChanged();
+                    postersAdapter.setImageArray(postersArrayList);
+                    postersAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
                     String viewAllText = getResources().getString(R.string.view_all) + " (" + postersArrayList.size() + ")";
@@ -353,5 +316,67 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
      */
     @Override
     public void onLoaderReset(Loader<Media> loader) {
+    }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Helper method for setting the RecyclerViews in order to display lists of videos and images
+     * with a horizontal arrangement.
+     */
+    void setRecyclerViews() {
+        // Set the LayoutManagers for the RecyclerViews.
+        videosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        postersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        backdropsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        videosRecyclerView.setHasFixedSize(true);
+        postersRecyclerView.setHasFixedSize(true);
+        backdropsRecyclerView.setHasFixedSize(true);
+
+        // Set the listener for click events in the videos adapter.
+        VideosAdapter.OnItemClickListener videoListener = new VideosAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Video item) {
+                // Implicit intent for playing the YouTube video.
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(NetworkUtils.YOUTUBE_BASE_URL + item.getKey()));
+                startActivity(intent);
+            }
+        };
+
+        // Set the listener for click events in the posters adapter.
+        final ImagesAdapter.OnItemClickListener posterListener = new ImagesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Image item) {
+                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, postersAdapter.getImagesArrayList());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE, item.getPosition());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE, FullSizeImageActivity.IMAGE_TYPE_POSTER);
+                startActivity(intent);
+            }
+        };
+
+        // Set the listener for click events in the backdrops adapter.
+        final ImagesAdapter.OnItemClickListener backdropListener = new ImagesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Image item) {
+                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, backdropsAdapter.getImagesArrayList());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE, item.getPosition());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE, FullSizeImageActivity.IMAGE_TYPE_BACKDROP);
+                startActivity(intent);
+            }
+        };
+
+        // Set the Adapters for the RecyclerViews.
+        videosAdapter = new VideosAdapter(new ArrayList<Video>(), videoListener);
+        videosRecyclerView.setAdapter(videosAdapter);
+        postersAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
+        postersRecyclerView.setAdapter(postersAdapter);
+        backdropsAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
+        backdropsRecyclerView.setAdapter(backdropsAdapter);
     }
 }

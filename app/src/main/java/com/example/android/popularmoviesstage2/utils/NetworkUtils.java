@@ -36,13 +36,15 @@ import java.util.Scanner;
 public final class NetworkUtils {
     private final static String TAG = NetworkUtils.class.getSimpleName();
 
+    // URLs.
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
     public final static String THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
     public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     public final static String YOUTUBE_BASE_URL = "https://youtube.com/watch?v=";
     public final static String YOUTUBE_VIDEO_PREVIEW_URL = "https://img.youtube.com/vi/";
-    public final static String YOUTUBE_VIDEO_PREVIEW_IMAGE = "/mqdefault.jpg";
+    public final static String YOUTUBE_VIDEO_MQDEFAULT_IMAGE = "/mqdefault.jpg";
 
+    // Paths for appending to urls.
     public final static String POPULAR_PATH = "popular";
     public final static String TOP_RATED_PATH = "top_rated";
     public final static String FAVORITES_PATH = "favorites";
@@ -52,13 +54,22 @@ public final class NetworkUtils {
     private final static String VIDEOS_PATH = "videos";
     private final static String IMAGES_PATH = "images";
 
+    // Parameters for using with urls.
     private final static String PARAM_API_KEY = "api_key";
     private final static String PARAM_PAGE = "page";
     private final static String PARAM_APPEND_TO_RESPONSE = "append_to_response";
 
+    // Filters for getting movies lists.
     public final static int OPERATION_GET_MOVIES_LIST = 1;
     public final static int OPERATION_GET_MOVIE_DETAILS = 2;
     public final static int REVIEWS_PER_PAGE = 5;
+
+    // Unique identifiers for loaders.
+    public static final int MOVIES_LOADER_ID = 1;
+    public static final int MOVIE_DETAILS_LOADER_ID = 2;
+    public static final int CAST_CREW_LOADER_ID = 3;
+    public static final int MEDIA_LOADER_ID = 4;
+    public static final int REVIEWS_LOADER_ID = 5;
 
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published

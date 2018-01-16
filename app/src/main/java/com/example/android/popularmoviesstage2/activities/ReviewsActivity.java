@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,8 +17,13 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class ReviewsActivity extends AppCompatActivity {
+    private static final String TAG = ReviewsActivity.class.getSimpleName();
+
+    // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
+    // the corresponding views.
     @BindView(R.id.reviews_cardview)
     CardView posterCardView;
     @BindView(R.id.reviews_poster)
@@ -27,48 +33,29 @@ public class ReviewsActivity extends AppCompatActivity {
     @BindView(R.id.reviews_content_text_view)
     TextView contentTextView;
 
+    private Review review;
+    private String movieYear;
+    private Unbinder unbinder;
+
+    // Public values for extra parameters for the intent to call this activity.
+    public static final String EXTRA_PARAM_REVIEW = "review";
+    public static final String EXTRA_PARAM_YEAR = "year";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Review review;
-        String movieYear;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         // Get parameters from intent.
         Intent intent = getIntent();
-        review = intent.getParcelableExtra("review");
-        movieYear = intent.getStringExtra("year");
+        review = intent.getParcelableExtra(EXTRA_PARAM_REVIEW);
+        movieYear = intent.getStringExtra(EXTRA_PARAM_YEAR);
 
-        // Set poster. If there is no poster, set the default poster.
-        String posterPath = review.getPosterPath();
-        if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
-        else
-            posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
+        // Set info for the current movie review.
+        setReview();
 
-        // Set title for this activity. Otherwise, we show the default text for title.
-        String title = review.getMovieTitle() + " (" + movieYear + ")";
-        if (title != null && !title.equals("") && !title.isEmpty())
-            setTitle(title);
-        else
-            setTitle(getResources().getString(R.string.no_title));
-
-        // Set user name. Otherwise, we show a default text.
-        String username = review.getAuthor();
-        if (username != null && !username.equals("") && !username.isEmpty())
-            TextUtils.setHtmlText(authorTextView, "<small>" + getResources().getString(R.string.a_review_by) + "</small> <strong>" + username + "</strong>");
-        else
-            authorTextView.setText(getResources().getString(R.string.no_title));
-
-        // Set review content. Otherwise, we show a default text.
-        String content = review.getContent();
-        if (content != null && !content.equals("") && !content.isEmpty()) {
-            // Text reviews are stored in Markdown format.
-            TextUtils.setMarkdownText(contentTextView, content);
-        } else
-            contentTextView.setText(getResources().getString(R.string.no_title));
+        Log.i(TAG, "(onCreate) Activity created");
     }
 
     /**
@@ -131,5 +118,48 @@ public class ReviewsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.review, menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    private void setReview() {
+        // Set poster. If there is no poster, set the default poster.
+        String posterPath = review.getPosterPath();
+        if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
+            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+        else
+            posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
+
+        // Set title for this activity, if exists. Otherwise, we show the default text for title.
+        String title = review.getMovieTitle();
+        if (title != null && !title.equals("") && !title.isEmpty()) {
+            if (movieYear != null && !movieYear.equals("") && !movieYear.isEmpty())
+                title = title + " (" + movieYear + ")";
+            setTitle(title);
+        } else
+            setTitle(getResources().getString(R.string.no_title));
+
+        // Set user name if exists. Otherwise, we show a default text.
+        String username = review.getAuthor();
+        if (username != null && !username.equals("") && !username.isEmpty())
+            TextUtils.setHtmlText(authorTextView,
+                    "<small>" + getResources().getString(R.string.a_review_by) +
+                            "</small> <strong>" + username + "</strong>");
+        else
+            authorTextView.setText(getResources().getString(R.string.no_title));
+
+        // Set review content if exists. Otherwise, we show a default text.
+        String content = review.getContent();
+        if (content != null && !content.equals("") && !content.isEmpty()) {
+            // Text reviews are stored in Markdown format.
+            TextUtils.setMarkdownText(contentTextView, content);
+        } else
+            contentTextView.setText(getResources().getString(R.string.no_title));
+
+        Log.i(TAG, "(setReview) User review written");
     }
 }

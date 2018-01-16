@@ -37,10 +37,10 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCallbacks<CastCrew> {
     private static final String TAG = CastCrewFragment.class.getSimpleName();
-    private static final int CAST_CREW_LOADER_ID = 2;
     private static final int CAST_CREW_MAX_ELEMENTS = 10;
 
     @BindView(R.id.cast_crew_no_result_text_view)
@@ -85,6 +85,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     private int movieId;
     private CastAdapter castAdapter;
     private CrewAdapter directingDepartmentAdapter;
+    private Unbinder unbinder;
 
     /**
      * Required empty public constructor.
@@ -114,7 +115,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_cast_crew, container, false);
-        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -126,43 +127,30 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Create an AsyncTaskLoader for retrieving cast & crew information from internet in a
         // separate thread.
-        getLoaderManager().initLoader(CAST_CREW_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.CAST_CREW_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
     }
 
     /**
-     * Helper method for setting the RecyclerViews in order to display lists of film crew and cast
-     * with a horizontal arrangement.
+     * Called when the view previously created by {@link #onCreateView} has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
+     * <em>regardless</em> of whether {@link #onCreateView} returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
      */
-    void setRecyclerViews() {
-        // Set the LayoutManager for the RecyclerViews.
-        castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        castRecyclerView.setHasFixedSize(true);
-        directingDepartmentRecyclerView.setHasFixedSize(true);
-
-        // Set the listeners for click events in the CastAdapters.
-        CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Cast item) {
-                Toast.makeText(getContext(), "Cast item clicked", Toast.LENGTH_SHORT).show();
-            }
-        };
-        CrewAdapter.OnItemClickListener crewListener = new CrewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Crew item) {
-                Toast.makeText(getContext(), "Crew item clicked", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        // Set the Adapters for the RecyclerViews.
-        castAdapter = new CastAdapter(new ArrayList<Cast>(), castListener);
-        directingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
-        castRecyclerView.setAdapter(castAdapter);
-        directingDepartmentRecyclerView.setAdapter(directingDepartmentAdapter);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
+
+    /* ------ */
+    /* LOADER */
+    /* ------ */
 
     /**
      * Instantiate and return a new Loader for the given ID.
@@ -341,6 +329,42 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
      */
     @Override
     public void onLoaderReset(Loader<CastCrew> loader) {
+    }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Helper method for setting the RecyclerViews in order to display lists of film crew and cast
+     * with a horizontal arrangement.
+     */
+    void setRecyclerViews() {
+        // Set the LayoutManager for the RecyclerViews.
+        castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        castRecyclerView.setHasFixedSize(true);
+        directingDepartmentRecyclerView.setHasFixedSize(true);
+
+        // Set the listeners for click events in the CastAdapters.
+        CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Cast item) {
+                Toast.makeText(getContext(), "Cast item clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+        CrewAdapter.OnItemClickListener crewListener = new CrewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Crew item) {
+                Toast.makeText(getContext(), "Crew item clicked", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        // Set the Adapters for the RecyclerViews.
+        castAdapter = new CastAdapter(new ArrayList<Cast>(), castListener);
+        directingDepartmentAdapter = new CrewAdapter(new ArrayList<Crew>(), crewListener);
+        castRecyclerView.setAdapter(castAdapter);
+        directingDepartmentRecyclerView.setAdapter(directingDepartmentAdapter);
     }
 
     /**
