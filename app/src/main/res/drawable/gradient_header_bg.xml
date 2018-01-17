@@ -6,9 +6,8 @@
             android:layout_height="wrap_content">
             <gradient
                 android:angle="270"
-                android:centerX="0"
-                android:startColor="@android:color/transparent"
                 android:endColor="@color/colorPrimaryDark"
+                android:startColor="@android:color/transparent"
                 android:type="linear" />
         </shape>
     </item>

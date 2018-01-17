@@ -30,7 +30,9 @@
     <string name="movie_details_reviews">Reviews</string>
     <string name="movie_details_media">Media</string>
     <string name="movie_details_title">Movie details</string>
+    <string name="no_author">Unknown author</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
+    <string name="no_content">Nothing to show&#8230;</string>
     <string name="no_language">No language</string>
     <string name="no_overview">There is no available overview for this movie right now.</string>
     <string name="no_results">The query has not produced any result.</string>

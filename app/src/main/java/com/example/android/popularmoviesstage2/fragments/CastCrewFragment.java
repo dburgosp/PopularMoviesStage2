@@ -342,7 +342,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
         castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         castRecyclerView.setHasFixedSize(true);
         directingDepartmentRecyclerView.setHasFixedSize(true);
 

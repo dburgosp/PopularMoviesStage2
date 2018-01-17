@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Image;
@@ -40,10 +38,8 @@ public class FullSizeImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_posters);
+        setContentView(R.layout.activity_full_size_images);
         ButterKnife.bind(this);
 
         // Get arguments from calling intent.
@@ -68,7 +64,7 @@ public class FullSizeImageActivity extends AppCompatActivity {
 
         // Create an adapter that knows which fragment should be shown on each page.
         FullSizeImagesFragmentPagerAdapter adapter = new FullSizeImagesFragmentPagerAdapter(getSupportFragmentManager(),
-                FullSizeImageActivity.this, imagesArrayList);
+                FullSizeImageActivity.this, imagesArrayList, imageType);
 
         // Set the adapter onto the view pager and go to the current page.
         viewPager.setAdapter(adapter);

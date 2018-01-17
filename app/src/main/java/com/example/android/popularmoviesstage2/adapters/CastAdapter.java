@@ -74,7 +74,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     public CastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_person_thumbnail, parent, false);
+        View view = inflater.inflate(R.layout.list_item_person_thumbnail_horizontal, parent, false);
         return new CastViewHolder(view);
     }
 

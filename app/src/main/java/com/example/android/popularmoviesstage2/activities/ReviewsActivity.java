@@ -52,7 +52,7 @@ public class ReviewsActivity extends AppCompatActivity {
         review = intent.getParcelableExtra(EXTRA_PARAM_REVIEW);
         movieYear = intent.getStringExtra(EXTRA_PARAM_YEAR);
 
-        // Set info for the current movie review.
+        // Set content for the current movie review.
         setReview();
 
         Log.i(TAG, "(onCreate) Activity created");
@@ -83,8 +83,8 @@ public class ReviewsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        // Just finish this activity.
         finish();
+        Log.i(TAG, "(onSupportNavigateUp) Finish activity and go back");
         return true;
     }
 
@@ -117,6 +117,7 @@ public class ReviewsActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.review, menu);
+        Log.i(TAG, "(onCreateOptionsMenu) Content of the options menu initialized");
         return true;
     }
 
@@ -124,7 +125,12 @@ public class ReviewsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        Log.i(TAG, "(onDestroy) Release resources for freeing up memory");
     }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
 
     private void setReview() {
         // Set poster. If there is no poster, set the default poster.
@@ -150,7 +156,7 @@ public class ReviewsActivity extends AppCompatActivity {
                     "<small>" + getResources().getString(R.string.a_review_by) +
                             "</small> <strong>" + username + "</strong>");
         else
-            authorTextView.setText(getResources().getString(R.string.no_title));
+            authorTextView.setText(getResources().getString(R.string.no_author));
 
         // Set review content if exists. Otherwise, we show a default text.
         String content = review.getContent();
@@ -158,7 +164,7 @@ public class ReviewsActivity extends AppCompatActivity {
             // Text reviews are stored in Markdown format.
             TextUtils.setMarkdownText(contentTextView, content);
         } else
-            contentTextView.setText(getResources().getString(R.string.no_title));
+            contentTextView.setText(getResources().getString(R.string.no_content));
 
         Log.i(TAG, "(setReview) User review written");
     }

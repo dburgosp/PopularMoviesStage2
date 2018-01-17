@@ -41,6 +41,12 @@
         </activity>
         <activity
             android:name=".activities.FullSizeImageActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.MovieDetailsActivity"
+            android:theme="@style/AppTheme.NoTitle">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
     </application>
 </manifest>

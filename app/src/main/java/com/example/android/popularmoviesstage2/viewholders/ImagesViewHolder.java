@@ -66,19 +66,20 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     public void bind(final Image currentImage, int imageType, final ImagesAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ImagesViewHolder.");
 
-        // Set image dimensions, according to its type, and draw image.
+        // Set image dimensions and default background, according to its type, and draw image.
         int widthPixels, heightPixels;
         switch (imageType) {
             case IMAGE_TYPE_POSTER: {
                 widthPixels = context.getResources().getDimensionPixelSize(R.dimen.poster_width);
                 heightPixels = context.getResources().getDimensionPixelSize(R.dimen.poster_height);
+                imageView.setBackgroundResource(R.drawable.no_poster);
                 drawImage(currentImage, R.drawable.no_poster);
                 break;
             }
             default: {
-                // Set dimensions.
                 widthPixels = context.getResources().getDimensionPixelSize(R.dimen.backdrop_width);
                 heightPixels = context.getResources().getDimensionPixelSize(R.dimen.backdrop_height);
+                imageView.setBackgroundResource(R.drawable.no_backdrop);
                 drawImage(currentImage, R.drawable.no_backdrop);
             }
         }
@@ -173,21 +174,27 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     protected void finalize() throws Throwable {
         super.finalize();
         unbinder.unbind();
+        Log.i(TAG, "(finalize) Release resources for freeing up memory");
     }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
 
     /**
      * Private helper method to draw a poster o backdrop image.
      *
-     * @param currentImage is the current {@link Image} object to be drawn.
-     * @param drawable     is the drawable resource to be drawn if the path of the current image
-     *                     produces no image.
+     * @param currentImage       is the current {@link Image} object to be drawn.
+     * @param defaultDrawableRes is the drawable resource to be drawn if the path of the current
+     *                           image produces no image.
      */
-    private void drawImage(Image currentImage, int drawable) {
+    private void drawImage(Image currentImage, int defaultDrawableRes) {
         String imagePath = currentImage.getFile_path();
         if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
             String posterPath = NetworkUtils.THUMBNAIL_IMAGE_URL + imagePath;
             Picasso.with(context).load(posterPath).into(imageView);
         } else
-            imageView.setImageDrawable(getDrawable(context, drawable));
+            // No image. Show default image.
+            imageView.setImageDrawable(getDrawable(context, defaultDrawableRes));
     }
 }

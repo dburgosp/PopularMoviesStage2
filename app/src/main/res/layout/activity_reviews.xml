@@ -35,7 +35,7 @@
         android:paddingEnd="@dimen/regular_padding"
         android:paddingTop="@dimen/regular_padding"
         android:background="@color/colorPrimary"
-        android:paddingStart="@dimen/padding_with_small_poster"
+        android:paddingStart="@dimen/padding_start_with_small_poster"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/title_text_size"
         tools:text="A review by Username" />
@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/padding_with_small_poster"
+            android:paddingStart="@dimen/padding_start_with_small_poster"
             android:paddingTop="@dimen/regular_padding"
             tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus." />
     </ScrollView>

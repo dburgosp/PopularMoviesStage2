@@ -16,16 +16,19 @@ import java.util.ArrayList;
 public class FullSizeImagesFragmentPagerAdapter extends FragmentPagerAdapter {
     private Context context;
     private ArrayList<Image> imageArrayList;
+    private int imageType;
 
-    public FullSizeImagesFragmentPagerAdapter(FragmentManager fm, Context context, ArrayList<Image> imageArrayList) {
+    public FullSizeImagesFragmentPagerAdapter(FragmentManager fm, Context context,
+                                              ArrayList<Image> imageArrayList, int imageType) {
         super(fm);
         this.context = context;
         this.imageArrayList = imageArrayList;
+        this.imageType = imageType;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return FullSizeImageFragment.newInstance(imageArrayList.get(position));
+        return FullSizeImageFragment.newInstance(imageArrayList.get(position), imageType);
     }
 
     @Override
