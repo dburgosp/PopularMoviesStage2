@@ -12,116 +12,202 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Info section -->
+
         <LinearLayout
-            android:id="@+id/info_header"
+            android:id="@+id/info_main_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorWhite"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/info_runtime_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                android:paddingTop="@dimen/regular_padding"
-                tools:text="Runtime" />
-
-            <TextView
-                android:id="@+id/info_genres_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                tools:text="Genres" />
-
-            <TextView
-                android:id="@+id/info_release_date_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/regular_padding"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                tools:text="Release date" />
 
             <TextView
                 android:id="@+id/info_tagline_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding"
+                android:padding="@dimen/regular_padding"
+                android:textColor="@color/colorBlack"
                 android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="italic"
                 tools:text="Tagline" />
 
             <View
+                android:id="@+id/info_separator_1"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/separator"
-                android:layout_marginBottom="@dimen/tiny_padding"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding"
-                android:layout_marginTop="@dimen/tiny_padding"
-                android:background="@color/colorGrey" />
+                android:layout_height="1dp"
+                android:background="@color/colorLightGrey" />
 
-            <TextView
-                android:id="@+id/info_overview_textview"
-                android:layout_width="wrap_content"
+            <!-- Header -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/regular_padding"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                android:textColor="@color/colorPrimary"
-                android:textStyle="italic"
-                tools:text="@string/no_overview" />
+                android:background="@color/colorWhite"
+                android:orientation="vertical"
+                android:padding="@dimen/regular_padding">
+
+                <LinearLayout
+                    android:id="@+id/info_runtime_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorAccent"
+                        android:paddingTop="1dp"
+                        android:src="@drawable/ic_access_time_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/info_runtime_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_padding"
+                        android:textColor="@color/colorBlack"
+                        tools:text="1h 30m" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/info_genres_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorAccent"
+                        android:paddingTop="1dp"
+                        android:src="@drawable/ic_movie_filter_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/info_genres_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_padding"
+                        android:textColor="@color/colorBlack"
+                        tools:text="Drama, science fiction, horror" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/info_production_countries_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorAccent"
+                        android:paddingTop="1dp"
+                        android:src="@drawable/ic_place_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/info_production_countries_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_padding"
+                        android:textColor="@color/colorBlack"
+                        tools:text="USA" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/info_release_date_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorAccent"
+                        android:paddingTop="1dp"
+                        android:src="@drawable/ic_date_range_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/info_release_date_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_padding"
+                        android:textColor="@color/colorBlack"
+                        tools:text="2001-01-01" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/info_overview_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:tint="@color/colorAccent"
+                        android:paddingTop="1dp"
+                        android:src="@drawable/ic_textsms_black_18dp" />
+
+                    <TextView
+                        android:id="@+id/info_overview_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/small_padding"
+                        android:textColor="@color/colorBlack"
+                        tools:text="@string/no_overview" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/info_separator_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLightGrey" />
+
+            <!-- More info -->
+
+            <LinearLayout
+                android:id="@+id/info_secondary_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/regular_padding"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/info_status_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Status" />
+
+                <TextView
+                    android:id="@+id/info_original_title_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Original title" />
+
+                <TextView
+                    android:id="@+id/info_original_language_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Original Language" />
+
+                <TextView
+                    android:id="@+id/info_budget_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Budget" />
+
+                <TextView
+                    android:id="@+id/info_revenue_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Revenue" />
+            </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:id="@+id/info_separator_1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/separator"
-            android:layout_below="@id/info_header"
-            android:background="@color/colorAccent" />
-
-        <LinearLayout
-            android:id="@+id/info_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_separator_1"
-            android:layout_margin="@dimen/regular_padding"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/info_status_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Status" />
-
-            <TextView
-                android:id="@+id/info_original_title_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Original title" />
-
-            <TextView
-                android:id="@+id/info_original_language_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Original Language" />
-
-            <TextView
-                android:id="@+id/info_budget_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Budget" />
-
-            <TextView
-                android:id="@+id/info_revenue_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Revenue" />
-        </LinearLayout>
+        <!-- Views to be shown while retrieving info -->
 
         <TextView
             android:id="@+id/info_no_result_text_view"

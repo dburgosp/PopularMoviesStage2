@@ -13,13 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.classes.MovieCountry;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
@@ -38,35 +39,50 @@ import butterknife.Unbinder;
  */
 public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
     private static final String TAG = InfoFragment.class.getSimpleName();
-    private static Movie movie;
 
-    @BindView(R.id.info_overview_textview)
-    TextView infoOverviewTextView;
-    @BindView(R.id.info_tagline_textview)
-    TextView infoTaglineTextView;
-    @BindView(R.id.info_runtime_textview)
-    TextView infoRuntimeTextView;
-    @BindView(R.id.info_genres_textview)
-    TextView infoGenresTextView;
-    @BindView(R.id.info_release_date_textview)
-    TextView infoReleaseDateTextView;
-    @BindView(R.id.info_status_textview)
-    TextView infoStatusTextView;
-    @BindView(R.id.info_original_title_textview)
-    TextView infoOriginalTitleTextView;
-    @BindView(R.id.info_original_language_textview)
-    TextView infoOriginalLanguageTextView;
-    @BindView(R.id.info_budget_textview)
-    TextView infoBudgetTextView;
-    @BindView(R.id.info_revenue_textview)
-    TextView infoRevenueTextView;
-    @BindView(R.id.info_no_result_text_view)
-    TextView noResultsTextView;
+    // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
+    // the corresponding views.
     @BindView(R.id.info_loading_indicator)
     ProgressBar progressBar;
-    @BindView(R.id.info_main_layout)
-    RelativeLayout mainLayout;
+    @BindView(R.id.info_no_result_text_view)
+    TextView noResultsTextView;
 
+    @BindView(R.id.info_main_linear_layout)
+    LinearLayout mainLinearLayout;
+    @BindView(R.id.info_tagline_textview)
+    TextView taglineTextView;
+    @BindView(R.id.info_overview_textview)
+    TextView overviewTextView;
+    @BindView(R.id.info_runtime_textview)
+    TextView runtimeTextView;
+    @BindView(R.id.info_genres_textview)
+    TextView genresTextView;
+    @BindView(R.id.info_genres_title_textview)
+    TextView genresTitleTextView;
+    @BindView(R.id.info_production_countries_textview)
+    TextView productionCountriesTextView;
+    @BindView(R.id.info_production_countries_title_textview)
+    TextView productionCountriesTitleTextView;
+    @BindView(R.id.info_release_date_textview)
+    TextView releaseDateTextView;
+
+    @BindView(R.id.info_separator_1)
+    View separatorView1;
+
+    @BindView(R.id.info_secondary_linear_layout)
+    LinearLayout secondaryLinearLayout;
+    @BindView(R.id.info_status_textview)
+    TextView statusTextView;
+    @BindView(R.id.info_original_title_textview)
+    TextView originalTitleTextView;
+    @BindView(R.id.info_original_language_textview)
+    TextView originalLanguageTextView;
+    @BindView(R.id.info_budget_textview)
+    TextView budgetTextView;
+    @BindView(R.id.info_revenue_textview)
+    TextView revenueTextView;
+
+    private static Movie movie;
     private int movieId;
     private Unbinder unbinder;
 
@@ -99,6 +115,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_info, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
+        // Clean layout.
+        clearInfo();
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -238,109 +257,175 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /* -------------- */
 
     /**
-     * Helper method to display the movie information in this fragment.
+     * Hide every info element in the layout.
+     */
+    void clearInfo() {
+        mainLinearLayout.setVisibility(View.GONE);
+        separatorView1.setVisibility(View.GONE);
+        secondaryLinearLayout.setVisibility(View.GONE);
+    }
+
+    /**
+     * Helper method to display all the movie information in this fragment.
      */
     void setMovieInfo() {
+        // Set main info section.
+        boolean mainInfoIsSet = setMainInfoSection();
+        if (mainInfoIsSet)
+            mainLinearLayout.setVisibility(View.VISIBLE);
+
+        // Set secondary info section.
+        boolean secondaryInfoIsSet = setSecondaryInfoSection();
+        if (secondaryInfoIsSet)
+            secondaryLinearLayout.setVisibility(View.VISIBLE);
+
+        // Set visibility of separator between info sections.
+        if (mainInfoIsSet && secondaryInfoIsSet)
+            separatorView1.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Set elements of primary info section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setMainInfoSection() {
+        boolean infoSectionSet = false;
+
         // Set tagline. If there is no overview, we hide this section.
         String tagline = movie.getTagline();
         if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
-            infoTaglineTextView.setText(tagline);
-            infoTaglineTextView.setVisibility(View.VISIBLE);
+            infoSectionSet = true;
+            taglineTextView.setText(tagline);
+            taglineTextView.setVisibility(View.VISIBLE);
         } else
-            infoTaglineTextView.setVisibility(View.GONE);
-
-        // Set overview. If there is no overview, we show the default text for overview.
-        String overview = movie.getOverview();
-        if (overview != null && !overview.equals("") && !overview.isEmpty())
-            infoOverviewTextView.setText(overview);
-        else
-            infoOverviewTextView.setText(R.string.no_overview);
+            taglineTextView.setVisibility(View.GONE);
 
         // Set runtime. If there is no available runtime info, we hide this section.
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
-            String html = "<strong>Runtime: </strong>" + runtime;
-            TextUtils.setHtmlText(infoRuntimeTextView, html);
-            infoRuntimeTextView.setVisibility(View.VISIBLE);
+            infoSectionSet = true;
+            runtimeTextView.setText(runtime);
+            runtimeTextView.setVisibility(View.VISIBLE);
         } else {
-            infoRuntimeTextView.setVisibility(View.GONE);
+            runtimeTextView.setVisibility(View.GONE);
         }
 
         // Set genres. If there is no available genres info, we hide this section.
         ArrayList<MovieGenre> movieGenres = movie.getGenres();
         if (movieGenres != null && movieGenres.size() > 0) {
-            String html;
-            if (movieGenres.size() == 1) {
-                html = "<strong>Genre: </strong>" + movieGenres.get(0).getName();
-            } else {
-                html = "<strong>Genres: </strong>";
-                StringBuilder stringBuilder = new StringBuilder(html);
-                for (int n = 0; n < movieGenres.size(); n++) {
-                    stringBuilder.append(movieGenres.get(n).getName());
-                    if ((n + 1) < movieGenres.size())
-                        stringBuilder.append(", ");
-                }
-                html = "" + stringBuilder;
+            infoSectionSet = true;
+            genresTitleTextView.setText(getResources().getQuantityString(R.plurals.genres, movieGenres.size()));
+            genresTitleTextView.setVisibility(View.VISIBLE);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieGenres.size(); n++) {
+                stringBuilder.append(movieGenres.get(n).getName());
+                if ((n + 1) < movieGenres.size())
+                    stringBuilder.append(", ");
             }
-            TextUtils.setHtmlText(infoGenresTextView, html);
-            infoGenresTextView.setVisibility(View.VISIBLE);
+            genresTextView.setText(stringBuilder);
+            genresTextView.setVisibility(View.VISIBLE);
         } else
-            infoGenresTextView.setVisibility(View.GONE);
+            genresTextView.setVisibility(View.GONE);
+
+        // Set production countries. If there is no available countries info, we hide this section.
+        ArrayList<MovieCountry> movieCountries = movie.getProduction_countries();
+        if (movieCountries != null && movieCountries.size() > 0) {
+            infoSectionSet = true;
+            productionCountriesTitleTextView.setText(getResources().getQuantityString(R.plurals.production_countries, movieCountries.size()));
+            productionCountriesTitleTextView.setVisibility(View.VISIBLE);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieCountries.size(); n++) {
+                stringBuilder.append(movieCountries.get(n).getName());
+                if ((n + 1) < movieCountries.size())
+                    stringBuilder.append(", ");
+            }
+            productionCountriesTextView.setText(stringBuilder);
+            productionCountriesTextView.setVisibility(View.VISIBLE);
+        } else
+            productionCountriesTextView.setVisibility(View.GONE);
 
         // Set release date. If there is no available release date, we hide this section.
         String releaseDate = movie.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
-            String html = "<strong>Release date: </strong>" + releaseDate;
-            TextUtils.setHtmlText(infoReleaseDateTextView, html);
-            infoReleaseDateTextView.setVisibility(View.VISIBLE);
+            infoSectionSet = true;
+            releaseDateTextView.setText(releaseDate);
+            releaseDateTextView.setVisibility(View.VISIBLE);
         } else
-            infoReleaseDateTextView.setVisibility(View.GONE);
+            releaseDateTextView.setVisibility(View.GONE);
+
+        // Set overview. If there is no overview, we show the default text for overview.
+        String overview = movie.getOverview();
+        if (overview != null && !overview.equals("") && !overview.isEmpty()) {
+            infoSectionSet = true;
+            overviewTextView.setText(overview);
+            overviewTextView.setVisibility(View.VISIBLE);
+        } else
+            overviewTextView.setVisibility(View.GONE);
+
+        return infoSectionSet;
+    }
+
+    /**
+     * Set elements of secondary info section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setSecondaryInfoSection() {
+        boolean infoSectionSet = false;
 
         // Set status. If there is no available status info, we hide this section.
         String status = movie.getStatus();
         if (status != null && !status.equals("") && !status.isEmpty()) {
+            infoSectionSet = true;
             String html = "<strong>Status: </strong>" + status;
-            TextUtils.setHtmlText(infoStatusTextView, html);
-            infoStatusTextView.setVisibility(View.VISIBLE);
+            TextUtils.setHtmlText(statusTextView, html);
+            statusTextView.setVisibility(View.VISIBLE);
         } else
-            infoStatusTextView.setVisibility(View.GONE);
+            statusTextView.setVisibility(View.GONE);
 
         // Set original title. If there is no available original title info, we hide this section.
         String originalTitle = movie.getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
+            infoSectionSet = true;
             String html = "<strong>Original title: </strong>" + originalTitle;
-            TextUtils.setHtmlText(infoOriginalTitleTextView, html);
-            infoOriginalTitleTextView.setVisibility(View.VISIBLE);
+            TextUtils.setHtmlText(originalTitleTextView, html);
+            originalTitleTextView.setVisibility(View.VISIBLE);
         } else
-            infoOriginalTitleTextView.setVisibility(View.GONE);
+            originalTitleTextView.setVisibility(View.GONE);
 
         // Set original language. If there is no available original language info, we hide this section.
         String originalLanguage = movie.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
+            infoSectionSet = true;
             String html = "<strong>Original language: </strong>" + originalLanguage;
-            TextUtils.setHtmlText(infoOriginalLanguageTextView, html);
-            infoOriginalLanguageTextView.setVisibility(View.VISIBLE);
+            TextUtils.setHtmlText(originalLanguageTextView, html);
+            originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
-            infoOriginalLanguageTextView.setVisibility(View.GONE);
+            originalLanguageTextView.setVisibility(View.GONE);
 
         // Set movie budget. If there is no available budget info, we hide this section.
         int budget = movie.getBudget();
         if (budget > 0) {
+            infoSectionSet = true;
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
             String html = "<strong>Budget: </strong>" + decimalFormat.format(budget) + " $";
-            TextUtils.setHtmlText(infoBudgetTextView, html);
-            infoBudgetTextView.setVisibility(View.VISIBLE);
+            TextUtils.setHtmlText(budgetTextView, html);
+            budgetTextView.setVisibility(View.VISIBLE);
         } else
-            infoBudgetTextView.setVisibility(View.GONE);
+            budgetTextView.setVisibility(View.GONE);
 
         // Set movie revenue. If there is no available revenue info, we hide this section.
         int revenue = movie.getRevenue();
         if (revenue > 0) {
+            infoSectionSet = true;
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
             String html = "<strong>Revenue: </strong>" + decimalFormat.format(revenue) + " $";
-            TextUtils.setHtmlText(infoRevenueTextView, html);
-            infoRevenueTextView.setVisibility(View.VISIBLE);
+            TextUtils.setHtmlText(revenueTextView, html);
+            revenueTextView.setVisibility(View.VISIBLE);
         } else
-            infoRevenueTextView.setVisibility(View.GONE);
+            revenueTextView.setVisibility(View.GONE);
+
+        return infoSectionSet;
     }
 }

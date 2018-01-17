@@ -39,9 +39,12 @@
     <string name="no_title">No title</string>
     <string name="order_popular">Popular movies</string>
     <string name="order_top_rated">Top rated movies</string>
+    <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
+    <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="reviews_title">User reviews</string>
+    <string name="runtime">Runtime</string>
     <string name="score_title">TMDB score</string>
     <string name="share_this">Share this</string>
     <string name="size">Size</string>
@@ -52,6 +55,16 @@
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
     <string name="view_all_crew">View complete Film Crew</string>
+
+    <plurals name="genres">
+        <item quantity="one">Genre</item>
+        <item quantity="other">Genres</item>
+    </plurals>
+
+    <plurals name="production_countries">
+        <item quantity="one">Production country</item>
+        <item quantity="other">Production countries</item>
+    </plurals>
 
     <plurals name="score_votes">
         <item quantity="one">(1 vote)</item>

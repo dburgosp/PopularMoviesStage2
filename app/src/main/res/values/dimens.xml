@@ -14,7 +14,8 @@
     <dimen name="backdrop_height">100dp</dimen>
     <dimen name="youtube_video_width">178dp</dimen>
     <dimen name="youtube_video_height">100dp</dimen>
-    <dimen name="photo_width_height">118dp</dimen>
+    <dimen name="photo_thumbnail_side">118dp</dimen>
+    <dimen name="photo_small_thumbnail_side">70dp</dimen>
 
     <!-- Paddings and margins. -->
     <dimen name="separator">2dp</dimen>
