@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.activity_main_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private String sortOrder = NetworkUtils.POPULAR_PATH;
+    private String sortOrder = NetworkUtils.TMDB_POPULAR_PATH;
     private MoviesAdapter moviesAdapter;
     private int currentPage, currentScrollPosition;
     private boolean isLoading = false, appendToEnd = true;
@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String newSortOrder;
         switch (itemId) {
             case R.id.order_popular:
-                newSortOrder = NetworkUtils.POPULAR_PATH;
+                newSortOrder = NetworkUtils.TMDB_POPULAR_PATH;
                 break;
 
             case R.id.order_top_rated:
-                newSortOrder = NetworkUtils.TOP_RATED_PATH;
+                newSortOrder = NetworkUtils.TMDB_TOP_RATED_PATH;
                 break;
 
             default:
@@ -454,10 +454,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private String getSortOrderText() {
         switch (sortOrder) {
-            case NetworkUtils.POPULAR_PATH:
+            case NetworkUtils.TMDB_POPULAR_PATH:
                 return getResources().getString(R.string.order_popular);
 
-            case NetworkUtils.TOP_RATED_PATH:
+            case NetworkUtils.TMDB_TOP_RATED_PATH:
                 return getResources().getString(R.string.order_top_rated);
 
             default:

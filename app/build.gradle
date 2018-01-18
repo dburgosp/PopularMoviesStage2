@@ -10,9 +10,10 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        // Please ensure you have a valid API KEY for themoviedb.org to use this app.
-        // A valid key will need to be entered.
-        buildConfigField("String", "API_KEY", API_KEY)
+        // Please ensure you have valid API KEYs for themoviedb.org and OMDB to use this app.
+        // Valid keys will need to be entered.
+        buildConfigField("String", "TMDB_API_KEY", TMDB_API_KEY)
+        buildConfigField("String", "OMDB_API_KEY", OMDB_API_KEY)
     }
     buildTypes {
         release {

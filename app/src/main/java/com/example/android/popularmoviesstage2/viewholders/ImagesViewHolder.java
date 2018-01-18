@@ -191,7 +191,7 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     private void drawImage(Image currentImage, int defaultDrawableRes) {
         String imagePath = currentImage.getFile_path();
         if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-            String posterPath = NetworkUtils.THUMBNAIL_IMAGE_URL + imagePath;
+            String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + imagePath;
             Picasso.with(context).load(posterPath).into(imageView);
         } else
             // No image. Show default image.

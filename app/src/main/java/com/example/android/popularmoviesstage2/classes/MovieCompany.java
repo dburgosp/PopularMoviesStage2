@@ -25,7 +25,7 @@ public class MovieCompany implements Parcelable {
      * @param headquarters   is the physical location of company headquarters.
      * @param homepage       is the url of the company web page.
      * @param id             is a unique identifier for the company.
-     * @param logo_path      is a string for appending to {@link NetworkUtils#THUMBNAIL_IMAGE_URL}
+     * @param logo_path      is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
      *                       and get the logo of the company.
      * @param name           is the name of the company, given in the currently selected language
      *                       for retrieving information from the TMDB API.

@@ -21,6 +21,7 @@ import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
@@ -202,12 +203,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+            Picasso.with(this).load(NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
 
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
+            Picasso.with(this).load(NetworkUtils.TMDB_FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
 
         // Set movie title and year.
         String title = movie.getTitle();
@@ -227,19 +228,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         String rating = String.valueOf(movie.getVote_average());
         if (!rating.equals("0.0")) {
             // Set custom progress bar.
-            int scorePercent = Math.round(10 * Float.parseFloat(rating));
-            if (scorePercent < 40) {
-                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorLowScoreBackground));
-                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorLowScoreForeground));
-            } else if (scorePercent < 70) {
-                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreBackground));
-                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorMediumScoreForeground));
-            } else {
-                scoreDonutProgress.setUnfinishedStrokeColor(getResources().getColor(R.color.colorHighScoreBackground));
-                scoreDonutProgress.setFinishedStrokeColor(getResources().getColor(R.color.colorHighScoreForeground));
-            }
-            scoreDonutProgress.setText(rating);
-            scoreDonutProgress.setDonut_progress(Integer.toString(scorePercent));
+            ScoreUtils.setRating(this, rating, scoreDonutProgress);
             scoreDonutProgress.setVisibility(View.VISIBLE);
 
             // Set number of votes with decimal separator according to the current regional

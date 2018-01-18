@@ -56,7 +56,7 @@ public class PersonsViewHolder extends RecyclerView.ViewHolder {
         Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.
-        String posterPath = NetworkUtils.THUMBNAIL_IMAGE_URL + currentPerson.getProfile_path();
+        String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + currentPerson.getProfile_path();
         Picasso.with(context).load(posterPath).into(posterImageView);
         posterImageView.setLayoutParams(layoutParams);
 

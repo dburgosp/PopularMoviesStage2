@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,16 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.OMDBAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Movie;
 import com.example.android.popularmoviesstage2.classes.MovieCountry;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
+import com.example.android.popularmoviesstage2.classes.OMDB;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -47,27 +52,43 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_no_result_text_view)
     TextView noResultsTextView;
 
-    @BindView(R.id.info_main_linear_layout)
-    LinearLayout mainLinearLayout;
+    @BindView(R.id.info_scores_linearlayout)
+    LinearLayout scoresLinearLayout;
+    @BindView(R.id.info_imdb_score)
+    DonutProgress imdbDonutProgress;
+    @BindView(R.id.info_rottentomatoes_score)
+    DonutProgress rottenTomatoesDonutProgress;
+    @BindView(R.id.info_metacritic_score)
+    DonutProgress metacriticDonutProgress;
+
+    @BindView(R.id.info_primary_cardview)
+    CardView mainCardView;
+
+    @BindView(R.id.info_overview_linearlayout)
+    LinearLayout overviewLinearLayout;
     @BindView(R.id.info_tagline_textview)
     TextView taglineTextView;
     @BindView(R.id.info_overview_textview)
     TextView overviewTextView;
+
+    @BindView(R.id.info_main_linearlayout)
+    LinearLayout mainLinearLayout;
+    @BindView(R.id.info_runtime_linearlayout)
+    LinearLayout runtimeLinearLayout;
     @BindView(R.id.info_runtime_textview)
     TextView runtimeTextView;
+    @BindView(R.id.info_genres_linearlayout)
+    LinearLayout genresLinearLayout;
     @BindView(R.id.info_genres_textview)
     TextView genresTextView;
-    @BindView(R.id.info_genres_title_textview)
-    TextView genresTitleTextView;
+    @BindView(R.id.info_production_countries_linearlayout)
+    LinearLayout productionCountriesLinearLayout;
     @BindView(R.id.info_production_countries_textview)
     TextView productionCountriesTextView;
-    @BindView(R.id.info_production_countries_title_textview)
-    TextView productionCountriesTitleTextView;
+    @BindView(R.id.info_release_date_linearlayout)
+    LinearLayout releaseDateLinearLayout;
     @BindView(R.id.info_release_date_textview)
     TextView releaseDateTextView;
-
-    @BindView(R.id.info_separator_1)
-    View separatorView1;
 
     @BindView(R.id.info_secondary_linear_layout)
     LinearLayout secondaryLinearLayout;
@@ -116,7 +137,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         View rootView = inflater.inflate(R.layout.fragment_info, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        // Clean layout.
+        // Clean layout at start.
         clearInfo();
 
         // Get arguments from calling activity.
@@ -162,16 +183,17 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
+            noResultsTextView.setText(getString(R.string.fetching_movie_info));
+            noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            noResultsTextView.setVisibility(View.INVISIBLE);
             URL searchURL = NetworkUtils.buildFetchMovieDetailsURL(movieId);
             Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
             return new MoviesAsyncTaskLoader(getContext(), searchURL, NetworkUtils.OPERATION_GET_MOVIE_DETAILS);
         } else {
             // There is no connection. Show error message.
-            progressBar.setVisibility(View.INVISIBLE);
-            noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
             Log.i(TAG, "(onCreateLoader) No internet connection.");
             return null;
         }
@@ -219,6 +241,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
+        noResultsTextView.setVisibility(View.INVISIBLE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
@@ -226,8 +249,18 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             // object.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                // Get movie info and display it.
                 movie = data.get(0);
                 setMovieInfo();
+
+                String imdbId = movie.getImdb_id();
+                if (imdbId != null && !imdbId.equals("")) {
+                    // Create an instance of an OMDBinfo class in order to fetch additional info for
+                    // this movie from OMDB API, using the just retrieved IMDB identifier of the
+                    // movie.
+                    OMDBinfo omdbInfo = new OMDBinfo(imdbId);
+                }
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
@@ -252,6 +285,119 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
     }
 
+    /**
+     * Inner class for fetching info from OMDB API.
+     */
+    class OMDBinfo implements LoaderManager.LoaderCallbacks<OMDB> {
+        private final String TAG = OMDBinfo.class.getSimpleName();
+        private OMDB omdb;
+        private String imdbId;
+
+        public OMDBinfo(String imdbId) {
+            this.imdbId = imdbId;
+            // Create an AsyncTaskLoader for retrieving additional movie information from OMDB in a
+            // separate thread.
+            getLoaderManager().initLoader(NetworkUtils.OMDB_LOADER_ID, null, this);
+        }
+
+        /**
+         * Instantiate and return a new Loader for the given ID.
+         *
+         * @param id   The ID whose loader is to be created.
+         * @param args Any arguments supplied by the caller.
+         * @return Return a new Loader instance that is ready to start loading.
+         */
+        @Override
+        public Loader<OMDB> onCreateLoader(int id, Bundle args) {
+            if (NetworkUtils.isConnected(getContext())) {
+                // There is an available connection. Fetch results from OMDB.
+                URL searchURL = NetworkUtils.buildFetchOMDBinfoURL(imdbId);
+                Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
+                return new OMDBAsyncTaskLoader(getContext(), searchURL);
+            } else {
+                // There is no connection. Show error message.
+                Log.i(TAG, "(onCreateLoader) No internet connection.");
+                return null;
+            }
+        }
+
+        /**
+         * Called when a previously created loader has finished its load.  Note
+         * that normally an application is <em>not</em> allowed to commit fragment
+         * transactions while in this call, since it can happen after an
+         * activity's state is saved.  See {@link FragmentManager#beginTransaction()
+         * FragmentManager.openTransaction()} for further discussion on this.
+         * <p>
+         * <p>This function is guaranteed to be called prior to the release of
+         * the last data that was supplied for this Loader.  At this point
+         * you should remove all use of the old data (since it will be released
+         * soon), but should not do your own release of the data since its Loader
+         * owns it and will take care of that.  The Loader will take care of
+         * management of its data so you don't have to.  In particular:
+         * <p>
+         * <ul>
+         * <li> <p>The Loader will monitor for changes to the data, and report
+         * them to you through new calls here.  You should not monitor the
+         * data yourself.  For example, if the data is a {@link Cursor}
+         * and you place it in a {@link CursorAdapter}, use
+         * the {@link CursorAdapter(Context, * Cursor, int)} constructor <em>without</em> passing
+         * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
+         * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
+         * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
+         * from doing its own observing of the Cursor, which is not needed since
+         * when a change happens you will get a new Cursor throw another call
+         * here.
+         * <li> The Loader will release the data once it knows the application
+         * is no longer using it.  For example, if the data is
+         * a {@link Cursor} from a {@link CursorLoader},
+         * you should not call close() on it yourself.  If the Cursor is being placed in a
+         * {@link CursorAdapter}, you should use the
+         * {@link CursorAdapter#swapCursor(Cursor)}
+         * method so that the old Cursor is not closed.
+         * </ul>
+         *
+         * @param loader The Loader that has finished.
+         * @param data   The data generated by the Loader.
+         */
+        @Override
+        public void onLoadFinished(Loader<OMDB> loader, OMDB data) {
+            // Check if there is an available connection.
+            if (NetworkUtils.isConnected(getContext())) {
+                // If there is a valid result, then update its data into the current {@link OMDB}
+                // object.
+                if (data != null) {
+                    Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                    // Get additional movie info and display it.
+                    omdb = data;
+                    ScoreUtils.setRating(getContext(), String.valueOf(omdb.getImdb_vote_average()), imdbDonutProgress);
+                    ScoreUtils.setRating(getContext(),String.valueOf(omdb.getRt_vote_average()), rottenTomatoesDonutProgress);
+                    ScoreUtils.setRating(getContext(),String.valueOf(omdb.getMc_vote_average()), metacriticDonutProgress);
+                    scoresLinearLayout.setVisibility(View.VISIBLE);
+                } else {
+                    Log.i(TAG, "(onLoadFinished) No search results.");
+                    scoresLinearLayout.setVisibility(View.GONE);
+                }
+            } else {
+                // There is no connection. Show error message.
+                Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                scoresLinearLayout.setVisibility(View.GONE);
+            }
+        }
+
+        /**
+         * Called when a previously created loader is being reset, and thus
+         * making its data unavailable.  The application should at this point
+         * remove any references it has to the Loader's data.
+         *
+         * @param loader The Loader that is being reset.
+         */
+        @Override
+        public void onLoaderReset(Loader<OMDB> loader) {
+
+        }
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
@@ -260,8 +406,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * Hide every info element in the layout.
      */
     void clearInfo() {
-        mainLinearLayout.setVisibility(View.GONE);
-        separatorView1.setVisibility(View.GONE);
+        scoresLinearLayout.setVisibility(View.GONE);
+        mainCardView.setVisibility(View.GONE);
         secondaryLinearLayout.setVisibility(View.GONE);
     }
 
@@ -272,16 +418,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         // Set main info section.
         boolean mainInfoIsSet = setMainInfoSection();
         if (mainInfoIsSet)
-            mainLinearLayout.setVisibility(View.VISIBLE);
+            mainCardView.setVisibility(View.VISIBLE);
 
         // Set secondary info section.
         boolean secondaryInfoIsSet = setSecondaryInfoSection();
         if (secondaryInfoIsSet)
             secondaryLinearLayout.setVisibility(View.VISIBLE);
-
-        // Set visibility of separator between info sections.
-        if (mainInfoIsSet && secondaryInfoIsSet)
-            separatorView1.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -306,17 +448,15 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
             runtimeTextView.setText(runtime);
-            runtimeTextView.setVisibility(View.VISIBLE);
+            runtimeLinearLayout.setVisibility(View.VISIBLE);
         } else {
-            runtimeTextView.setVisibility(View.GONE);
+            runtimeLinearLayout.setVisibility(View.GONE);
         }
 
         // Set genres. If there is no available genres info, we hide this section.
         ArrayList<MovieGenre> movieGenres = movie.getGenres();
         if (movieGenres != null && movieGenres.size() > 0) {
             infoSectionSet = true;
-            genresTitleTextView.setText(getResources().getQuantityString(R.plurals.genres, movieGenres.size()));
-            genresTitleTextView.setVisibility(View.VISIBLE);
             StringBuilder stringBuilder = new StringBuilder();
             for (int n = 0; n < movieGenres.size(); n++) {
                 stringBuilder.append(movieGenres.get(n).getName());
@@ -324,16 +464,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     stringBuilder.append(", ");
             }
             genresTextView.setText(stringBuilder);
-            genresTextView.setVisibility(View.VISIBLE);
+            genresLinearLayout.setVisibility(View.VISIBLE);
         } else
-            genresTextView.setVisibility(View.GONE);
+            genresLinearLayout.setVisibility(View.GONE);
 
         // Set production countries. If there is no available countries info, we hide this section.
         ArrayList<MovieCountry> movieCountries = movie.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
-            productionCountriesTitleTextView.setText(getResources().getQuantityString(R.plurals.production_countries, movieCountries.size()));
-            productionCountriesTitleTextView.setVisibility(View.VISIBLE);
             StringBuilder stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCountries.size(); n++) {
                 stringBuilder.append(movieCountries.get(n).getName());
@@ -341,27 +479,27 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     stringBuilder.append(", ");
             }
             productionCountriesTextView.setText(stringBuilder);
-            productionCountriesTextView.setVisibility(View.VISIBLE);
+            productionCountriesLinearLayout.setVisibility(View.VISIBLE);
         } else
-            productionCountriesTextView.setVisibility(View.GONE);
+            productionCountriesLinearLayout.setVisibility(View.GONE);
 
         // Set release date. If there is no available release date, we hide this section.
         String releaseDate = movie.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
             infoSectionSet = true;
             releaseDateTextView.setText(releaseDate);
-            releaseDateTextView.setVisibility(View.VISIBLE);
+            releaseDateLinearLayout.setVisibility(View.VISIBLE);
         } else
-            releaseDateTextView.setVisibility(View.GONE);
+            releaseDateLinearLayout.setVisibility(View.GONE);
 
         // Set overview. If there is no overview, we show the default text for overview.
         String overview = movie.getOverview();
         if (overview != null && !overview.equals("") && !overview.isEmpty()) {
             infoSectionSet = true;
             overviewTextView.setText(overview);
-            overviewTextView.setVisibility(View.VISIBLE);
+            overviewLinearLayout.setVisibility(View.VISIBLE);
         } else
-            overviewTextView.setVisibility(View.GONE);
+            overviewLinearLayout.setVisibility(View.GONE);
 
         return infoSectionSet;
     }

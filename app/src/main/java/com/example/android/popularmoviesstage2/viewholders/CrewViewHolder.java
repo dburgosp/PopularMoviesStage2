@@ -57,7 +57,7 @@ public class CrewViewHolder extends RecyclerView.ViewHolder {
         // Draw profile image for current person and resize image to fit screen size and orientation.
         String profilePath = currentPerson.getProfile_path();
         if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
-            String posterPath = NetworkUtils.THUMBNAIL_IMAGE_URL + profilePath;
+            String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + profilePath;
             Picasso.with(context).load(posterPath).into(posterImageView);
         } else
             posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));

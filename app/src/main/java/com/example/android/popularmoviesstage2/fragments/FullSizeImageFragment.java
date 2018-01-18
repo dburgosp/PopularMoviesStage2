@@ -85,7 +85,7 @@ public class FullSizeImageFragment extends Fragment {
             Image image = getArguments().getParcelable(PARAM_IMAGE);
             String imagePath = image.getFile_path();
             if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-                String posterPath = NetworkUtils.FULL_IMAGE_URL + imagePath;
+                String posterPath = NetworkUtils.TMDB_FULL_IMAGE_URL + imagePath;
                 Picasso.with(getContext()).load(posterPath).into(imageView);
             } else {
                 // No image. Show default image.

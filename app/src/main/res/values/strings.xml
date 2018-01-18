@@ -22,11 +22,12 @@
     <string name="department_visual_effects">Visual Effects</string>
     <string name="department_sound">Sound</string>
     <string name="department_writing">Writing</string>
+    <string name="fetching_movie_info">Fetching movie information&#8230;</string>
     <string name="film_crew">Film crew</string>
     <string name="full_size_image_description">Full size image</string>
     <string name="language">Language</string>
     <string name="movie_details_info">Info</string>
-    <string name="movie_details_cast_crew">Cast &amp; Crew</string>
+    <string name="movie_details_cast_crew">Cast &#038; Crew</string>
     <string name="movie_details_reviews">Reviews</string>
     <string name="movie_details_media">Media</string>
     <string name="movie_details_title">Movie details</string>
@@ -46,6 +47,9 @@
     <string name="reviews_title">User reviews</string>
     <string name="runtime">Runtime</string>
     <string name="score_title">TMDB score</string>
+    <string name="score_imdb">IMDB</string>
+    <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
+    <string name="score_metacritic">Metacritic</string>
     <string name="share_this">Share this</string>
     <string name="size">Size</string>
     <string name="sort_order_changed">Sort order changed to %s</string>

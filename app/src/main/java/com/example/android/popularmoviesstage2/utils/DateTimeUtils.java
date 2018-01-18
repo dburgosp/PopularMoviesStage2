@@ -56,13 +56,13 @@ public final class DateTimeUtils {
 
         String stringHours = "";
         if (minutes >= 60)
-            stringHours = minutes / 60 + context.getResources().getString(R.string.string_hours);
+            stringHours = minutes / 60 + context.getResources().getString(R.string.string_hours) + " ";
 
         String stringMinutes = "";
         if (minutes % 60 != 0)
             stringMinutes = minutes % 60 + context.getResources().getString(R.string.string_minutes);
 
-        String hoursAndMinutes = stringHours + " " + stringMinutes;
+        String hoursAndMinutes = stringHours + stringMinutes;
         Log.i(TAG, "(getHoursAndMinutes) Hours and minutes: " + hoursAndMinutes);
         return hoursAndMinutes;
     }

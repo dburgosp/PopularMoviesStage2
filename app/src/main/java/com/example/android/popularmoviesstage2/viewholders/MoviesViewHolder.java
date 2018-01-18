@@ -54,7 +54,7 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
         Log.i(TAG, "(bind) Binding data for the current MoviesViewHolder.");
 
         // Draw poster for current movie and resize image to fit screen size and orientation.
-        String posterPath = NetworkUtils.THUMBNAIL_IMAGE_URL + currentMovie.getPoster_path();
+        String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + currentMovie.getPoster_path();
         Picasso.with(context).load(posterPath).into(posterImageView);
         posterImageView.setLayoutParams(layoutParams);
 

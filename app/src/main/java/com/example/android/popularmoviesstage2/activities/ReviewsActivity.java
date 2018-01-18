@@ -136,7 +136,7 @@ public class ReviewsActivity extends AppCompatActivity {
         // Set poster. If there is no poster, set the default poster.
         String posterPath = review.getPosterPath();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+            Picasso.with(this).load(NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
         else
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 

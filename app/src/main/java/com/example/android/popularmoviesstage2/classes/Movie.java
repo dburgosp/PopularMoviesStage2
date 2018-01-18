@@ -46,7 +46,7 @@ public class Movie implements Parcelable {
      * @param id                    is the unique identifier of the movie on TMDB.
      * @param adult                 is a boolean value that indicates whether the movie has adult
      *                              content or not.
-     * @param backdrop_path         is a string for appending to {@link NetworkUtils#THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path         is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
      *                              and get the backdrop image of the movie.
      * @param belongs_to_collection is a {@link MovieCollection} object with the information of the
      *                              collection to which the movie belongs.
@@ -63,7 +63,7 @@ public class Movie implements Parcelable {
      * @param popularity            is a double value indicating how popular is the movie on TMDB
      *                              (based on views, ratings, favourite additions, etc.).
      * @param poster_path           is a string for appending to
-     *                              {@link NetworkUtils#THUMBNAIL_IMAGE_URL} and get the poster of
+     *                              {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
      *                              the movie.
      * @param production_companies  is an array of {@link MovieCompany} objects containing the
      *                              information about the companies that have produced the movie.
@@ -135,7 +135,7 @@ public class Movie implements Parcelable {
      * @param id                is the unique identifier of the movie on TMDB.
      * @param adult             is a boolean value that indicates whether the movie has adult
      *                          content or not.
-     * @param backdrop_path     is a string for appending to {@link NetworkUtils#THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path     is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
      *                          and get the backdrop image of the movie.
      * @param genres            is an array with {@link MovieGenre} objects, containing the
      *                          genres of the movie.
@@ -146,7 +146,7 @@ public class Movie implements Parcelable {
      * @param popularity        is a double value indicating how popular is the movie on TMDB
      *                          (based on views, ratings, favourite additions, etc.).
      * @param poster_path       is a string for appending to
-     *                          {@link NetworkUtils#THUMBNAIL_IMAGE_URL} and get the poster of
+     *                          {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
      *                          the movie.
      * @param release_date      is the date in which the movie was released.
      * @param title             is the movie title, given in the currently selected language for

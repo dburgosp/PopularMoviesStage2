@@ -19,6 +19,7 @@ import com.example.android.popularmoviesstage2.classes.MovieCompany;
 import com.example.android.popularmoviesstage2.classes.MovieCountry;
 import com.example.android.popularmoviesstage2.classes.MovieGenre;
 import com.example.android.popularmoviesstage2.classes.MovieLanguage;
+import com.example.android.popularmoviesstage2.classes.OMDB;
 import com.example.android.popularmoviesstage2.classes.Review;
 import com.example.android.popularmoviesstage2.classes.Video;
 
@@ -38,31 +39,39 @@ public final class NetworkUtils {
 
     // URLs.
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
-    public final static String THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
-    public final static String FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    public final static String TMDB_THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
+    public final static String TMDB_FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
     public final static String YOUTUBE_BASE_URL = "https://youtube.com/watch?v=";
     public final static String YOUTUBE_VIDEO_PREVIEW_URL = "https://img.youtube.com/vi/";
     public final static String YOUTUBE_VIDEO_MQDEFAULT_IMAGE = "/mqdefault.jpg";
+    private final static String OMDB_BASE_URL = "http://www.omdbapi.com";
 
     // Paths for appending to urls.
-    public final static String POPULAR_PATH = "popular";
-    public final static String TOP_RATED_PATH = "top_rated";
-    public final static String FAVORITES_PATH = "favorites";
-    private final static String MOVIE_PATH = "movie";
-    private final static String CREDITS_PATH = "credits";
-    private final static String REVIEWS_PATH = "reviews";
-    private final static String VIDEOS_PATH = "videos";
-    private final static String IMAGES_PATH = "images";
+    public final static String TMDB_POPULAR_PATH = "popular";
+    public final static String TMDB_TOP_RATED_PATH = "top_rated";
+    public final static String TMDB_FAVORITES_PATH = "favorites";
+    private final static String TMDB_MOVIE_PATH = "movie";
+    private final static String TMDB_CREDITS_PATH = "credits";
+    private final static String TMDB_REVIEWS_PATH = "reviews";
+    private final static String TMDB_VIDEOS_PATH = "videos";
+    private final static String TMDB_IMAGES_PATH = "images";
 
     // Parameters for using with urls.
-    private final static String PARAM_API_KEY = "api_key";
-    private final static String PARAM_PAGE = "page";
-    private final static String PARAM_APPEND_TO_RESPONSE = "append_to_response";
+    private final static String TMDB_PARAM_API_KEY = "api_key";
+    private final static String TMDB_PARAM_PAGE = "page";
+    private final static String TMDB_PARAM_APPEND_TO_RESPONSE = "append_to_response";
+    private final static String OMDB_PARAM_API_KEY = "apikey";
+    private final static String OMDB_PARAM_MOVIE_ID = "i";
 
     // Filters for getting movies lists.
     public final static int OPERATION_GET_MOVIES_LIST = 1;
     public final static int OPERATION_GET_MOVIE_DETAILS = 2;
     public final static int REVIEWS_PER_PAGE = 5;
+
+    // Rating sources from OMDB.
+    private final static String OMDB_RATING_SOURCE_IMDB = "Internet Movie Database";
+    private final static String OMDB_RATING_SOURCE_ROTTEN_TOMATOES = "Rotten Tomatoes";
+    private final static String OMDB_RATING_SOURCE_METACRITIC = "Metacritic";
 
     // Unique identifiers for loaders.
     public static final int MOVIES_LOADER_ID = 1;
@@ -70,13 +79,15 @@ public final class NetworkUtils {
     public static final int CAST_CREW_LOADER_ID = 3;
     public static final int MEDIA_LOADER_ID = 4;
     public static final int REVIEWS_LOADER_ID = 5;
+    public static final int OMDB_LOADER_ID = 6;
 
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published
     // on GitHub.
     //
     // For more information: https://richardroseblog.wordpress.com/2016/05/29/hiding-secret-api-keys-from-git/
-    private final static String API_KEY = BuildConfig.API_KEY;
+    private final static String TMBD_API_KEY = BuildConfig.TMDB_API_KEY;
+    private final static String OMBD_API_KEY = BuildConfig.OMDB_API_KEY;
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils} object.
@@ -105,7 +116,7 @@ public final class NetworkUtils {
 
     /**
      * Creates an URL from {@link #TMDB_BASE_URL} appending the sort order to the path and using the
-     * {@link #API_KEY} for authentication.
+     * {@link #TMBD_API_KEY} for authentication.
      *
      * @param sortOrder is the sort order for the movie list.
      * @return an URL for fetching data from TheMovieDB using the given sort order.
@@ -113,12 +124,12 @@ public final class NetworkUtils {
     public static URL buildFetchMoviesListURL(String sortOrder, String page) {
         Log.i(TAG, "(buildFetchMoviesListURL) Sort order: " + sortOrder);
 
-        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        // Build Uri from TMDB_BASE_URL, sort order and TMBD_API_KEY.
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(sortOrder)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
-                .appendQueryParameter(PARAM_PAGE, page)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_PAGE, page)
                 .build();
 
         // Build URL from Uri.
@@ -135,7 +146,7 @@ public final class NetworkUtils {
 
     /**
      * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id to the path and using the
-     * {@link #API_KEY} for authentication.
+     * {@link #TMBD_API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
      * @return an URL for fetching information for a movie from TheMovieDB.
@@ -143,11 +154,11 @@ public final class NetworkUtils {
     public static URL buildFetchMovieDetailsURL(int movieId) {
         Log.i(TAG, "(buildFetchMovieDetailsURL) Movie ID: " + movieId);
 
-        // Build Uri from TMDB_BASE_URL, movie ID and API_KEY.
+        // Build Uri from TMDB_BASE_URL, movie ID and TMBD_API_KEY.
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                 .build();
 
         // Build URL from Uri and return.
@@ -155,8 +166,28 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the CREDITS_PATH to
-     * the base path and using the {@link #API_KEY} for authentication.
+     * Creates an URL from {@link #OMDB_BASE_URL} appending the movie id to the path and using the
+     * {@link #OMBD_API_KEY} for authentication.
+     *
+     * @param imdb is the IMDB identifier of the movie.
+     * @return an URL for fetching information for a movie from TheMovieDB.
+     */
+    public static URL buildFetchOMDBinfoURL(String imdb) {
+        Log.i(TAG, "(buildFetchOMDBinfoURL) Movie ID: " + imdb);
+
+        // Build Uri from OMDB_BASE_URL, movie ID and OMBD_API_KEY.
+        Uri builtUri = Uri.parse(OMDB_BASE_URL).buildUpon()
+                .appendQueryParameter(OMDB_PARAM_MOVIE_ID, imdb)
+                .appendQueryParameter(OMDB_PARAM_API_KEY, OMBD_API_KEY)
+                .build();
+
+        // Build URL from Uri and return.
+        return buildUrlFromUri(builtUri);
+    }
+
+    /**
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the TMDB_CREDITS_PATH to
+     * the base path and using the {@link #TMBD_API_KEY} for authentication.
      *
      * @param movieId is the identifier of the movie.
      * @return an URL for fetching a movie cast & crew information from TheMovieDB.
@@ -164,12 +195,12 @@ public final class NetworkUtils {
     public static URL buildFetchCastCrewListURL(int movieId) {
         Log.i(TAG, "(buildFetchCastCrewListURL) Movie ID: " + movieId);
 
-        // Build Uri from TMDB_BASE_URL, movie ID, CREDITS_PATH and API_KEY.
+        // Build Uri from TMDB_BASE_URL, movie ID, TMDB_CREDITS_PATH and TMBD_API_KEY.
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
-                .appendPath(CREDITS_PATH)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
+                .appendPath(TMDB_CREDITS_PATH)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                 .build();
 
         // Build URL from Uri.
@@ -185,8 +216,8 @@ public final class NetworkUtils {
     }
 
     /**
-     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the REVIEWS_PATH to
-     * the base path and using the {@link #API_KEY} for authentication.
+     * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the TMDB_REVIEWS_PATH to
+     * the base path and using the {@link #TMBD_API_KEY} for authentication.
      *
      * @param movieId     is the identifier of the movie.
      * @param currentPage is the page for searching reviews of the movie.
@@ -195,13 +226,13 @@ public final class NetworkUtils {
     public static URL buildFetchReviewsListURL(int movieId, String currentPage) {
         Log.i(TAG, "(buildFetchReviewsListURL) Movie ID " + movieId + ", page " + currentPage);
 
-        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        // Build Uri from TMDB_BASE_URL, sort order and TMBD_API_KEY.
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
-                .appendPath(REVIEWS_PATH)
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
-                .appendQueryParameter(PARAM_PAGE, currentPage)
+                .appendPath(TMDB_REVIEWS_PATH)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_PAGE, currentPage)
                 .build();
 
         // Build URL from Uri.
@@ -218,7 +249,7 @@ public final class NetworkUtils {
 
     /**
      * Creates an URL from {@link #TMDB_BASE_URL} appending the movie id and the VIDEOS_PATH to
-     * the base path, using the {@link #API_KEY} for authentication and appending videos and images.
+     * the base path, using the {@link #TMBD_API_KEY} for authentication and appending videos and images.
      *
      * @param movieId is the identifier of the movie.
      * @return an URL for fetching movie videos information from TheMovieDB.
@@ -226,12 +257,12 @@ public final class NetworkUtils {
     public static URL buildFetchMediaListURL(int movieId) {
         Log.i(TAG, "(buildFetchMediaListURL) Movie ID " + movieId);
 
-        // Build Uri from TMDB_BASE_URL, sort order and API_KEY.
+        // Build Uri from TMDB_BASE_URL, sort order and TMBD_API_KEY.
         Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(MOVIE_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
-                .appendQueryParameter(PARAM_API_KEY, API_KEY)
-                .appendQueryParameter(PARAM_APPEND_TO_RESPONSE, "videos,images")
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_APPEND_TO_RESPONSE, "videos,images")
                 .build();
 
         // Build URL from Uri.
@@ -294,6 +325,27 @@ public final class NetworkUtils {
                 Log.i(TAG, "(fetchMovies) Operation not supported.");
                 return null;
         }
+    }
+
+    /**
+     * Fetches OMDB for additional information about one movie.
+     *
+     * @param url is the base URL of OMDB.
+     * @return an {@link OMDB} object.
+     */
+    public static OMDB fetchOMDBinfo(URL url) {
+        Log.i(TAG, "(fetchOMDBinfo) URL: " + url);
+
+        // Connect to TheMovieDB and get the JSON document with the results of the query.
+        String JSONresponse = null;
+        try {
+            JSONresponse = getJSONresponse(url);
+        } catch (java.io.IOException e) {
+            Log.e(TAG, "(fetchOMDBinfo) Error retrieving JSON response: ", e);
+        }
+
+        // Parse JSON document into an array of {@link Movie} objects.
+        return parseGetOMDBinfoJSON(JSONresponse);
     }
 
     /**
@@ -762,6 +814,79 @@ public final class NetworkUtils {
 
         // Return the CastCrew object.
         return castCrew;
+    }
+
+    /**
+     * Return a {@link OMDB} object that has been built up from parsing the JSON response
+     * given from a call to OMDB API.
+     *
+     * @param JSONresponse is the JSON object to be parsed and converted to a {@link OMDB} object.
+     * @return the {@link OMDB} object parsed form the input JSON object.
+     */
+    private static OMDB parseGetOMDBinfoJSON(String JSONresponse) {
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            return null;
+        }
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown. Catch the exception so the
+        // app doesn't crash, and print the error message to the logs.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
+            // Extract the required values from the corresponding keys and create default values
+            // for user scores.
+            String rated = getStringFromJSON(resultsJSONResponse, "Rated");
+            String awards = getStringFromJSON(resultsJSONResponse, "Awards");
+            String dvd = getStringFromJSON(resultsJSONResponse, "DVD");
+            Double imdb_vote_average = 0.0;
+            Double rt_vote_average = 0.0;
+            Double mc_vote_average = 0.0;
+
+            // If there is a "Ratings" section, create a new JSONArray for parsing results.
+            if (!resultsJSONResponse.isNull("Ratings")) {
+                JSONArray ratingsArrayJSONResponse = resultsJSONResponse.getJSONArray("Ratings");
+                JSONObject ratingsJSONResponse;
+                for (int n = 0; n < ratingsArrayJSONResponse.length(); n++) {
+                    // Get a single result at position n within the list of results.
+                    ratingsJSONResponse = ratingsArrayJSONResponse.getJSONObject(n);
+
+                    // Extract the required values from the corresponding keys.
+                    String source = getStringFromJSON(ratingsJSONResponse, "Source");
+                    String value = getStringFromJSON(ratingsJSONResponse, "Value");
+
+                    // Parse values.
+                    switch (source) {
+                        case OMDB_RATING_SOURCE_IMDB: {
+                            String arraySplit[] = value.split("/");
+                            imdb_vote_average = Double.valueOf(arraySplit[0]);
+                            break;
+                        }
+                        case OMDB_RATING_SOURCE_ROTTEN_TOMATOES: {
+                            String arraySplit[] = value.split("%");
+                            rt_vote_average = Double.valueOf(arraySplit[0]) / 10;
+                            break;
+                        }
+                        case OMDB_RATING_SOURCE_METACRITIC: {
+                            String arraySplit[] = value.split("/");
+                            mc_vote_average = Double.valueOf(arraySplit[0]) / 10;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Return a new {@link OMDB} object with the data retrieved from the JSON response.
+            return new OMDB(rated, awards, dvd, imdb_vote_average, rt_vote_average, mc_vote_average);
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash. Print a log message with the
+            // message from the exception.
+            Log.e(TAG, "(parseGetOMDBinfoJSON) Error parsing the JSON response: ", e);
+            return null;
+        }
     }
 
     /**
