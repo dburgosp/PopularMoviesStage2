@@ -18,9 +18,13 @@ public class ScoreUtils {
      * @param context       is the context for getting the required resources to display colors.
      * @param rating        is the users score, from "0.0" to "10.0".
      * @param donutProgress is the DonutProgress view that displays the score.
+     * @return true if the rating is greater than 0, false otherwise.
      */
-    public static void setRating(Context context, String rating, DonutProgress donutProgress) {
+    public static boolean setRating(Context context, String rating, DonutProgress donutProgress) {
+        boolean ratingSet = false;
+
         if (!rating.equals("0.0")) {
+            ratingSet = true;
             int scorePercent = Math.round(10 * Float.parseFloat(rating));
             if (scorePercent < 40) {
                 // Low rating.
@@ -42,7 +46,10 @@ public class ScoreUtils {
             else
                 donutProgress.setText(rating);
 
+            // Set the score.
             donutProgress.setDonut_progress(Integer.toString(scorePercent));
         }
+
+        return ratingSet;
     }
 }

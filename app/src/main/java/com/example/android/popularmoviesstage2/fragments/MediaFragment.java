@@ -26,21 +26,21 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
 import com.example.android.popularmoviesstage2.adapters.ImagesAdapter;
 import com.example.android.popularmoviesstage2.adapters.VideosAdapter;
-import com.example.android.popularmoviesstage2.asynctaskloaders.MediaAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.Image;
-import com.example.android.popularmoviesstage2.classes.Media;
-import com.example.android.popularmoviesstage2.classes.Movie;
-import com.example.android.popularmoviesstage2.classes.Video;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMediaAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
+import com.example.android.popularmoviesstage2.classes.TmdbMedia;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbVideo;
+import com.example.android.popularmoviesstage2.classes.YouTube;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<Media> {
+public class MediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMedia> {
     private static final String TAG = MediaFragment.class.getSimpleName();
 
     @BindView(R.id.media_no_result_text_view)
@@ -102,12 +102,12 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param movie is the {@link Movie} object.
+     * @param tmdbMovie is the {@link TmdbMovie} object.
      * @return a new instance of fragment MediaFragment.
      */
-    public static MediaFragment newInstance(Movie movie) {
+    public static MediaFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", movie.getId());
+        bundle.putInt("id", tmdbMovie.getId());
         MediaFragment fragment = new MediaFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -128,12 +128,12 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
             movieId = getArguments().getInt("id");
         }
 
-        // Set RecyclerViews for displaying Video & crew photos.
+        // Set RecyclerViews for displaying TmdbVideo & crew photos.
         setRecyclerViews();
 
-        // Create AsyncTaskLoaders for retrieving Video & Image information from internet in
+        // Create AsyncTaskLoaders for retrieving TmdbVideo & TmdbImage information from internet in
         // separate threads.
-        getLoaderManager().initLoader(NetworkUtils.MEDIA_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.TMDB_MEDIA_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -166,14 +166,13 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<Media> onCreateLoader(int id, Bundle args) {
+    public Loader<TmdbMedia> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildFetchMediaListURL(movieId);
-            Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-            return new MediaAsyncTaskLoader(getContext(), searchURL);
+            Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId);
+            return new TmdbMediaAsyncTaskLoader(getContext(), movieId);
         } else {
             // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
@@ -203,7 +202,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
      * them to you through new calls here.  You should not monitor the
      * data yourself.  For example, if the data is a {@link Cursor}
      * and you place it in a {@link CursorAdapter}, use
-     * the {@link CursorAdapter(Context, * Cursor, int)} constructor <em>without</em> passing
+     * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
      * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
      * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
      * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
@@ -223,21 +222,21 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<Media> loader, Media data) {
+    public void onLoadFinished(Loader<TmdbMedia> loader, TmdbMedia data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
             if (data != null) {
-                // If there is a valid {@link Media} object, then add this information to the
+                // If there is a valid {@link TmdbMedia} object, then add this information to the
                 // adapters' data sets.
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 /* -------------- */
                 /* List of videos */
                 /* -------------- */
-                ArrayList<Video> videosArrayList = data.getVideos();
+                ArrayList<TmdbVideo> videosArrayList = data.getTmdbVideos();
                 if (videosArrayList != null && videosArrayList.size() > 0) {
                     // Add the array of elements to the adapter.
                     videosAdapter.setVideoArray(videosArrayList);
@@ -247,7 +246,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     String viewAllText = getResources().getString(R.string.view_all) + " (" + videosArrayList.size() + ")";
                     viewAllVideosTextView.setText(viewAllText);
                 } else {
-                    // Hide section if there is no Video information for this movie.
+                    // Hide section if there is no TmdbVideo information for this movie.
                     videosLinearLayout.setVisibility(View.GONE);
                     separatorView1.setVisibility(View.GONE);
                 }
@@ -255,7 +254,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                 /* --------------- */
                 /* List of posters */
                 /* --------------- */
-                ArrayList<Image> postersArrayList = data.getPosters();
+                ArrayList<TmdbImage> postersArrayList = data.getPosters();
                 if (postersArrayList != null && postersArrayList.size() > 0) {
                     // Add the array of elements to the adapter.
                     postersAdapter.setImageArray(postersArrayList);
@@ -273,7 +272,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                 /* ----------------- */
                 /* List of backdrops */
                 /* ----------------- */
-                ArrayList<Image> backdropsArrayList = data.getBackdrops();
+                ArrayList<TmdbImage> backdropsArrayList = data.getBackdrops();
                 if (backdropsArrayList != null && backdropsArrayList.size() > 0) {
                     // Add the array of elements to the adapter.
                     backdropsAdapter.setImageArray(backdropsArrayList);
@@ -288,7 +287,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     backdropsLinearLayout.setVisibility(View.GONE);
                 }
             } else {
-                // Loader has not returned a valid list of {@link Media} objects.
+                // Loader has not returned a valid list of {@link TmdbMedia} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
@@ -315,7 +314,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<Media> loader) {
+    public void onLoaderReset(Loader<TmdbMedia> loader) {
     }
 
     /* -------------- */
@@ -338,9 +337,9 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         // Set the listener for click events in the videos adapter.
         VideosAdapter.OnItemClickListener videoListener = new VideosAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Video item) {
+            public void onItemClick(TmdbVideo item) {
                 // Implicit intent for playing the YouTube video.
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(NetworkUtils.YOUTUBE_BASE_URL + item.getKey()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YouTube.YOUTUBE_BASE_URL + item.getKey()));
                 startActivity(intent);
             }
         };
@@ -348,7 +347,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         // Set the listener for click events in the posters adapter.
         final ImagesAdapter.OnItemClickListener posterListener = new ImagesAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Image item) {
+            public void onItemClick(TmdbImage item) {
                 // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
                 Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
                 intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, postersAdapter.getImagesArrayList());
@@ -361,7 +360,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         // Set the listener for click events in the backdrops adapter.
         final ImagesAdapter.OnItemClickListener backdropListener = new ImagesAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Image item) {
+            public void onItemClick(TmdbImage item) {
                 // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
                 Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
                 intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, backdropsAdapter.getImagesArrayList());
@@ -372,11 +371,11 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
         };
 
         // Set the Adapters for the RecyclerViews.
-        videosAdapter = new VideosAdapter(new ArrayList<Video>(), videoListener);
+        videosAdapter = new VideosAdapter(new ArrayList<TmdbVideo>(), videoListener);
         videosRecyclerView.setAdapter(videosAdapter);
-        postersAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
+        postersAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
         postersRecyclerView.setAdapter(postersAdapter);
-        backdropsAdapter = new ImagesAdapter(new ArrayList<Image>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
+        backdropsAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
         backdropsRecyclerView.setAdapter(backdropsAdapter);
     }
 }

@@ -6,26 +6,28 @@ import android.support.v4.content.Loader;
 import android.support.v4.os.OperationCanceledException;
 import android.util.Log;
 
-import com.example.android.popularmoviesstage2.classes.Review;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 
-import java.net.URL;
 import java.util.ArrayList;
 
-public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
-    private final String TAG = ReviewsAsyncTaskLoader.class.getSimpleName();
-    private ArrayList<Review> reviewArrayList;
-    private URL url;
+public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
+    private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
+    private ArrayList<TmdbMovie> moviesArray;
+    private String sortOrder;
+    private String currentPage;
 
     /**
      * Constructor for this class.
      *
-     * @param context is the context of the activity.
-     * @param url     is the url to fetch.
+     * @param context     is the context of the activity.
+     * @param sortOrder   is the sort order of the movies list.
+     * @param currentPage is the current page to fetch results from TMDB.
      */
-    public ReviewsAsyncTaskLoader(Context context, URL url) {
+    public TmdbMoviesAsyncTaskLoader(Context context, String sortOrder, String currentPage) {
         super(context);
-        this.url = url;
+        this.sortOrder = sortOrder;
+        this.currentPage = currentPage;
     }
 
     /**
@@ -35,9 +37,9 @@ public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
      */
     @Override
     protected void onStartLoading() {
-        if (reviewArrayList != null) {
+        if (moviesArray != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(reviewArrayList);
+            deliverResult(moviesArray);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -70,15 +72,17 @@ public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
      * @see #onCanceled
      */
     @Override
-    public ArrayList<Review> loadInBackground() {
-        if (url == null) {
-            Log.i(TAG, "(loadInBackground) No URL to load.");
+    public ArrayList<TmdbMovie> loadInBackground() {
+        if (Tmdb.isAllowedSortOrder(sortOrder) &&
+                Integer.valueOf(currentPage) <= Tmdb.TMDB_MAX_PAGES &&
+                Integer.valueOf(currentPage) > 0) {
+            // Perform the network request, parse the response, and extract results.
+            Log.i(TAG, "(loadInBackground) Sort order: " + sortOrder + ". Page number: " + currentPage);
+            return Tmdb.getTmdbMovies(sortOrder, currentPage);
+        } else {
+            Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;
         }
-
-        // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) URL: " + url.toString());
-        return NetworkUtils.fetchReviews(url);
     }
 
     /**
@@ -89,12 +93,12 @@ public class ReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<Review>> {
      * @param data the result of the load
      */
     @Override
-    public void deliverResult(ArrayList<Review> data) {
+    public void deliverResult(ArrayList<TmdbMovie> data) {
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
         else
             Log.i(TAG, "(deliverResult) " + data.size() + " element(s) delivered.");
-        reviewArrayList = data;
+        moviesArray = data;
         super.deliverResult(data);
     }
 }

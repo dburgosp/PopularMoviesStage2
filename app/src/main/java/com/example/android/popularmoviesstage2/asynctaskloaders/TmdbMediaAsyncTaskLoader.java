@@ -6,25 +6,23 @@ import android.support.v4.content.Loader;
 import android.support.v4.os.OperationCanceledException;
 import android.util.Log;
 
-import com.example.android.popularmoviesstage2.classes.CastCrew;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMedia;
 
-import java.net.URL;
-
-public class CastCrewAsyncTaskLoader extends AsyncTaskLoader<CastCrew> {
-    private final String TAG = CastCrewAsyncTaskLoader.class.getSimpleName();
-    private CastCrew castCrew;
-    private URL url;
+public class TmdbMediaAsyncTaskLoader extends AsyncTaskLoader<TmdbMedia> {
+    private final String TAG = TmdbMediaAsyncTaskLoader.class.getSimpleName();
+    private TmdbMedia tmdbMedia;
+    private int movieId;
 
     /**
      * Constructor for this class.
      *
      * @param context is the context of the activity.
-     * @param url     is the url to fetch.
+     * @param movieId is the unique identifier of the movie at TMDB.
      */
-    public CastCrewAsyncTaskLoader(Context context, URL url) {
+    public TmdbMediaAsyncTaskLoader(Context context, int movieId) {
         super(context);
-        this.url = url;
+        this.movieId = movieId;
     }
 
     /**
@@ -34,9 +32,9 @@ public class CastCrewAsyncTaskLoader extends AsyncTaskLoader<CastCrew> {
      */
     @Override
     protected void onStartLoading() {
-        if (castCrew != null) {
+        if (tmdbMedia != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(castCrew);
+            deliverResult(tmdbMedia);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -69,15 +67,15 @@ public class CastCrewAsyncTaskLoader extends AsyncTaskLoader<CastCrew> {
      * @see #onCanceled
      */
     @Override
-    public CastCrew loadInBackground() {
-        if (url == null) {
-            Log.i(TAG, "(loadInBackground) No URL to load.");
+    public TmdbMedia loadInBackground() {
+        if (movieId <= 0) {
+            Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) URL: " + url.toString());
-        return NetworkUtils.fetchCastCrew(url);
+        Log.i(TAG, "(loadInBackground) Movie ID: " + movieId);
+        return Tmdb.getTmdbMedia(movieId);
     }
 
     /**
@@ -88,10 +86,15 @@ public class CastCrewAsyncTaskLoader extends AsyncTaskLoader<CastCrew> {
      * @param data the result of the load
      */
     @Override
-    public void deliverResult(CastCrew data) {
+    public void deliverResult(TmdbMedia data) {
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
-        castCrew = data;
+        else {
+            Log.i(TAG, "(deliverResult) " + data.getTmdbVideos().size() + " video(s) delivered.");
+            Log.i(TAG, "(deliverResult) " + data.getPosters().size() + " poster(s) delivered.");
+            Log.i(TAG, "(deliverResult) " + data.getBackdrops().size() + " backdrops(s) delivered.");
+        }
+        tmdbMedia = data;
         super.deliverResult(data);
     }
 }

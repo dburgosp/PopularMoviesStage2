@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * Public class for managing the images (posters and backdrops) related to a movie.
  */
-public class Image implements Parcelable {
+public class TmdbImage implements Parcelable {
     private Double aspect_ratio;
     private String file_path;
     private int height;
@@ -28,8 +28,8 @@ public class Image implements Parcelable {
      * @param vote_count   is the number of people who have voted this image.
      * @param width        is the width of the image.
      */
-    public Image(Double aspect_ratio, @NonNull String file_path, int height, String iso_639_1,
-                 int vote_average, int vote_count, int width) {
+    public TmdbImage(Double aspect_ratio, @NonNull String file_path, int height, String iso_639_1,
+                     int vote_average, int vote_count, int width) {
         this.aspect_ratio = aspect_ratio;
         this.file_path = file_path;
         this.height = height;
@@ -125,7 +125,7 @@ public class Image implements Parcelable {
         dest.writeInt(this.position);
     }
 
-    protected Image(Parcel in) {
+    protected TmdbImage(Parcel in) {
         this.aspect_ratio = (Double) in.readValue(Double.class.getClassLoader());
         this.file_path = in.readString();
         this.height = in.readInt();
@@ -136,15 +136,15 @@ public class Image implements Parcelable {
         this.position = in.readInt();
     }
 
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+    public static final Parcelable.Creator<TmdbImage> CREATOR = new Parcelable.Creator<TmdbImage>() {
         @Override
-        public Image createFromParcel(Parcel source) {
-            return new Image(source);
+        public TmdbImage createFromParcel(Parcel source) {
+            return new TmdbImage(source);
         }
 
         @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
+        public TmdbImage[] newArray(int size) {
+            return new TmdbImage[size];
         }
     };
 }

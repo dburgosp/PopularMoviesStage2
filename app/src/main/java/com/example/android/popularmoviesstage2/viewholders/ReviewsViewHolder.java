@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
-import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 
 import butterknife.BindView;
@@ -44,25 +44,25 @@ public class ReviewsViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Person information for the current ReviewsViewHolder from the
+     * Helper method for setting TmdbPerson information for the current ReviewsViewHolder from the
      * {@link ReviewsAdapter#onBindViewHolder(ReviewsViewHolder, int)} method.
      *
-     * @param currentReview is the Review object attached to the current ReviewsViewHolder element.
+     * @param currentTmdbReview is the TmdbReview object attached to the current ReviewsViewHolder element.
      */
-    public void bind(final Review currentReview, final ReviewsAdapter.OnItemClickListener listener) {
+    public void bind(final TmdbReview currentTmdbReview, final ReviewsAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
 
         // Set content for the current review. This text is stored in Markdown format.
-        TextUtils.setMarkdownText(contentTextView, currentReview.getContent());
+        TextUtils.setMarkdownText(contentTextView, currentTmdbReview.getContent());
 
         // Set current review author.
-        authorTextView.setText(currentReview.getAuthor());
+        authorTextView.setText(currentTmdbReview.getAuthor());
 
         // Set the listener for click events.
         viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(currentReview);
+                listener.onItemClick(currentTmdbReview, contentTextView);
             }
         });
     }

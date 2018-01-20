@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage2.viewholders;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -9,8 +10,8 @@ import android.widget.ImageView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesAdapter;
-import com.example.android.popularmoviesstage2.classes.Movie;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -43,26 +44,32 @@ public class MoviesViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Movie information for the current MoviesViewHolder from the
+     * Helper method for setting TmdbMovie information for the current MoviesViewHolder from the
      * {@link MoviesAdapter#onBindViewHolder(MoviesViewHolder, int)} method.
      *
-     * @param currentMovie is the Movie object attached to the current MoviesViewHolder element.
-     * @param listener     is the listener for click events.
-     * @param layoutParams contains the width and height for displaying the movie poster.
+     * @param currentTmdbMovie is the TmdbMovie object attached to the current MoviesViewHolder element.
+     * @param listener         is the listener for click events.
+     * @param layoutParams     contains the width and height for displaying the movie poster.
      */
-    public void bind(final Movie currentMovie, final MoviesAdapter.OnItemClickListener listener, FrameLayout.LayoutParams layoutParams) {
+    public void bind(final TmdbMovie currentTmdbMovie,
+                     final MoviesAdapter.OnItemClickListener listener,
+                     FrameLayout.LayoutParams layoutParams) {
         Log.i(TAG, "(bind) Binding data for the current MoviesViewHolder.");
 
         // Draw poster for current movie and resize image to fit screen size and orientation.
-        String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + currentMovie.getPoster_path();
+        String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbMovie.getPoster_path();
         Picasso.with(context).load(posterPath).into(posterImageView);
         posterImageView.setLayoutParams(layoutParams);
+
+        // Set transition name to the current view, so it can be animated if clicked.
+        ViewCompat.setTransitionName(posterImageView,
+                context.getResources().getString(R.string.transition_poster));
 
         // Set the listener for click events.
         viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(currentMovie);
+                listener.onItemClick(currentTmdbMovie, posterImageView);
             }
         });
     }

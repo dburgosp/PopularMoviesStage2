@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.PersonsAdapter;
-import com.example.android.popularmoviesstage2.classes.Person;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbPerson;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -45,29 +45,29 @@ public class PersonsViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Person information for the current PersonsViewHolder from the
+     * Helper method for setting TmdbPerson information for the current PersonsViewHolder from the
      * {@link PersonsAdapter#onBindViewHolder(PersonsViewHolder, int)} method.
      *
-     * @param currentPerson is the Person object attached to the current PersonsViewHolder element.
+     * @param currentTmdbPerson is the TmdbPerson object attached to the current PersonsViewHolder element.
      * @param listener      is the listener for click events.
      * @param layoutParams  contains the width and height for displaying the profile image.
      */
-    public void bind(final Person currentPerson, final PersonsAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
+    public void bind(final TmdbPerson currentTmdbPerson, final PersonsAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
         Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.
-        String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + currentPerson.getProfile_path();
+        String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbPerson.getProfile_path();
         Picasso.with(context).load(posterPath).into(posterImageView);
         posterImageView.setLayoutParams(layoutParams);
 
         // Set person name.
-        nameTextView.setText(currentPerson.getName());
+        nameTextView.setText(currentTmdbPerson.getName());
 
         // Set the listener for click events.
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(currentPerson);
+                listener.onItemClick(currentTmdbPerson);
             }
         });
     }

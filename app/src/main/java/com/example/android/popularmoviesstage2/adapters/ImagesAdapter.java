@@ -9,14 +9,14 @@ import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
-import com.example.android.popularmoviesstage2.classes.Image;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.viewholders.ImagesViewHolder;
 
 import java.util.ArrayList;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
     private static final String TAG = ImagesAdapter.class.getSimpleName();
-    private ArrayList<Image> imagesArrayList;
+    private ArrayList<TmdbImage> imagesArrayList;
     private int imageType;
     private final ImagesAdapter.OnItemClickListener listener;
 
@@ -30,7 +30,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
      *                        backdrops.
      * @param listener        is the listener for receiving the clicks.
      */
-    public ImagesAdapter(ArrayList<Image> imagesArrayList, int imageType, OnItemClickListener listener) {
+    public ImagesAdapter(ArrayList<TmdbImage> imagesArrayList, int imageType, OnItemClickListener listener) {
         this.imagesArrayList = imagesArrayList;
         this.imageType = imageType;
         this.listener = listener;
@@ -42,9 +42,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
      *
      * @param imagesArrayList is the new list of items.
      */
-    public void setImageArray(ArrayList<Image> imagesArrayList) {
+    public void setImageArray(ArrayList<TmdbImage> imagesArrayList) {
         this.imagesArrayList = imagesArrayList;
-        Log.i(TAG, "(setImageArray) Image list updated");
+        Log.i(TAG, "(setImageArray) TmdbImage list updated");
     }
 
     /**
@@ -52,7 +52,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
      *
      * @return the images array, imagesArrayList.
      */
-    public ArrayList<Image> getImagesArrayList() {
+    public ArrayList<TmdbImage> getImagesArrayList() {
         return imagesArrayList;
     }
 
@@ -107,9 +107,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!imagesArrayList.isEmpty()) {
             // Update ImagesViewHolder with the item details at current position in the adapter.
-            Image currentImage = imagesArrayList.get(position);
-            currentImage.setPosition(position);
-            viewHolder.bind(currentImage, imageType, listener);
+            TmdbImage currentTmdbImage = imagesArrayList.get(position);
+            currentTmdbImage.setPosition(position);
+            viewHolder.bind(currentTmdbImage, imageType, listener);
         }
     }
 
@@ -132,6 +132,6 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Image item);
+        void onItemClick(TmdbImage item);
     }
 }

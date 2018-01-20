@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.fragments.CastCrewFragment;
 import com.example.android.popularmoviesstage2.fragments.InfoFragment;
 import com.example.android.popularmoviesstage2.fragments.MediaFragment;
@@ -19,12 +19,12 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
     private final int NUM_PAGES = 4;
     private String tabTitles[] = new String[NUM_PAGES];
     private Context context;
-    private Movie movie;
+    private TmdbMovie tmdbMovie;
 
-    public MovieDetailsFragmentPagerAdapter(FragmentManager fm, Context context, Movie movie) {
+    public MovieDetailsFragmentPagerAdapter(FragmentManager fm, Context context, TmdbMovie tmdbMovie) {
         super(fm);
         this.context = context;
-        this.movie = movie;
+        this.tmdbMovie = tmdbMovie;
         tabTitles[0] = context.getString(R.string.movie_details_info);
         tabTitles[1] = context.getString(R.string.movie_details_cast_crew);
         tabTitles[2] = context.getString(R.string.movie_details_media);
@@ -35,13 +35,13 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return InfoFragment.newInstance(movie);
+                return InfoFragment.newInstance(tmdbMovie);
             case 1:
-                return CastCrewFragment.newInstance(movie);
+                return CastCrewFragment.newInstance(tmdbMovie);
             case 2:
-                return MediaFragment.newInstance(movie);
+                return MediaFragment.newInstance(tmdbMovie);
             default:
-                return ReviewsFragment.newInstance(movie);
+                return ReviewsFragment.newInstance(tmdbMovie);
         }
     }
 

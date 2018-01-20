@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Cast;
+import com.example.android.popularmoviesstage2.classes.TmdbCast;
 import com.example.android.popularmoviesstage2.viewholders.CastViewHolder;
 
 import java.util.ArrayList;
@@ -16,17 +16,17 @@ import java.util.ArrayList;
 public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     private static final String TAG = CastAdapter.class.getSimpleName();
     private final CastAdapter.OnItemClickListener listener;
-    private ArrayList<Cast> castArrayList;
+    private ArrayList<TmdbCast> tmdbCastArrayList;
     //private int position = 0;
 
     /**
      * Constructor for this class.
      *
-     * @param castArrayList is the list of persons that will be represented into the adapter.
+     * @param tmdbCastArrayList is the list of persons that will be represented into the adapter.
      * @param listener      is the listener for receiving the clicks.
      */
-    public CastAdapter(ArrayList<Cast> castArrayList, OnItemClickListener listener) {
-        this.castArrayList = castArrayList;
+    public CastAdapter(ArrayList<TmdbCast> tmdbCastArrayList, OnItemClickListener listener) {
+        this.tmdbCastArrayList = tmdbCastArrayList;
         this.listener = listener;
         Log.i(TAG, "(CastAdapter) Object created");
     }
@@ -36,9 +36,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
      *
      * @param personsArrayList is the new list of persons.
      */
-    public void setCastArray(ArrayList<Cast> personsArrayList) {
-        this.castArrayList = personsArrayList;
-        Log.i(TAG, "(setCastArray) Cast list updated");
+    public void setCastArray(ArrayList<TmdbCast> personsArrayList) {
+        this.tmdbCastArrayList = personsArrayList;
+        Log.i(TAG, "(setCastArray) TmdbCast list updated");
     }
 
     /**
@@ -99,14 +99,14 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
     @Override
     public void onBindViewHolder(CastViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
-        if (!castArrayList.isEmpty()) {
-            Cast currentCast = castArrayList.get(position);
+        if (!tmdbCastArrayList.isEmpty()) {
+            TmdbCast currentTmdbCast = tmdbCastArrayList.get(position);
 
             // Set position in the adapter for current person.
-            //currentCast.setPosition(position);
+            //currentTmdbCast.setPosition(position);
 
             // Update CastViewHolder with the person details at current position in the adapter.
-            viewHolder.bind(currentCast, listener);
+            viewHolder.bind(currentTmdbCast, listener);
 
             // Save current position.
             //this.position = viewHolder.getAdapterPosition();
@@ -120,7 +120,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
      */
     @Override
     public int getItemCount() {
-        int itemCount = castArrayList.size();
+        int itemCount = tmdbCastArrayList.size();
         Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
         return itemCount;
     }
@@ -132,6 +132,6 @@ public class CastAdapter extends RecyclerView.Adapter<CastViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Cast item);
+        void onItemClick(TmdbCast item);
     }
 }

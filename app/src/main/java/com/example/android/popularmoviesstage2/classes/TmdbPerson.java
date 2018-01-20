@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class Person implements Parcelable {
+public class TmdbPerson implements Parcelable {
     private boolean adult;
     private ArrayList<Integer> also_known_as;
     private String biography;
@@ -20,9 +20,9 @@ public class Person implements Parcelable {
     private Double popularity;
     private String profile_path;
 
-    public Person(boolean adult, ArrayList<Integer> also_known_as, String biography, String birthday,
-                  String deathday, int gender, String homepage, int id, String imdb_id, String name,
-                  String place_of_birth, Double popularity, String profile_path) {
+    public TmdbPerson(boolean adult, ArrayList<Integer> also_known_as, String biography, String birthday,
+                      String deathday, int gender, String homepage, int id, String imdb_id, String name,
+                      String place_of_birth, Double popularity, String profile_path) {
         this.adult = adult;
         this.also_known_as = also_known_as;
         this.biography = biography;
@@ -146,9 +146,9 @@ public class Person implements Parcelable {
 
     // Parcelable configuration.
 
-    protected Person(Parcel in) {
+    protected TmdbPerson(Parcel in) {
         this.adult = in.readByte() != 0;
-        this.also_known_as = new ArrayList<Integer>();
+        this.also_known_as = new ArrayList<>();
         in.readList(this.also_known_as, Integer.class.getClassLoader());
         this.biography = in.readString();
         this.birthday = in.readString();
@@ -185,15 +185,15 @@ public class Person implements Parcelable {
         dest.writeString(this.profile_path);
     }
 
-    public static final Parcelable.Creator<Person> CREATOR = new Parcelable.Creator<Person>() {
+    public static final Parcelable.Creator<TmdbPerson> CREATOR = new Parcelable.Creator<TmdbPerson>() {
         @Override
-        public Person createFromParcel(Parcel source) {
-            return new Person(source);
+        public TmdbPerson createFromParcel(Parcel source) {
+            return new TmdbPerson(source);
         }
 
         @Override
-        public Person[] newArray(int size) {
-            return new Person[size];
+        public TmdbPerson[] newArray(int size) {
+            return new TmdbPerson[size];
         }
     };
 }

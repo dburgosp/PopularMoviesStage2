@@ -10,5 +10,5 @@
         android:layout_height="wrap_content"
         android:background="@drawable/default_poster"
         android:contentDescription="@string/content_description_poster"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"/>
 </FrameLayout>

@@ -10,8 +10,8 @@ import android.widget.ImageView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
-import com.example.android.popularmoviesstage2.classes.Image;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -42,13 +42,13 @@ public class FullSizeImageFragment extends Fragment {
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param image     is the {@link Image} object.
+     * @param image     is the {@link TmdbImage} object.
      * @param imageType is the type of the images to be held in the viewHolder. Available values:
      *                  {@link FullSizeImageActivity#IMAGE_TYPE_POSTER} for posters,
      *                  {@link FullSizeImageActivity#IMAGE_TYPE_BACKDROP} for backdrops.
      * @return a new instance of fragment FullSizeImageFragment.
      */
-    public static FullSizeImageFragment newInstance(Image image, int imageType) {
+    public static FullSizeImageFragment newInstance(TmdbImage image, int imageType) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(PARAM_IMAGE, image);
         bundle.putInt(PARAM_IMAGE_TYPE, imageType);
@@ -70,22 +70,24 @@ public class FullSizeImageFragment extends Fragment {
 
         // Get arguments from calling activity, in order to extract image information.
         if (getArguments() != null) {
-            // Set default background image.
+            // Set image properties depending on its type.
             int imageType = getArguments().getInt(PARAM_IMAGE_TYPE);
             switch (imageType) {
                 case IMAGE_TYPE_POSTER: {
                     imageView.setBackgroundResource(R.drawable.default_poster);
                     break;
                 }
-                default:
+                default: {
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     imageView.setBackgroundResource(R.drawable.default_backdrop);
+                }
             }
 
             // Get image info and show it.
-            Image image = getArguments().getParcelable(PARAM_IMAGE);
+            TmdbImage image = getArguments().getParcelable(PARAM_IMAGE);
             String imagePath = image.getFile_path();
             if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-                String posterPath = NetworkUtils.TMDB_FULL_IMAGE_URL + imagePath;
+                String posterPath = Tmdb.TMDB_FULL_IMAGE_URL + imagePath;
                 Picasso.with(getContext()).load(posterPath).into(imageView);
             } else {
                 // No image. Show default image.

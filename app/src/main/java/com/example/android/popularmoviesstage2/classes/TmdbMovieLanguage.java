@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Public class for managing the languages related to the movies.
  */
-public class MovieLanguage implements Parcelable {
+public class TmdbMovieLanguage implements Parcelable {
     private String iso_639_1;
     private String name;
 
@@ -15,7 +15,7 @@ public class MovieLanguage implements Parcelable {
      * @param name      is the name of the language, given in the currently selected language for
      *                  retrieving information from the TMDB API.
      */
-    public MovieLanguage(String iso_639_1, String name) {
+    public TmdbMovieLanguage(String iso_639_1, String name) {
         this.iso_639_1 = iso_639_1;
         this.name = name;
     }
@@ -40,7 +40,7 @@ public class MovieLanguage implements Parcelable {
 
     // Parcelable configuration.
 
-    protected MovieLanguage(Parcel in) {
+    protected TmdbMovieLanguage(Parcel in) {
         this.iso_639_1 = in.readString();
         this.name = in.readString();
     }
@@ -56,15 +56,15 @@ public class MovieLanguage implements Parcelable {
         dest.writeString(this.name);
     }
 
-    public static final Parcelable.Creator<MovieLanguage> CREATOR = new Parcelable.Creator<MovieLanguage>() {
+    public static final Parcelable.Creator<TmdbMovieLanguage> CREATOR = new Parcelable.Creator<TmdbMovieLanguage>() {
         @Override
-        public MovieLanguage createFromParcel(Parcel source) {
-            return new MovieLanguage(source);
+        public TmdbMovieLanguage createFromParcel(Parcel source) {
+            return new TmdbMovieLanguage(source);
         }
 
         @Override
-        public MovieLanguage[] newArray(int size) {
-            return new MovieLanguage[size];
+        public TmdbMovieLanguage[] newArray(int size) {
+            return new TmdbMovieLanguage[size];
         }
     };
 }

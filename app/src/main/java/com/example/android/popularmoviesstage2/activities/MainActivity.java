@@ -4,6 +4,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -11,10 +12,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,19 +25,19 @@ import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesAdapter;
-import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -48,25 +51,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @BindView(R.id.activity_main_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private String sortOrder = NetworkUtils.TMDB_POPULAR_PATH;
+    private boolean allowClicks = true;
+    private String sortOrder = Tmdb.TMDB_POPULAR_PATH;
     private MoviesAdapter moviesAdapter;
     private int currentPage, currentScrollPosition;
     private boolean isLoading = false, appendToEnd = true;
-    private ArrayList<Movie> moviesArrayList = new ArrayList<>();
+    private ArrayList<TmdbMovie> moviesArrayList = new ArrayList<>();
     private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Define transitions to exit and enter to this activity.
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        getWindow().setEnterTransition(new Explode());
+        getWindow().setExitTransition(new Explode());
+
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
-
-        // Get sort order if there is extra data (if we come back here from another activity).
-        Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.hasExtra("sortOrder"))
-                sortOrder = intent.getStringExtra("sortOrder");
-        }
 
         // Set the title for this activity, using the sort order.
         this.setTitle(getSortOrderText());
@@ -82,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // getting movie information from TMDB in a separate thread.
             setRecyclerView();
             appendToEnd = true;
-            getSupportLoaderManager().initLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
+            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
         }
 
         Log.i(TAG, "(onCreate) Activity created");
@@ -145,11 +149,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         String newSortOrder;
         switch (itemId) {
             case R.id.order_popular:
-                newSortOrder = NetworkUtils.TMDB_POPULAR_PATH;
+                newSortOrder = Tmdb.TMDB_POPULAR_PATH;
                 break;
 
             case R.id.order_top_rated:
-                newSortOrder = NetworkUtils.TMDB_TOP_RATED_PATH;
+                newSortOrder = Tmdb.TMDB_TOP_RATED_PATH;
                 break;
 
             default:
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             currentScrollPosition = 0;
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
             moviesAdapter.clearMoviesArrayList();
-            getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
+            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
         }
 
         return true;
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // information from internet in a separate thread.
         appendToEnd = true;
         setRecyclerView();
-        getSupportLoaderManager().initLoader(NetworkUtils.MOVIES_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
 
         // Restore last currentPosition in the grid.
         recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
@@ -238,7 +242,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onDestroy();
         unbinder.unbind();
     }
-    
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // When MovieDetailsActivity has finished, we enabled clicks again. We don't need to know
+        // any result from MovieDetailsActivity, only when it has finished.
+        allowClicks = true;
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /* ------ */
     /* LOADER */
     /* ------ */
@@ -251,15 +263,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
+    public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(this)) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildFetchMoviesListURL(sortOrder, Integer.toString(currentPage));
-            Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-            return new MoviesAsyncTaskLoader(this, searchURL, NetworkUtils.OPERATION_GET_MOVIES_LIST);
+            return new TmdbMoviesAsyncTaskLoader(this, sortOrder, Integer.toString(currentPage));
         } else {
             // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
@@ -309,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+    public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         isLoading = false;
@@ -322,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(this)) {
-            // If there is a valid list of {@link Movie}s, then add them to the adapter's data set.
+            // If there is a valid list of {@link TmdbMovie}s, then add them to the adapter's data set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
                 moviesAdapter.updateMoviesArrayList(data, appendToEnd);
@@ -347,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+    public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
         isLoading = false;
     }
     
@@ -374,12 +384,25 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Set the listener for click events in the Adapter.
         MoviesAdapter.OnItemClickListener listener = new MoviesAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Movie movie) {
-                // Start "MovieDetailsActivity" activity to show movie details when the current
-                // element is clicked.
-                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                startActivity(intent);
+            public void onItemClick(TmdbMovie movie, View clickedView) {
+                if (allowClicks) {
+                    // Disable clicks for now, in order to prevent more than one click while the
+                    // transition is running. Clicks will be enabled again when we return from
+                    // MovieDetailsActivity.
+                    allowClicks = false;
+
+                    // Create an ActivityOptions to transition between Activities using cross-Activity
+                    // scene animations.
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            MainActivity.this, clickedView, getString(R.string.transition_poster));
+
+                    // Start MovieDetailsActivity to show movie details when the current element is
+                    // clicked. We need to know when the other activity finishes, so we use
+                    // startActivityForResult. No need a requestCode, we don't care for any result.
+                    Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
+                    startActivityForResult(intent, 0, options.toBundle());
+                }
             }
         };
 
@@ -419,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
                         appendToEnd = true;
-                        getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, MainActivity.this);
+                        getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                     }
                 }
             }
@@ -439,7 +462,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             // fetched movies will be appended to the start of the RecyclerView.
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
-                            getSupportLoaderManager().restartLoader(NetworkUtils.MOVIES_LOADER_ID, null, MainActivity.this);
+                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                         } else
                             swipeRefreshLayout.setRefreshing(false);
                     }
@@ -454,10 +477,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private String getSortOrderText() {
         switch (sortOrder) {
-            case NetworkUtils.TMDB_POPULAR_PATH:
+            case Tmdb.TMDB_POPULAR_PATH:
                 return getResources().getString(R.string.order_popular);
 
-            case NetworkUtils.TMDB_TOP_RATED_PATH:
+            case Tmdb.TMDB_TOP_RATED_PATH:
                 return getResources().getString(R.string.order_top_rated);
 
             default:

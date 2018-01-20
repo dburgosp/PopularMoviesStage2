@@ -24,13 +24,12 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.ReviewsActivity;
 import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
-import com.example.android.popularmoviesstage2.asynctaskloaders.ReviewsAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.Movie;
-import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbReviewsAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -38,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Review>> {
+public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<TmdbReview>> {
     private static final String TAG = ReviewsFragment.class.getSimpleName();
 
     @BindView(R.id.reviews_relative_layout)
@@ -67,15 +66,15 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param movie is the {@link Movie} object.
+     * @param tmdbMovie is the {@link TmdbMovie} object.
      * @return a new instance of fragment ReviewsFragment.
      */
-    public static ReviewsFragment newInstance(Movie movie) {
+    public static ReviewsFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", movie.getId());
-        bundle.putString("title", movie.getTitle());
-        bundle.putString("poster", movie.getPoster_path());
-        bundle.putString("year", DateTimeUtils.getYear(movie.getRelease_date()));
+        bundle.putInt("id", tmdbMovie.getId());
+        bundle.putString("title", tmdbMovie.getTitle());
+        bundle.putString("poster", tmdbMovie.getPoster_path());
+        bundle.putString("year", DateTimeUtils.getYear(tmdbMovie.getRelease_date()));
         ReviewsFragment fragment = new ReviewsFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -106,7 +105,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         // thread. We start at page 1 and we will append reviews to the end of the RecyclerView.
         currentPage = 1;
         appendToEnd = true;
-        getLoaderManager().initLoader(NetworkUtils.REVIEWS_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -139,15 +138,14 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<ArrayList<Review>> onCreateLoader(int id, Bundle args) {
+    public Loader<ArrayList<TmdbReview>> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            URL searchURL = NetworkUtils.buildFetchReviewsListURL(movieId, Integer.toString(currentPage));
-            Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-            return new ReviewsAsyncTaskLoader(getContext(), searchURL);
+            Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId + ". Current page: " + currentPage);
+            return new TmdbReviewsAsyncTaskLoader(getContext(), movieId, Integer.toString(currentPage));
         } else {
             // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
@@ -177,7 +175,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      * them to you through new calls here.  You should not monitor the
      * data yourself.  For example, if the data is a {@link Cursor}
      * and you place it in a {@link CursorAdapter}, use
-     * the {@link CursorAdapter( Context , * Cursor, int)} constructor <em>without</em> passing
+     * the {@link CursorAdapter( Context , Cursor, int)} constructor <em>without</em> passing
      * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
      * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
      * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
@@ -197,7 +195,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<ArrayList<Review>> loader, ArrayList<Review> data) {
+    public void onLoadFinished(Loader<ArrayList<TmdbReview>> loader, ArrayList<TmdbReview> data) {
         // Hide progress bar and stop refreshing animation.
         isLoading = false;
         progressBar.setVisibility(View.INVISIBLE);
@@ -205,7 +203,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
-            // If there is a valid list of {@link Review} objects, then add them to the adapter's
+            // If there is a valid list of {@link TmdbReview} objects, then add them to the adapter's
             // data set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
@@ -232,7 +230,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<ArrayList<Review>> loader) {
+    public void onLoaderReset(Loader<ArrayList<TmdbReview>> loader) {
         isLoading = false;
     }
 
@@ -249,10 +247,10 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
 
-        // Set the listener for click events in the Review.
+        // Set the listener for click events in the TmdbReview.
         final ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(Review item) {
+            public void onItemClick(TmdbReview item, View clickedView) {
                 // Set movie title and images from the info passed to the fragment when instantiated.
                 item.setMovieTitle(movieTitle);
                 item.setPosterPath(posterPath);
@@ -267,7 +265,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
         };
 
         // Set the Adapter for the RecyclerView.
-        reviewsAdapter = new ReviewsAdapter(new ArrayList<Review>(), reviewListener);
+        reviewsAdapter = new ReviewsAdapter(new ArrayList<TmdbReview>(), reviewListener);
         reviewsRecyclerView.setAdapter(reviewsAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to
@@ -310,7 +308,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                         // end of the RecyclerView.
                         currentPage++;
                         appendToEnd = true;
-                        getLoaderManager().restartLoader(NetworkUtils.REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, ReviewsFragment.this);
                     }
                 }
             }
@@ -330,7 +328,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                             // fetched reviews will be appended to the start of the RecyclerView.
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
-                            getLoaderManager().restartLoader(NetworkUtils.REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                            getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, ReviewsFragment.this);
                         } else
                             swipeRefreshLayout.setRefreshing(false);
                     }

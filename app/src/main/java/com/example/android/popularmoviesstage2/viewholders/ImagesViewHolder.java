@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
 import com.example.android.popularmoviesstage2.adapters.ImagesAdapter;
-import com.example.android.popularmoviesstage2.classes.Image;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
@@ -54,16 +54,16 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Image information for the current ImagesViewHolder from the
+     * Helper method for setting TmdbImage information for the current ImagesViewHolder from the
      * {@link ImagesAdapter#onBindViewHolder(ImagesViewHolder, int)} method.
      *
-     * @param currentImage is the Image object attached to the current ImagesViewHolder element.
+     * @param currentTmdbImage is the TmdbImage object attached to the current ImagesViewHolder element.
      * @param imageType    is the type of the images to be held in the viewHolder. Available values:
      *                     {@link FullSizeImageActivity#IMAGE_TYPE_POSTER} for posters,
      *                     {@link FullSizeImageActivity#IMAGE_TYPE_BACKDROP} for backdrops.
      * @param listener     is the listener for click events.
      */
-    public void bind(final Image currentImage, int imageType, final ImagesAdapter.OnItemClickListener listener) {
+    public void bind(final TmdbImage currentTmdbImage, int imageType, final ImagesAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ImagesViewHolder.");
 
         // Set image dimensions and default background, according to its type, and draw image.
@@ -73,21 +73,21 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
                 widthPixels = context.getResources().getDimensionPixelSize(R.dimen.poster_width);
                 heightPixels = context.getResources().getDimensionPixelSize(R.dimen.poster_height);
                 imageView.setBackgroundResource(R.drawable.no_poster);
-                drawImage(currentImage, R.drawable.no_poster);
+                drawImage(currentTmdbImage, R.drawable.no_poster);
                 break;
             }
             default: {
                 widthPixels = context.getResources().getDimensionPixelSize(R.dimen.backdrop_width);
                 heightPixels = context.getResources().getDimensionPixelSize(R.dimen.backdrop_height);
                 imageView.setBackgroundResource(R.drawable.no_backdrop);
-                drawImage(currentImage, R.drawable.no_backdrop);
+                drawImage(currentTmdbImage, R.drawable.no_backdrop);
             }
         }
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
         imageView.setLayoutParams(layoutParams);
 
         // Write language.
-        String language = currentImage.getIso_639_1();
+        String language = currentTmdbImage.getIso_639_1();
         if (language != null && !language.equals(""))
             language = context.getResources().
 
@@ -103,7 +103,7 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
 
         {
             case IMAGE_TYPE_BACKDROP: {
-                String size = currentImage.getHeight() + "x" + currentImage.getWidth();
+                String size = currentTmdbImage.getHeight() + "x" + currentTmdbImage.getWidth();
                 sizeTextView.setText(size);
                 break;
             }
@@ -118,7 +118,7 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
         {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(currentImage);
+                listener.onItemClick(currentTmdbImage);
             }
         });
     }
@@ -184,14 +184,14 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     /**
      * Private helper method to draw a poster o backdrop image.
      *
-     * @param currentImage       is the current {@link Image} object to be drawn.
+     * @param currentTmdbImage       is the current {@link TmdbImage} object to be drawn.
      * @param defaultDrawableRes is the drawable resource to be drawn if the path of the current
      *                           image produces no image.
      */
-    private void drawImage(Image currentImage, int defaultDrawableRes) {
-        String imagePath = currentImage.getFile_path();
+    private void drawImage(TmdbImage currentTmdbImage, int defaultDrawableRes) {
+        String imagePath = currentTmdbImage.getFile_path();
         if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-            String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + imagePath;
+            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + imagePath;
             Picasso.with(context).load(posterPath).into(imageView);
         } else
             // No image. Show default image.

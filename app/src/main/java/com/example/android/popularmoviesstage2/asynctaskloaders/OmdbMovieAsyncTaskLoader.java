@@ -6,25 +6,23 @@ import android.support.v4.content.Loader;
 import android.support.v4.os.OperationCanceledException;
 import android.util.Log;
 
-import com.example.android.popularmoviesstage2.classes.Media;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Omdb;
+import com.example.android.popularmoviesstage2.classes.OmdbMovie;
 
-import java.net.URL;
-
-public class MediaAsyncTaskLoader extends AsyncTaskLoader<Media> {
-    private final String TAG = MediaAsyncTaskLoader.class.getSimpleName();
-    private Media media;
-    private URL url;
+public class OmdbMovieAsyncTaskLoader extends AsyncTaskLoader<OmdbMovie> {
+    private final String TAG = OmdbMovieAsyncTaskLoader.class.getSimpleName();
+    private OmdbMovie omdbMovie;
+    private String imdbId;
 
     /**
      * Constructor for this class.
      *
      * @param context is the context of the activity.
-     * @param url     is the url to fetch.
+     * @param imdbId  is the IMDB identifier of the movie.
      */
-    public MediaAsyncTaskLoader(Context context, URL url) {
+    public OmdbMovieAsyncTaskLoader(Context context, String imdbId) {
         super(context);
-        this.url = url;
+        this.imdbId = imdbId;
     }
 
     /**
@@ -34,9 +32,9 @@ public class MediaAsyncTaskLoader extends AsyncTaskLoader<Media> {
      */
     @Override
     protected void onStartLoading() {
-        if (media != null) {
+        if (omdbMovie != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(media);
+            deliverResult(omdbMovie);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -69,15 +67,15 @@ public class MediaAsyncTaskLoader extends AsyncTaskLoader<Media> {
      * @see #onCanceled
      */
     @Override
-    public Media loadInBackground() {
-        if (url == null) {
-            Log.i(TAG, "(loadInBackground) No URL to load.");
+    public OmdbMovie loadInBackground() {
+        if (imdbId == null || imdbId.equals("")) {
+            Log.i(TAG, "(loadInBackground) No IMDB identifier to search");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) URL: " + url.toString());
-        return NetworkUtils.fetchMedia(url);
+        Log.i(TAG, "(loadInBackground) IMDB identifier od the movie: " + imdbId);
+        return Omdb.getOmdbMovie(imdbId);
     }
 
     /**
@@ -88,15 +86,12 @@ public class MediaAsyncTaskLoader extends AsyncTaskLoader<Media> {
      * @param data the result of the load
      */
     @Override
-    public void deliverResult(Media data) {
+    public void deliverResult(OmdbMovie data) {
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
-        else {
-            Log.i(TAG, "(deliverResult) " + data.getVideos().size() + " video(s) delivered.");
-            Log.i(TAG, "(deliverResult) " + data.getPosters().size() + " poster(s) delivered.");
-            Log.i(TAG, "(deliverResult) " + data.getBackdrops().size() + " backdrops(s) delivered.");
-        }
-        media = data;
+        else
+            Log.i(TAG, "(deliverResult) Result delivered.");
+        omdbMovie = data;
         super.deliverResult(data);
     }
 }

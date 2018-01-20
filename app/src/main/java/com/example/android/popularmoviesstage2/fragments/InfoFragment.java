@@ -19,19 +19,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.asynctaskloaders.MoviesAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.asynctaskloaders.OMDBAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.Movie;
-import com.example.android.popularmoviesstage2.classes.MovieCountry;
-import com.example.android.popularmoviesstage2.classes.MovieGenre;
-import com.example.android.popularmoviesstage2.classes.OMDB;
+import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.OmdbMovie;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ import butterknife.Unbinder;
 /**
  * {@link Fragment} that displays the main information about the current movie.
  */
-public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovie> {
     private static final String TAG = InfoFragment.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -54,10 +54,16 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @BindView(R.id.info_scores_linearlayout)
     LinearLayout scoresLinearLayout;
+    @BindView(R.id.info_imdb_linearyaout)
+    LinearLayout imdbLinearLayout;
     @BindView(R.id.info_imdb_score)
     DonutProgress imdbDonutProgress;
+    @BindView(R.id.info_rottentomatoes_linearyaout)
+    LinearLayout rottenTomatoesLinearLayout;
     @BindView(R.id.info_rottentomatoes_score)
     DonutProgress rottenTomatoesDonutProgress;
+    @BindView(R.id.info_metacritic_linearyaout)
+    LinearLayout metacriticLinearLayout;
     @BindView(R.id.info_metacritic_score)
     DonutProgress metacriticDonutProgress;
 
@@ -92,8 +98,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @BindView(R.id.info_secondary_linear_layout)
     LinearLayout secondaryLinearLayout;
-    @BindView(R.id.info_status_textview)
-    TextView statusTextView;
     @BindView(R.id.info_original_title_textview)
     TextView originalTitleTextView;
     @BindView(R.id.info_original_language_textview)
@@ -103,7 +107,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_revenue_textview)
     TextView revenueTextView;
 
-    private static Movie movie;
+    private static TmdbMovie movie;
     private int movieId;
     private Unbinder unbinder;
 
@@ -116,12 +120,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param movie is the {@link Movie} object.
+     * @param tmdbMovie is the {@link TmdbMovie} object.
      * @return a new instance of fragment InfoFragment.
      */
-    public static InfoFragment newInstance(Movie movie) {
+    public static InfoFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", movie.getId());
+        bundle.putInt("id", tmdbMovie.getId());
         InfoFragment fragment = new InfoFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -147,7 +151,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Create an AsyncTaskLoader for retrieving complete movie information from internet in a
         // separate thread.
-        getLoaderManager().initLoader(NetworkUtils.MOVIE_DETAILS_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.TMDB_MOVIE_DETAILS_LOADER_ID, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -180,15 +184,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
+    public Loader<TmdbMovie> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             noResultsTextView.setText(getString(R.string.fetching_movie_info));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            URL searchURL = NetworkUtils.buildFetchMovieDetailsURL(movieId);
-            Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-            return new MoviesAsyncTaskLoader(getContext(), searchURL, NetworkUtils.OPERATION_GET_MOVIE_DETAILS);
+            Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId);
+            return new TmdbMovieDetailsAsyncTaskLoader(getContext(), movieId);
         } else {
             // There is no connection. Show error message.
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
@@ -218,7 +221,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * them to you through new calls here.  You should not monitor the
      * data yourself.  For example, if the data is a {@link Cursor}
      * and you place it in a {@link CursorAdapter}, use
-     * the {@link CursorAdapter(Context, * Cursor, int)} constructor <em>without</em> passing
+     * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
      * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
      * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
      * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
@@ -238,20 +241,20 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+    public void onLoadFinished(Loader<TmdbMovie> loader, TmdbMovie data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         noResultsTextView.setVisibility(View.INVISIBLE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
-            // If there is a valid result, then update its data into the current {@link Movie}
+            // If there is a valid result, then update its data into the current {@link TmdbMovie}
             // object.
-            if (data != null && !data.isEmpty()) {
+            if (data != null) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Get movie info and display it.
-                movie = data.get(0);
+                movie = data;
                 setMovieInfo();
 
                 String imdbId = movie.getImdb_id();
@@ -259,7 +262,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     // Create an instance of an OMDBinfo class in order to fetch additional info for
                     // this movie from OMDB API, using the just retrieved IMDB identifier of the
                     // movie.
-                    OMDBinfo omdbInfo = new OMDBinfo(imdbId);
+                    new OMDBinfo(imdbId);
                 }
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
@@ -282,22 +285,26 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+    public void onLoaderReset(Loader<TmdbMovie> loader) {
     }
+
+    /* ------------- */
+    /* INNER CLASSES */
+    /* ------------- */
 
     /**
      * Inner class for fetching info from OMDB API.
      */
-    class OMDBinfo implements LoaderManager.LoaderCallbacks<OMDB> {
+    class OMDBinfo implements LoaderManager.LoaderCallbacks<OmdbMovie> {
         private final String TAG = OMDBinfo.class.getSimpleName();
-        private OMDB omdb;
+        private OmdbMovie OmdbMovie;
         private String imdbId;
 
-        public OMDBinfo(String imdbId) {
+        OMDBinfo(String imdbId) {
             this.imdbId = imdbId;
             // Create an AsyncTaskLoader for retrieving additional movie information from OMDB in a
             // separate thread.
-            getLoaderManager().initLoader(NetworkUtils.OMDB_LOADER_ID, null, this);
+            getLoaderManager().initLoader(NetworkUtils.OMDB_MOVIES_LOADER_ID, null, this);
         }
 
         /**
@@ -308,12 +315,11 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
          * @return Return a new Loader instance that is ready to start loading.
          */
         @Override
-        public Loader<OMDB> onCreateLoader(int id, Bundle args) {
+        public Loader<OmdbMovie> onCreateLoader(int id, Bundle args) {
             if (NetworkUtils.isConnected(getContext())) {
                 // There is an available connection. Fetch results from OMDB.
-                URL searchURL = NetworkUtils.buildFetchOMDBinfoURL(imdbId);
-                Log.i(TAG, "(onCreateLoader) Search URL: " + searchURL.toString());
-                return new OMDBAsyncTaskLoader(getContext(), searchURL);
+                Log.i(TAG, "(onCreateLoader) Search OMDB for IMDB id: " + imdbId);
+                return new OmdbMovieAsyncTaskLoader(getContext(), imdbId);
             } else {
                 // There is no connection. Show error message.
                 Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -340,7 +346,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
          * them to you through new calls here.  You should not monitor the
          * data yourself.  For example, if the data is a {@link Cursor}
          * and you place it in a {@link CursorAdapter}, use
-         * the {@link CursorAdapter(Context, * Cursor, int)} constructor <em>without</em> passing
+         * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
          * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
          * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
          * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
@@ -360,20 +366,22 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
          * @param data   The data generated by the Loader.
          */
         @Override
-        public void onLoadFinished(Loader<OMDB> loader, OMDB data) {
+        public void onLoadFinished(Loader<OmdbMovie> loader, OmdbMovie data) {
             // Check if there is an available connection.
             if (NetworkUtils.isConnected(getContext())) {
-                // If there is a valid result, then update its data into the current {@link OMDB}
+                // If there is a valid result, then update its data into the current {@link OmdbMovie}
                 // object.
                 if (data != null) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                     // Get additional movie info and display it.
-                    omdb = data;
-                    ScoreUtils.setRating(getContext(), String.valueOf(omdb.getImdb_vote_average()), imdbDonutProgress);
-                    ScoreUtils.setRating(getContext(),String.valueOf(omdb.getRt_vote_average()), rottenTomatoesDonutProgress);
-                    ScoreUtils.setRating(getContext(),String.valueOf(omdb.getMc_vote_average()), metacriticDonutProgress);
-                    scoresLinearLayout.setVisibility(View.VISIBLE);
+                    OmdbMovie = data;
+                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getImdb_vote_average()), imdbDonutProgress))
+                        imdbLinearLayout.setAlpha(0.2f);
+                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getRt_vote_average()), rottenTomatoesDonutProgress))
+                        rottenTomatoesLinearLayout.setAlpha(0.2f);
+                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getMc_vote_average()), metacriticDonutProgress))
+                        metacriticLinearLayout.setAlpha(0.2f);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
@@ -393,7 +401,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
          * @param loader The Loader that is being reset.
          */
         @Override
-        public void onLoaderReset(Loader<OMDB> loader) {
+        public void onLoaderReset(Loader<OmdbMovie> loader) {
 
         }
     }
@@ -415,6 +423,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * Helper method to display all the movie information in this fragment.
      */
     void setMovieInfo() {
+        scoresLinearLayout.setVisibility(View.VISIBLE);
+
         // Set main info section.
         boolean mainInfoIsSet = setMainInfoSection();
         if (mainInfoIsSet)
@@ -454,13 +464,13 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         }
 
         // Set genres. If there is no available genres info, we hide this section.
-        ArrayList<MovieGenre> movieGenres = movie.getGenres();
-        if (movieGenres != null && movieGenres.size() > 0) {
+        ArrayList<TmdbMovieGenre> tmdbMovieGenres = movie.getGenres();
+        if (tmdbMovieGenres != null && tmdbMovieGenres.size() > 0) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieGenres.size(); n++) {
-                stringBuilder.append(movieGenres.get(n).getName());
-                if ((n + 1) < movieGenres.size())
+            for (int n = 0; n < tmdbMovieGenres.size(); n++) {
+                stringBuilder.append(tmdbMovieGenres.get(n).getName());
+                if ((n + 1) < tmdbMovieGenres.size())
                     stringBuilder.append(", ");
             }
             genresTextView.setText(stringBuilder);
@@ -469,7 +479,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             genresLinearLayout.setVisibility(View.GONE);
 
         // Set production countries. If there is no available countries info, we hide this section.
-        ArrayList<MovieCountry> movieCountries = movie.getProduction_countries();
+        ArrayList<TmdbMovieCountry> movieCountries = movie.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
@@ -487,7 +497,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String releaseDate = movie.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
             infoSectionSet = true;
-            releaseDateTextView.setText(releaseDate);
+
+            // Add status to date if it is other than "released".
+            String status = movie.getStatus();
+            if (status != null && !status.equals("") && !status.isEmpty() && !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+                releaseDate = releaseDate + " (" + status + ")";
+                TextUtils.setHtmlText(releaseDateTextView, releaseDate);
+            } else
+                releaseDateTextView.setText(releaseDate);
             releaseDateLinearLayout.setVisibility(View.VISIBLE);
         } else
             releaseDateLinearLayout.setVisibility(View.GONE);
@@ -511,16 +528,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private boolean setSecondaryInfoSection() {
         boolean infoSectionSet = false;
-
-        // Set status. If there is no available status info, we hide this section.
-        String status = movie.getStatus();
-        if (status != null && !status.equals("") && !status.isEmpty()) {
-            infoSectionSet = true;
-            String html = "<strong>Status: </strong>" + status;
-            TextUtils.setHtmlText(statusTextView, html);
-            statusTextView.setVisibility(View.VISIBLE);
-        } else
-            statusTextView.setVisibility(View.GONE);
 
         // Set original title. If there is no available original title info, we hide this section.
         String originalTitle = movie.getOriginal_title();

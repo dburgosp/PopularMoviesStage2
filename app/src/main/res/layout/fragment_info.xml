@@ -32,6 +32,7 @@
                 android:paddingTop="@dimen/tiny_padding">
 
                 <LinearLayout
+                    android:id="@+id/info_imdb_linearyaout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
@@ -50,7 +51,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text="n/a"
+                        app:donut_text=""
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -65,6 +66,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/info_rottentomatoes_linearyaout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
@@ -84,7 +86,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text="n/a"
+                        app:donut_text=""
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -100,6 +102,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/info_metacritic_linearyaout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
@@ -118,7 +121,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text="n/a"
+                        app:donut_text=""
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -140,7 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/regular_padding"
-                app:cardCornerRadius="@dimen/small_padding"
+                app:cardCornerRadius="@dimen/regular_padding"
                 app:cardElevation="@dimen/tiny_padding">
 
                 <LinearLayout
@@ -178,11 +181,23 @@
                             tools:text="@string/no_overview" />
                     </LinearLayout>
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/small_padding"
+                        android:alpha="0.2"
+                        android:background="@color/colorAccent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/small_padding"
+                        android:alpha="0.4"
+                        android:background="@color/colorAccent" />
+
                     <LinearLayout
                         android:id="@+id/info_main_linearlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:alpha="0.7"
+                        android:alpha="0.6"
                         android:background="@color/colorAccent"
                         android:orientation="vertical"
                         android:padding="@dimen/regular_padding">
@@ -288,7 +303,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/regular_padding"
                                 android:textColor="@color/colorWhite"
-                                tools:text="Drama, Science Fiction, Horror" />
+                                tools:text="Drama, Science Fiction, Comedy, Horror" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -302,12 +317,6 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/regular_padding"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/info_status_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="Status" />
 
                 <TextView
                     android:id="@+id/info_original_title_textview"

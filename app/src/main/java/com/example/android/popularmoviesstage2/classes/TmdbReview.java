@@ -3,7 +3,7 @@ package com.example.android.popularmoviesstage2.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Review implements Parcelable {
+public class TmdbReview implements Parcelable {
     private String id;
     private String author;
     private String content;
@@ -30,8 +30,8 @@ public class Review implements Parcelable {
      * @param position     is the position of this review into its page.
      * @param total_pages  is the number of pages containing rewievs for the current movie.
      */
-    public Review(String id, String author, String content, String url, String movieTitle,
-                  String posterPath, String backdropPath, int page, int position, int total_pages) {
+    public TmdbReview(String id, String author, String content, String url, String movieTitle,
+                      String posterPath, String backdropPath, int page, int position, int total_pages) {
         this.id = id;
         this.author = author;
         this.content = content;
@@ -145,7 +145,7 @@ public class Review implements Parcelable {
         dest.writeInt(this.total_pages);
     }
 
-    protected Review(Parcel in) {
+    protected TmdbReview(Parcel in) {
         this.id = in.readString();
         this.author = in.readString();
         this.content = in.readString();
@@ -158,15 +158,15 @@ public class Review implements Parcelable {
         this.total_pages = in.readInt();
     }
 
-    public static final Parcelable.Creator<Review> CREATOR = new Parcelable.Creator<Review>() {
+    public static final Parcelable.Creator<TmdbReview> CREATOR = new Parcelable.Creator<TmdbReview>() {
         @Override
-        public Review createFromParcel(Parcel source) {
-            return new Review(source);
+        public TmdbReview createFromParcel(Parcel source) {
+            return new TmdbReview(source);
         }
 
         @Override
-        public Review[] newArray(int size) {
-            return new Review[size];
+        public TmdbReview[] newArray(int size) {
+            return new TmdbReview[size];
         }
     };
 }

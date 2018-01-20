@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Review;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
@@ -33,7 +33,7 @@ public class ReviewsActivity extends AppCompatActivity {
     @BindView(R.id.reviews_content_text_view)
     TextView contentTextView;
 
-    private Review review;
+    private TmdbReview review;
     private String movieYear;
     private Unbinder unbinder;
 
@@ -83,8 +83,8 @@ public class ReviewsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
+        // Transition back to the movie review on MovieDetailsActivity.
         finish();
-        Log.i(TAG, "(onSupportNavigateUp) Finish activity and go back");
         return true;
     }
 
@@ -133,10 +133,13 @@ public class ReviewsActivity extends AppCompatActivity {
     /* -------------- */
 
     private void setReview() {
+        // Set transition between the review in MovieDetailsActivity and this.
+        contentTextView.setTransitionName(getString(R.string.transition_review));
+
         // Set poster. If there is no poster, set the default poster.
         String posterPath = review.getPosterPath();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+            Picasso.with(this).load(Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
         else
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 

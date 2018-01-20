@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.android.popularmoviesstage2.classes.Image;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.fragments.FullSizeImageFragment;
 
 import java.util.ArrayList;
@@ -15,24 +15,24 @@ import java.util.ArrayList;
  */
 public class FullSizeImagesFragmentPagerAdapter extends FragmentPagerAdapter {
     private Context context;
-    private ArrayList<Image> imageArrayList;
+    private ArrayList<TmdbImage> tmdbImageArrayList;
     private int imageType;
 
     public FullSizeImagesFragmentPagerAdapter(FragmentManager fm, Context context,
-                                              ArrayList<Image> imageArrayList, int imageType) {
+                                              ArrayList<TmdbImage> tmdbImageArrayList, int imageType) {
         super(fm);
         this.context = context;
-        this.imageArrayList = imageArrayList;
+        this.tmdbImageArrayList = tmdbImageArrayList;
         this.imageType = imageType;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return FullSizeImageFragment.newInstance(imageArrayList.get(position), imageType);
+        return FullSizeImageFragment.newInstance(tmdbImageArrayList.get(position), imageType);
     }
 
     @Override
     public int getCount() {
-        return imageArrayList.size();
+        return tmdbImageArrayList.size();
     }
 }

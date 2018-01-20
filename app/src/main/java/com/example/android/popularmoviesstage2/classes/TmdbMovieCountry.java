@@ -6,18 +6,18 @@ import android.os.Parcelable;
 /**
  * Public class for managing the countries related to movies.
  */
-public class MovieCountry implements Parcelable {
+public class TmdbMovieCountry implements Parcelable {
     private String iso_3166_1;
     private String name;
 
     /**
-     * Constructor for MovieCountry class objects.
+     * Constructor for TmdbMovieCountry class objects.
      *
      * @param iso_3166_1 is the ISO 3166-1 code for the country.
      * @param name       is the name of the country, given in the currently selected language for
      *                   retrieving information from the TMDB API.
      */
-    public MovieCountry(String iso_3166_1, String name) {
+    public TmdbMovieCountry(String iso_3166_1, String name) {
         this.iso_3166_1 = iso_3166_1;
         this.name = name;
     }
@@ -42,7 +42,7 @@ public class MovieCountry implements Parcelable {
 
     // Parcelable configuration.
 
-    protected MovieCountry(Parcel in) {
+    protected TmdbMovieCountry(Parcel in) {
         this.iso_3166_1 = in.readString();
         this.name = in.readString();
     }
@@ -58,15 +58,15 @@ public class MovieCountry implements Parcelable {
         dest.writeString(this.name);
     }
 
-    public static final Parcelable.Creator<MovieCountry> CREATOR = new Parcelable.Creator<MovieCountry>() {
+    public static final Parcelable.Creator<TmdbMovieCountry> CREATOR = new Parcelable.Creator<TmdbMovieCountry>() {
         @Override
-        public MovieCountry createFromParcel(Parcel source) {
-            return new MovieCountry(source);
+        public TmdbMovieCountry createFromParcel(Parcel source) {
+            return new TmdbMovieCountry(source);
         }
 
         @Override
-        public MovieCountry[] newArray(int size) {
-            return new MovieCountry[size];
+        public TmdbMovieCountry[] newArray(int size) {
+            return new TmdbMovieCountry[size];
         }
     };
 }

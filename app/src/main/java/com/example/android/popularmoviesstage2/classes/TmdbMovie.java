@@ -3,20 +3,18 @@ package com.example.android.popularmoviesstage2.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-
 import java.util.ArrayList;
 
 /**
  * Public class for managing the complete information of a movie.
  */
-public class Movie implements Parcelable {
+public class TmdbMovie implements Parcelable {
     private int id;
     private boolean adult;
     private String backdrop_path;
-    private MovieCollection belongs_to_collection;
+    private TmdbMovieCollection belongs_to_collection;
     private int budget;
-    private ArrayList<MovieGenre> genres;
+    private ArrayList<TmdbMovieGenre> genres;
     private String homepage;
     private String imdb_id;
     private String original_language;
@@ -24,12 +22,12 @@ public class Movie implements Parcelable {
     private String overview;
     private Double popularity;
     private String poster_path;
-    private ArrayList<MovieCompany> production_companies;
-    private ArrayList<MovieCountry> production_countries;
+    private ArrayList<TmdbMovieCompany> production_companies;
+    private ArrayList<TmdbMovieCountry> production_countries;
     private String release_date;
     private int revenue;
     private int runtime;
-    private ArrayList<MovieLanguage> spoken_languages;
+    private ArrayList<TmdbMovieLanguage> spoken_languages;
     private String status;
     private String tagline;
     private String title;
@@ -46,12 +44,12 @@ public class Movie implements Parcelable {
      * @param id                    is the unique identifier of the movie on TMDB.
      * @param adult                 is a boolean value that indicates whether the movie has adult
      *                              content or not.
-     * @param backdrop_path         is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path         is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
      *                              and get the backdrop image of the movie.
-     * @param belongs_to_collection is a {@link MovieCollection} object with the information of the
+     * @param belongs_to_collection is a {@link TmdbMovieCollection} object with the information of the
      *                              collection to which the movie belongs.
      * @param budget                is the budget, in US dollars, for the movie.
-     * @param genres                is an array with {@link MovieGenre} objects, containing the
+     * @param genres                is an array with {@link TmdbMovieGenre} objects, containing the
      *                              genres of the movie.
      * @param homepage              is the url of the official web page of the movie.
      * @param imdb_id               is the IMDB code for appending to http://www.imdb.com/title/ and
@@ -63,17 +61,17 @@ public class Movie implements Parcelable {
      * @param popularity            is a double value indicating how popular is the movie on TMDB
      *                              (based on views, ratings, favourite additions, etc.).
      * @param poster_path           is a string for appending to
-     *                              {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
+     *                              {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
      *                              the movie.
-     * @param production_companies  is an array of {@link MovieCompany} objects containing the
+     * @param production_companies  is an array of {@link TmdbMovieCompany} objects containing the
      *                              information about the companies that have produced the movie.
-     * @param production_countries  is an array of {@link MovieCountry} objects containing the
+     * @param production_countries  is an array of {@link TmdbMovieCountry} objects containing the
      *                              information about the countries in which the movie has been
      *                              produced.
      * @param release_date          is the date in which the movie was released.
      * @param revenue               is the revenue, in US dollars, for the movie.
      * @param runtime               is the movie duration, in minutes.
-     * @param spoken_languages      is an array of {@link MovieLanguage} objects containing the
+     * @param spoken_languages      is an array of {@link TmdbMovieLanguage} objects containing the
      *                              information about the languages spoken in the movie.
      * @param status                is the release status of the movie. Allowed values are "Rumored",
      *                              "Planned", "In Production", "Post Production", "Released" and
@@ -91,14 +89,14 @@ public class Movie implements Parcelable {
      * @param page                  is the current page in the list of movies.
      * @param total_pages           is the total number of movie pages.
      */
-    public Movie(int id, boolean adult, String backdrop_path, MovieCollection belongs_to_collection,
-                 int budget, ArrayList<MovieGenre> genres, String homepage, String imdb_id,
-                 String original_language, String original_title, String overview, Double popularity,
-                 String poster_path, ArrayList<MovieCompany> production_companies,
-                 ArrayList<MovieCountry> production_countries, String release_date, int revenue,
-                 int runtime, ArrayList<MovieLanguage> spoken_languages, String status,
-                 String tagline, String title, boolean video, Double vote_average, int vote_count,
-                 int position, int page, int total_pages) {
+    public TmdbMovie(int id, boolean adult, String backdrop_path, TmdbMovieCollection belongs_to_collection,
+                     int budget, ArrayList<TmdbMovieGenre> genres, String homepage, String imdb_id,
+                     String original_language, String original_title, String overview, Double popularity,
+                     String poster_path, ArrayList<TmdbMovieCompany> production_companies,
+                     ArrayList<TmdbMovieCountry> production_countries, String release_date, int revenue,
+                     int runtime, ArrayList<TmdbMovieLanguage> spoken_languages, String status,
+                     String tagline, String title, boolean video, Double vote_average, int vote_count,
+                     int position, int page, int total_pages) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -135,9 +133,9 @@ public class Movie implements Parcelable {
      * @param id                is the unique identifier of the movie on TMDB.
      * @param adult             is a boolean value that indicates whether the movie has adult
      *                          content or not.
-     * @param backdrop_path     is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path     is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
      *                          and get the backdrop image of the movie.
-     * @param genres            is an array with {@link MovieGenre} objects, containing the
+     * @param genres            is an array with {@link TmdbMovieGenre} objects, containing the
      *                          genres of the movie.
      * @param original_language is a text string with the original language of the movie.
      * @param original_title    is a text string with the original title of the movie.
@@ -146,7 +144,7 @@ public class Movie implements Parcelable {
      * @param popularity        is a double value indicating how popular is the movie on TMDB
      *                          (based on views, ratings, favourite additions, etc.).
      * @param poster_path       is a string for appending to
-     *                          {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
+     *                          {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
      *                          the movie.
      * @param release_date      is the date in which the movie was released.
      * @param title             is the movie title, given in the currently selected language for
@@ -155,15 +153,14 @@ public class Movie implements Parcelable {
      *                          video for the movie.
      * @param vote_average      is the current users rating for the movie, from 0 to 10.
      * @param vote_count        is the number of persons who have voted for the movie.
-     * @param position          is the position of the movie into the list.
-     * @param position              is the position of the movie into the current page.
-     * @param page                  is the current page in the list of movies.
-     * @param total_pages           is the total number of movie pages.
+     * @param position          is the position of the movie into the current page.
+     * @param page              is the current page in the list of movies.
+     * @param total_pages       is the total number of movie pages.
      */
-    public Movie(int id, boolean adult, String backdrop_path, ArrayList<MovieGenre> genres,
-                 String original_language, String original_title, String overview, Double popularity,
-                 String poster_path, String release_date, String title, boolean video,
-                 Double vote_average, int vote_count, int position, int page, int total_pages) {
+    public TmdbMovie(int id, boolean adult, String backdrop_path, ArrayList<TmdbMovieGenre> genres,
+                     String original_language, String original_title, String overview, Double popularity,
+                     String poster_path, String release_date, String title, boolean video,
+                     Double vote_average, int vote_count, int position, int page, int total_pages) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -220,11 +217,11 @@ public class Movie implements Parcelable {
         this.backdrop_path = backdrop_path;
     }
 
-    public MovieCollection getBelongs_to_collection() {
+    public TmdbMovieCollection getBelongs_to_collection() {
         return belongs_to_collection;
     }
 
-    public void setBelongs_to_collection(MovieCollection belongs_to_collection) {
+    public void setBelongs_to_collection(TmdbMovieCollection belongs_to_collection) {
         this.belongs_to_collection = belongs_to_collection;
     }
 
@@ -236,11 +233,11 @@ public class Movie implements Parcelable {
         this.budget = budget;
     }
 
-    public ArrayList<MovieGenre> getGenres() {
+    public ArrayList<TmdbMovieGenre> getGenres() {
         return genres;
     }
 
-    public void setGenres(ArrayList<MovieGenre> genres) {
+    public void setGenres(ArrayList<TmdbMovieGenre> genres) {
         this.genres = genres;
     }
 
@@ -300,19 +297,19 @@ public class Movie implements Parcelable {
         this.poster_path = poster_path;
     }
 
-    public ArrayList<MovieCompany> getProduction_companies() {
+    public ArrayList<TmdbMovieCompany> getProduction_companies() {
         return production_companies;
     }
 
-    public void setProduction_companies(ArrayList<MovieCompany> production_companies) {
+    public void setProduction_companies(ArrayList<TmdbMovieCompany> production_companies) {
         this.production_companies = production_companies;
     }
 
-    public ArrayList<MovieCountry> getProduction_countries() {
+    public ArrayList<TmdbMovieCountry> getProduction_countries() {
         return production_countries;
     }
 
-    public void setProduction_countries(ArrayList<MovieCountry> production_countries) {
+    public void setProduction_countries(ArrayList<TmdbMovieCountry> production_countries) {
         this.production_countries = production_countries;
     }
 
@@ -340,11 +337,11 @@ public class Movie implements Parcelable {
         this.runtime = runtime;
     }
 
-    public ArrayList<MovieLanguage> getSpoken_languages() {
+    public ArrayList<TmdbMovieLanguage> getSpoken_languages() {
         return spoken_languages;
     }
 
-    public void setSpoken_languages(ArrayList<MovieLanguage> spoken_languages) {
+    public void setSpoken_languages(ArrayList<TmdbMovieLanguage> spoken_languages) {
         this.spoken_languages = spoken_languages;
     }
 
@@ -422,13 +419,13 @@ public class Movie implements Parcelable {
 
     // Parcelable configuration.
 
-    protected Movie(Parcel in) {
+    protected TmdbMovie(Parcel in) {
         this.id = in.readInt();
         this.adult = in.readByte() != 0;
         this.backdrop_path = in.readString();
-        this.belongs_to_collection = in.readParcelable(MovieCollection.class.getClassLoader());
+        this.belongs_to_collection = in.readParcelable(TmdbMovieCollection.class.getClassLoader());
         this.budget = in.readInt();
-        this.genres = in.createTypedArrayList(MovieGenre.CREATOR);
+        this.genres = in.createTypedArrayList(TmdbMovieGenre.CREATOR);
         this.homepage = in.readString();
         this.imdb_id = in.readString();
         this.original_language = in.readString();
@@ -436,12 +433,12 @@ public class Movie implements Parcelable {
         this.overview = in.readString();
         this.popularity = (Double) in.readValue(Double.class.getClassLoader());
         this.poster_path = in.readString();
-        this.production_companies = in.createTypedArrayList(MovieCompany.CREATOR);
-        this.production_countries = in.createTypedArrayList(MovieCountry.CREATOR);
+        this.production_companies = in.createTypedArrayList(TmdbMovieCompany.CREATOR);
+        this.production_countries = in.createTypedArrayList(TmdbMovieCountry.CREATOR);
         this.release_date = in.readString();
         this.revenue = in.readInt();
         this.runtime = in.readInt();
-        this.spoken_languages = in.createTypedArrayList(MovieLanguage.CREATOR);
+        this.spoken_languages = in.createTypedArrayList(TmdbMovieLanguage.CREATOR);
         this.status = in.readString();
         this.tagline = in.readString();
         this.title = in.readString();
@@ -490,15 +487,15 @@ public class Movie implements Parcelable {
         dest.writeInt(this.total_pages);
     }
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+    public static final Parcelable.Creator<TmdbMovie> CREATOR = new Parcelable.Creator<TmdbMovie>() {
         @Override
-        public Movie createFromParcel(Parcel source) {
-            return new Movie(source);
+        public TmdbMovie createFromParcel(Parcel source) {
+            return new TmdbMovie(source);
         }
 
         @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
+        public TmdbMovie[] newArray(int size) {
+            return new TmdbMovie[size];
         }
     };
 }

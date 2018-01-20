@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Image;
+import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.FullSizeImagesFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.pagetransformers.DepthPageTransformer;
 import com.example.android.popularmoviesstage2.pagetransformers.ZoomOutPageTransformer;
@@ -19,14 +19,14 @@ import butterknife.ButterKnife;
 
 public class FullSizeImageActivity extends AppCompatActivity {
     private static final String TAG = FullSizeImageActivity.class.getSimpleName();
-    private ArrayList<Image> imagesArrayList = new ArrayList<>();
+    private ArrayList<TmdbImage> imagesArrayList = new ArrayList<>();
     private int currentImage = 0;
     private int imageType;
 
     @BindView(R.id.full_posters_viewpager)
     ViewPager viewPager;
 
-    // Public Image types.
+    // Public TmdbImage types.
     public static final int IMAGE_TYPE_POSTER = 1;
     public static final int IMAGE_TYPE_BACKDROP = 2;
 

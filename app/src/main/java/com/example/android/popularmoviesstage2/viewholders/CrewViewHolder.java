@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.CrewAdapter;
-import com.example.android.popularmoviesstage2.classes.Crew;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbCrew;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -45,19 +45,19 @@ public class CrewViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Person information for the current CrewViewHolder from the
+     * Helper method for setting TmdbPerson information for the current CrewViewHolder from the
      * {@link CrewAdapter#onBindViewHolder(CrewViewHolder, int)} method.
      *
-     * @param currentPerson is the Crew object attached to the current CrewViewHolder element.
+     * @param currentPerson is the TmdbCrew object attached to the current CrewViewHolder element.
      * @param listener      is the listener for click events.
      */
-    public void bind(final Crew currentPerson, final CrewAdapter.OnItemClickListener listener) {
+    public void bind(final TmdbCrew currentPerson, final CrewAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current CrewViewHolder.");
 
         // Draw profile image for current person and resize image to fit screen size and orientation.
         String profilePath = currentPerson.getProfile_path();
         if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
-            String posterPath = NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + profilePath;
+            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + profilePath;
             Picasso.with(context).load(posterPath).into(posterImageView);
         } else
             posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));

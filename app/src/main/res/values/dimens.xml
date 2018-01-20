@@ -26,7 +26,7 @@
     <dimen name="padding_top_movie_details_cardview">56dp</dimen>
     <dimen name="padding_top_movie_details_header">22dp</dimen>
 
-    <!-- Number of columns for the main movie list depending on the device orientation. -->
+    <!-- Number of columns for the mtmdbMovieovie list depending on the device orientation. -->
     <integer name="default_vertical_span_count">3</integer>
     <integer name="default_horizontal_span_count">4</integer>
 

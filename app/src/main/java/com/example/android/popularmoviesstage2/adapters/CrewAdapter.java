@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Crew;
+import com.example.android.popularmoviesstage2.classes.TmdbCrew;
 import com.example.android.popularmoviesstage2.viewholders.CrewViewHolder;
 
 import java.util.ArrayList;
@@ -16,17 +16,17 @@ import java.util.ArrayList;
 public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     private static final String TAG = CrewAdapter.class.getSimpleName();
     private final CrewAdapter.OnItemClickListener listener;
-    private ArrayList<Crew> crewArrayList;
+    private ArrayList<TmdbCrew> tmdbCrewArrayList;
     //private int position = 0;
 
     /**
      * Constructor for this class.
      *
-     * @param crewArrayList is the list of persons that will be represented into the adapter.
+     * @param tmdbCrewArrayList is the list of persons that will be represented into the adapter.
      * @param listener      is the listener for receiving the clicks.
      */
-    public CrewAdapter(ArrayList<Crew> crewArrayList, CrewAdapter.OnItemClickListener listener) {
-        this.crewArrayList = crewArrayList;
+    public CrewAdapter(ArrayList<TmdbCrew> tmdbCrewArrayList, CrewAdapter.OnItemClickListener listener) {
+        this.tmdbCrewArrayList = tmdbCrewArrayList;
         this.listener = listener;
         Log.i(TAG, "(CrewAdapter) Object created");
     }
@@ -36,19 +36,10 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
      *
      * @param personsArray is the new list of persons.
      */
-    public void setCrewArray(ArrayList<Crew> personsArray) {
-        this.crewArrayList = personsArray;
-        Log.i(TAG, "(setCrewArray) Crew list updated");
+    public void setCrewArray(ArrayList<TmdbCrew> personsArray) {
+        this.tmdbCrewArrayList = personsArray;
+        Log.i(TAG, "(setCrewArray) TmdbCrew list updated");
     }
-
-    /**
-     * Getter method to obtain the last position saved at {@link #onBindViewHolder}.
-     *
-     * @return current position.
-     */
-/*    int getPosition() {
-        return position;
-    }*/
 
     /**
      * Called when RecyclerView needs a new {@link CrewViewHolder} of the given type to represent
@@ -99,14 +90,14 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
     @Override
     public void onBindViewHolder(CrewViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
-        if (!crewArrayList.isEmpty()) {
-            Crew currentCrew = crewArrayList.get(position);
+        if (!tmdbCrewArrayList.isEmpty()) {
+            TmdbCrew currentTmdbCrew = tmdbCrewArrayList.get(position);
 
             // Set position in the adapter for current person.
-            //currentCrew.setPosition(position);
+            //currentTmdbCrew.setPosition(position);
 
             // Update CrewViewHolder with the person details at current position in the adapter.
-            viewHolder.bind(currentCrew, listener);
+            viewHolder.bind(currentTmdbCrew, listener);
 
             // Save current position.
             //this.position = viewHolder.getAdapterPosition();
@@ -120,7 +111,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
      */
     @Override
     public int getItemCount() {
-        int itemCount = crewArrayList.size();
+        int itemCount = tmdbCrewArrayList.size();
         Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
         return itemCount;
     }
@@ -132,6 +123,6 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Crew item);
+        void onItemClick(TmdbCrew item);
     }
 }

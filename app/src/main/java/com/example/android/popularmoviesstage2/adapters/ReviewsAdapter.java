@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Review;
+import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.viewholders.ReviewsViewHolder;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
     private static final String TAG = ReviewsAdapter.class.getSimpleName();
     private final ReviewsAdapter.OnItemClickListener listener;
-    private ArrayList<Review> reviewsArrayList;
+    private ArrayList<TmdbReview> reviewsArrayList;
     private LinearLayout.LayoutParams layoutParams;
     private int currentPosition, currentPage, totalPages;
 
@@ -27,7 +27,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      * @param reviewsArrayList is the list of reviews that will be represented into the adapter.
      * @param listener         is the listener for receiving the clicks.
      */
-    public ReviewsAdapter(ArrayList<Review> reviewsArrayList, ReviewsAdapter.OnItemClickListener listener) {
+    public ReviewsAdapter(ArrayList<TmdbReview> reviewsArrayList, ReviewsAdapter.OnItemClickListener listener) {
         this.reviewsArrayList = reviewsArrayList;
         this.listener = listener;
         this.currentPosition = 0;
@@ -67,12 +67,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      *                         reviewsArrayList; if false, the new list will be appended to the
      *                         start.
      */
-    public void updateReviewsArray(ArrayList<Review> reviewsArrayList, boolean appendToEnd) {
+    public void updateReviewsArray(ArrayList<TmdbReview> reviewsArrayList, boolean appendToEnd) {
         if (appendToEnd)
             this.reviewsArrayList.addAll(reviewsArrayList);
         else
             this.reviewsArrayList.addAll(0, reviewsArrayList);
-        Log.i(TAG, "(updateReviewsArray) Review list updated. Current size is " + this.reviewsArrayList.size());
+        Log.i(TAG, "(updateReviewsArray) TmdbReview list updated. Current size is " + this.reviewsArrayList.size());
     }
 
     /**
@@ -127,13 +127,13 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
         if (!reviewsArrayList.isEmpty()) {
             // Get current review object and update the view holder with the review details at
             // current position in the adapter.
-            Review currentReview = reviewsArrayList.get(position);
-            viewHolder.bind(currentReview, listener);
+            TmdbReview currentTmdbReview = reviewsArrayList.get(position);
+            viewHolder.bind(currentTmdbReview, listener);
 
             // Set private variables in order to manage paging information.
-            currentPosition = currentReview.getPosition();
-            currentPage = currentReview.getPage();
-            totalPages = currentReview.getTotal_pages();
+            currentPosition = currentTmdbReview.getPosition();
+            currentPage = currentTmdbReview.getPage();
+            totalPages = currentTmdbReview.getTotal_pages();
         }
     }
 
@@ -156,6 +156,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Review item);
+        void onItemClick(TmdbReview item, View clickedView);
     }
 }

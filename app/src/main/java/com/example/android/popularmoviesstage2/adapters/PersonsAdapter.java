@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Person;
+import com.example.android.popularmoviesstage2.classes.TmdbPerson;
 import com.example.android.popularmoviesstage2.viewholders.PersonsViewHolder;
 
 import java.util.ArrayList;
@@ -17,21 +17,21 @@ import java.util.ArrayList;
 public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
     private static final String TAG = PersonsAdapter.class.getSimpleName();
     private final PersonsAdapter.OnItemClickListener listener;
-    private ArrayList<Person> personArrayList;
+    private ArrayList<TmdbPerson> tmdbPersonArrayList;
     private LinearLayout.LayoutParams layoutParams;
     //private int position = 0;
 
     /**
      * Constructor for this class.
      *
-     * @param personArrayList is the list of persons that will be represented into the adapter.
+     * @param tmdbPersonArrayList is the list of persons that will be represented into the adapter.
      * @param widthPixels     is the width in pixels of a movie poster.
      * @param heightPixels    is the height in pixels of a movie poster.
      * @param listener        is the listener for receiving the clicks.
      */
-    PersonsAdapter(ArrayList<Person> personArrayList, int widthPixels, int heightPixels, PersonsAdapter.OnItemClickListener listener) {
+    PersonsAdapter(ArrayList<TmdbPerson> tmdbPersonArrayList, int widthPixels, int heightPixels, PersonsAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(PersonsAdapter) Object created");
-        this.personArrayList = personArrayList;
+        this.tmdbPersonArrayList = tmdbPersonArrayList;
         this.listener = listener;
         layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
     }
@@ -41,17 +41,10 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
      *
      * @param personsArray is the new list of persons.
      */
-    void setPersonsArray(ArrayList<Person> personsArray) {
-        Log.i(TAG, "(setPersonsArray) Person list updated");
-        this.personArrayList = personsArray;
+    void setPersonsArray(ArrayList<TmdbPerson> personsArray) {
+        Log.i(TAG, "(setPersonsArray) TmdbPerson list updated");
+        this.tmdbPersonArrayList = personsArray;
     }
-
-    /**
-     * Getter method to obtain the last position saved at {@link #onBindViewHolder}.
-     *
-     * @return current position.
-     */
-    //int getPosition() { return position; }
 
     /**
      * Called when RecyclerView needs a new {@link PersonsViewHolder} of the given type to represent
@@ -102,14 +95,14 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
     @Override
     public void onBindViewHolder(PersonsViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
-        if (!personArrayList.isEmpty()) {
-            Person currentPerson = personArrayList.get(position);
+        if (!tmdbPersonArrayList.isEmpty()) {
+            TmdbPerson currentTmdbPerson = tmdbPersonArrayList.get(position);
 
             // Set position in the adapter for current movie.
-            //currentPerson.setPosition(position);
+            //currentTmdbPerson.setPosition(position);
 
             // Update PersonsViewHolder with the movie details at current position in the adapter.
-            viewHolder.bind(currentPerson, listener, layoutParams);
+            viewHolder.bind(currentTmdbPerson, listener, layoutParams);
 
             // Save current position.
             //this.position = viewHolder.getAdapterPosition();
@@ -123,7 +116,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
      */
     @Override
     public int getItemCount() {
-        int itemCount = personArrayList.size();
+        int itemCount = tmdbPersonArrayList.size();
         Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
         return itemCount;
     }
@@ -135,6 +128,6 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Person item);
+        void onItemClick(TmdbPerson item);
     }
 }

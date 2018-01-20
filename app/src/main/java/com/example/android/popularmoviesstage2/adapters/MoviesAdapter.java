@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.viewholders.MoviesViewHolder;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     private final OnItemClickListener listener;
-    private ArrayList<Movie> moviesArrayList;
+    private ArrayList<TmdbMovie> moviesArrayList;
     private FrameLayout.LayoutParams layoutParams;
     private int currentScrollPosition, currentPage, totalPages;
 
@@ -29,7 +29,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * @param heightPixels    is the height in pixels of a movie poster.
      * @param listener        is the listener for receiving the clicks.
      */
-    public MoviesAdapter(ArrayList<Movie> moviesArrayList, int widthPixels, int heightPixels, OnItemClickListener listener) {
+    public MoviesAdapter(ArrayList<TmdbMovie> moviesArrayList, int widthPixels, int heightPixels, OnItemClickListener listener) {
         Log.i(TAG, "(MoviesAdapter) Object created");
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
@@ -49,7 +49,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
         this.totalPages = 0;
     }
 
-    public ArrayList<Movie> getMoviesArrayList() {
+    public ArrayList<TmdbMovie> getMoviesArrayList() {
         return moviesArrayList;
     }
 
@@ -61,12 +61,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      *                        moviesArrayList; if false, the new list will be appended to the
      *                        start.
      */
-    public void updateMoviesArrayList(ArrayList<Movie> moviesArrayList, boolean appendToEnd) {
+    public void updateMoviesArrayList(ArrayList<TmdbMovie> moviesArrayList, boolean appendToEnd) {
         if (appendToEnd)
             this.moviesArrayList.addAll(moviesArrayList);
         else
             this.moviesArrayList.addAll(0, moviesArrayList);
-        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " + this.moviesArrayList.size());
+        Log.i(TAG, "(updateMoviesArrayList) TmdbMovie list updated. Current size is " + this.moviesArrayList.size());
     }
 
     // Getter methods.
@@ -144,13 +144,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!moviesArrayList.isEmpty()) {
             // Update MoviesViewHolder with the movie details at current position in the adapter.
-            Movie currentMovie = moviesArrayList.get(position);
-            viewHolder.bind(currentMovie, listener, layoutParams);
+            TmdbMovie currentTmdbMovie = moviesArrayList.get(position);
+            viewHolder.bind(currentTmdbMovie, listener, layoutParams);
 
             // Set private variables in order to manage paging information.
             currentScrollPosition = viewHolder.getAdapterPosition();
-            currentPage = currentMovie.getPage();
-            totalPages = currentMovie.getTotal_pages();
+            currentPage = currentTmdbMovie.getPage();
+            totalPages = currentTmdbMovie.getTotal_pages();
         }
     }
 
@@ -173,6 +173,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Movie item);
+        void onItemClick(TmdbMovie item, View clickedView);
     }
 }

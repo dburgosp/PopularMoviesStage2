@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.VideosAdapter;
-import com.example.android.popularmoviesstage2.classes.Video;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.classes.TmdbVideo;
+import com.example.android.popularmoviesstage2.classes.YouTube;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
@@ -48,28 +48,28 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Helper method for setting Video information for the current VideosViewHolder from the
+     * Helper method for setting TmdbVideo information for the current VideosViewHolder from the
      * {@link VideosAdapter#onBindViewHolder(VideosViewHolder, int)} method.
      *
-     * @param currentVideo is the Video object attached to the current VideosViewHolder element.
+     * @param currentTmdbVideo is the TmdbVideo object attached to the current VideosViewHolder element.
      * @param listener     is the listener for click events.
      */
-    public void bind(final Video currentVideo, final VideosAdapter.OnItemClickListener listener) {
+    public void bind(final TmdbVideo currentTmdbVideo, final VideosAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current VideosViewHolder.");
 
         // Draw backdrop image for current video.
-        String videoImagePath = currentVideo.getKey();
+        String videoImagePath = currentTmdbVideo.getKey();
         if (videoImagePath != null && !videoImagePath.equals("") && !videoImagePath.isEmpty()) {
-            String posterPath = NetworkUtils.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + NetworkUtils.YOUTUBE_VIDEO_MQDEFAULT_IMAGE;
+            String posterPath = YouTube.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + YouTube.YOUTUBE_VIDEO_MQDEFAULT_IMAGE;
             Picasso.with(context).load(posterPath).into(videoImageView);
         } else
             videoImageView.setImageDrawable(getDrawable(context, R.drawable.no_movie));
 
         // Set video name.
-        nameTextView.setText(currentVideo.getName());
+        nameTextView.setText(currentTmdbVideo.getName());
 
         // Set video language.
-        String language = currentVideo.getIso_639_1();
+        String language = currentTmdbVideo.getIso_639_1();
         if (language != null && !language.equals(""))
             language = context.getResources().getString(R.string.language) + ": <strong>" + language+"</strong>";
         else
@@ -77,14 +77,14 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
         TextUtils.setHtmlText(languageTextView, language);
 
         // Set video resolution.
-        String resolution = Integer.toString(currentVideo.getSize());
+        String resolution = Integer.toString(currentTmdbVideo.getSize());
         resolutionTextView.setText(resolution);
 
         // Set the listener for click events.
         viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onItemClick(currentVideo);
+                listener.onItemClick(currentTmdbVideo);
             }
         });
     }

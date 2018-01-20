@@ -10,20 +10,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Movie;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -33,7 +36,7 @@ import butterknife.ButterKnife;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static Movie movie;
+    public static final String EXTRA_PARAM_MOVIE = "movie";
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -62,11 +65,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.movie_details_appbar_layout)
     AppBarLayout appBarLayout;
 
-    public static final String EXTRA_PARAM_MOVIE = "movie";
+    private static TmdbMovie movie;
+    private Bundle options;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Define transitions to exit and enter to this activity.
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        getWindow().setEnterTransition(new Explode());
+        getWindow().setExitTransition(new Explode());
+        supportPostponeEnterTransition();
+
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
@@ -75,6 +87,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (intent != null) {
             // Get current movie simple information.
             movie = intent.getParcelableExtra(EXTRA_PARAM_MOVIE);
+
         }
 
         // Set the custom tool bar and show the back button.
@@ -144,7 +157,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        // Transition back to the movie poster on MainActivity.
+        supportFinishAfterTransition();
         return true;
     }
 
@@ -185,16 +199,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /* -------------- */
 
     /**
-     * Helper method to extract parameters from the intent that started this activity.
-     */
-    void getParameters() {
-        Intent intent = getIntent();
-
-        // Get current movie simple information.
-        movie = intent.getParcelableExtra("movie");
-    }
-
-    /**
      * Helper method to display current movie information in the header of this activity.
      */
     void setMovieInfo() {
@@ -202,13 +206,29 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
-        if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+        if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
+            // Set transition between the poster in MainActivity and this.
+            posterImageView.setTransitionName(getString(R.string.transition_poster));
+            Picasso.with(this)
+                    .load(Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath)
+                    .noFade()
+                    .into(posterImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            supportStartPostponedEnterTransition();
+                        }
+
+                        @Override
+                        public void onError() {
+                            supportStartPostponedEnterTransition();
+                        }
+                    });
+        }
 
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this).load(NetworkUtils.TMDB_FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
+            Picasso.with(this).load(Tmdb.TMDB_FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
 
         // Set movie title and year.
         String title = movie.getTitle();

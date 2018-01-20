@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Public class for managing the videos related to a movie.
  */
-public class Video implements Parcelable {
+public class TmdbVideo implements Parcelable {
     private String id;
     private String iso_639_1;
     private String iso_3166_1;
@@ -26,8 +26,8 @@ public class Video implements Parcelable {
      * @param size       is the vertical resolution of the video. Allowed Values: 360, 480, 720, 1080.
      * @param type       is type of the video. Allowed Values: Trailer, Teaser, Clip, Featurette.
      */
-    public Video(String id, String iso_639_1, String iso_3166_1, String key, String name,
-                 String site, int size, String type) {
+    public TmdbVideo(String id, String iso_639_1, String iso_3166_1, String key, String name,
+                     String site, int size, String type) {
         this.id = id;
         this.iso_639_1 = iso_639_1;
         this.iso_3166_1 = iso_3166_1;
@@ -123,7 +123,7 @@ public class Video implements Parcelable {
         dest.writeString(this.type);
     }
 
-    protected Video(Parcel in) {
+    protected TmdbVideo(Parcel in) {
         this.id = in.readString();
         this.iso_639_1 = in.readString();
         this.iso_3166_1 = in.readString();
@@ -134,15 +134,15 @@ public class Video implements Parcelable {
         this.type = in.readString();
     }
 
-    public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
+    public static final Parcelable.Creator<TmdbVideo> CREATOR = new Parcelable.Creator<TmdbVideo>() {
         @Override
-        public Video createFromParcel(Parcel source) {
-            return new Video(source);
+        public TmdbVideo createFromParcel(Parcel source) {
+            return new TmdbVideo(source);
         }
 
         @Override
-        public Video[] newArray(int size) {
-            return new Video[size];
+        public TmdbVideo[] newArray(int size) {
+            return new TmdbVideo[size];
         }
     };
 }

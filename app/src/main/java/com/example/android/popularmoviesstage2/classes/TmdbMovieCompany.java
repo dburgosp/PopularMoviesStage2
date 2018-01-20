@@ -3,37 +3,35 @@ package com.example.android.popularmoviesstage2.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-
 /**
  * Public class for managing information about companies related to movies.
  */
-public class MovieCompany implements Parcelable {
+public class TmdbMovieCompany implements Parcelable {
     private String description;
     private String headquarters;
     private String homepage;
     private int id;
     private String logo_path;
     private String name;
-    private MovieCompany parent_company;
+    private TmdbMovieCompany parent_company;
 
     /**
-     * Constructor for MovieCompany class objects.
+     * Constructor for TmdbMovieCompany class objects.
      *
      * @param description    is the description of the company, given in the currently selected
      *                       language for retrieving information from the TMDB API.
      * @param headquarters   is the physical location of company headquarters.
      * @param homepage       is the url of the company web page.
      * @param id             is a unique identifier for the company.
-     * @param logo_path      is a string for appending to {@link NetworkUtils#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param logo_path      is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
      *                       and get the logo of the company.
      * @param name           is the name of the company, given in the currently selected language
      *                       for retrieving information from the TMDB API.
-     * @param parent_company is a {@link MovieCompany} object containing simple information about
+     * @param parent_company is a {@link TmdbMovieCompany} object containing simple information about
      *                       the parent company, if exists, of the given company.
      */
-    public MovieCompany(String description, String headquarters, String homepage, int id,
-                        String logo_path, String name, MovieCompany parent_company) {
+    public TmdbMovieCompany(String description, String headquarters, String homepage, int id,
+                            String logo_path, String name, TmdbMovieCompany parent_company) {
         this.description = description;
         this.headquarters = headquarters;
         this.homepage = homepage;
@@ -93,23 +91,23 @@ public class MovieCompany implements Parcelable {
         this.name = name;
     }
 
-    public MovieCompany getParent_company() {
+    public TmdbMovieCompany getParent_company() {
         return parent_company;
     }
 
-    public void setParent_company(MovieCompany parent_company) {
+    public void setParent_company(TmdbMovieCompany parent_company) {
         this.parent_company = parent_company;
     }
 
     // Parcelable configuration.
 
-    protected MovieCompany(Parcel in) {
+    protected TmdbMovieCompany(Parcel in) {
         this.description = in.readString();
         this.headquarters = in.readString();
         this.homepage = in.readString();
         this.id = in.readInt();
         this.logo_path = in.readString();
-        this.parent_company = in.readParcelable(MovieCompany.class.getClassLoader());
+        this.parent_company = in.readParcelable(TmdbMovieCompany.class.getClassLoader());
         this.name = in.readString();
     }
 
@@ -129,15 +127,15 @@ public class MovieCompany implements Parcelable {
         dest.writeString(this.name);
     }
 
-    public static final Parcelable.Creator<MovieCompany> CREATOR = new Parcelable.Creator<MovieCompany>() {
+    public static final Parcelable.Creator<TmdbMovieCompany> CREATOR = new Parcelable.Creator<TmdbMovieCompany>() {
         @Override
-        public MovieCompany createFromParcel(Parcel source) {
-            return new MovieCompany(source);
+        public TmdbMovieCompany createFromParcel(Parcel source) {
+            return new TmdbMovieCompany(source);
         }
 
         @Override
-        public MovieCompany[] newArray(int size) {
-            return new MovieCompany[size];
+        public TmdbMovieCompany[] newArray(int size) {
+            return new TmdbMovieCompany[size];
         }
     };
 }

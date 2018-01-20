@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.Video;
+import com.example.android.popularmoviesstage2.classes.TmdbVideo;
 import com.example.android.popularmoviesstage2.viewholders.VideosViewHolder;
 
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
     private static final String TAG = VideosAdapter.class.getSimpleName();
     private final VideosAdapter.OnItemClickListener listener;
-    private ArrayList<Video> videosArrayList;
+    private ArrayList<TmdbVideo> videosArrayList;
 
     /**
      * Constructor for this class.
@@ -24,7 +24,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
      * @param videosArrayList is the list of videos that will be represented into the adapter.
      * @param listener        is the listener for receiving the clicks.
      */
-    public VideosAdapter(ArrayList<Video> videosArrayList, OnItemClickListener listener) {
+    public VideosAdapter(ArrayList<TmdbVideo> videosArrayList, OnItemClickListener listener) {
         this.videosArrayList = videosArrayList;
         this.listener = listener;
         Log.i(TAG, "(VideosAdapter) Object created");
@@ -35,9 +35,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
      *
      * @param videosArrayList is the new list of videos.
      */
-    public void setVideoArray(ArrayList<Video> videosArrayList) {
+    public void setVideoArray(ArrayList<TmdbVideo> videosArrayList) {
         this.videosArrayList = videosArrayList;
-        Log.i(TAG, "(setVideoArray) Video list updated");
+        Log.i(TAG, "(setVideoArray) TmdbVideo list updated");
     }
 
     /**
@@ -90,10 +90,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
     public void onBindViewHolder(VideosViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!videosArrayList.isEmpty()) {
-            Video currentVideo = videosArrayList.get(position);
+            TmdbVideo currentTmdbVideo = videosArrayList.get(position);
 
             // Update VideosViewHolder with the video details at current position in the adapter.
-            viewHolder.bind(currentVideo, listener);
+            viewHolder.bind(currentTmdbVideo, listener);
         }
     }
 
@@ -116,6 +116,6 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosViewHolder> {
      * For more information: https://antonioleiva.com/recyclerview-listener/
      */
     public interface OnItemClickListener {
-        void onItemClick(Video item);
+        void onItemClick(TmdbVideo item);
     }
 }
