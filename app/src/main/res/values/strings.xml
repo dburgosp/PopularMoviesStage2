@@ -42,6 +42,16 @@
     <string name="order_top_rated">Top rated Movies</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
+    <string name="rating_g">G</string>
+    <string name="rating_nc_17">NC-17</string>
+    <string name="rating_pg">PG</string>
+    <string name="rating_pg_13">PG-13</string>
+    <string name="rating_r">R</string>
+    <string name="rating_g_text">All audiences</string>
+    <string name="rating_nc_17_text">18 years +</string>
+    <string name="rating_pg_text">10 years +</string>
+    <string name="rating_pg_13_text">13 years +</string>
+    <string name="rating_r_text">17 years +</string>
     <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="reviews_title">User reviews</string>

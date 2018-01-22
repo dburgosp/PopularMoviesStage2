@@ -80,7 +80,8 @@
                         android:layout_alignBottom="@+id/movie_details_cardview"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/regular_padding"
-                        android:layout_toEndOf="@id/movie_details_cardview">
+                        android:layout_toEndOf="@id/movie_details_cardview"
+                        android:id="@+id/relativeLayout">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -127,6 +128,7 @@
                             app:donut_unfinished_color="@color/colorPrimary"
                             app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
                     </RelativeLayout>
+
                 </RelativeLayout>
 
                 <TextView
