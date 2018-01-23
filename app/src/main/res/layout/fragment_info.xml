@@ -22,19 +22,19 @@
             <!-- UserReviews -->
 
             <LinearLayout
-                android:id="@+id/info_scores_linearlayout"
+                android:id="@+id/info_scores_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/tiny_padding">
+                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginTop="@dimen/tiny_padding">
 
                 <LinearLayout
-                    android:id="@+id/info_imdb_linearyaout"
+                    android:id="@+id/info_imdb_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/tiny_padding"
                     android:layout_marginTop="@dimen/regular_padding"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
@@ -50,7 +50,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text=""
+                        app:donut_text="n/a"
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -65,10 +65,9 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/info_rottentomatoes_linearyaout"
+                    android:id="@+id/info_rottentomatoes_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/tiny_padding"
                     android:layout_marginTop="@dimen/regular_padding"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
@@ -85,7 +84,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text=""
+                        app:donut_text="n/a"
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -101,10 +100,9 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/info_metacritic_linearyaout"
+                    android:id="@+id/info_metacritic_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/tiny_padding"
                     android:layout_marginTop="@dimen/regular_padding"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
@@ -120,7 +118,7 @@
                         app:donut_finished_stroke_width="4dp"
                         app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
                         app:donut_progress="0"
-                        app:donut_text=""
+                        app:donut_text="n/a"
                         app:donut_text_color="@color/colorWhite"
                         app:donut_text_size="@dimen/alert_text_size"
                         app:donut_unfinished_color="@color/colorPrimary"
@@ -154,12 +152,10 @@
                         android:id="@+id/info_main_linearlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/colorAccent"
                         android:alpha="0.7"
+                        android:background="@color/colorAccent"
                         android:orientation="vertical"
-                        android:paddingBottom="@dimen/regular_padding"
-                        android:paddingEnd="@dimen/regular_padding"
-                        android:paddingStart="@dimen/regular_padding">
+                        android:padding="@dimen/regular_padding">
 
                         <LinearLayout
                             android:id="@+id/info_runtime_linearlayout"
@@ -169,7 +165,7 @@
                             android:paddingBottom="@dimen/tiny_padding"
                             android:paddingEnd="@dimen/small_padding"
                             android:paddingStart="@dimen/small_padding"
-                            android:paddingTop="@dimen/regular_padding">
+                            android:paddingTop="@dimen/tiny_padding">
 
                             <ImageView
                                 android:layout_width="wrap_content"
@@ -270,7 +266,6 @@
                         android:id="@+id/info_overview_linearlayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/small_padding"
                         android:background="@color/colorWhite"
                         android:orientation="vertical"
                         android:padding="@dimen/regular_padding">
@@ -281,6 +276,9 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="sans-serif-smallcaps"
                             android:paddingBottom="@dimen/tiny_padding"
+                            android:paddingEnd="@dimen/small_padding"
+                            android:paddingStart="@dimen/small_padding"
+                            android:paddingTop="@dimen/tiny_padding"
                             android:textAllCaps="true"
                             android:textColor="@color/colorAccent"
                             android:textStyle="bold"
@@ -290,6 +288,10 @@
                             android:id="@+id/info_overview_textview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/tiny_padding"
+                            android:paddingEnd="@dimen/small_padding"
+                            android:paddingStart="@dimen/small_padding"
+                            android:paddingTop="@dimen/tiny_padding"
                             tools:text="@string/no_overview" />
                     </LinearLayout>
 
@@ -297,6 +299,7 @@
                         android:id="@+id/info_age_rating_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:alpha="0.7"
                         android:background="@color/colorDarkWhite"
                         android:gravity="center"
                         android:paddingBottom="@dimen/regular_padding"

@@ -53,17 +53,17 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_no_result_text_view)
     TextView noResultsTextView;
 
-    @BindView(R.id.info_scores_linearlayout)
+    @BindView(R.id.info_scores_layout)
     LinearLayout scoresLinearLayout;
-    @BindView(R.id.info_imdb_linearyaout)
+    @BindView(R.id.info_imdb_layout)
     LinearLayout imdbLinearLayout;
     @BindView(R.id.info_imdb_score)
     DonutProgress imdbDonutProgress;
-    @BindView(R.id.info_rottentomatoes_linearyaout)
+    @BindView(R.id.info_rottentomatoes_layout)
     LinearLayout rottenTomatoesLinearLayout;
     @BindView(R.id.info_rottentomatoes_score)
     DonutProgress rottenTomatoesDonutProgress;
-    @BindView(R.id.info_metacritic_linearyaout)
+    @BindView(R.id.info_metacritic_layout)
     LinearLayout metacriticLinearLayout;
     @BindView(R.id.info_metacritic_score)
     DonutProgress metacriticDonutProgress;
@@ -149,8 +149,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         View rootView = inflater.inflate(R.layout.fragment_info, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        // Clean layout at start.
-        clearInfo();
+        // Clean all elements in the layout when creating this fragment.
+        clearLayout();
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -384,47 +384,56 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     OmdbMovie = data;
 
                     // Vote average from OMDB API.
-                    if (!ScoreUtils.setRating(getContext(),
+                    boolean imdbRating = ScoreUtils.setRating(getContext(),
                             String.valueOf(OmdbMovie.getImdb_vote_average()),
-                            imdbDonutProgress))
-                        imdbLinearLayout.setAlpha(0.2f);
-                    if (!ScoreUtils.setRating(getContext(),
+                            imdbDonutProgress);
+                    boolean rottenTomatoesRating = ScoreUtils.setRating(getContext(),
                             String.valueOf(OmdbMovie.getRt_vote_average()),
-                            rottenTomatoesDonutProgress))
-                        rottenTomatoesLinearLayout.setAlpha(0.2f);
-                    if (!ScoreUtils.setRating(getContext(),
+                            rottenTomatoesDonutProgress);
+                    boolean metacriticRating = ScoreUtils.setRating(getContext(),
                             String.valueOf(OmdbMovie.getMc_vote_average()),
-                            metacriticDonutProgress))
+                            metacriticDonutProgress);
+
+                    if (!imdbRating)
+                        imdbLinearLayout.setAlpha(0.2f);
+                    if (!rottenTomatoesRating)
+                        rottenTomatoesLinearLayout.setAlpha(0.2f);
+                    if (!metacriticRating)
                         metacriticLinearLayout.setAlpha(0.2f);
+
+                    if (!imdbRating && !rottenTomatoesRating && !metacriticRating)
+                        scoresLinearLayout.setVisibility(View.GONE);
+                    else
+                        scoresLinearLayout.setVisibility(View.VISIBLE);
 
                     // Age rating from OMDB API.
                     if (OmdbMovie.getRated().equals(getString(R.string.rating_g))) {
-                        setAgeRating(R.string.rating_g_text_1,
-                                R.string.rating_g_text_2,
+                        setAgeRating(R.string.text_rating_g_1,
+                                R.string.text_rating_g_2,
                                 R.color.colorBlack,
                                 R.color.colorDarkWhite,
                                 R.drawable.rating_g_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg))) {
-                        setAgeRating(R.string.rating_pg_text_1,
-                                R.string.rating_pg_text_2,
+                        setAgeRating(R.string.text_rating_pg_1,
+                                R.string.text_rating_pg_2,
                                 R.color.colorBlack,
                                 R.color.colorMediumScoreForeground,
                                 R.drawable.rating_pg_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg_13))) {
-                        setAgeRating(R.string.rating_pg_13_text_1,
-                                R.string.rating_pg_13_text_2,
+                        setAgeRating(R.string.text_rating_pg_13_1,
+                                R.string.text_rating_pg_13_2,
                                 R.color.colorWhite,
                                 R.color.colorLowScoreBackground,
                                 R.drawable.rating_pg_13_white);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_r))) {
-                        setAgeRating(R.string.rating_r_text_1,
-                                R.string.rating_r_text_2,
+                        setAgeRating(R.string.text_rating_r_1,
+                                R.string.text_rating_r_2,
                                 R.color.colorWhite,
                                 R.color.colorLowScoreForeground,
                                 R.drawable.rating_r_white);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_nc_17))) {
-                        setAgeRating(R.string.rating_nc_17_text_1,
-                                R.string.rating_nc_17_text_2,
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_nc_17)) || OmdbMovie.getRated().equals(getString(R.string.rating_nc_17))) {
+                        setAgeRating(R.string.text_rating_nc_17_1,
+                                R.string.text_rating_nc_17_2,
                                 R.color.colorWhite,
                                 R.color.colorPrimaryDark,
                                 R.drawable.rating_nc_17_white);
@@ -464,7 +473,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Hide every info element in the layout.
      */
-    void clearInfo() {
+    void clearLayout() {
         scoresLinearLayout.setVisibility(View.GONE);
         mainCardView.setVisibility(View.GONE);
         ageRatingLinearLayout.setVisibility(View.GONE);
@@ -475,8 +484,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * Helper method to display all the movie information in this fragment.
      */
     void setMovieInfo() {
-        scoresLinearLayout.setVisibility(View.VISIBLE);
-
         // Set main info section.
         boolean mainInfoIsSet = setMainInfoSection();
         if (mainInfoIsSet)

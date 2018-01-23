@@ -6,24 +6,24 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
- * Public class for managing the tmdbCast & tmdbCrew of a movie.
+ * Public class for managing the cast & crew of a movie.
  */
 public class TmdbCastCrew implements Parcelable {
     private int id;
-    private ArrayList<TmdbCast> tmdbCast;
-    private ArrayList<TmdbCrew> tmdbCrew;
+    private ArrayList<TmdbCast> cast;
+    private ArrayList<TmdbCrew> crew;
 
     /**
      * Public constructor for new instances of objects of this class.
      *
      * @param id   is the unique identifier of the {@link TmdbMovie}.
-     * @param tmdbCast is an array of {@link TmdbCast} objects, the list of members of the movie tmdbCast.
-     * @param tmdbCrew is an array of {@link TmdbCrew} objects, the list of members of the movie tmdbCrew.
+     * @param cast is an array of {@link TmdbCast} objects, the list of members of the movie cast.
+     * @param crew is an array of {@link TmdbCrew} objects, the list of members of the movie crew.
      */
-    public TmdbCastCrew(int id, ArrayList<TmdbCast> tmdbCast, ArrayList<TmdbCrew> tmdbCrew) {
+    public TmdbCastCrew(int id, ArrayList<TmdbCast> cast, ArrayList<TmdbCrew> crew) {
         this.id = id;
-        this.tmdbCast = tmdbCast;
-        this.tmdbCrew = tmdbCrew;
+        this.cast = cast;
+        this.crew = crew;
     }
 
     // Getters and setters.
@@ -36,28 +36,28 @@ public class TmdbCastCrew implements Parcelable {
         this.id = id;
     }
 
-    public ArrayList<TmdbCast> getTmdbCast() {
-        return tmdbCast;
+    public ArrayList<TmdbCast> getCast() {
+        return cast;
     }
 
-    public void setTmdbCast(ArrayList<TmdbCast> tmdbCast) {
-        this.tmdbCast = tmdbCast;
+    public void setCast(ArrayList<TmdbCast> cast) {
+        this.cast = cast;
     }
 
-    public ArrayList<TmdbCrew> getTmdbCrew() {
-        return tmdbCrew;
+    public ArrayList<TmdbCrew> getCrew() {
+        return crew;
     }
 
-    public void setTmdbCrew(ArrayList<TmdbCrew> tmdbCrew) {
-        this.tmdbCrew = tmdbCrew;
+    public void setCrew(ArrayList<TmdbCrew> crew) {
+        this.crew = crew;
     }
 
     // Parcelable configuration.
 
     protected TmdbCastCrew(Parcel in) {
         this.id = in.readInt();
-        this.tmdbCast = in.createTypedArrayList(TmdbCast.CREATOR);
-        this.tmdbCrew = in.createTypedArrayList(TmdbCrew.CREATOR);
+        this.cast = in.createTypedArrayList(TmdbCast.CREATOR);
+        this.crew = in.createTypedArrayList(TmdbCrew.CREATOR);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class TmdbCastCrew implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
-        dest.writeTypedList(this.tmdbCast);
-        dest.writeTypedList(this.tmdbCrew);
+        dest.writeTypedList(this.cast);
+        dest.writeTypedList(this.crew);
     }
 
     public static final Parcelable.Creator<TmdbCastCrew> CREATOR = new Parcelable.Creator<TmdbCastCrew>() {

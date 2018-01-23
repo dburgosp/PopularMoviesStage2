@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean isLoading = false, appendToEnd = true;
     private ArrayList<TmdbMovie> moviesArrayList = new ArrayList<>();
     private Unbinder unbinder;
+    private Loader<ArrayList<TmdbMovie>> loader = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,7 +178,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             currentScrollPosition = 0;
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
             moviesAdapter.clearMoviesArrayList();
-            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+            if (loader != null)
+                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+            else
+                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
         }
 
         return true;
@@ -269,15 +273,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            return new TmdbMoviesAsyncTaskLoader(this, sortOrder, Integer.toString(currentPage));
+            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, Integer.toString(currentPage));
         } else {
             // There is no connection. Show error message.
             progressBar.setVisibility(View.INVISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
             Log.i(TAG, "(onCreateLoader) No internet connection.");
-            return null;
+            loader = null;
         }
+
+        return loader;
     }
 
     /**
@@ -442,7 +448,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
                         appendToEnd = true;
-                        getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
+                        if (loader != null)
+                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
+                        else
+                            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                     }
                 }
             }
@@ -462,7 +471,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             // fetched movies will be appended to the start of the RecyclerView.
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
-                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
+                            if (loader != null)
+                                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
+                            else
+                                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                         } else
                             swipeRefreshLayout.setRefreshing(false);
                     }

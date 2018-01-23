@@ -496,8 +496,8 @@ public class Tmdb {
         // Update the TmdbCastCrew object with the data retrieved from the JSON object.
         try {
             tmdbCastCrew.setId(movie_id);
-            tmdbCastCrew.setTmdbCast(tmdbCastArrayList);
-            tmdbCastCrew.setTmdbCrew(tmdbCrewArrayList);
+            tmdbCastCrew.setCast(tmdbCastArrayList);
+            tmdbCastCrew.setCrew(tmdbCrewArrayList);
         } catch (NullPointerException e) {
             Log.e(TAG, "(parseGetCastCrewListJSON) Error parsing the JSON response: ", e);
         }
