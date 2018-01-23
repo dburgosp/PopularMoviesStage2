@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -107,6 +108,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_revenue_textview)
     TextView revenueTextView;
 
+    @BindView(R.id.info_age_rating_layout)
+    LinearLayout ageRatingLinearLayout;
+    @BindView(R.id.info_age_rating_image)
+    ImageView ageRatingImageView;
     @BindView(R.id.info_age_rating)
     TextView ageRatingTextView;
 
@@ -379,60 +384,62 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     OmdbMovie = data;
 
                     // Vote average from OMDB API.
-                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getImdb_vote_average()), imdbDonutProgress))
+                    if (!ScoreUtils.setRating(getContext(),
+                            String.valueOf(OmdbMovie.getImdb_vote_average()),
+                            imdbDonutProgress))
                         imdbLinearLayout.setAlpha(0.2f);
-                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getRt_vote_average()), rottenTomatoesDonutProgress))
+                    if (!ScoreUtils.setRating(getContext(),
+                            String.valueOf(OmdbMovie.getRt_vote_average()),
+                            rottenTomatoesDonutProgress))
                         rottenTomatoesLinearLayout.setAlpha(0.2f);
-                    if (!ScoreUtils.setRating(getContext(), String.valueOf(OmdbMovie.getMc_vote_average()), metacriticDonutProgress))
+                    if (!ScoreUtils.setRating(getContext(),
+                            String.valueOf(OmdbMovie.getMc_vote_average()),
+                            metacriticDonutProgress))
                         metacriticLinearLayout.setAlpha(0.2f);
 
                     // Age rating from OMDB API.
                     if (OmdbMovie.getRated().equals(getString(R.string.rating_g))) {
-                        ageRatingTextView.setVisibility(View.VISIBLE);
-                        ageRatingTextView.setBackground(getResources().getDrawable(R.drawable.rectangle_white));
-                        TextUtils.setHtmlText(ageRatingTextView,"<small>Recommended for</small><br><big><strong>"+getString(R.string.rating_g_text)+"</strong></big>");
-                        //ageRatingTextView.setText(R.string.rating_g_text);
-                        ageRatingTextView.setTextColor(getResources().getColor(R.color.colorBlack));
+                        setAgeRating(R.string.rating_g_text_1,
+                                R.string.rating_g_text_2,
+                                R.color.colorBlack,
+                                R.color.colorDarkWhite,
+                                R.drawable.rating_g_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg))) {
-                        ageRatingTextView.setVisibility(View.VISIBLE);
-                        ageRatingTextView.setBackground(getResources().getDrawable(R.drawable.rectangle_yellow));
-
-                        TextUtils.setHtmlText(ageRatingTextView,"<small>Recommended for</small><br><big><strong>"+getString(R.string.rating_pg_text)+"</strong></big>");
-                        //ageRatingTextView.setText(R.string.rating_pg_text);
-                        ageRatingTextView.setTextColor(getResources().getColor(R.color.colorBlack));
+                        setAgeRating(R.string.rating_pg_text_1,
+                                R.string.rating_pg_text_2,
+                                R.color.colorBlack,
+                                R.color.colorMediumScoreForeground,
+                                R.drawable.rating_pg_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg_13))) {
-                        ageRatingTextView.setVisibility(View.VISIBLE);
-                        //ageRatingTextView.setBackground(getResources().getDrawable(R.drawable.rectangle_purple));
-
-                        TextUtils.setHtmlText(ageRatingTextView,"<small>Recommended for</small><big><br><strong>"+getString(R.string.rating_pg_13_text)+"</strong></big>");
-                        //ageRatingTextView.setText(R.string.rating_pg_13_text);
-                        //ageRatingTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                        setAgeRating(R.string.rating_pg_13_text_1,
+                                R.string.rating_pg_13_text_2,
+                                R.color.colorWhite,
+                                R.color.colorLowScoreBackground,
+                                R.drawable.rating_pg_13_white);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_r))) {
-                        ageRatingTextView.setVisibility(View.VISIBLE);
-                        ageRatingTextView.setBackground(getResources().getDrawable(R.drawable.rectangle_red));
-
-                        TextUtils.setHtmlText(ageRatingTextView,"<small>Recommended for</small><br><big><strong>"+getString(R.string.rating_r_text)+"</strong></big>");
-                        //ageRatingTextView.setText(R.string.rating_r_text);
-                        ageRatingTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                        setAgeRating(R.string.rating_r_text_1,
+                                R.string.rating_r_text_2,
+                                R.color.colorWhite,
+                                R.color.colorLowScoreForeground,
+                                R.drawable.rating_r_white);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_nc_17))) {
-                        ageRatingTextView.setVisibility(View.VISIBLE);
-                        ageRatingTextView.setBackground(getResources().getDrawable(R.drawable.rectangle_black));
-
-                        TextUtils.setHtmlText(ageRatingTextView,"<small>Recommended for</small><br><big><strong>"+getString(R.string.rating_nc_17_text)+"</strong></big>");
-                        //ageRatingTextView.setText(R.string.rating_nc_17_text);
-                        ageRatingTextView.setTextColor(getResources().getColor(R.color.colorWhite));
+                        setAgeRating(R.string.rating_nc_17_text_1,
+                                R.string.rating_nc_17_text_2,
+                                R.color.colorWhite,
+                                R.color.colorPrimaryDark,
+                                R.drawable.rating_nc_17_white);
                     } else
-                        ageRatingTextView.setVisibility(View.GONE);
+                        ageRatingLinearLayout.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
-                    ageRatingTextView.setVisibility(View.GONE);
+                    ageRatingLinearLayout.setVisibility(View.GONE);
                 }
             } else {
                 // There is no connection.
                 Log.i(TAG, "(onLoadFinished) No connection to internet.");
                 scoresLinearLayout.setVisibility(View.GONE);
-                ageRatingTextView.setVisibility(View.GONE);
+                ageRatingLinearLayout.setVisibility(View.GONE);
             }
         }
 
@@ -460,7 +467,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     void clearInfo() {
         scoresLinearLayout.setVisibility(View.GONE);
         mainCardView.setVisibility(View.GONE);
-        ageRatingTextView.setVisibility(View.GONE);
+        ageRatingLinearLayout.setVisibility(View.GONE);
         secondaryLinearLayout.setVisibility(View.GONE);
     }
 
@@ -545,7 +552,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
             // Add status to date if it is other than "released".
             String status = movie.getStatus();
-            if (status != null && !status.equals("") && !status.isEmpty() && !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+            if (status != null && !status.equals("") && !status.isEmpty() &&
+                    !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
                 releaseDate = releaseDate + " (" + status + ")";
                 TextUtils.setHtmlText(releaseDateTextView, releaseDate);
             } else
@@ -574,7 +582,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setSecondaryInfoSection() {
         boolean infoSectionSet = false;
 
-        // Set original title. If there is no available original title info, we hide this section.
+        // Set original title. If there is no available original title info, hide this section.
         String originalTitle = movie.getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             infoSectionSet = true;
@@ -584,7 +592,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             originalTitleTextView.setVisibility(View.GONE);
 
-        // Set original language. If there is no available original language info, we hide this section.
+        // Set original language. If there is no available original language info, hide this
+        // section.
         String originalLanguage = movie.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
@@ -594,7 +603,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             originalLanguageTextView.setVisibility(View.GONE);
 
-        // Set movie budget. If there is no available budget info, we hide this section.
+        // Set movie budget. If there is no available budget info, hide this section.
         int budget = movie.getBudget();
         if (budget > 0) {
             infoSectionSet = true;
@@ -605,7 +614,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             budgetTextView.setVisibility(View.GONE);
 
-        // Set movie revenue. If there is no available revenue info, we hide this section.
+        // Set movie revenue. If there is no available revenue info, hide this section.
         int revenue = movie.getRevenue();
         if (revenue > 0) {
             infoSectionSet = true;
@@ -617,5 +626,44 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             revenueTextView.setVisibility(View.GONE);
 
         return infoSectionSet;
+    }
+
+    /**
+     * Helper method for setting the age rating section.
+     *
+     * @param textResource1           is the string resource of the first sentence of the age rating
+     *                                text.
+     * @param textResource2           is the string resource of the second sentence of the age
+     *                                rating text.
+     * @param textColorResource       is the color resource of the text color of the age rating
+     *                                section.
+     * @param backgroundColorResource is the color resource of the background color of the age
+     *                                rating section.
+     * @param drawableImageResource   is the drawable resource of the age rating icon to be drawn.
+     */
+    private void setAgeRating(int textResource1, int textResource2, int textColorResource,
+                              int backgroundColorResource, int drawableImageResource) {
+        // Set text for age rating.
+        String text1 = getString(textResource1).trim();
+        String text2 = getString(textResource2).trim();
+        String htmlText;
+        if (!text1.equals(""))
+            if (!text2.equals(""))
+                htmlText = "<strong>" + text1 + "</strong><br>" + text2;
+            else
+                htmlText = "<strong>" + text1 + "</strong>";
+        else
+            htmlText = text2;
+        TextUtils.setHtmlText(ageRatingTextView, htmlText);
+
+        // Set colors.
+        ageRatingTextView.setTextColor(getResources().getColor(textColorResource));
+        ageRatingLinearLayout.setBackgroundColor(getResources().getColor(backgroundColorResource));
+
+        // Set icons.
+        ageRatingImageView.setImageDrawable(getResources().getDrawable(drawableImageResource));
+
+        // Show this section.
+        ageRatingLinearLayout.setVisibility(View.VISIBLE);
     }
 }

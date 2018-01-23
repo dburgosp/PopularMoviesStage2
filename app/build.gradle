@@ -12,7 +12,7 @@ android {
 
         // Please ensure you have valid API KEYs for themoviedb.org and OMDB to use this app.
         // Valid keys will need to be entered.
-        buildConfigField("String", "TMDB_API_KEY", TMDB_API_KEY)
+            buildConfigField("String", "TMDB_API_KEY", TMDB_API_KEY)
         buildConfigField("String", "OMDB_API_KEY", OMDB_API_KEY)
     }
     buildTypes {

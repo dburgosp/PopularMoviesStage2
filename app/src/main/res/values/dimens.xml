@@ -22,6 +22,7 @@
     <dimen name="tiny_padding">4dp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="regular_padding">12dp</dimen>
+    <dimen name="big_padding">24dp</dimen>
     <dimen name="padding_start_with_small_poster">84dp</dimen>
     <dimen name="padding_top_movie_details_cardview">56dp</dimen>
     <dimen name="padding_top_movie_details_header">22dp</dimen>
