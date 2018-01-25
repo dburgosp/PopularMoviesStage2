@@ -1,9 +1,12 @@
 <resources>
     <string name="a_review_by">A review by</string>
     <string name="add_to_favorites">Add to favorites</string>
+    <string name="age_rating_title">Age rating:</string>
     <string name="all_languages">All languages</string>
     <string name="app_name">TMDB</string>
     <string name="backdrops_title">Backdrops</string>
+    <string name="belongs_to_collection">Belongs to collection:</string>
+    <string name="budget_title">Budget ($):</string>
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_alpha">Transparent layer for background</string>
     <string name="content_description_favorites">Add to favorites icon</string>
@@ -42,10 +45,13 @@
     <string name="no_title">No title</string>
     <string name="order_popular">Popular Movies</string>
     <string name="order_top_rated">Top rated Movies</string>
+    <string name="original_language">Original language:</string>
+    <string name="original_title">Original title:</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
     <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="revenue_title">Revenue ($):</string>
     <string name="reviews_title">User reviews</string>
     <string name="runtime">Runtime</string>
     <string name="score_title">TMDB score</string>
@@ -57,6 +63,7 @@
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
+    <string name="tags_title">Tags:</string>
     <string name="thumbnail_description">Thumbnail image</string>
     <string name="transition_poster">poster_transition</string>
     <string name="transition_review">review_transition</string>
@@ -121,17 +128,27 @@
     <!-- Plurals -->
 
     <plurals name="genres">
-        <item quantity="one">Genre</item>
-        <item quantity="other">Genres</item>
+        <item quantity="one">Genre:</item>
+        <item quantity="other">Genres:</item>
+    </plurals>
+
+    <plurals name="production_companies">
+        <item quantity="one">Production company:</item>
+        <item quantity="other">Production companies:</item>
     </plurals>
 
     <plurals name="production_countries">
-        <item quantity="one">Production country</item>
-        <item quantity="other">Production countries</item>
+        <item quantity="one">Production country:</item>
+        <item quantity="other">Production countries:</item>
     </plurals>
 
     <plurals name="score_votes">
         <item quantity="one">(1 vote)</item>
         <item quantity="other">(%s votes)</item>
+    </plurals>
+
+    <plurals name="spoken_languages">
+        <item quantity="one">Spoken language:</item>
+        <item quantity="other">Spoken languages:</item>
     </plurals>
 </resources>
