@@ -243,7 +243,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     videosAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" + videosArrayList.size() + ")";
+                    String viewAllText = getResources().getString(R.string.all_languages) + " (" + videosArrayList.size() + ")";
                     viewAllVideosTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no TmdbVideo information for this movie.
@@ -261,7 +261,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     postersAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" + postersArrayList.size() + ")";
+                    String viewAllText = getResources().getString(R.string.all_languages) + " (" + postersArrayList.size() + ")";
                     viewAllPostersTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no crew information for this movie.
@@ -279,7 +279,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
                     backdropsAdapter.notifyDataSetChanged();
 
                     // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" + backdropsArrayList.size() + ")";
+                    String viewAllText = getResources().getString(R.string.all_languages) + " (" + backdropsArrayList.size() + ")";
                     viewAllBackdropsTextView.setText(viewAllText);
                 } else {
                     // Hide section if there is no backdrop information for this movie.

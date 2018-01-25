@@ -16,6 +16,8 @@ import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -58,10 +60,10 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
      * {@link ImagesAdapter#onBindViewHolder(ImagesViewHolder, int)} method.
      *
      * @param currentTmdbImage is the TmdbImage object attached to the current ImagesViewHolder element.
-     * @param imageType    is the type of the images to be held in the viewHolder. Available values:
-     *                     {@link FullSizeImageActivity#IMAGE_TYPE_POSTER} for posters,
-     *                     {@link FullSizeImageActivity#IMAGE_TYPE_BACKDROP} for backdrops.
-     * @param listener     is the listener for click events.
+     * @param imageType        is the type of the images to be held in the viewHolder. Available values:
+     *                         {@link FullSizeImageActivity#IMAGE_TYPE_POSTER} for posters,
+     *                         {@link FullSizeImageActivity#IMAGE_TYPE_BACKDROP} for backdrops.
+     * @param listener         is the listener for click events.
      */
     public void bind(final TmdbImage currentTmdbImage, int imageType, final ImagesAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current ImagesViewHolder.");
@@ -88,11 +90,10 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
 
         // Write language.
         String language = currentTmdbImage.getIso_639_1();
-        if (language != null && !language.equals(""))
-            language = context.getResources().
-
-                    getString(R.string.language) + ": <strong>" + language + "</strong>";
-        else
+        if (language != null && !language.equals("")) {
+            Locale locale = new Locale(language);
+            language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() + locale.getDisplayLanguage().substring(1);
+        } else
             language = context.getResources().
 
                     getString(R.string.no_language);
@@ -184,7 +185,7 @@ public class ImagesViewHolder extends RecyclerView.ViewHolder {
     /**
      * Private helper method to draw a poster o backdrop image.
      *
-     * @param currentTmdbImage       is the current {@link TmdbImage} object to be drawn.
+     * @param currentTmdbImage   is the current {@link TmdbImage} object to be drawn.
      * @param defaultDrawableRes is the drawable resource to be drawn if the path of the current
      *                           image produces no image.
      */

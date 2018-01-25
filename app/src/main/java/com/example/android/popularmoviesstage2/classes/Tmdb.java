@@ -38,6 +38,8 @@ public class Tmdb {
     private final static String TMDB_PARAM_API_KEY = "api_key";
     private final static String TMDB_PARAM_PAGE = "page";
     private final static String TMDB_PARAM_APPEND_TO_RESPONSE = "append_to_response";
+    private final static String TMDB_PARAM_LANGUAGE = "language";
+    private final static String TMDB_PARAM_REGION = "region";
 
     // Available release status for movies.
     public final static String TMDB_STATUS_RUMORED = "Rumored";
@@ -209,6 +211,7 @@ public class Tmdb {
                 .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_APPEND_TO_RESPONSE, "keywords,release_dates,external_ids,recommendations,similar")
                 .build();
 
         // Use the built uri to get the JSON document with the results of the query.

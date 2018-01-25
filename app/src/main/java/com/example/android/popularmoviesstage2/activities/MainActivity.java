@@ -196,9 +196,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         currentScrollPosition = moviesAdapter.getCurrentScrollPosition();
         currentPage = moviesAdapter.getCurrentPage();
         outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
-        outState.putString("sortOrder", sortOrder);
-        outState.putInt("currentPage", currentPage);
         outState.putInt("currentScrollPosition", currentScrollPosition);
+        outState.putInt("currentPage", currentPage);
+        outState.putString("sortOrder", sortOrder);
     }
 
     /**

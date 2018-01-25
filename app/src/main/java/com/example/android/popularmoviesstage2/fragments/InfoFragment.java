@@ -17,11 +17,14 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
@@ -35,6 +38,7 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +101,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_release_date_textview)
     TextView releaseDateTextView;
 
+    @BindView(R.id.info_genres_flowlayout)
+    FlowLayout genresFlowLayout;
+
     @BindView(R.id.info_secondary_linear_layout)
     LinearLayout secondaryLinearLayout;
     @BindView(R.id.info_original_title_textview)
@@ -109,7 +116,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     TextView revenueTextView;
 
     @BindView(R.id.info_age_rating_layout)
-    LinearLayout ageRatingLinearLayout;
+    RelativeLayout ageRatingLayout;
     @BindView(R.id.info_age_rating_image)
     ImageView ageRatingImageView;
     @BindView(R.id.info_age_rating)
@@ -408,47 +415,89 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     // Age rating from OMDB API.
                     if (OmdbMovie.getRated().equals(getString(R.string.rating_g))) {
-                        setAgeRating(R.string.text_rating_g_1,
-                                R.string.text_rating_g_2,
+                        setAgeRating(R.string.rating_g_text_1,
+                                R.string.rating_g_text_2,
                                 R.color.colorBlack,
                                 R.color.colorDarkWhite,
                                 R.drawable.rating_g_black);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y))) {
+                        setAgeRating(R.string.rating_tv_y_text_1,
+                                R.string.rating_tv_y_text_2,
+                                R.color.colorBlack,
+                                R.color.colorDarkWhite,
+                                R.drawable.rating_tv_y_black);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y7))) {
+                        setAgeRating(R.string.rating_tv_y7_text_1,
+                                R.string.rating_tv_y7_text_2,
+                                R.color.colorBlack,
+                                R.color.colorDarkWhite,
+                                R.drawable.rating_tv_y7_black);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y7_fv))) {
+                        setAgeRating(R.string.rating_tv_y7_fv_text_1,
+                                R.string.rating_tv_y7_fv_text_2,
+                                R.color.colorBlack,
+                                R.color.colorDarkWhite,
+                                R.drawable.rating_tv_y7_fv_black);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_g))) {
+                        setAgeRating(R.string.rating_tv_g_text_1,
+                                R.string.rating_tv_g_text_2,
+                                R.color.colorBlack,
+                                R.color.colorDarkWhite,
+                                R.drawable.rating_tv_g_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg))) {
-                        setAgeRating(R.string.text_rating_pg_1,
-                                R.string.text_rating_pg_2,
+                        setAgeRating(R.string.rating_pg_text_1,
+                                R.string.rating_pg_text_2,
                                 R.color.colorBlack,
                                 R.color.colorMediumScoreForeground,
                                 R.drawable.rating_pg_black);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_pg))) {
+                        setAgeRating(R.string.rating_tv_pg_text_1,
+                                R.string.rating_tv_pg_text_2,
+                                R.color.colorBlack,
+                                R.color.colorMediumScoreForeground,
+                                R.drawable.rating_tv_pg_black);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg_13))) {
-                        setAgeRating(R.string.text_rating_pg_13_1,
-                                R.string.text_rating_pg_13_2,
-                                R.color.colorWhite,
+                        setAgeRating(R.string.rating_pg_13_text_1,
+                                R.string.rating_pg_13_text_2,
+                                R.color.colorDarkWhite,
                                 R.color.colorLowScoreBackground,
                                 R.drawable.rating_pg_13_white);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_14))) {
+                        setAgeRating(R.string.rating_tv_14_text_1,
+                                R.string.rating_tv_14_text_2,
+                                R.color.colorDarkWhite,
+                                R.color.colorLowScoreBackground,
+                                R.drawable.rating_tv_14_white);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_r))) {
-                        setAgeRating(R.string.text_rating_r_1,
-                                R.string.text_rating_r_2,
-                                R.color.colorWhite,
+                        setAgeRating(R.string.rating_r_text_1,
+                                R.string.rating_r_text_2,
+                                R.color.colorDarkWhite,
                                 R.color.colorLowScoreForeground,
                                 R.drawable.rating_r_white);
                     } else if (OmdbMovie.getRated().equals(getString(R.string.rating_nc_17)) || OmdbMovie.getRated().equals(getString(R.string.rating_nc_17))) {
-                        setAgeRating(R.string.text_rating_nc_17_1,
-                                R.string.text_rating_nc_17_2,
-                                R.color.colorWhite,
+                        setAgeRating(R.string.rating_nc_17_text_1,
+                                R.string.rating_nc_17_text_2,
+                                R.color.colorDarkWhite,
                                 R.color.colorPrimaryDark,
                                 R.drawable.rating_nc_17_white);
+                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_ma))) {
+                        setAgeRating(R.string.rating_tv_ma_text_1,
+                                R.string.rating_tv_ma_text_2,
+                                R.color.colorDarkWhite,
+                                R.color.colorPrimaryDark,
+                                R.drawable.rating_tv_ma_white);
                     } else
-                        ageRatingLinearLayout.setVisibility(View.GONE);
+                        ageRatingLayout.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
-                    ageRatingLinearLayout.setVisibility(View.GONE);
+                    ageRatingLayout.setVisibility(View.GONE);
                 }
             } else {
                 // There is no connection.
                 Log.i(TAG, "(onLoadFinished) No connection to internet.");
                 scoresLinearLayout.setVisibility(View.GONE);
-                ageRatingLinearLayout.setVisibility(View.GONE);
+                ageRatingLayout.setVisibility(View.GONE);
             }
         }
 
@@ -476,7 +525,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     void clearLayout() {
         scoresLinearLayout.setVisibility(View.GONE);
         mainCardView.setVisibility(View.GONE);
-        ageRatingLinearLayout.setVisibility(View.GONE);
+        ageRatingLayout.setVisibility(View.GONE);
         secondaryLinearLayout.setVisibility(View.GONE);
     }
 
@@ -524,6 +573,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Set genres. If there is no available genres info, we hide this section.
         ArrayList<TmdbMovieGenre> tmdbMovieGenres = movie.getGenres();
+
+        genresFlowLayout.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (tmdbMovieGenres != null && tmdbMovieGenres.size() > 0) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
@@ -531,6 +584,18 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 stringBuilder.append(tmdbMovieGenres.get(n).getName());
                 if ((n + 1) < tmdbMovieGenres.size())
                     stringBuilder.append(", ");
+
+                View view = inflater.inflate(R.layout.list_item_genre, null);
+                final TextView genreTextView = (TextView) view.findViewById(R.id.genre_textview);
+                genreTextView.setText(tmdbMovieGenres.get(n).getName());
+                genresFlowLayout.addView(view);
+
+                genreTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
             genresTextView.setText(stringBuilder);
             genresLinearLayout.setVisibility(View.VISIBLE);
@@ -604,7 +669,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String originalLanguage = movie.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
-            String html = "<strong>Original language: </strong>" + originalLanguage;
+            String html = "<strong>Original language: </strong>" + new Locale(originalLanguage).getDisplayLanguage();
             TextUtils.setHtmlText(originalLanguageTextView, html);
             originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
@@ -665,12 +730,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Set colors.
         ageRatingTextView.setTextColor(getResources().getColor(textColorResource));
-        ageRatingLinearLayout.setBackgroundColor(getResources().getColor(backgroundColorResource));
+        ageRatingLayout.setBackgroundColor(getResources().getColor(backgroundColorResource));
 
         // Set icons.
         ageRatingImageView.setImageDrawable(getResources().getDrawable(drawableImageResource));
 
         // Show this section.
-        ageRatingLinearLayout.setVisibility(View.VISIBLE);
+        ageRatingLayout.setVisibility(View.VISIBLE);
     }
 }

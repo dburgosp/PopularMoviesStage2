@@ -14,20 +14,22 @@
     <dimen name="backdrop_height">100dp</dimen>
     <dimen name="youtube_video_width">178dp</dimen>
     <dimen name="youtube_video_height">100dp</dimen>
-    <dimen name="photo_thumbnail_side">118dp</dimen>
-    <dimen name="photo_small_thumbnail_side">70dp</dimen>
+    <dimen name="photo_thumbnail_width">118dp</dimen>
+    <dimen name="photo_thumbnail_height">157dp</dimen>
+    <dimen name="photo_small_thumbnail_width">70dp</dimen>
+    <dimen name="photo_small_thumbnail_height">93dp</dimen>
 
     <!-- Paddings and margins. -->
     <dimen name="separator">2dp</dimen>
     <dimen name="tiny_padding">4dp</dimen>
     <dimen name="small_padding">8dp</dimen>
     <dimen name="regular_padding">12dp</dimen>
-    <dimen name="big_padding">24dp</dimen>
+    <dimen name="big_padding">20dp</dimen>
     <dimen name="padding_start_with_small_poster">84dp</dimen>
     <dimen name="padding_top_movie_details_cardview">56dp</dimen>
     <dimen name="padding_top_movie_details_header">22dp</dimen>
 
-    <!-- Number of columns for the mtmdbMovieovie list depending on the device orientation. -->
+    <!-- Number of columns for the movie list depending on the device orientation. -->
     <integer name="default_vertical_span_count">3</integer>
     <integer name="default_horizontal_span_count">4</integer>
 

@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/cast_crew_image"
-            android:layout_width="@dimen/photo_small_thumbnail_side"
-            android:layout_height="@dimen/photo_small_thumbnail_side"
+            android:layout_width="@dimen/photo_small_thumbnail_width"
+            android:layout_height="@dimen/photo_small_thumbnail_height"
             android:background="@color/colorDarkWhite"
             android:contentDescription="@string/content_description_person_image"
             android:scaleType="centerCrop"
@@ -45,7 +45,7 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="bottom"
-                android:lines="2"
+                android:maxLines="2"
                 android:paddingBottom="@dimen/tiny_padding"
                 android:textSize="@dimen/normal_text_size"
                 tools:text="Character name with a lenght of more than one line" />
@@ -57,7 +57,7 @@
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-smallcaps"
                 android:gravity="bottom"
-                android:lines="1"
+                android:maxLines="2"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/normal_plus_text_size"
                 android:textStyle="bold"

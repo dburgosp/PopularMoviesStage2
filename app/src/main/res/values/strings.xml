@@ -1,6 +1,7 @@
 <resources>
     <string name="a_review_by">A review by</string>
     <string name="add_to_favorites">Add to favorites</string>
+    <string name="all_languages">All languages</string>
     <string name="app_name">TMDB</string>
     <string name="backdrops_title">Backdrops</string>
     <string name="cast_of_characters">Main cast</string>
@@ -43,12 +44,6 @@
     <string name="order_top_rated">Top rated Movies</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
-    <string name="rating_g">G</string>
-    <string name="rating_nc_17">NC-17</string>
-    <string name="rating_pg">PG</string>
-    <string name="rating_pg_13">PG-13</string>
-    <string name="rating_r">R</string>
-    <string name="rating_x">X</string>
     <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="reviews_title">User reviews</string>
@@ -62,22 +57,68 @@
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
-    <string name="text_rating_g_1">GENERAL AUDIENCES</string>
-    <string name="text_rating_g_2">All ages admitted</string>
-    <string name="text_rating_nc_17_1">NO ONE 17 AND UNDER ADMITTED</string>
-    <string name="text_rating_nc_17_2"> </string>
-    <string name="text_rating_pg_1">PARENTAL GUIDANCE SUGGESTED</string>
-    <string name="text_rating_pg_2">Some material may not be suitable for children</string>
-    <string name="text_rating_pg_13_1">PARENTS STRONGLY CAUTIONED</string>
-    <string name="text_rating_pg_13_2">Some material may be inappropriate for children under 13</string>
-    <string name="text_rating_r_1">RESTRICTED</string>
-    <string name="text_rating_r_2">Under 17 requires accompanying parent or adult guardian</string>
     <string name="thumbnail_description">Thumbnail image</string>
     <string name="transition_poster">poster_transition</string>
     <string name="transition_review">review_transition</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
     <string name="view_all_crew">View complete Film Crew</string>
+
+    <!-- MPAA movie age ratings from OMDB API -->
+
+    <string name="rating_g">G</string>
+    <string name="rating_g_text_1">GENERAL AUDIENCES</string>
+    <string name="rating_g_text_2">All ages admitted</string>
+
+    <string name="rating_pg">PG</string>
+    <string name="rating_pg_text_1">PARENTAL GUIDANCE SUGGESTED</string>
+    <string name="rating_pg_text_2">Some material may not be suitable for children</string>
+
+    <string name="rating_pg_13">PG-13</string>
+    <string name="rating_pg_13_text_1">PARENTS STRONGLY CAUTIONED</string>
+    <string name="rating_pg_13_text_2">Some material may be inappropriate for children under 13</string>
+
+    <string name="rating_r">R</string>
+    <string name="rating_r_text_1">RESTRICTED</string>
+    <string name="rating_r_text_2">Under 17 requires accompanying parent or adult guardian</string>
+
+    <string name="rating_nc_17">NC-17</string>
+    <string name="rating_nc_17_text_1">ADULTS ONLY</string>
+    <string name="rating_nc_17_text_2">No one 17 and under admitted</string>
+
+    <string name="rating_x">X</string>
+
+    <!-- FCC TV age ratings from OMDB API -->
+
+    <string name="rating_tv_y">TV-Y</string>
+    <string name="rating_tv_y_text_1">ALL CHILDREN</string>
+    <string name="rating_tv_y_text_2">This program is designed to be appropriate for all children</string>
+
+    <string name="rating_tv_y7">TV-Y7</string>
+    <string name="rating_tv_y7_text_1">DIRECTED TO OLDER CHILDREN</string>
+    <string name="rating_tv_y7_text_2">This program is designed for children age 7 and above</string>
+
+    <string name="rating_tv_y7_fv">TV-Y7-FV</string>
+    <string name="rating_tv_y7_fv_text_1">DIRECTED TO OLDER CHILDREN - FANTASY VIOLENCE</string>
+    <string name="rating_tv_y7_fv_text_2">This program is designed for children age 7 and above</string>
+
+    <string name="rating_tv_g">TV-G</string>
+    <string name="rating_tv_g_text_1">GENERAL AUDIENCE</string>
+    <string name="rating_tv_g_text_2">This program is suitable for all ages</string>
+
+    <string name="rating_tv_pg">TV-PG</string>
+    <string name="rating_tv_pg_text_1">PARENTAL GUIDANCE SUGGESTED</string>
+    <string name="rating_tv_pg_text_2">This program contains material that parents may find unsuitable for younger children</string>
+
+    <string name="rating_tv_14">TV-14</string>
+    <string name="rating_tv_14_text_1">PARENTS STRONGLY CAUTIONED</string>
+    <string name="rating_tv_14_text_2">This program contains some material that many parents would find unsuitable for children under 14 years of age</string>
+
+    <string name="rating_tv_ma">TV-MA</string>
+    <string name="rating_tv_ma_text_1">MATURE AUDIENCE ONLY</string>
+    <string name="rating_tv_ma_text_2">This program is specifically designed to be viewed by adults and therefore may be unsuitable for children under 17</string>
+
+    <!-- Plurals -->
 
     <plurals name="genres">
         <item quantity="one">Genre</item>

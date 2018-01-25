@@ -14,6 +14,8 @@ import com.example.android.popularmoviesstage2.classes.YouTube;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -52,7 +54,7 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
      * {@link VideosAdapter#onBindViewHolder(VideosViewHolder, int)} method.
      *
      * @param currentTmdbVideo is the TmdbVideo object attached to the current VideosViewHolder element.
-     * @param listener     is the listener for click events.
+     * @param listener         is the listener for click events.
      */
     public void bind(final TmdbVideo currentTmdbVideo, final VideosAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(bind) Binding data for the current VideosViewHolder.");
@@ -70,9 +72,10 @@ public class VideosViewHolder extends RecyclerView.ViewHolder {
 
         // Set video language.
         String language = currentTmdbVideo.getIso_639_1();
-        if (language != null && !language.equals(""))
-            language = context.getResources().getString(R.string.language) + ": <strong>" + language+"</strong>";
-        else
+        if (language != null && !language.equals("")) {
+            Locale locale = new Locale(language);
+            language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() + locale.getDisplayLanguage().substring(1);
+        } else
             language = context.getResources().getString(R.string.no_language);
         TextUtils.setHtmlText(languageTextView, language);
 

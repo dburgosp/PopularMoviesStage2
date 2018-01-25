@@ -30,6 +30,7 @@
                 android:id="@+id/video_language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:textSize="@dimen/normal_text_size"
                 tools:text="Language" />
 
@@ -37,6 +38,7 @@
                 android:id="@+id/video_resolution"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/small_padding"
                 android:gravity="end"
                 android:textColor="@color/colorGrey"
                 android:textSize="@dimen/normal_text_size"
@@ -51,8 +53,8 @@
                 android:id="@+id/video_image"
                 android:layout_width="@dimen/youtube_video_width"
                 android:layout_height="@dimen/youtube_video_height"
-                android:scaleType="centerCrop"
-                android:background="@drawable/no_movie" />
+                android:background="@drawable/no_movie"
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:layout_width="wrap_content"
