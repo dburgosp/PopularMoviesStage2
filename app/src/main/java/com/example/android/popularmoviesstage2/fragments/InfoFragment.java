@@ -95,9 +95,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     TextView originalLanguageTextView;
     @BindView(R.id.info_production_countries)
     TextView productionCountriesTextView;
-
-    @BindView(R.id.info_secondary_layout)
-    LinearLayout secondaryLinearLayout;
     @BindView(R.id.info_original_title)
     TextView originalTitleTextView;
     @BindView(R.id.info_production_companies)
@@ -318,7 +315,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         overviewLinearLayout.setVisibility(View.GONE);
         mainLinearLayout.setVisibility(View.GONE);
         genresFlowLayout.setVisibility(View.GONE);
-        secondaryLinearLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
         tagsLayout.setVisibility(View.GONE);
     }
@@ -338,10 +334,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         // Set genres list.
         if (setGenresSection())
             genresFlowLayout.setVisibility(View.VISIBLE);
-
-        // Set secondary info section.
-        if (setSecondaryInfoSection())
-            secondaryLinearLayout.setVisibility(View.VISIBLE);
 
         // TODO. Set collection section.
 
@@ -385,33 +377,33 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setMainInfoSection() {
         boolean infoSectionSet = false;
 
-        // Set runtime. If there is no available runtime info, we hide this section.
+        // Set runtime. If there is no available runtime info, hide this section.
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = getString(R.string.runtime).toUpperCase() +
-                    ": <strong>" + runtime + "</strong>";
+            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() +
+                    "</strong><br>" + runtime;
             TextUtils.setHtmlText(runtimeTextView, htmlText);
             runtimeTextView.setVisibility(View.VISIBLE);
         } else {
             runtimeTextView.setVisibility(View.GONE);
         }
 
-        // Set release date. If there is no available release date, we hide this section.
+        // Set release date. If there is no available release date, hide this section.
         String releaseDate = movie.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
             infoSectionSet = true;
 
             // TODO: release date info from append_to_response=release_dates
 
-            String htmlText = getString(R.string.release_date).toUpperCase() +
-                    ": <strong>" + releaseDate + "</strong>";
+            String htmlText = "<strong>" + getString(R.string.release_date).toUpperCase() +
+                    "</strong><br>" + releaseDate;
 
             // Add status to date if it is other than "released".
             String status = movie.getStatus();
             if (status != null && !status.equals("") && !status.isEmpty() &&
                     !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
-                htmlText = htmlText + " <strong>(" + status + ")</strong>";
+                htmlText = htmlText + " (" + status + ")";
             }
             TextUtils.setHtmlText(releaseDateTextView, htmlText);
             releaseDateTextView.setVisibility(View.VISIBLE);
@@ -426,12 +418,43 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         String originalLanguage = movie.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = getString(R.string.original_language).toUpperCase() +
-                    ": <strong>" + new Locale(originalLanguage).getDisplayLanguage() + "</strong>";
+            Locale locale = new Locale(originalLanguage);
+            String language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +
+                    locale.getDisplayLanguage().substring(1);
+            String htmlText = "<strong>" + getString(R.string.original_language).toUpperCase() +
+                    "</strong><br>" + language;
             TextUtils.setHtmlText(originalLanguageTextView, htmlText);
             originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
             originalLanguageTextView.setVisibility(View.GONE);
+
+        // Set original title. If there is no available original title info, hide this section.
+        String originalTitle = movie.getOriginal_title();
+        if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
+            infoSectionSet = true;
+            String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() +
+                    "</strong><br>" + originalTitle;
+            TextUtils.setHtmlText(originalTitleTextView, htmlText);
+            originalTitleTextView.setVisibility(View.VISIBLE);
+        } else
+            originalTitleTextView.setVisibility(View.GONE);
+
+        // Set production companies. If there is no available countries info, we hide this section.
+        ArrayList<TmdbMovieCompany> movieCompanies = movie.getProduction_companies();
+        if (movieCompanies != null && movieCompanies.size() > 0) {
+            infoSectionSet = true;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieCompanies.size(); n++) {
+                stringBuilder.append(movieCompanies.get(n).getName());
+                if ((n + 1) < movieCompanies.size())
+                    stringBuilder.append("<br>");
+            }
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_companies, movieCompanies.size()).toUpperCase()
+                    + "</strong><br>" + stringBuilder;
+            TextUtils.setHtmlText(productionCompaniesTextView, htmlText);
+            productionCompaniesTextView.setVisibility(View.VISIBLE);
+        } else
+            productionCompaniesTextView.setVisibility(View.GONE);
 
         // Set production countries. If there is no available countries info, we hide this section.
         ArrayList<TmdbMovieCountry> movieCountries = movie.getProduction_countries();
@@ -443,13 +466,56 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 if ((n + 1) < movieCountries.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText =
-                    getResources().getQuantityString(R.plurals.production_countries, movieCountries.size(), null).toUpperCase()
-                            + ": <strong>" + stringBuilder + "</strong>";
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_countries, movieCountries.size()).toUpperCase()
+                    + "</strong><br>" + stringBuilder;
             TextUtils.setHtmlText(productionCountriesTextView, htmlText);
             productionCountriesTextView.setVisibility(View.VISIBLE);
         } else
             productionCountriesTextView.setVisibility(View.GONE);
+
+        // Set spoken languages. If there are less than two spoken languages, we hide this section.
+        ArrayList<TmdbMovieLanguage> movieLanguages = movie.getSpoken_languages();
+        if (movieLanguages != null && movieLanguages.size() > 1) {
+            infoSectionSet = true;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieLanguages.size(); n++) {
+                Locale locale = new Locale(movieLanguages.get(n).getIso_639_1());
+                String language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +
+                        locale.getDisplayLanguage().substring(1);
+                stringBuilder.append(language);
+                if ((n + 1) < movieLanguages.size())
+                    stringBuilder.append("<br>");
+            }
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.spoken_languages, movieLanguages.size()).toUpperCase()
+                    + "</strong><br>" + stringBuilder;
+            TextUtils.setHtmlText(spokenLanguagesTextView, htmlText);
+            spokenLanguagesTextView.setVisibility(View.VISIBLE);
+        } else
+            spokenLanguagesTextView.setVisibility(View.GONE);
+
+        // Set movie budget. If there is no available budget info, hide this section.
+        int budget = movie.getBudget();
+        if (budget > 0) {
+            infoSectionSet = true;
+            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+            String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() +
+                    "</strong><br>" + decimalFormat.format(budget);
+            TextUtils.setHtmlText(budgetTextView, htmlText);
+            budgetTextView.setVisibility(View.VISIBLE);
+        } else
+            budgetTextView.setVisibility(View.GONE);
+
+        // Set movie revenue. If there is no available revenue info, hide this section.
+        int revenue = movie.getRevenue();
+        if (revenue > 0) {
+            infoSectionSet = true;
+            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+            String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() +
+                    "</strong><br>" + decimalFormat.format(revenue);
+            TextUtils.setHtmlText(revenueTextView, htmlText);
+            revenueTextView.setVisibility(View.VISIBLE);
+        } else
+            revenueTextView.setVisibility(View.GONE);
 
         return infoSectionSet;
     }
@@ -488,88 +554,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             return true;
         } else
             return false;
-    }
-
-    /**
-     * Set elements of secondary info section.
-     *
-     * @return true if any of the elements of this section has been set, false otherwise.
-     */
-    private boolean setSecondaryInfoSection() {
-        boolean infoSectionSet = false;
-
-        // Set original title. If there is no available original title info, hide this section.
-        String originalTitle = movie.getOriginal_title();
-        if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
-            infoSectionSet = true;
-            String htmlText = getString(R.string.original_title).toUpperCase() +
-                    "<br><strong>" + originalTitle + "</strong>";
-            TextUtils.setHtmlText(originalTitleTextView, htmlText);
-            originalTitleTextView.setVisibility(View.VISIBLE);
-        } else
-            originalTitleTextView.setVisibility(View.GONE);
-
-        // Set production companies. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieCompany> movieCompanies = movie.getProduction_companies();
-        if (movieCompanies != null && movieCompanies.size() > 0) {
-            infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieCompanies.size(); n++) {
-                stringBuilder.append(movieCompanies.get(n).getName());
-                if ((n + 1) < movieCompanies.size())
-                    stringBuilder.append("<br>");
-            }
-            String htmlText =
-                    getResources().getQuantityString(R.plurals.production_companies, movieCompanies.size(), null).toUpperCase()
-                            + "<br><strong>" + stringBuilder + "</strong>";
-            TextUtils.setHtmlText(productionCompaniesTextView, htmlText);
-            productionCompaniesTextView.setVisibility(View.VISIBLE);
-        } else
-            productionCompaniesTextView.setVisibility(View.GONE);
-
-        // Set spoken languages. If there are less than two spoken languages, we hide this section.
-        ArrayList<TmdbMovieLanguage> movieLanguages = movie.getSpoken_languages();
-        if (movieLanguages != null && movieLanguages.size() > 1) {
-            infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieLanguages.size(); n++) {
-                stringBuilder.append(movieLanguages.get(n).getName());
-                if ((n + 1) < movieLanguages.size())
-                    stringBuilder.append("<br>");
-            }
-            String htmlText =
-                    getResources().getQuantityString(R.plurals.spoken_languages, movieLanguages.size(), null).toUpperCase()
-                            + "<br><strong>" + stringBuilder + "</strong>";
-            TextUtils.setHtmlText(spokenLanguagesTextView, htmlText);
-            spokenLanguagesTextView.setVisibility(View.VISIBLE);
-        } else
-            spokenLanguagesTextView.setVisibility(View.GONE);
-
-        // Set movie budget. If there is no available budget info, hide this section.
-        int budget = movie.getBudget();
-        if (budget > 0) {
-            infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String htmlText = getString(R.string.budget_title).toUpperCase() +
-                    "<br><strong>" + decimalFormat.format(budget) + "</strong>";
-            TextUtils.setHtmlText(budgetTextView, htmlText);
-            budgetTextView.setVisibility(View.VISIBLE);
-        } else
-            budgetTextView.setVisibility(View.GONE);
-
-        // Set movie revenue. If there is no available revenue info, hide this section.
-        int revenue = movie.getRevenue();
-        if (revenue > 0) {
-            infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String htmlText = getString(R.string.revenue_title).toUpperCase() +
-                    "<br><strong>" + decimalFormat.format(revenue) + "</strong>";
-            TextUtils.setHtmlText(revenueTextView, htmlText);
-            revenueTextView.setVisibility(View.VISIBLE);
-        } else
-            revenueTextView.setVisibility(View.GONE);
-
-        return infoSectionSet;
     }
 
     /* ------------- */
@@ -661,9 +645,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
                     // Vote average from OMDB API.
                     if (setUserScores())
-                        scoresLinearLayout.setVisibility(View.GONE);
-                    else
                         scoresLinearLayout.setVisibility(View.VISIBLE);
+                    else
+                        scoresLinearLayout.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
