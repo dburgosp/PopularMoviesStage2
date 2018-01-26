@@ -9,9 +9,9 @@
     tools:context="com.example.android.popularmoviesstage2.fragments.CastCrewFragment">
 
     <RelativeLayout
-        android:id="@+id/info_main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
 
         <!-- Info section -->
 
@@ -26,11 +26,12 @@
                 android:id="@+id/info_scores_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
-                android:layout_marginTop="@dimen/tiny_padding"
+                android:background="@color/colorDarkWhite"
                 android:baselineAligned="false"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/regular_padding"
+                android:paddingTop="@dimen/tiny_padding">
 
                 <LinearLayout
                     android:id="@+id/info_imdb_layout"
@@ -134,320 +135,147 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Main info section -->
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/info_primary_cardview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding"
-                android:layout_marginTop="@dimen/tiny_padding"
-                app:cardCornerRadius="@dimen/regular_padding"
-                app:cardElevation="@dimen/tiny_padding">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/info_overview_linearlayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/regular_padding"
-                        android:orientation="vertical"
-                        android:paddingTop="@dimen/tiny_padding">
-
-                        <TextView
-                            android:id="@+id/info_tagline_textview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="sans-serif-smallcaps"
-                            android:paddingBottom="@dimen/tiny_padding"
-                            android:paddingTop="@dimen/tiny_padding"
-                            android:textAllCaps="true"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold"
-                            tools:text="Tagline" />
-
-                        <TextView
-                            android:id="@+id/info_overview_textview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/tiny_padding"
-                            android:paddingTop="@dimen/tiny_padding"
-                            tools:text="@string/no_overview" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/info_main_linearlayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorPrimary"
-                        android:orientation="vertical"
-                        android:padding="@dimen/regular_padding">
-
-                        <LinearLayout
-                            android:id="@+id/info_runtime_linearlayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/tiny_padding">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingTop="1dp"
-                                android:src="@drawable/ic_access_time_black_18dp"
-                                android:tint="@color/colorWhite" />
-
-                            <TextView
-                                android:id="@+id/info_runtime_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/regular_padding"
-                                android:textColor="@color/colorWhite"
-                                tools:text="1h 30m" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/info_release_date_linearlayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/tiny_padding">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingTop="1dp"
-                                android:src="@drawable/ic_date_range_black_18dp"
-                                android:tint="@color/colorWhite" />
-
-                            <TextView
-                                android:id="@+id/info_release_date_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/regular_padding"
-                                android:textColor="@color/colorWhite"
-                                tools:text="2001-01-01" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/info_production_countries_linearlayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/tiny_padding">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingTop="1dp"
-                                android:src="@drawable/ic_place_black_18dp"
-                                android:tint="@color/colorWhite" />
-
-                            <TextView
-                                android:id="@+id/info_production_countries_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/regular_padding"
-                                android:textColor="@color/colorWhite"
-                                tools:text="USA" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/info_age_rating_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/small_padding"
-                        android:layout_marginEnd="@dimen/regular_padding"
-                        android:layout_marginStart="@dimen/regular_padding"
-                        android:layout_marginTop="@dimen/small_padding"
-                        android:gravity="end|center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/info_age_rating_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/small_padding"
-                            android:gravity="end"
-                            android:textColor="@color/colorAccent"
-                            android:text="@string/age_rating_title" />
-
-                        <TextView
-                            android:id="@+id/info_age_rating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/rectangle"
-                            android:fontFamily="sans-serif-smallcaps"
-                            android:gravity="center"
-                            android:padding="@dimen/small_padding"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="@dimen/alert_text_size"
-                            android:textStyle="bold"
-                            tools:text="18" />
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <!-- Genres -->
+            <!-- Overview section -->
 
             <LinearLayout
-                android:id="@+id/info_genres_linearlayout"
+                android:id="@+id/info_overview_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="@dimen/regular_padding"
+                android:paddingTop="@dimen/tiny_padding">
 
                 <TextView
-                    android:id="@+id/info_genres_textview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    tools:text="Genres:" />
-
-                <com.example.android.popularmoviesstage2.classes.FlowLayout
-                    android:id="@+id/info_genres_flowlayout"
+                    android:id="@+id/info_tagline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding" />
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:paddingBottom="@dimen/tiny_padding"
+                    android:paddingTop="@dimen/tiny_padding"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold"
+                    tools:text="Tagline" />
+
+                <TextView
+                    android:id="@+id/info_overview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/tiny_padding"
+                    android:paddingTop="@dimen/tiny_padding"
+                    tools:text="@string/no_overview" />
             </LinearLayout>
 
-            <!-- More info -->
+            <!-- Genres section -->
 
-            <LinearLayout
-                android:id="@+id/info_secondary_linear_layout"
+            <com.example.android.popularmoviesstage2.classes.FlowLayout
+                android:id="@+id/info_genres_flowlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/regular_padding"
-                android:orientation="vertical">
+                android:layout_marginBottom="@dimen/big_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding" />
 
-                <LinearLayout
-                    android:id="@+id/info_original_title_layout"
-                    android:layout_width="match_parent"
+            <!-- Main info section -->
+
+            <LinearLayout
+                android:id="@+id/info_main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.7"
+                android:background="@color/colorAccent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/big_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:paddingTop="@dimen/big_padding">
+
+                <TextView
+                    android:id="@+id/info_runtime"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    android:textColor="@color/colorWhite"
+                    tools:text="DURATION: 1h 30m" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        android:text="@string/original_title" />
-
-                    <TextView
-                        android:id="@+id/info_original_title_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="Original title in more than one line" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_production_companies_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/info_release_date"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    android:textColor="@color/colorWhite"
+                    tools:text="RELEASE (USA): 2001-01-01" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        tools:text="Production companies:" />
-
-                    <TextView
-                        android:id="@+id/info_production_companies_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="List of production companies in more than one line" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_original_language_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/info_age_rating"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    android:textColor="@color/colorWhite"
+                    tools:text="AGE RATING (USA): PG-13" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        android:text="@string/original_language" />
-
-                    <TextView
-                        android:id="@+id/info_original_language_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="Original Language in more than one line" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_spoken_languages_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/info_original_language"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    android:textColor="@color/colorWhite"
+                    tools:text="ORIGINAL LANGUAGE: Original Language" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        tools:text="Spoken languages:" />
+                <TextView
+                    android:id="@+id/info_production_countries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorWhite"
+                    tools:text="PRODUCTION COUNTRY: USA" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/info_spoken_languages_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="List of spoken languages in more than one line" />
-                </LinearLayout>
+            <!-- More info section -->
 
-                <LinearLayout
-                    android:id="@+id/info_budget_layout"
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/info_secondary_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorDarkWhite"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/big_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:paddingTop="@dimen/big_padding">
+
+                <TextView
+                    android:id="@+id/info_original_title"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    tools:text="ORIGINAL TITLE: Original title in more than one line" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        android:text="@string/budget_title" />
-
-                    <TextView
-                        android:id="@+id/info_budget_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="Budget" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_revenue_layout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/info_production_companies"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/tiny_padding"
-                    android:orientation="horizontal">
+                    tools:text="PRODUCTION COMPANIES: List of production companies in more than one line" />
 
-                    <TextView
-                        android:layout_width="@dimen/padding_list_header"
-                        android:layout_height="wrap_content"
-                        android:text="@string/revenue_title" />
+                <TextView
+                    android:id="@+id/info_spoken_languages"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    tools:text="SPOKEN LANGUAGES: List of spoken languages in more than one line" />
 
-                    <TextView
-                        android:id="@+id/info_revenue_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        tools:text="Revenue" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/info_budget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/tiny_padding"
+                    tools:text="BUDGET ($): Budget" />
+
+                <TextView
+                    android:id="@+id/info_revenue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="REVENUE ($): Revenue" />
             </LinearLayout>
 
             <!-- Collection -->
@@ -480,7 +308,10 @@
                     android:layout_width="@dimen/poster_info_width"
                     android:layout_height="@dimen/poster_info_height"
                     android:layout_alignParentEnd="true"
-                    android:layout_margin="@dimen/regular_padding"
+                    android:layout_marginBottom="@dimen/regular_padding"
+                    android:layout_marginEnd="@dimen/big_padding"
+                    android:layout_marginStart="@dimen/regular_padding"
+                    android:layout_marginTop="@dimen/regular_padding"
                     app:cardElevation="@dimen/small_padding">
 
                     <ImageView
@@ -496,22 +327,22 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/regular_padding"
                     android:layout_toStartOf="@+id/info_collection_cardview"
                     android:gravity="end"
-                    android:layout_marginTop="@dimen/regular_padding"
                     android:text="@string/belongs_to_collection"
                     android:textColor="@color/colorWhite" />
 
                 <TextView
-                    android:id="@+id/info_collection_textview"
+                    android:id="@+id/info_collection_name"
                     android:layout_width="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/big_padding"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginStart="@dimen/regular_padding"
                     android:layout_toStartOf="@id/info_collection_cardview"
                     android:fontFamily="sans-serif-smallcaps"
                     android:gravity="end"
+                    android:paddingBottom="@dimen/big_padding"
                     android:textColor="@color/colorWhite"
                     android:textSize="@dimen/title_text_size"
                     android:textStyle="bold"
@@ -521,13 +352,13 @@
             <!-- Tags -->
 
             <LinearLayout
-                android:id="@+id/info_tags_linearlayout"
+                android:id="@+id/info_tags_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/info_tags_textview"
+                    android:id="@+id/info_tags_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/regular_padding"

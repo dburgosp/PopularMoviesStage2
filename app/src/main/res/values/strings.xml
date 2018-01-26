@@ -6,7 +6,7 @@
     <string name="app_name">TMDB</string>
     <string name="backdrops_title">Backdrops</string>
     <string name="belongs_to_collection">Belongs to collection:</string>
-    <string name="budget_title">Budget ($):</string>
+    <string name="budget_title">Budget ($)</string>
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_alpha">Transparent layer for background</string>
     <string name="content_description_favorites">Add to favorites icon</string>
@@ -45,13 +45,13 @@
     <string name="no_title">No title</string>
     <string name="order_popular">Popular Movies</string>
     <string name="order_top_rated">Top rated Movies</string>
-    <string name="original_language">Original language:</string>
-    <string name="original_title">Original title:</string>
+    <string name="original_language">Original language</string>
+    <string name="original_title">Original title</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
     <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
-    <string name="revenue_title">Revenue ($):</string>
+    <string name="revenue_title">Revenue ($)</string>
     <string name="reviews_title">User reviews</string>
     <string name="runtime">Runtime</string>
     <string name="score_title">TMDB score</string>
@@ -128,18 +128,18 @@
     <!-- Plurals -->
 
     <plurals name="genres">
-        <item quantity="one">Genre:</item>
-        <item quantity="other">Genres:</item>
+        <item quantity="one">Genre</item>
+        <item quantity="other">Genres</item>
     </plurals>
 
     <plurals name="production_companies">
-        <item quantity="one">Production company:</item>
-        <item quantity="other">Production companies:</item>
+        <item quantity="one">Production company</item>
+        <item quantity="other">Production companies</item>
     </plurals>
 
     <plurals name="production_countries">
-        <item quantity="one">Production country:</item>
-        <item quantity="other">Production countries:</item>
+        <item quantity="one">Production country</item>
+        <item quantity="other">Production countries</item>
     </plurals>
 
     <plurals name="score_votes">
@@ -148,7 +148,7 @@
     </plurals>
 
     <plurals name="spoken_languages">
-        <item quantity="one">Spoken language:</item>
-        <item quantity="other">Spoken languages:</item>
+        <item quantity="one">Spoken language</item>
+        <item quantity="other">Spoken languages</item>
     </plurals>
 </resources>

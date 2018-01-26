@@ -8,12 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -73,69 +73,57 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_metacritic_score)
     DonutProgress metacriticDonutProgress;
 
-    @BindView(R.id.info_primary_cardview)
-    CardView mainCardView;
-
-    @BindView(R.id.info_overview_linearlayout)
+    @BindView(R.id.info_overview_layout)
     LinearLayout overviewLinearLayout;
-    @BindView(R.id.info_tagline_textview)
+    @BindView(R.id.info_tagline)
     TextView taglineTextView;
-    @BindView(R.id.info_overview_textview)
+    @BindView(R.id.info_overview)
     TextView overviewTextView;
 
-    @BindView(R.id.info_main_linearlayout)
-    LinearLayout mainLinearLayout;
-    @BindView(R.id.info_runtime_linearlayout)
-    LinearLayout runtimeLinearLayout;
-    @BindView(R.id.info_runtime_textview)
-    TextView runtimeTextView;
-    @BindView(R.id.info_production_countries_linearlayout)
-    LinearLayout productionCountriesLinearLayout;
-    @BindView(R.id.info_production_countries_textview)
-    TextView productionCountriesTextView;
-    @BindView(R.id.info_release_date_linearlayout)
-    LinearLayout releaseDateLinearLayout;
-    @BindView(R.id.info_release_date_textview)
-    TextView releaseDateTextView;
-
-    @BindView(R.id.info_genres_linearlayout)
-    LinearLayout genresLinearLayout;
-    @BindView(R.id.info_genres_textview)
-    TextView genresTextView;
     @BindView(R.id.info_genres_flowlayout)
     FlowLayout genresFlowLayout;
 
-    @BindView(R.id.info_secondary_linear_layout)
-    LinearLayout secondaryLinearLayout;
-    @BindView(R.id.info_original_title_layout)
-    LinearLayout originalTitleLinearLayout;
-    @BindView(R.id.info_original_title_textview)
-    TextView originalTitleTextView;
-    @BindView(R.id.info_original_language_layout)
-    LinearLayout originalLanguageLinearLayout;
-    @BindView(R.id.info_original_language_textview)
-    TextView originalLanguageTextView;
-    @BindView(R.id.info_budget_layout)
-    LinearLayout budgetLinearLayout;
-    @BindView(R.id.info_budget_textview)
-    TextView budgetTextView;
-    @BindView(R.id.info_revenue_layout)
-    LinearLayout revenueLinearLayout;
-    @BindView(R.id.info_revenue_textview)
-    TextView revenueTextView;
-    @BindView(R.id.info_production_companies_layout)
-    LinearLayout productionCompaniesLinearLayout;
-    @BindView(R.id.info_production_companies_textview)
-    TextView productionCompaniesTextView;
-    @BindView(R.id.info_spoken_languages_layout)
-    LinearLayout spokenLanguagesLinearLayout;
-    @BindView(R.id.info_spoken_languages_textview)
-    TextView spokenLanguagesTextView;
-
-    @BindView(R.id.info_age_rating_layout)
-    RelativeLayout ageRatingLayout;
+    @BindView(R.id.info_main_layout)
+    LinearLayout mainLinearLayout;
+    @BindView(R.id.info_runtime)
+    TextView runtimeTextView;
+    @BindView(R.id.info_release_date)
+    TextView releaseDateTextView;
     @BindView(R.id.info_age_rating)
     TextView ageRatingTextView;
+    @BindView(R.id.info_original_language)
+    TextView originalLanguageTextView;
+    @BindView(R.id.info_production_countries)
+    TextView productionCountriesTextView;
+
+    @BindView(R.id.info_secondary_layout)
+    LinearLayout secondaryLinearLayout;
+    @BindView(R.id.info_original_title)
+    TextView originalTitleTextView;
+    @BindView(R.id.info_production_companies)
+    TextView productionCompaniesTextView;
+    @BindView(R.id.info_spoken_languages)
+    TextView spokenLanguagesTextView;
+    @BindView(R.id.info_budget)
+    TextView budgetTextView;
+    @BindView(R.id.info_revenue)
+    TextView revenueTextView;
+
+    @BindView(R.id.info_collection_layout)
+    RelativeLayout collectionLayout;
+    @BindView(R.id.info_collection_background)
+    ImageView collectionBackgroundImageView;
+    @BindView(R.id.info_collection_poster)
+    ImageView collectionPosterImageView;
+    @BindView(R.id.info_collection_name)
+    TextView collectionNameTextView;
+
+    @BindView(R.id.info_tags_layout)
+    LinearLayout tagsLayout;
+    @BindView(R.id.info_tags_title)
+    TextView tagsTitleTextView;
+    @BindView(R.id.info_tags_flowlayout)
+    FlowLayout tagsFlowLayout;
 
     private static TmdbMovie movie;
     private int movieId;
@@ -318,6 +306,272 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoaderReset(Loader<TmdbMovie> loader) {
     }
 
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Hide every info element in the layout.
+     */
+    void clearLayout() {
+        scoresLinearLayout.setVisibility(View.GONE);
+        overviewLinearLayout.setVisibility(View.GONE);
+        mainLinearLayout.setVisibility(View.GONE);
+        genresFlowLayout.setVisibility(View.GONE);
+        secondaryLinearLayout.setVisibility(View.GONE);
+        collectionLayout.setVisibility(View.GONE);
+        tagsLayout.setVisibility(View.GONE);
+    }
+
+    /**
+     * Helper method to display all the movie information in this fragment.
+     */
+    void setMovieInfo() {
+        // Set overview section.
+        if (setOverviewSection())
+            overviewLinearLayout.setVisibility(View.VISIBLE);
+
+        // Set main info section.
+        if (setMainInfoSection())
+            mainLinearLayout.setVisibility(View.VISIBLE);
+
+        // Set genres list.
+        if (setGenresSection())
+            genresFlowLayout.setVisibility(View.VISIBLE);
+
+        // Set secondary info section.
+        if (setSecondaryInfoSection())
+            secondaryLinearLayout.setVisibility(View.VISIBLE);
+
+        // TODO. Set collection section.
+
+        // TODO. Set tags section.
+    }
+
+    /**
+     * Set overview section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setOverviewSection() {
+        boolean infoSectionSet = false;
+
+        // Set tagline. If there is no overview, we hide this section.
+        String tagline = movie.getTagline();
+        if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
+            infoSectionSet = true;
+            taglineTextView.setText(tagline);
+            taglineTextView.setVisibility(View.VISIBLE);
+        } else
+            taglineTextView.setVisibility(View.GONE);
+
+        // Set overview. If there is no overview, we show the default text for overview.
+        String overview = movie.getOverview();
+        if (overview != null && !overview.equals("") && !overview.isEmpty()) {
+            infoSectionSet = true;
+            overviewTextView.setText(overview);
+            overviewLinearLayout.setVisibility(View.VISIBLE);
+        } else
+            overviewLinearLayout.setVisibility(View.GONE);
+
+        return infoSectionSet;
+    }
+
+    /**
+     * Set elements of primary info section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setMainInfoSection() {
+        boolean infoSectionSet = false;
+
+        // Set runtime. If there is no available runtime info, we hide this section.
+        String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
+        if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
+            infoSectionSet = true;
+            String htmlText = getString(R.string.runtime).toUpperCase() +
+                    ": <strong>" + runtime + "</strong>";
+            TextUtils.setHtmlText(runtimeTextView, htmlText);
+            runtimeTextView.setVisibility(View.VISIBLE);
+        } else {
+            runtimeTextView.setVisibility(View.GONE);
+        }
+
+        // Set release date. If there is no available release date, we hide this section.
+        String releaseDate = movie.getRelease_date();
+        if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
+            infoSectionSet = true;
+
+            // TODO: release date info from append_to_response=release_dates
+
+            String htmlText = getString(R.string.release_date).toUpperCase() +
+                    ": <strong>" + releaseDate + "</strong>";
+
+            // Add status to date if it is other than "released".
+            String status = movie.getStatus();
+            if (status != null && !status.equals("") && !status.isEmpty() &&
+                    !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+                htmlText = htmlText + " <strong>(" + status + ")</strong>";
+            }
+            TextUtils.setHtmlText(releaseDateTextView, htmlText);
+            releaseDateTextView.setVisibility(View.VISIBLE);
+        } else
+            releaseDateTextView.setVisibility(View.GONE);
+
+        // TODO: age rating from append_to_response=release_dates
+        ageRatingTextView.setVisibility(View.GONE);
+
+        // Set original language. If there is no available original language info, hide this
+        // section.
+        String originalLanguage = movie.getOriginal_language();
+        if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
+            infoSectionSet = true;
+            String htmlText = getString(R.string.original_language).toUpperCase() +
+                    ": <strong>" + new Locale(originalLanguage).getDisplayLanguage() + "</strong>";
+            TextUtils.setHtmlText(originalLanguageTextView, htmlText);
+            originalLanguageTextView.setVisibility(View.VISIBLE);
+        } else
+            originalLanguageTextView.setVisibility(View.GONE);
+
+        // Set production countries. If there is no available countries info, we hide this section.
+        ArrayList<TmdbMovieCountry> movieCountries = movie.getProduction_countries();
+        if (movieCountries != null && movieCountries.size() > 0) {
+            infoSectionSet = true;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieCountries.size(); n++) {
+                stringBuilder.append(movieCountries.get(n).getName());
+                if ((n + 1) < movieCountries.size())
+                    stringBuilder.append("<br>");
+            }
+            String htmlText =
+                    getResources().getQuantityString(R.plurals.production_countries, movieCountries.size(), null).toUpperCase()
+                            + ": <strong>" + stringBuilder + "</strong>";
+            TextUtils.setHtmlText(productionCountriesTextView, htmlText);
+            productionCountriesTextView.setVisibility(View.VISIBLE);
+        } else
+            productionCountriesTextView.setVisibility(View.GONE);
+
+        return infoSectionSet;
+    }
+
+    /**
+     * Set genres section.
+     *
+     * @return true if there is one genre at least, false otherwise.
+     */
+    private boolean setGenresSection() {
+        ArrayList<TmdbMovieGenre> movieGenres = movie.getGenres();
+
+        genresFlowLayout.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        if (movieGenres != null && movieGenres.size() > 0) {
+            for (int n = 0; n < movieGenres.size(); n++) {
+                // Create the genre element into the FlowLayout.
+                try {
+                    View view = inflater.inflate(R.layout.list_item_genre, null);
+                    final TextView genreTextView = (TextView) view.findViewById(R.id.genre_textview);
+                    genreTextView.setText(movieGenres.get(n).getName());
+                    genresFlowLayout.addView(view);
+
+                    // Set a listener for managing click events on genres.
+                    genreTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "(setGenresSection) Error inflating view for " + movieGenres.get(n).getName());
+                }
+            }
+            return true;
+        } else
+            return false;
+    }
+
+    /**
+     * Set elements of secondary info section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setSecondaryInfoSection() {
+        boolean infoSectionSet = false;
+
+        // Set original title. If there is no available original title info, hide this section.
+        String originalTitle = movie.getOriginal_title();
+        if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
+            infoSectionSet = true;
+            String htmlText = getString(R.string.original_title).toUpperCase() +
+                    "<br><strong>" + originalTitle + "</strong>";
+            TextUtils.setHtmlText(originalTitleTextView, htmlText);
+            originalTitleTextView.setVisibility(View.VISIBLE);
+        } else
+            originalTitleTextView.setVisibility(View.GONE);
+
+        // Set production companies. If there is no available countries info, we hide this section.
+        ArrayList<TmdbMovieCompany> movieCompanies = movie.getProduction_companies();
+        if (movieCompanies != null && movieCompanies.size() > 0) {
+            infoSectionSet = true;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieCompanies.size(); n++) {
+                stringBuilder.append(movieCompanies.get(n).getName());
+                if ((n + 1) < movieCompanies.size())
+                    stringBuilder.append("<br>");
+            }
+            String htmlText =
+                    getResources().getQuantityString(R.plurals.production_companies, movieCompanies.size(), null).toUpperCase()
+                            + "<br><strong>" + stringBuilder + "</strong>";
+            TextUtils.setHtmlText(productionCompaniesTextView, htmlText);
+            productionCompaniesTextView.setVisibility(View.VISIBLE);
+        } else
+            productionCompaniesTextView.setVisibility(View.GONE);
+
+        // Set spoken languages. If there are less than two spoken languages, we hide this section.
+        ArrayList<TmdbMovieLanguage> movieLanguages = movie.getSpoken_languages();
+        if (movieLanguages != null && movieLanguages.size() > 1) {
+            infoSectionSet = true;
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int n = 0; n < movieLanguages.size(); n++) {
+                stringBuilder.append(movieLanguages.get(n).getName());
+                if ((n + 1) < movieLanguages.size())
+                    stringBuilder.append("<br>");
+            }
+            String htmlText =
+                    getResources().getQuantityString(R.plurals.spoken_languages, movieLanguages.size(), null).toUpperCase()
+                            + "<br><strong>" + stringBuilder + "</strong>";
+            TextUtils.setHtmlText(spokenLanguagesTextView, htmlText);
+            spokenLanguagesTextView.setVisibility(View.VISIBLE);
+        } else
+            spokenLanguagesTextView.setVisibility(View.GONE);
+
+        // Set movie budget. If there is no available budget info, hide this section.
+        int budget = movie.getBudget();
+        if (budget > 0) {
+            infoSectionSet = true;
+            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+            String htmlText = getString(R.string.budget_title).toUpperCase() +
+                    "<br><strong>" + decimalFormat.format(budget) + "</strong>";
+            TextUtils.setHtmlText(budgetTextView, htmlText);
+            budgetTextView.setVisibility(View.VISIBLE);
+        } else
+            budgetTextView.setVisibility(View.GONE);
+
+        // Set movie revenue. If there is no available revenue info, hide this section.
+        int revenue = movie.getRevenue();
+        if (revenue > 0) {
+            infoSectionSet = true;
+            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+            String htmlText = getString(R.string.revenue_title).toUpperCase() +
+                    "<br><strong>" + decimalFormat.format(revenue) + "</strong>";
+            TextUtils.setHtmlText(revenueTextView, htmlText);
+            revenueTextView.setVisibility(View.VISIBLE);
+        } else
+            revenueTextView.setVisibility(View.GONE);
+
+        return infoSectionSet;
+    }
+
     /* ------------- */
     /* INNER CLASSES */
     /* ------------- */
@@ -327,7 +581,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     class OMDBinfo implements LoaderManager.LoaderCallbacks<OmdbMovie> {
         private final String TAG = OMDBinfo.class.getSimpleName();
-        private OmdbMovie OmdbMovie;
+        private OmdbMovie omdbMovie;
         private String imdbId;
 
         OMDBinfo(String imdbId) {
@@ -403,116 +657,21 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 // object.
                 if (data != null) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
-                    OmdbMovie = data;
+                    omdbMovie = data;
 
                     // Vote average from OMDB API.
-                    boolean imdbRating = ScoreUtils.setRating(getContext(),
-                            String.valueOf(OmdbMovie.getImdb_vote_average()),
-                            imdbDonutProgress);
-                    boolean rottenTomatoesRating = ScoreUtils.setRating(getContext(),
-                            String.valueOf(OmdbMovie.getRt_vote_average()),
-                            rottenTomatoesDonutProgress);
-                    boolean metacriticRating = ScoreUtils.setRating(getContext(),
-                            String.valueOf(OmdbMovie.getMc_vote_average()),
-                            metacriticDonutProgress);
-
-                    if (!imdbRating)
-                        imdbLinearLayout.setAlpha(0.2f);
-                    if (!rottenTomatoesRating)
-                        rottenTomatoesLinearLayout.setAlpha(0.2f);
-                    if (!metacriticRating)
-                        metacriticLinearLayout.setAlpha(0.2f);
-
-                    if (!imdbRating && !rottenTomatoesRating && !metacriticRating)
+                    if (setUserScores())
                         scoresLinearLayout.setVisibility(View.GONE);
                     else
                         scoresLinearLayout.setVisibility(View.VISIBLE);
-
-                    // Age rating from OMDB API.
-                    if (OmdbMovie.getRated().equals(getString(R.string.rating_g))) {
-                        setAgeRating(R.string.rating_g_text_1,
-                                R.string.rating_g_text_2,
-                                R.color.colorBlack,
-                                R.color.colorDarkWhite,
-                                R.drawable.rating_g_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y))) {
-                        setAgeRating(R.string.rating_tv_y_text_1,
-                                R.string.rating_tv_y_text_2,
-                                R.color.colorBlack,
-                                R.color.colorDarkWhite,
-                                R.drawable.rating_tv_y_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y7))) {
-                        setAgeRating(R.string.rating_tv_y7_text_1,
-                                R.string.rating_tv_y7_text_2,
-                                R.color.colorBlack,
-                                R.color.colorDarkWhite,
-                                R.drawable.rating_tv_y7_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_y7_fv))) {
-                        setAgeRating(R.string.rating_tv_y7_fv_text_1,
-                                R.string.rating_tv_y7_fv_text_2,
-                                R.color.colorBlack,
-                                R.color.colorDarkWhite,
-                                R.drawable.rating_tv_y7_fv_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_g))) {
-                        setAgeRating(R.string.rating_tv_g_text_1,
-                                R.string.rating_tv_g_text_2,
-                                R.color.colorBlack,
-                                R.color.colorDarkWhite,
-                                R.drawable.rating_tv_g_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg))) {
-                        setAgeRating(R.string.rating_pg_text_1,
-                                R.string.rating_pg_text_2,
-                                R.color.colorBlack,
-                                R.color.colorMediumScoreForeground,
-                                R.drawable.rating_pg_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_pg))) {
-                        setAgeRating(R.string.rating_tv_pg_text_1,
-                                R.string.rating_tv_pg_text_2,
-                                R.color.colorBlack,
-                                R.color.colorMediumScoreForeground,
-                                R.drawable.rating_tv_pg_black);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_pg_13))) {
-                        setAgeRating(R.string.rating_pg_13_text_1,
-                                R.string.rating_pg_13_text_2,
-                                R.color.colorDarkWhite,
-                                R.color.colorLowScoreBackground,
-                                R.drawable.rating_pg_13_white);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_14))) {
-                        setAgeRating(R.string.rating_tv_14_text_1,
-                                R.string.rating_tv_14_text_2,
-                                R.color.colorDarkWhite,
-                                R.color.colorLowScoreBackground,
-                                R.drawable.rating_tv_14_white);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_r))) {
-                        setAgeRating(R.string.rating_r_text_1,
-                                R.string.rating_r_text_2,
-                                R.color.colorDarkWhite,
-                                R.color.colorLowScoreForeground,
-                                R.drawable.rating_r_white);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_nc_17)) || OmdbMovie.getRated().equals(getString(R.string.rating_nc_17))) {
-                        setAgeRating(R.string.rating_nc_17_text_1,
-                                R.string.rating_nc_17_text_2,
-                                R.color.colorDarkWhite,
-                                R.color.colorPrimaryDark,
-                                R.drawable.rating_nc_17_white);
-                    } else if (OmdbMovie.getRated().equals(getString(R.string.rating_tv_ma))) {
-                        setAgeRating(R.string.rating_tv_ma_text_1,
-                                R.string.rating_tv_ma_text_2,
-                                R.color.colorDarkWhite,
-                                R.color.colorPrimaryDark,
-                                R.drawable.rating_tv_ma_white);
-                    } else
-                        ageRatingLayout.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
-                    ageRatingLayout.setVisibility(View.GONE);
                 }
             } else {
                 // There is no connection.
                 Log.i(TAG, "(onLoadFinished) No connection to internet.");
                 scoresLinearLayout.setVisibility(View.GONE);
-                ageRatingLayout.setVisibility(View.GONE);
             }
         }
 
@@ -528,262 +687,36 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         }
 
-    }
+        /* --------------------------------- */
+        /* HELPER METHODS FOR OMDBinfo CLASS */
+        /* --------------------------------- */
 
-    /* -------------- */
-    /* HELPER METHODS */
-    /* -------------- */
+        /**
+         * Helper method for setting the user ratings from OMDB API.
+         *
+         * @return true if at least one of the three external scores (IMDB, Rotten Tomatoes or
+         * Metacritic) is set, false otherwise.
+         */
+        private boolean setUserScores() {
+            boolean imdbRating = ScoreUtils.setRating(getContext(),
+                    String.valueOf(omdbMovie.getImdb_vote_average()),
+                    imdbDonutProgress);
+            boolean rottenTomatoesRating = ScoreUtils.setRating(getContext(),
+                    String.valueOf(omdbMovie.getRt_vote_average()),
+                    rottenTomatoesDonutProgress);
+            boolean metacriticRating = ScoreUtils.setRating(getContext(),
+                    String.valueOf(omdbMovie.getMc_vote_average()),
+                    metacriticDonutProgress);
 
-    /**
-     * Hide every info element in the layout.
-     */
-    void clearLayout() {
-        scoresLinearLayout.setVisibility(View.GONE);
-        mainCardView.setVisibility(View.GONE);
-        genresLinearLayout.setVisibility(View.GONE);
-        secondaryLinearLayout.setVisibility(View.GONE);
-    }
+            // Set transparency for score sections if there is no score.
+            if (!imdbRating)
+                imdbLinearLayout.setAlpha(0.2f);
+            if (!rottenTomatoesRating)
+                rottenTomatoesLinearLayout.setAlpha(0.2f);
+            if (!metacriticRating)
+                metacriticLinearLayout.setAlpha(0.2f);
 
-    /**
-     * Helper method to display all the movie information in this fragment.
-     */
-    void setMovieInfo() {
-        // Set main info section.
-        if (setMainInfoSection())
-            mainCardView.setVisibility(View.VISIBLE);
-
-        // Set genres list.
-        if (setGenresSection())
-            genresLinearLayout.setVisibility(View.VISIBLE);
-
-        // Set secondary info section.
-        if (setSecondaryInfoSection())
-            secondaryLinearLayout.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Set elements of primary info section.
-     *
-     * @return true if any of the elements of this section has been set, false otherwise.
-     */
-    private boolean setMainInfoSection() {
-        boolean infoSectionSet = false;
-
-        // Set tagline. If there is no overview, we hide this section.
-        String tagline = movie.getTagline();
-        if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
-            infoSectionSet = true;
-            taglineTextView.setText(tagline);
-            taglineTextView.setVisibility(View.VISIBLE);
-        } else
-            taglineTextView.setVisibility(View.GONE);
-
-        // Set runtime. If there is no available runtime info, we hide this section.
-        String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
-        if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
-            infoSectionSet = true;
-            runtimeTextView.setText(runtime);
-            runtimeLinearLayout.setVisibility(View.VISIBLE);
-        } else {
-            runtimeLinearLayout.setVisibility(View.GONE);
+            return (imdbRating || rottenTomatoesRating || metacriticRating);
         }
-
-        // Set production countries. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieCountry> movieCountries = movie.getProduction_countries();
-        if (movieCountries != null && movieCountries.size() > 0) {
-            infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieCountries.size(); n++) {
-                stringBuilder.append(movieCountries.get(n).getName());
-                if ((n + 1) < movieCountries.size())
-                    stringBuilder.append(", ");
-            }
-            productionCountriesTextView.setText(stringBuilder);
-            productionCountriesLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            productionCountriesLinearLayout.setVisibility(View.GONE);
-
-        // Set release date. If there is no available release date, we hide this section.
-        String releaseDate = movie.getRelease_date();
-        if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
-            infoSectionSet = true;
-
-            // Add status to date if it is other than "released".
-            String status = movie.getStatus();
-            if (status != null && !status.equals("") && !status.isEmpty() &&
-                    !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
-                releaseDate = releaseDate + " (" + status + ")";
-                TextUtils.setHtmlText(releaseDateTextView, releaseDate);
-            } else
-                releaseDateTextView.setText(releaseDate);
-            releaseDateLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            releaseDateLinearLayout.setVisibility(View.GONE);
-
-        // Set overview. If there is no overview, we show the default text for overview.
-        String overview = movie.getOverview();
-        if (overview != null && !overview.equals("") && !overview.isEmpty()) {
-            infoSectionSet = true;
-            overviewTextView.setText(overview);
-            overviewLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            overviewLinearLayout.setVisibility(View.GONE);
-
-        return infoSectionSet;
-    }
-
-    /**
-     * Set genres section.
-     *
-     * @return true if there is one genre at least, false otherwise.
-     */
-    private boolean setGenresSection() {
-        ArrayList<TmdbMovieGenre> tmdbMovieGenres = movie.getGenres();
-
-        genresFlowLayout.removeAllViews();
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (tmdbMovieGenres != null && tmdbMovieGenres.size() > 0) {
-            for (int n = 0; n < tmdbMovieGenres.size(); n++) {
-                // Create the genre element into the FlowLayout.
-                try {
-                    View view = inflater.inflate(R.layout.list_item_genre, null);
-                    final TextView genreTextView = (TextView) view.findViewById(R.id.genre_textview);
-                    genreTextView.setText(tmdbMovieGenres.get(n).getName());
-                    genresFlowLayout.addView(view);
-
-                    // Set a listener for managing click events on genres.
-                    genreTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "(setGenresSection) Error inflating view for " + tmdbMovieGenres.get(n).getName());
-                }
-            }
-            return true;
-        } else
-            return false;
-    }
-
-    /**
-     * Set elements of secondary info section.
-     *
-     * @return true if any of the elements of this section has been set, false otherwise.
-     */
-    private boolean setSecondaryInfoSection() {
-        boolean infoSectionSet = false;
-
-        // Set original title. If there is no available original title info, hide this section.
-        String originalTitle = movie.getOriginal_title();
-        if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
-            infoSectionSet = true;
-            originalTitleTextView.setText(originalTitle);
-            originalTitleLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            originalTitleLinearLayout.setVisibility(View.GONE);
-
-        // Set production companies. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieCompany> movieCompanies = movie.getProduction_companies();
-        if (movieCompanies != null && movieCompanies.size() > 0) {
-            infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieCompanies.size(); n++) {
-                stringBuilder.append(movieCompanies.get(n).getName());
-                if ((n + 1) < movieCompanies.size())
-                    stringBuilder.append(", ");
-            }
-            productionCompaniesTextView.setText(stringBuilder);
-            productionCompaniesLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            productionCountriesLinearLayout.setVisibility(View.GONE);
-
-        // Set original language. If there is no available original language info, hide this
-        // section.
-        String originalLanguage = movie.getOriginal_language();
-        if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
-            infoSectionSet = true;
-            originalLanguageTextView.setText(new Locale(originalLanguage).getDisplayLanguage());
-            originalLanguageLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            originalLanguageLinearLayout.setVisibility(View.GONE);
-
-        // Set spoken languages. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieLanguage> movieLanguages = movie.getSpoken_languages();
-        if (movieLanguages != null && movieLanguages.size() > 0) {
-            infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieLanguages.size(); n++) {
-                stringBuilder.append(movieLanguages.get(n).getName());
-                if ((n + 1) < movieLanguages.size())
-                    stringBuilder.append(", ");
-            }
-            spokenLanguagesTextView.setText(stringBuilder);
-            spokenLanguagesLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            spokenLanguagesLinearLayout.setVisibility(View.GONE);
-
-        // Set movie budget. If there is no available budget info, hide this section.
-        int budget = movie.getBudget();
-        if (budget > 0) {
-            infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            budgetTextView.setText(decimalFormat.format(budget));
-            budgetLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            budgetLinearLayout.setVisibility(View.GONE);
-
-        // Set movie revenue. If there is no available revenue info, hide this section.
-        int revenue = movie.getRevenue();
-        if (revenue > 0) {
-            infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            revenueTextView.setText( decimalFormat.format(revenue));
-            revenueLinearLayout.setVisibility(View.VISIBLE);
-        } else
-            revenueLinearLayout.setVisibility(View.GONE);
-
-        return infoSectionSet;
-    }
-
-    /**
-     * Helper method for setting the age rating section.
-     *
-     * @param textResource1           is the string resource of the first sentence of the age rating
-     *                                text.
-     * @param textResource2           is the string resource of the second sentence of the age
-     *                                rating text.
-     * @param textColorResource       is the color resource of the text color of the age rating
-     *                                section.
-     * @param backgroundColorResource is the color resource of the background color of the age
-     *                                rating section.
-     * @param drawableImageResource   is the drawable resource of the age rating icon to be drawn.
-     */
-    private void setAgeRating(int textResource1, int textResource2, int textColorResource,
-                              int backgroundColorResource, int drawableImageResource) {
-        // Set text for age rating.
-        String text1 = getString(textResource1).trim();
-        String text2 = getString(textResource2).trim();
-        String htmlText;
-        if (!text1.equals(""))
-            if (!text2.equals(""))
-                htmlText = "<strong>" + text1 + "</strong><br>" + text2;
-            else
-                htmlText = "<strong>" + text1 + "</strong>";
-        else
-            htmlText = text2;
-        TextUtils.setHtmlText(ageRatingTextView, htmlText);
-
-        // Set colors.
-        ageRatingTextView.setTextColor(getResources().getColor(textColorResource));
-        ageRatingLayout.setBackgroundColor(getResources().getColor(backgroundColorResource));
-
-        // Set icons.
-        ageRatingImageView.setImageDrawable(getResources().getDrawable(drawableImageResource));
-
-        // Show this section.
-        ageRatingLayout.setVisibility(View.VISIBLE);
     }
 }
