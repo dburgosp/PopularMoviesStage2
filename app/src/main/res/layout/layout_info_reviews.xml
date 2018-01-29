@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/info_scores_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDarkWhite"
+    android:baselineAligned="false"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/regular_padding"
+    android:paddingTop="@dimen/tiny_padding">
+
+    <LinearLayout
+        android:id="@+id/info_imdb_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/regular_padding"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/info_imdb_score"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/circle"
+            app:donut_circle_starting_degree="270"
+            app:donut_finished_color="@color/colorAccent"
+            app:donut_finished_stroke_width="4dp"
+            app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
+            app:donut_progress="0"
+            app:donut_text="n/a"
+            app:donut_text_color="@color/colorWhite"
+            app:donut_text_size="@dimen/alert_text_size"
+            app:donut_unfinished_color="@color/colorPrimary"
+            app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tiny_padding"
+            android:text="@string/score_imdb"
+            android:textSize="@dimen/normal_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_rottentomatoes_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/regular_padding"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/info_rottentomatoes_score"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle"
+            app:donut_circle_starting_degree="270"
+            app:donut_finished_color="@color/colorAccent"
+            app:donut_finished_stroke_width="4dp"
+            app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
+            app:donut_progress="0"
+            app:donut_text="n/a"
+            app:donut_text_color="@color/colorWhite"
+            app:donut_text_size="@dimen/alert_text_size"
+            app:donut_unfinished_color="@color/colorPrimary"
+            app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tiny_padding"
+            android:gravity="center"
+            android:text="@string/score_rotten_tomatoes"
+            android:textSize="@dimen/normal_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_metacritic_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/regular_padding"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.github.lzyzsd.circleprogress.DonutProgress
+            android:id="@+id/info_metacritic_score"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/circle"
+            app:donut_circle_starting_degree="270"
+            app:donut_finished_color="@color/colorAccent"
+            app:donut_finished_stroke_width="4dp"
+            app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
+            app:donut_progress="0"
+            app:donut_text="n/a"
+            app:donut_text_color="@color/colorWhite"
+            app:donut_text_size="@dimen/alert_text_size"
+            app:donut_unfinished_color="@color/colorPrimary"
+            app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/tiny_padding"
+            android:text="@string/score_metacritic"
+            android:textSize="@dimen/normal_text_size" />
+    </LinearLayout>
+</LinearLayout>

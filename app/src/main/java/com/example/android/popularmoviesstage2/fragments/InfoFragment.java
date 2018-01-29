@@ -2,7 +2,9 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,11 +26,13 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.FlowLayout;
+import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCompany;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
@@ -36,6 +40,7 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -45,10 +50,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static android.support.v4.content.ContextCompat.getDrawable;
+
 /**
- * {@link Fragment} that displays the main information about the current movie.
+ * {@link Fragment} that displays the main information about the current movieDetails.
  */
-public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovie> {
+public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
     private static final String TAG = InfoFragment.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -122,7 +129,20 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_tags_flowlayout)
     FlowLayout tagsFlowLayout;
 
-    private static TmdbMovie movie;
+    @BindView(R.id.info_links_layout)
+    LinearLayout linksLayout;
+    @BindView(R.id.info_links_homepage)
+    ImageView homepageImageView;
+    @BindView(R.id.info_links_imdb)
+    ImageView imdbImageView;
+    @BindView(R.id.info_links_twitter)
+    ImageView twitterImageView;
+    @BindView(R.id.info_links_facebook)
+    ImageView facebookImageView;
+    @BindView(R.id.info_links_instagram)
+    ImageView instagramImageView;
+
+    private static TmdbMovieDetails movieDetails;
     private int movieId;
     private Unbinder unbinder;
 
@@ -135,12 +155,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param tmdbMovie is the {@link TmdbMovie} object.
+     * @param movie is the {@link TmdbMovie} object.
      * @return a new instance of fragment InfoFragment.
      */
-    public static InfoFragment newInstance(TmdbMovie tmdbMovie) {
+    public static InfoFragment newInstance(TmdbMovie movie) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", tmdbMovie.getId());
+        bundle.putInt("id", movie.getId());
         InfoFragment fragment = new InfoFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -164,7 +184,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             movieId = getArguments().getInt("id");
         }
 
-        // Create an AsyncTaskLoader for retrieving complete movie information from internet in a
+        // Create an AsyncTaskLoader for retrieving complete movieDetails information from internet in a
         // separate thread.
         getLoaderManager().initLoader(NetworkUtils.TMDB_MOVIE_DETAILS_LOADER_ID, null, this);
 
@@ -199,7 +219,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<TmdbMovie> onCreateLoader(int id, Bundle args) {
+    public Loader<TmdbMovieDetails> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             noResultsTextView.setText(getString(R.string.fetching_movie_info));
@@ -256,27 +276,27 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(Loader<TmdbMovie> loader, TmdbMovie data) {
+    public void onLoadFinished(Loader<TmdbMovieDetails> loader, TmdbMovieDetails data) {
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         noResultsTextView.setVisibility(View.INVISIBLE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
-            // If there is a valid result, then update its data into the current {@link TmdbMovie}
+            // If there is a valid result, then update its data into the current {@link TmdbMovieDetails}
             // object.
             if (data != null) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                // Get movie info and display it.
-                movie = data;
+                // Get movieDetails info and display it.
+                movieDetails = data;
                 setMovieInfo();
 
-                String imdbId = movie.getImdb_id();
+                String imdbId = movieDetails.getImdb_id();
                 if (imdbId != null && !imdbId.equals("")) {
                     // Create an instance of an OMDBinfo class in order to fetch additional info for
-                    // this movie from OMDB API, using the just retrieved IMDB identifier of the
-                    // movie.
+                    // this movieDetails from OMDB API, using the just retrieved IMDB identifier of the
+                    // movieDetails.
                     new OMDBinfo(imdbId);
                 }
             } else {
@@ -300,7 +320,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<TmdbMovie> loader) {
+    public void onLoaderReset(Loader<TmdbMovieDetails> loader) {
     }
 
     /* -------------- */
@@ -316,11 +336,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         mainLinearLayout.setVisibility(View.GONE);
         genresFlowLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
+        linksLayout.setVisibility(View.GONE);
         tagsLayout.setVisibility(View.GONE);
     }
 
     /**
-     * Helper method to display all the movie information in this fragment.
+     * Helper method to display all the movieDetails information in this fragment.
      */
     void setMovieInfo() {
         // Set overview section.
@@ -335,7 +356,13 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (setGenresSection())
             genresFlowLayout.setVisibility(View.VISIBLE);
 
-        // TODO. Set collection section.
+        // Set collection section.
+        if (setCollectionSection())
+            collectionLayout.setVisibility(View.VISIBLE);
+
+        // Set links section.
+        if (setLinksSection())
+            linksLayout.setVisibility(View.VISIBLE);
 
         // TODO. Set tags section.
     }
@@ -348,8 +375,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setOverviewSection() {
         boolean infoSectionSet = false;
 
-        // Set tagline. If there is no overview, we hide this section.
-        String tagline = movie.getTagline();
+        // Set tagline. If there is no tagline, we hide this section.
+        String tagline = movieDetails.getTagline();
         if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
             infoSectionSet = true;
             taglineTextView.setText(tagline);
@@ -358,7 +385,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             taglineTextView.setVisibility(View.GONE);
 
         // Set overview. If there is no overview, we show the default text for overview.
-        String overview = movie.getOverview();
+        String overview = movieDetails.getOverview();
         if (overview != null && !overview.equals("") && !overview.isEmpty()) {
             infoSectionSet = true;
             overviewTextView.setText(overview);
@@ -376,13 +403,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private boolean setMainInfoSection() {
         boolean infoSectionSet = false;
+        String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
 
         // Set runtime. If there is no available runtime info, hide this section.
-        String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movie.getRuntime());
+        String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movieDetails.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() +
-                    "</strong><br>" + runtime;
+            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + runtime + "</font>";
             TextUtils.setHtmlText(runtimeTextView, htmlText);
             runtimeTextView.setVisibility(View.VISIBLE);
         } else {
@@ -390,20 +418,20 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         }
 
         // Set release date. If there is no available release date, hide this section.
-        String releaseDate = movie.getRelease_date();
+        String releaseDate = movieDetails.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
             infoSectionSet = true;
 
             // TODO: release date info from append_to_response=release_dates
 
-            String htmlText = "<strong>" + getString(R.string.release_date).toUpperCase() +
-                    "</strong><br>" + releaseDate;
+            String htmlText = "<strong>" + getString(R.string.release_date).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + releaseDate + "</font>";
 
             // Add status to date if it is other than "released".
-            String status = movie.getStatus();
+            String status = movieDetails.getStatus();
             if (status != null && !status.equals("") && !status.isEmpty() &&
                     !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
-                htmlText = htmlText + " (" + status + ")";
+                htmlText = htmlText + "<font color=\"#" + color + "\"> (" + status + ")</font>";
             }
             TextUtils.setHtmlText(releaseDateTextView, htmlText);
             releaseDateTextView.setVisibility(View.VISIBLE);
@@ -415,32 +443,32 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Set original language. If there is no available original language info, hide this
         // section.
-        String originalLanguage = movie.getOriginal_language();
+        String originalLanguage = movieDetails.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
             Locale locale = new Locale(originalLanguage);
             String language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +
                     locale.getDisplayLanguage().substring(1);
-            String htmlText = "<strong>" + getString(R.string.original_language).toUpperCase() +
-                    "</strong><br>" + language;
+            String htmlText = "<strong>" + getString(R.string.original_language).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + language + "</font>";
             TextUtils.setHtmlText(originalLanguageTextView, htmlText);
             originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
             originalLanguageTextView.setVisibility(View.GONE);
 
         // Set original title. If there is no available original title info, hide this section.
-        String originalTitle = movie.getOriginal_title();
+        String originalTitle = movieDetails.getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() +
-                    "</strong><br>" + originalTitle;
+            String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + originalTitle + "</font>";
             TextUtils.setHtmlText(originalTitleTextView, htmlText);
             originalTitleTextView.setVisibility(View.VISIBLE);
         } else
             originalTitleTextView.setVisibility(View.GONE);
 
         // Set production companies. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieCompany> movieCompanies = movie.getProduction_companies();
+        ArrayList<TmdbMovieCompany> movieCompanies = movieDetails.getProduction_companies();
         if (movieCompanies != null && movieCompanies.size() > 0) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
@@ -449,15 +477,15 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 if ((n + 1) < movieCompanies.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_companies, movieCompanies.size()).toUpperCase()
-                    + "</strong><br>" + stringBuilder;
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_companies, movieCompanies.size()).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + stringBuilder + "</font>";
             TextUtils.setHtmlText(productionCompaniesTextView, htmlText);
             productionCompaniesTextView.setVisibility(View.VISIBLE);
         } else
             productionCompaniesTextView.setVisibility(View.GONE);
 
         // Set production countries. If there is no available countries info, we hide this section.
-        ArrayList<TmdbMovieCountry> movieCountries = movie.getProduction_countries();
+        ArrayList<TmdbMovieCountry> movieCountries = movieDetails.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
@@ -466,15 +494,15 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 if ((n + 1) < movieCountries.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_countries, movieCountries.size()).toUpperCase()
-                    + "</strong><br>" + stringBuilder;
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.production_countries, movieCountries.size()).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + stringBuilder + "</font>";
             TextUtils.setHtmlText(productionCountriesTextView, htmlText);
             productionCountriesTextView.setVisibility(View.VISIBLE);
         } else
             productionCountriesTextView.setVisibility(View.GONE);
 
         // Set spoken languages. If there are less than two spoken languages, we hide this section.
-        ArrayList<TmdbMovieLanguage> movieLanguages = movie.getSpoken_languages();
+        ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
         if (movieLanguages != null && movieLanguages.size() > 1) {
             infoSectionSet = true;
             StringBuilder stringBuilder = new StringBuilder();
@@ -486,32 +514,32 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 if ((n + 1) < movieLanguages.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.spoken_languages, movieLanguages.size()).toUpperCase()
-                    + "</strong><br>" + stringBuilder;
+            String htmlText = "<strong>" + getResources().getQuantityString(R.plurals.spoken_languages, movieLanguages.size()).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + stringBuilder + "</font>";
             TextUtils.setHtmlText(spokenLanguagesTextView, htmlText);
             spokenLanguagesTextView.setVisibility(View.VISIBLE);
         } else
             spokenLanguagesTextView.setVisibility(View.GONE);
 
-        // Set movie budget. If there is no available budget info, hide this section.
-        int budget = movie.getBudget();
+        // Set movieDetails budget. If there is no available budget info, hide this section.
+        int budget = movieDetails.getBudget();
         if (budget > 0) {
             infoSectionSet = true;
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() +
-                    "</strong><br>" + decimalFormat.format(budget);
+            String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + decimalFormat.format(budget) + "</font>";
             TextUtils.setHtmlText(budgetTextView, htmlText);
             budgetTextView.setVisibility(View.VISIBLE);
         } else
             budgetTextView.setVisibility(View.GONE);
 
-        // Set movie revenue. If there is no available revenue info, hide this section.
-        int revenue = movie.getRevenue();
+        // Set movieDetails revenue. If there is no available revenue info, hide this section.
+        int revenue = movieDetails.getRevenue();
         if (revenue > 0) {
             infoSectionSet = true;
             DecimalFormat decimalFormat = new DecimalFormat("###,###");
-            String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() +
-                    "</strong><br>" + decimalFormat.format(revenue);
+            String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + decimalFormat.format(revenue) + "</font>";
             TextUtils.setHtmlText(revenueTextView, htmlText);
             revenueTextView.setVisibility(View.VISIBLE);
         } else
@@ -525,8 +553,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      *
      * @return true if there is one genre at least, false otherwise.
      */
+
     private boolean setGenresSection() {
-        ArrayList<TmdbMovieGenre> movieGenres = movie.getGenres();
+        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getGenres();
 
         genresFlowLayout.removeAllViews();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -556,6 +585,97 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             return false;
     }
 
+    /**
+     * Set collection section.
+     *
+     * @return true if the movieDetails belongs to a collection, false otherwise.
+     */
+    private boolean setCollectionSection() {
+        if (movieDetails.getBelongs_to_collection() != null) {
+            // Set poster, if it exists.
+            String posterPath = movieDetails.getBelongs_to_collection().getPoster_path();
+            if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
+                posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath;
+                Picasso.with(getContext()).load(posterPath).into(collectionPosterImageView);
+            } else
+                // No image. Show default image.
+                collectionPosterImageView.setImageDrawable(getDrawable(getContext(),
+                        R.drawable.default_poster));
+
+            // Set background image, if it exists.
+            String backdropPath = movieDetails.getBelongs_to_collection().getBackdrop_path();
+            if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty()) {
+                backdropPath = Tmdb.TMDB_FULL_IMAGE_URL + backdropPath;
+                Picasso.with(getContext()).load(backdropPath).into(collectionBackgroundImageView);
+            }
+
+            // Set collection title.
+            String name = movieDetails.getBelongs_to_collection().getName();
+            if (name != null && !name.equals("") && !name.isEmpty())
+                collectionNameTextView.setText(name);
+            else
+                collectionNameTextView.setText(getResources().getString(R.string.no_title));
+
+            // TODO: setOnClickListener for opening the collection into another activity.
+
+            return true;
+        } else
+            return false;
+    }
+
+    /**
+     * Set external links section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setLinksSection() {
+        final Float LINK_ALPHA = 0.1f;
+        boolean infoSectionSet = false;
+
+        // Set homepage. If there is no homepage, make this section transparent.
+        final String homepage = movieDetails.getHomepage();
+        if (homepage != null && !homepage.equals("") && !homepage.isEmpty()) {
+            infoSectionSet = true;
+
+            // Implicit intent to open the homepage.
+            homepageImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri uri = Uri.parse(homepage);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                }
+            });
+        } else
+            homepageImageView.setAlpha(LINK_ALPHA);
+
+        // Set IMDB link. If there is no IMDB link, make this section transparent.
+        final String imdb = movieDetails.getImdb_id();
+        if (imdb != null && !imdb.equals("") && !imdb.isEmpty()) {
+            infoSectionSet = true;
+
+            // Implicit intent to open the IMDB link.
+            imdbImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri builtUri = Uri.parse(Imdb.IMDB_BASE_URL).buildUpon()
+                            .appendPath(imdb)
+                            .build();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
+                    startActivity(intent);
+                }
+            });
+        } else
+            imdbImageView.setAlpha(LINK_ALPHA);
+
+        // TODO: Facebook, Twitter, Instagram.
+        facebookImageView.setAlpha(LINK_ALPHA);
+        twitterImageView.setAlpha(LINK_ALPHA);
+        instagramImageView.setAlpha(LINK_ALPHA);
+
+        return infoSectionSet;
+    }
+
     /* ------------- */
     /* INNER CLASSES */
     /* ------------- */
@@ -570,7 +690,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         OMDBinfo(String imdbId) {
             this.imdbId = imdbId;
-            // Create an AsyncTaskLoader for retrieving additional movie information from OMDB in a
+            // Create an AsyncTaskLoader for retrieving additional movieDetails information from OMDB in a
             // separate thread.
             getLoaderManager().initLoader(NetworkUtils.OMDB_MOVIES_LOADER_ID, null, this);
         }

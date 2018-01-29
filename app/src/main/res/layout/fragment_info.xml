@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,369 +13,34 @@
         android:background="@color/colorWhite">
 
         <!-- Info section -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- UserReviews -->
-
-            <LinearLayout
-                android:id="@+id/info_scores_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorDarkWhite"
-                android:baselineAligned="false"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingBottom="@dimen/regular_padding"
-                android:paddingTop="@dimen/tiny_padding">
-
-                <LinearLayout
-                    android:id="@+id/info_imdb_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <com.github.lzyzsd.circleprogress.DonutProgress
-                        android:id="@+id/info_imdb_score"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/circle"
-                        app:donut_circle_starting_degree="270"
-                        app:donut_finished_color="@color/colorAccent"
-                        app:donut_finished_stroke_width="4dp"
-                        app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
-                        app:donut_progress="0"
-                        app:donut_text="n/a"
-                        app:donut_text_color="@color/colorWhite"
-                        app:donut_text_size="@dimen/alert_text_size"
-                        app:donut_unfinished_color="@color/colorPrimary"
-                        app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/tiny_padding"
-                        android:text="@string/score_imdb"
-                        android:textSize="@dimen/normal_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_rottentomatoes_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <com.github.lzyzsd.circleprogress.DonutProgress
-                        android:id="@+id/info_rottentomatoes_score"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/circle"
-                        app:donut_circle_starting_degree="270"
-                        app:donut_finished_color="@color/colorAccent"
-                        app:donut_finished_stroke_width="4dp"
-                        app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
-                        app:donut_progress="0"
-                        app:donut_text="n/a"
-                        app:donut_text_color="@color/colorWhite"
-                        app:donut_text_size="@dimen/alert_text_size"
-                        app:donut_unfinished_color="@color/colorPrimary"
-                        app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/tiny_padding"
-                        android:gravity="center"
-                        android:text="@string/score_rotten_tomatoes"
-                        android:textSize="@dimen/normal_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/info_metacritic_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical">
-
-                    <com.github.lzyzsd.circleprogress.DonutProgress
-                        android:id="@+id/info_metacritic_score"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/circle"
-                        app:donut_circle_starting_degree="270"
-                        app:donut_finished_color="@color/colorAccent"
-                        app:donut_finished_stroke_width="4dp"
-                        app:donut_inner_bottom_text_color="@color/colorPrimaryDark"
-                        app:donut_progress="0"
-                        app:donut_text="n/a"
-                        app:donut_text_color="@color/colorWhite"
-                        app:donut_text_size="@dimen/alert_text_size"
-                        app:donut_unfinished_color="@color/colorPrimary"
-                        app:donut_unfinished_stroke_width="@dimen/tiny_padding" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/tiny_padding"
-                        android:text="@string/score_metacritic"
-                        android:textSize="@dimen/normal_text_size" />
-                </LinearLayout>
-            </LinearLayout>
+            <!-- User reviews section -->
+            <include layout="@layout/layout_info_reviews" />
 
             <!-- Overview section -->
-
-            <LinearLayout
-                android:id="@+id/info_overview_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/regular_padding"
-                android:paddingTop="@dimen/tiny_padding">
-
-                <TextView
-                    android:id="@+id/info_tagline"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/tiny_padding"
-                    android:paddingTop="@dimen/tiny_padding"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
-                    tools:text="Tagline" />
-
-                <TextView
-                    android:id="@+id/info_overview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/tiny_padding"
-                    android:paddingTop="@dimen/tiny_padding"
-                    tools:text="@string/no_overview" />
-            </LinearLayout>
+            <include layout="@layout/layout_info_overview" />
 
             <!-- Genres section -->
-
-            <com.example.android.popularmoviesstage2.classes.FlowLayout
-                android:id="@+id/info_genres_flowlayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/big_padding"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding" />
+            <include layout="@layout/layout_info_genres" />
 
             <!-- Main info section -->
+            <include layout="@layout/layout_info_movie" />
 
-            <LinearLayout
-                android:id="@+id/info_main_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0.6"
-                android:background="@color/colorAccent"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/big_padding"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                android:paddingTop="@dimen/big_padding">
+            <!-- Collection section -->
+            <include layout="@layout/layout_info_collection" />
 
-                <TextView
-                    android:id="@+id/info_runtime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="RUNTIME\n1h 30m" />
+            <!-- Main info section -->
+            <include layout="@layout/layout_info_links" />
 
-                <TextView
-                    android:id="@+id/info_age_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textColor="@color/colorWhite"
-                    tools:text="AGE RATING\nPG-13" />
-
-                <TextView
-                    android:id="@+id/info_release_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="RELEASE DATE\n2001-01-01" />
-
-                <TextView
-                    android:id="@+id/info_original_language"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="ORIGINAL LANGUAGE\nLanguage" />
-
-                <TextView
-                    android:id="@+id/info_original_title"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="ORIGINAL TITLE\nOriginal title in more than one line" />
-
-                <TextView
-                    android:id="@+id/info_production_companies"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="PRODUCTION COMPANIES\nList of production companies in more than one line" />
-
-                <TextView
-                    android:id="@+id/info_production_countries"
-                    android:layout_width="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="PRODUCTION COUNTRIES\nList of production countries in more than one line" />
-
-                <TextView
-                    android:id="@+id/info_spoken_languages"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="SPOKEN LANGUAGES\nList of spoken languages in more than one line" />
-
-                <TextView
-                    android:id="@+id/info_budget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:layout_marginBottom="@dimen/small_padding"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="BUDGET ($)\nBudget" />
-
-                <TextView
-                    android:id="@+id/info_revenue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    tools:text="REVENUE ($)\nRevenue" />
-            </LinearLayout>
-
-            <!-- Collection -->
-
-            <RelativeLayout
-                android:id="@+id/info_collection_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark">
-
-                <ImageView
-                    android:id="@+id/info_collection_background"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/poster_info_height"
-                    android:alpha="0.8"
-                    android:contentDescription="@string/content_description_poster"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/default_backdrop"
-                    app:layout_collapseMode="parallax" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/poster_info_height"
-                    android:layout_alignParentBottom="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/gradient_header_bg" />
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/info_collection_cardview"
-                    android:layout_width="@dimen/poster_info_width"
-                    android:layout_height="@dimen/poster_info_height"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="@dimen/regular_padding"
-                    android:layout_marginEnd="@dimen/big_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    app:cardElevation="@dimen/small_padding">
-
-                    <ImageView
-                        android:id="@+id/info_collection_poster"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorBlack"
-                        android:contentDescription="@string/content_description_poster"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/default_poster" />
-                </android.support.v7.widget.CardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:layout_toStartOf="@+id/info_collection_cardview"
-                    android:gravity="end"
-                    android:text="@string/belongs_to_collection"
-                    android:textColor="@color/colorWhite" />
-
-                <TextView
-                    android:id="@+id/info_collection_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_toStartOf="@id/info_collection_cardview"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:gravity="end"
-                    android:paddingBottom="@dimen/big_padding"
-                    android:textColor="@color/colorWhite"
-                    android:textSize="@dimen/title_text_size"
-                    android:textStyle="bold"
-                    tools:text="Collection Name in more than one line" />
-            </RelativeLayout>
-
-            <!-- Tags -->
-
-            <LinearLayout
-                android:id="@+id/info_tags_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/info_tags_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:text="@string/tags_title" />
-
-                <com.example.android.popularmoviesstage2.classes.FlowLayout
-                    android:id="@+id/info_tags_flowlayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding" />
-            </LinearLayout>
+            <!-- Tags section -->
+            <include layout="@layout/layout_info_tags" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->
-
         <TextView
             android:id="@+id/info_no_result_text_view"
             android:layout_width="match_parent"
@@ -393,6 +57,5 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/info_no_result_text_view"
             android:layout_centerHorizontal="true" />
-
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -206,9 +206,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
+        posterImageView.setTransitionName(getString(R.string.transition_poster));
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
             // Set transition between the poster in MainActivity and this.
-            posterImageView.setTransitionName(getString(R.string.transition_poster));
             Picasso.with(this)
                     .load(Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath)
                     .noFade()

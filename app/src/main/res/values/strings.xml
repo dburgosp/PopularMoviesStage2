@@ -5,7 +5,7 @@
     <string name="all_languages">All languages</string>
     <string name="app_name">TMDB</string>
     <string name="backdrops_title">Backdrops</string>
-    <string name="belongs_to_collection">Belongs to collection:</string>
+    <string name="belongs_to_collection">Belongs to</string>
     <string name="budget_title">Budget ($)</string>
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_alpha">Transparent layer for background</string>

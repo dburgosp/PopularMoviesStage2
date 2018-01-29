@@ -49,6 +49,14 @@ public class Tmdb {
     public final static String TMDB_STATUS_RELEASED = "Released";
     public final static String TMDB_STATUS_CANCELED = "Canceled";
 
+    // Release dates types.
+    private static final String TMDB_RELEASE_TYPE_PREMIERE = "Premiere";
+    private static final String TMDB_RELEASE_TYPE_THEATRICAL_LIMITED = "Theatrical (limited)";
+    private static final String TMDB_RELEASE_TYPE_THEATRICAL = "Theatrical";
+    private static final String TMDB_RELEASE_TYPE_DIGITAL = "Digital";
+    private static final String TMDB_RELEASE_TYPE_PHYSICAL = "Physical";
+    private static final String TMDB_RELEASE_TYPE_TV = "TV";
+
     // Maximum number of pages.
     public final static int TMDB_MAX_PAGES = 1000;
 
@@ -194,12 +202,12 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for information about a single movie.
+     * Fetches TMDB for detailed information about a single movie.
      *
      * @param movieId is the identifier of the movie in TMDB.
-     * @return a {@link TmdbMovie} object.
+     * @return a {@link TmdbMovieDetails} object.
      */
-    public static TmdbMovie getTmdbMovieDetails(int movieId) {
+    public static TmdbMovieDetails getTmdbMovieDetails(int movieId) {
         Log.i(TAG, "(getTmdbMovieDetails) Movie ID: " + movieId);
 
         /* ------------ */
@@ -292,10 +300,14 @@ public class Tmdb {
                 JSONObject belongs_to_collection = baseJSONResponse.getJSONObject("belongs_to_collection");
 
                 // Extract the required values for the corresponding keys.
-                int belongs_to_collection_id = NetworkUtils.getIntFromJSON(belongs_to_collection, "id");
-                String belongs_to_collection_name = NetworkUtils.getStringFromJSON(belongs_to_collection, "name");
-                String belongs_to_collection_poster_path = NetworkUtils.getStringFromJSON(belongs_to_collection, "poster_path");
-                String belongs_to_collection_backdrop_path = NetworkUtils.getStringFromJSON(belongs_to_collection, "backdrop_path");
+                int belongs_to_collection_id =
+                        NetworkUtils.getIntFromJSON(belongs_to_collection, "id");
+                String belongs_to_collection_name =
+                        NetworkUtils.getStringFromJSON(belongs_to_collection, "name");
+                String belongs_to_collection_poster_path =
+                        NetworkUtils.getStringFromJSON(belongs_to_collection, "poster_path");
+                String belongs_to_collection_backdrop_path =
+                        NetworkUtils.getStringFromJSON(belongs_to_collection, "backdrop_path");
 
                 // Create the {@link TmdbMovieCollection} object with this information.
                 tmdbMovieCollection = new TmdbMovieCollection(belongs_to_collection_id,
@@ -308,7 +320,8 @@ public class Tmdb {
             // tmdbMovie.
             ArrayList<TmdbMovieCompany> production_companies = new ArrayList<>();
             if (!baseJSONResponse.isNull("production_companies")) {
-                JSONArray productionCompaniesArray = baseJSONResponse.getJSONArray("production_companies");
+                JSONArray productionCompaniesArray =
+                        baseJSONResponse.getJSONArray("production_companies");
 
                 // For each company in the array, create an {@link TmdbMovieCompany} object.
                 JSONObject currentCompany;
@@ -332,7 +345,8 @@ public class Tmdb {
             // which represents the list of countries in which the tmdbMovie has been produced.
             ArrayList<TmdbMovieCountry> production_countries = new ArrayList<>();
             if (!baseJSONResponse.isNull("production_countries")) {
-                JSONArray productionCountriesArray = baseJSONResponse.getJSONArray("production_countries");
+                JSONArray productionCountriesArray =
+                        baseJSONResponse.getJSONArray("production_countries");
 
                 // For each country in the array, create an {@link TmdbMovieCountry} object.
                 JSONObject currentCountry;
@@ -372,12 +386,15 @@ public class Tmdb {
                 }
             }
 
-            // Return a {@link TmdbMovie} object with the data retrieved from the JSON response.
-            return new TmdbMovie(id, adult, backdrop_path, tmdbMovieCollection, budget, genres,
-                    homepage, imdb_id, original_language, original_title, overview, popularity,
-                    poster_path, production_companies, production_countries, release_date, revenue,
-                    runtime, spoken_languages, status, tagline, title, video, vote_average,
-                    vote_count, 0, 0, 0);
+            // TODO: parse release_dates array.
+
+            // Return a {@link TmdbMovieDetails} object with the data retrieved from the JSON
+            // response.
+            return new TmdbMovieDetails(id, adult, backdrop_path, tmdbMovieCollection, budget,
+                    genres, homepage, imdb_id, original_language, original_title, overview,
+                    popularity, poster_path, production_companies, production_countries,
+                    release_date, revenue, runtime, spoken_languages, status, tagline, title, video,
+                    vote_average, vote_count, null, 0, 0, 0);
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
@@ -493,7 +510,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. 
-            Log.e(TAG, "(parseGetCastCrewListJSON) Error parsing the JSON response: ", e);
+            Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
         }
 
         // Update the TmdbCastCrew object with the data retrieved from the JSON object.
@@ -502,7 +519,7 @@ public class Tmdb {
             tmdbCastCrew.setCast(tmdbCastArrayList);
             tmdbCastCrew.setCrew(tmdbCrewArrayList);
         } catch (NullPointerException e) {
-            Log.e(TAG, "(parseGetCastCrewListJSON) Error parsing the JSON response: ", e);
+            Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
         }
 
         // Return the TmdbCastCrew object.

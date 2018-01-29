@@ -7,11 +7,11 @@ import android.support.v4.os.OperationCanceledException;
 import android.util.Log;
 
 import com.example.android.popularmoviesstage2.classes.Tmdb;
-import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
 
-public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovie> {
+public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDetails> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
-    private TmdbMovie movie;
+    private TmdbMovieDetails movieDetails;
     private int movieId;
 
     /**
@@ -32,9 +32,9 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovie> 
      */
     @Override
     protected void onStartLoading() {
-        if (movie != null) {
+        if (movieDetails != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(movie);
+            deliverResult(movieDetails);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -67,7 +67,7 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovie> 
      * @see #onCanceled
      */
     @Override
-    public TmdbMovie loadInBackground() {
+    public TmdbMovieDetails loadInBackground() {
         if (movieId >= 0) {
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Movie id: " + movieId);
@@ -86,12 +86,12 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovie> 
      * @param data the result of the load
      */
     @Override
-    public void deliverResult(TmdbMovie data) {
+    public void deliverResult(TmdbMovieDetails data) {
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
         else
             Log.i(TAG, "(deliverResult) Movie details delivered.");
-        movie = data;
+        movieDetails = data;
         super.deliverResult(data);
     }
 }
