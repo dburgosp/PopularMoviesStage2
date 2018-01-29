@@ -167,6 +167,21 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     }
 
     /**
+     * Called by RecyclerView when it stops observing this Adapter.
+     *
+     * @param recyclerView The RecyclerView instance which stopped observing this adapter.
+     * @see #onAttachedToRecyclerView(RecyclerView)
+     */
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.moviesArrayList.clear();
+        this.currentScrollPosition = 0;
+        this.currentPage = 1;
+        this.totalPages = 0;
+    }
+
+    /**
      * Set a click listener to the RecyclerView, so we can manage OnClick events from the Main
      * Activity from which the RecyclerView is created.
      * <p>

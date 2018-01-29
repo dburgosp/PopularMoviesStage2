@@ -1,8 +1,5 @@
 package com.example.android.popularmoviesstage2.classes;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 
 /**
@@ -39,7 +36,7 @@ public class TmdbMovieDetails {
     private String tagline;
 
     // Variables from append_to_response argument to the query.
-    private ArrayList<TmdbRelease> releases;
+    private TmdbRelease releases;
 
     // Variables for paging and positioning the movie in a list.
     private int position;
@@ -93,8 +90,8 @@ public class TmdbMovieDetails {
      *                              video for the movie.
      * @param vote_average          is the current users rating for the movie, from 0 to 10.
      * @param vote_count            is the number of persons who have voted for the movie.
-     * @param releases              is an array of {@link TmdbRelease} objects containing the
-     *                              information about the releases of the movie.
+     * @param releases              is a {@link TmdbRelease} object containing the information about
+     *                              the releases of the movie at the current country.
      * @param position              is the position of the movie into the current page.
      * @param page                  is the current page in the list of movies.
      * @param total_pages           is the total number of movie pages.
@@ -106,7 +103,7 @@ public class TmdbMovieDetails {
                             ArrayList<TmdbMovieCountry> production_countries, String release_date, int revenue,
                             int runtime, ArrayList<TmdbMovieLanguage> spoken_languages, String status,
                             String tagline, String title, boolean video, Double vote_average, int vote_count,
-                            ArrayList<TmdbRelease> releases, int position, int page, int total_pages) {
+                            TmdbRelease releases, int position, int page, int total_pages) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -364,12 +361,11 @@ public class TmdbMovieDetails {
         this.total_pages = total_pages;
     }
 
-    public ArrayList<TmdbRelease> getReleases() {
+    public TmdbRelease getReleases() {
         return releases;
     }
 
-    public void setReleases(ArrayList<TmdbRelease> releases) {
+    public void setReleases(TmdbRelease releases) {
         this.releases = releases;
     }
-    // Parcelable configuration.
 }

@@ -49,7 +49,6 @@
     <string name="original_title">Original title</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
-    <string name="release_date">Release date</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="revenue_title">Revenue ($)</string>
     <string name="reviews_title">User reviews</string>
@@ -141,6 +140,13 @@
         <item quantity="one">Production country</item>
         <item quantity="other">Production countries</item>
     </plurals>
+
+    <plurals name="release_dates">
+        <item quantity="one">Release date</item>
+        <item quantity="other">Release dates</item>
+    </plurals>
+
+    <string name="release_date">Release date</string>
 
     <plurals name="score_votes">
         <item quantity="one">(1 vote)</item>

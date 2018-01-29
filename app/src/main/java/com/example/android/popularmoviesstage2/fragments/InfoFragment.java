@@ -35,6 +35,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
+import com.example.android.popularmoviesstage2.classes.TmdbRelease;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
@@ -43,6 +44,8 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -404,6 +407,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setMainInfoSection() {
         boolean infoSectionSet = false;
         String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
+        StringBuilder stringBuilder = new StringBuilder();
 
         // Set runtime. If there is no available runtime info, hide this section.
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movieDetails.getRuntime());
@@ -417,23 +421,59 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             runtimeTextView.setVisibility(View.GONE);
         }
 
-        // Set release date. If there is no available release date, hide this section.
+        // Set release dates. If there are no available release dates, hide this section.
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, ''yy", Locale.getDefault());
+        String releaseDateHtmlText = "";
+        int releaseDates = 0;
         String releaseDate = movieDetails.getRelease_date();
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
+            // Official release date.
             infoSectionSet = true;
-
-            // TODO: release date info from append_to_response=release_dates
-
-            String htmlText = "<strong>" + getString(R.string.release_date).toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + releaseDate + "</font>";
+            releaseDates++;
+            try {
+                releaseDateHtmlText = dateFormat.parse(releaseDate).toString();
+            } catch (ParseException e) {
+                Log.e(TAG, "(setMainInfoSection) Error parsing string to date: " + e);
+                releaseDateHtmlText="";
+            }
 
             // Add status to date if it is other than "released".
             String status = movieDetails.getStatus();
             if (status != null && !status.equals("") && !status.isEmpty() &&
                     !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
-                htmlText = htmlText + "<font color=\"#" + color + "\"> (" + status + ")</font>";
+                releaseDateHtmlText = releaseDateHtmlText + " (" + status + ")";
             }
-            TextUtils.setHtmlText(releaseDateTextView, htmlText);
+        }
+
+        TmdbRelease releases = movieDetails.getReleases();
+        stringBuilder = new StringBuilder();
+        if (releases != null) {
+            // Extract release dates info related to current country.
+            infoSectionSet = true;
+            String currentCountry = Locale.getDefault().getDisplayCountry();
+            for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
+                releaseDates++;
+                try {
+                    releaseDateHtmlText = dateFormat.parse(releases.getReleaseDateArrayList().get(i).getRelease_date()).toString();
+                } catch (ParseException e) {
+                    Log.e(TAG, "(setMainInfoSection) Error parsing string to date: " +
+                            releases.getReleaseDateArrayList().get(i).getRelease_date());
+                    releaseDateHtmlText="";
+                }
+                stringBuilder.append(releaseDateHtmlText);
+                stringBuilder.append(" (");
+                stringBuilder.append(currentCountry.toUpperCase());
+                stringBuilder.append(")");
+                if ((i + 1) < releases.getReleaseDateArrayList().size())
+                    stringBuilder.append("<br>");
+            }
+        }
+
+        if (releaseDates > 0) {
+            String title = getResources().getQuantityString(R.plurals.release_dates, releaseDates);
+            releaseDateHtmlText = "<strong>" + title.toUpperCase() +
+                    "</strong><br><font color=\"#" + color + "\">" + releaseDateHtmlText + "<br>" + stringBuilder + "</font>";
+            TextUtils.setHtmlText(releaseDateTextView, releaseDateHtmlText);
             releaseDateTextView.setVisibility(View.VISIBLE);
         } else
             releaseDateTextView.setVisibility(View.GONE);
@@ -471,7 +511,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         ArrayList<TmdbMovieCompany> movieCompanies = movieDetails.getProduction_companies();
         if (movieCompanies != null && movieCompanies.size() > 0) {
             infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCompanies.size(); n++) {
                 stringBuilder.append(movieCompanies.get(n).getName());
                 if ((n + 1) < movieCompanies.size())
@@ -488,7 +528,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         ArrayList<TmdbMovieCountry> movieCountries = movieDetails.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCountries.size(); n++) {
                 stringBuilder.append(movieCountries.get(n).getName());
                 if ((n + 1) < movieCountries.size())
@@ -505,7 +545,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
         if (movieLanguages != null && movieLanguages.size() > 1) {
             infoSectionSet = true;
-            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
             for (int n = 0; n < movieLanguages.size(); n++) {
                 Locale locale = new Locale(movieLanguages.get(n).getIso_639_1());
                 String language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +

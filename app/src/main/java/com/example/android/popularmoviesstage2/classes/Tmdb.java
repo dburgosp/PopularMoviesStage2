@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Public class with static resources for fetching data from TMDB.
@@ -120,7 +121,7 @@ public class Tmdb {
         }
 
         // Create an empty array of TmdbMovie objects to append data.
-        ArrayList<TmdbMovie> tmdbMovies = new ArrayList<>();
+        ArrayList<TmdbMovie> movies = new ArrayList<>();
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown. 
@@ -162,7 +163,7 @@ public class Tmdb {
                 int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
 
                 // Extract the JSONArray associated with the key called "genres", which represents
-                // the list of genres which the tmdbMovie belongs to.
+                // the list of genres which the movie belongs to.
                 ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
                 if (!baseJSONResponse.isNull("genres")) {
                     JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
@@ -178,18 +179,18 @@ public class Tmdb {
                         String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
 
                         // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                        TmdbMovieGenre tmdbMovieGenre = new TmdbMovieGenre(genre_id, genre_name);
-                        genres.add(tmdbMovieGenre);
+                        TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, genre_name);
+                        genres.add(genre);
                     }
                 }
 
                 // Create a new {@link TmdbMovie} object with the data retrieved from the JSON response.
-                TmdbMovie tmdbMovie = new TmdbMovie(id, adult, backdrop_path, genres, original_language,
+                TmdbMovie movie = new TmdbMovie(id, adult, backdrop_path, genres, original_language,
                         original_title, overview, popularity, poster_path, release_date, title,
                         video, vote_average, vote_count, n, page, total_pages);
 
                 // Append current element to the movies array.
-                tmdbMovies.add(tmdbMovie);
+                movies.add(movie);
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
@@ -197,8 +198,8 @@ public class Tmdb {
             Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);
         }
 
-        // Return the tmdbMovie.
-        return tmdbMovies;
+        // Return the movie.
+        return movies;
     }
 
     /**
@@ -271,7 +272,7 @@ public class Tmdb {
             String tagline = NetworkUtils.getStringFromJSON(baseJSONResponse, "tagline");
 
             // Extract the JSONArray associated with the key called "genres", which represents
-            // the list of genres which the tmdbMovie belongs to.
+            // the list of genres which the movie belongs to.
             ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
             if (!baseJSONResponse.isNull("genres")) {
                 JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
@@ -287,15 +288,15 @@ public class Tmdb {
                     String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
 
                     // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                    TmdbMovieGenre tmdbMovieGenre = new TmdbMovieGenre(genre_id, genre_name);
-                    genres.add(tmdbMovieGenre);
+                    TmdbMovieGenre movieGenre = new TmdbMovieGenre(genre_id, genre_name);
+                    genres.add(movieGenre);
                 }
             }
 
             // Extract the value for the key called "belongs_to_collection", which represents an
-            // optional JSON object with information about the collection which the current tmdbMovie
+            // optional JSON object with information about the collection which the current movie
             // belongs to.
-            TmdbMovieCollection tmdbMovieCollection = null;
+            TmdbMovieCollection movieCollection = null;
             if (!baseJSONResponse.isNull("belongs_to_collection")) {
                 JSONObject belongs_to_collection = baseJSONResponse.getJSONObject("belongs_to_collection");
 
@@ -310,14 +311,14 @@ public class Tmdb {
                         NetworkUtils.getStringFromJSON(belongs_to_collection, "backdrop_path");
 
                 // Create the {@link TmdbMovieCollection} object with this information.
-                tmdbMovieCollection = new TmdbMovieCollection(belongs_to_collection_id,
+                movieCollection = new TmdbMovieCollection(belongs_to_collection_id,
                         belongs_to_collection_name, "", belongs_to_collection_poster_path,
                         belongs_to_collection_backdrop_path, null);
             }
 
             // Extract the JSONArray associated with the key called "production_companies",
             // which represents the list of companies participating in the production of the
-            // tmdbMovie.
+            // movie.
             ArrayList<TmdbMovieCompany> production_companies = new ArrayList<>();
             if (!baseJSONResponse.isNull("production_companies")) {
                 JSONArray productionCompaniesArray =
@@ -334,15 +335,15 @@ public class Tmdb {
                     String company_name = NetworkUtils.getStringFromJSON(currentCompany, "name");
 
                     // Create a new {@link TmdbMovieCompany} object and add it to the array.
-                    TmdbMovieCompany tmdbMovieCompany = new TmdbMovieCompany("", "",
+                    TmdbMovieCompany movieCompany = new TmdbMovieCompany("", "",
                             "", company_id, "", company_name,
                             null);
-                    production_companies.add(tmdbMovieCompany);
+                    production_companies.add(movieCompany);
                 }
             }
 
             // Extract the JSONArray associated with the key called "production_countries",
-            // which represents the list of countries in which the tmdbMovie has been produced.
+            // which represents the list of countries in which the movie has been produced.
             ArrayList<TmdbMovieCountry> production_countries = new ArrayList<>();
             if (!baseJSONResponse.isNull("production_countries")) {
                 JSONArray productionCountriesArray =
@@ -359,13 +360,13 @@ public class Tmdb {
                     String country_name = NetworkUtils.getStringFromJSON(currentCountry, "name");
 
                     // Create a new {@link TmdbMovieCountry} object and add it to the array.
-                    TmdbMovieCountry tmdbMovieCountry = new TmdbMovieCountry(iso_3166_1, country_name);
-                    production_countries.add(tmdbMovieCountry);
+                    TmdbMovieCountry movieCountry = new TmdbMovieCountry(iso_3166_1, country_name);
+                    production_countries.add(movieCountry);
                 }
             }
 
             // Extract the JSONArray associated with the key called "spoken_languages", which
-            // represents the list of languages spoken in the tmdbMovie.
+            // represents the list of languages spoken in the movie.
             ArrayList<TmdbMovieLanguage> spoken_languages = new ArrayList<>();
             if (!baseJSONResponse.isNull("spoken_languages")) {
                 JSONArray spokenLanguagesesArray = baseJSONResponse.getJSONArray("spoken_languages");
@@ -381,20 +382,25 @@ public class Tmdb {
                     String language_name = NetworkUtils.getStringFromJSON(currentLanguage, "name");
 
                     // Create a new {@link TmdbMovieLanguage} object and add it to the array.
-                    TmdbMovieLanguage tmdbMovieLanguage = new TmdbMovieLanguage(iso_639_1, language_name);
-                    spoken_languages.add(tmdbMovieLanguage);
+                    TmdbMovieLanguage movieLanguage = new TmdbMovieLanguage(iso_639_1, language_name);
+                    spoken_languages.add(movieLanguage);
                 }
             }
 
-            // TODO: parse release_dates array.
+            // Extract release dates.
+            TmdbRelease releases = null;
+            if (!baseJSONResponse.isNull("release_dates")) {
+                JSONObject releasesObject = baseJSONResponse.getJSONObject("release_dates");
+                releases = getMovieReleases(releasesObject);
+            }
 
             // Return a {@link TmdbMovieDetails} object with the data retrieved from the JSON
             // response.
-            return new TmdbMovieDetails(id, adult, backdrop_path, tmdbMovieCollection, budget,
+            return new TmdbMovieDetails(id, adult, backdrop_path, movieCollection, budget,
                     genres, homepage, imdb_id, original_language, original_title, overview,
                     popularity, poster_path, production_companies, production_countries,
                     release_date, revenue, runtime, spoken_languages, status, tagline, title, video,
-                    vote_average, vote_count, null, 0, 0, 0);
+                    vote_average, vote_count, releases, 0, 0, 0);
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
@@ -409,6 +415,7 @@ public class Tmdb {
      * @param movieId is the identifier of the movie in TMDB.
      * @return a {@link TmdbCastCrew} object.
      */
+
     public static TmdbCastCrew getTmdbCastAndCrew(int movieId) {
         Log.i(TAG, "(getTmdbCastAndCrew) Movie ID: " + movieId);
 
@@ -445,9 +452,9 @@ public class Tmdb {
 
         // Create new empty objects for the TmdbCastCrew object to be returned.
         int movie_id = 0;
-        ArrayList<TmdbCast> tmdbCastArrayList = new ArrayList<>();
-        ArrayList<TmdbCrew> tmdbCrewArrayList = new ArrayList<>();
-        TmdbCastCrew tmdbCastCrew = new TmdbCastCrew(movie_id, tmdbCastArrayList, tmdbCrewArrayList);
+        ArrayList<TmdbCast> castArrayList = new ArrayList<>();
+        ArrayList<TmdbCrew> crewArrayList = new ArrayList<>();
+        TmdbCastCrew castCrew = new TmdbCastCrew(movie_id, castArrayList, crewArrayList);
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown. 
@@ -475,10 +482,10 @@ public class Tmdb {
 
                     // Create a new {@link TmdbCast} object with the data retrieved from the JSON
                     // response.
-                    TmdbCast tmdbCast = new TmdbCast(character, person_id, name, profile_path);
+                    TmdbCast cast = new TmdbCast(character, person_id, name, profile_path);
 
-                    // Add the new {@link TmdbCast} to the list of persons from the movie tmdbCast.
-                    tmdbCastArrayList.add(tmdbCast);
+                    // Add the new {@link TmdbCast} to the list of persons from the movie cast.
+                    castArrayList.add(cast);
                 }
             }
 
@@ -501,10 +508,10 @@ public class Tmdb {
 
                     // Create a new {@link TmdbCrew} object with the data retrieved from the JSON
                     // response.
-                    TmdbCrew tmdbCrew = new TmdbCrew(credit_id, department, gender, person_id, job, name, profile_path);
+                    TmdbCrew crew = new TmdbCrew(credit_id, department, gender, person_id, job, name, profile_path);
 
-                    // Add the new {@link TmdbMovie} to the list of persons from the movie cast.
-                    tmdbCrewArrayList.add(tmdbCrew);
+                    // Add the new {@link TmdbMovie} to the list of persons from the movie crew.
+                    crewArrayList.add(crew);
                 }
             }
         } catch (JSONException e) {
@@ -515,15 +522,15 @@ public class Tmdb {
 
         // Update the TmdbCastCrew object with the data retrieved from the JSON object.
         try {
-            tmdbCastCrew.setId(movie_id);
-            tmdbCastCrew.setCast(tmdbCastArrayList);
-            tmdbCastCrew.setCrew(tmdbCrewArrayList);
+            castCrew.setId(movie_id);
+            castCrew.setCast(castArrayList);
+            castCrew.setCrew(crewArrayList);
         } catch (NullPointerException e) {
             Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
         }
 
         // Return the TmdbCastCrew object.
-        return tmdbCastCrew;
+        return castCrew;
     }
 
     /**
@@ -570,7 +577,7 @@ public class Tmdb {
         }
 
         // Create an empty ArrayList that we can start adding Reviews to.
-        ArrayList<TmdbReview> tmdbReviews = new ArrayList<>();
+        ArrayList<TmdbReview> reviews = new ArrayList<>();
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown. Catch the exception so the
@@ -604,10 +611,10 @@ public class Tmdb {
                 String url = NetworkUtils.getStringFromJSON(baseJSONResponse, "url");
 
                 // Create a new {@link TmdbReview} object with the data retrieved from the JSON response.
-                TmdbReview tmdbReview = new TmdbReview(id, author, content, url, "", "", "", page, n, total_pages);
+                TmdbReview review = new TmdbReview(id, author, content, url, "", "", "", page, n, total_pages);
 
-                // Add the new {@link TmdbReview} to the list of tmdbReviews.
-                tmdbReviews.add(tmdbReview);
+                // Add the new {@link TmdbReview} to the list of reviews.
+                reviews.add(review);
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
@@ -616,8 +623,85 @@ public class Tmdb {
             Log.e(TAG, "(parseGetReviewsListJSON) Error parsing the JSON response: ", e);
         }
 
-        // Return the list of tmdbReviews.
-        return tmdbReviews;
+        // Return the list of reviews.
+        return reviews;
+    }
+
+    /**
+     * Fetches TMDB for information about the release dates of a movie at the current country.
+     *
+     * @param resultsJSONResponse is the JSON object containing the release dates array.
+     * @return a {@link TmdbRelease} object.
+     */
+    private static TmdbRelease getMovieReleases(JSONObject resultsJSONResponse) {
+        TmdbRelease releases = null;
+        boolean countryFound = false;
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("results")) {
+                Log.i(TAG, "(getMovieReleases) No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            // Get results array.
+            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
+            JSONObject baseJSONResponse;
+            String currentCountry = Locale.getDefault().getCountry();
+            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results.
+                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+
+                // Create an empty array of TmdbReleaseDate objects to add data.
+                ArrayList<TmdbReleaseDate> releaseDates = new ArrayList<>();
+
+                // Extract only current country info.
+                String iso_3166_1 = NetworkUtils.getStringFromJSON(baseJSONResponse, "iso_3166_1");
+                if (iso_3166_1.equals(currentCountry)) {
+                    // Extract the JSONArray associated with the key called "genres", which represents
+                    // the list of genres which the tmdbMovie belongs to.
+                    if (!baseJSONResponse.isNull("release_dates")) {
+                        JSONArray releaseDatesArray = baseJSONResponse.getJSONArray("release_dates");
+
+                        // For each release date in the array, create an {@link TmdbReleaseDate} object.
+                        JSONObject currentReleaseDate;
+                        for (int i = 0; i < releaseDatesArray.length(); i++) {
+                            // Get a single release date at position i within the list of genres.
+                            currentReleaseDate = releaseDatesArray.getJSONObject(i);
+
+                            // Extract the required values for the corresponding keys.
+                            String certification = NetworkUtils.getStringFromJSON(currentReleaseDate, "certification");
+                            String iso_639_1 = NetworkUtils.getStringFromJSON(currentReleaseDate, "iso_639_1");
+                            String note = NetworkUtils.getStringFromJSON(currentReleaseDate, "note");
+                            String release_date = NetworkUtils.getStringFromJSON(currentReleaseDate, "release_date");
+                            int type = NetworkUtils.getIntFromJSON(currentReleaseDate, "type");
+
+                            // Create a new {@link TmdbReleaseDate} object and add it to the array.
+                            TmdbReleaseDate releaseDate = new TmdbReleaseDate(certification, iso_639_1, note, release_date, type);
+                            releaseDates.add(releaseDate);
+                            countryFound = true;
+                        }
+                    }
+                } else
+                    countryFound = false;
+
+                // Create a new {@link TmdbRelease} object with the data retrieved from the JSON
+                // response, only if there is at least one release date related to the current
+                // country.
+                if (countryFound)
+                    releases = new TmdbRelease(iso_3166_1, releaseDates);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG, "(getMovieReleases) Error parsing the JSON response: ", e);
+        }
+
+        // Return the releases object.
+        return releases;
     }
 
     /**
