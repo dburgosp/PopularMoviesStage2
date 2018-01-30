@@ -194,13 +194,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // Save current sort order, current page and current scroll position.
+/*        // Save current sort order, current page and current scroll position.
         moviesArrayList = moviesAdapter.getMoviesArrayList();
         currentScrollPosition = moviesAdapter.getCurrentScrollPosition();
         currentPage = moviesAdapter.getCurrentPage();
         outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
         outState.putInt("currentScrollPosition", currentScrollPosition);
-        outState.putInt("currentPage", currentPage);
+        outState.putInt("currentPage", currentPage);*/
         outState.putString("sortOrder", sortOrder);
     }
 
@@ -227,9 +227,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        // Restore sort order, last saved page and last saved position in the grid.
-        moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
+      // Restore sort order, last saved page and last saved position in the grid.
         sortOrder = savedInstanceState.getString("sortOrder");
+/*          moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
         currentPage = savedInstanceState.getInt("currentPage");
         currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
 
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
 
         // Restore last currentPosition in the grid.
-        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
+        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);*/
     }
 
     @Override
