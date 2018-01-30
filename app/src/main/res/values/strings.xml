@@ -1,7 +1,7 @@
 <resources>
     <string name="a_review_by">A review by</string>
     <string name="add_to_favorites">Add to favorites</string>
-    <string name="age_rating_title">Age rating:</string>
+    <string name="age_rating_title">Age rating</string>
     <string name="all_languages">All languages</string>
     <string name="app_name">TMDB</string>
     <string name="backdrops_title">Backdrops</string>
@@ -49,6 +49,18 @@
     <string name="original_title">Original title</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
+    <string name="release_status_rumored">Rumored</string>
+    <string name="release_status_planned">Planned</string>
+    <string name="release_status_in_production">In Production</string>
+    <string name="release_status_post_production">Post Production</string>
+    <string name="release_status_released">Released</string>
+    <string name="release_status_canceled">Canceled</string>
+    <string name="release_type_premiere">Premiere</string>
+    <string name="release_type_theatrical_limited">Theatrical (limited)</string>
+    <string name="release_type_theatrical">Theatrical</string>
+    <string name="release_type_digital">Digital</string>
+    <string name="release_type_physical">Physical</string>
+    <string name="release_type_tv">TV</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="revenue_title">Revenue ($)</string>
     <string name="reviews_title">User reviews</string>
@@ -60,6 +72,7 @@
     <string name="share_this">Share this</string>
     <string name="size">Size</string>
     <string name="sort_order_changed">Sort order changed to %s</string>
+    <string name="status">Status</string>
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
     <string name="tags_title">Tags:</string>

@@ -44,8 +44,6 @@ import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -147,6 +145,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
+    String ageRating = "";
     private Unbinder unbinder;
 
     /**
@@ -407,9 +406,13 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setMainInfoSection() {
         boolean infoSectionSet = false;
         String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
+        String currentCountry = Locale.getDefault().getDisplayCountry();
         StringBuilder stringBuilder = new StringBuilder();
 
-        // Set runtime. If there is no available runtime info, hide this section.
+        /* ------- */
+        /* RUNTIME */
+        /* ------- */
+
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movieDetails.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
@@ -421,68 +424,124 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             runtimeTextView.setVisibility(View.GONE);
         }
 
-        // Set release dates. If there are no available release dates, hide this section.
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, ''yy", Locale.getDefault());
-        String releaseDateHtmlText = "";
-        int releaseDates = 0;
-        String releaseDate = movieDetails.getRelease_date();
-        if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
-            // Official release date.
-            infoSectionSet = true;
-            releaseDates++;
-            try {
-                releaseDateHtmlText = dateFormat.parse(releaseDate).toString();
-            } catch (ParseException e) {
-                Log.e(TAG, "(setMainInfoSection) Error parsing string to date: " + e);
-                releaseDateHtmlText="";
-            }
+        /* ------------- */
+        /* RELEASE DATES */
+        /* ------------- */
 
-            // Add status to date if it is other than "released".
-            String status = movieDetails.getStatus();
-            if (status != null && !status.equals("") && !status.isEmpty() &&
-                    !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
-                releaseDateHtmlText = releaseDateHtmlText + " (" + status + ")";
+        String releaseDatesTitle = "";
+        String releaseDatesContent = "";
+
+        // Show release status if it is other than "released".
+        String status = movieDetails.getStatus();
+        if (status != null && !status.equals("") && !status.isEmpty() && !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+            switch (status) {
+                case Tmdb.TMDB_STATUS_CANCELED:
+                    status = getString(R.string.release_status_canceled);
+                    break;
+                case Tmdb.TMDB_STATUS_IN_PRODUCTION:
+                    status = getString(R.string.release_status_in_production);
+                    break;
+                case Tmdb.TMDB_STATUS_PLANNED:
+                    status = getString(R.string.release_status_planned);
+                    break;
+                case Tmdb.TMDB_STATUS_POST_PRODUCTION:
+                    status = getString(R.string.release_status_post_production);
+                    break;
+                default:
+                    status = getString(R.string.release_status_rumored);
             }
+            releaseDatesContent = status;
         }
 
+        // If there is local release dates info, show it instead the 'official' release info.
         TmdbRelease releases = movieDetails.getReleases();
-        stringBuilder = new StringBuilder();
         if (releases != null) {
             // Extract release dates info related to current country.
-            infoSectionSet = true;
-            String currentCountry = Locale.getDefault().getDisplayCountry();
+            stringBuilder = new StringBuilder();
             for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
-                releaseDates++;
-                try {
-                    releaseDateHtmlText = dateFormat.parse(releases.getReleaseDateArrayList().get(i).getRelease_date()).toString();
-                } catch (ParseException e) {
-                    Log.e(TAG, "(setMainInfoSection) Error parsing string to date: " +
-                            releases.getReleaseDateArrayList().get(i).getRelease_date());
-                    releaseDateHtmlText="";
+                stringBuilder.append(DateTimeUtils.getDate(releases.getReleaseDateArrayList().get(i).getRelease_date()));
+
+                // Set release type, if exists and if it is not a theatrical release date.
+                int type = releases.getReleaseDateArrayList().get(i).getType();
+                if (type > 0 && type != Tmdb.TMDB_RELEASE_TYPE_THEATRICAL) {
+                    stringBuilder.append(" (");
+                    switch (releases.getReleaseDateArrayList().get(i).getType()) {
+                        case Tmdb.TMDB_RELEASE_TYPE_DIGITAL:
+                            stringBuilder.append(getString(R.string.release_type_digital));
+                            break;
+                        case Tmdb.TMDB_RELEASE_TYPE_PHYSICAL:
+                            stringBuilder.append(getString(R.string.release_type_physical));
+                            break;
+                        case Tmdb.TMDB_RELEASE_TYPE_PREMIERE:
+                            stringBuilder.append(getString(R.string.release_type_premiere));
+                            break;
+                        case Tmdb.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED:
+                            stringBuilder.append(getString(R.string.release_type_theatrical_limited));
+                            break;
+                        default:
+                            stringBuilder.append(getString(R.string.release_type_tv));
+                    }
+                    stringBuilder.append(")");
                 }
-                stringBuilder.append(releaseDateHtmlText);
-                stringBuilder.append(" (");
-                stringBuilder.append(currentCountry.toUpperCase());
-                stringBuilder.append(")");
+
                 if ((i + 1) < releases.getReleaseDateArrayList().size())
                     stringBuilder.append("<br>");
+
+                // Save age rating for later.
+                String certification = releases.getReleaseDateArrayList().get(i).getCertification();
+                if (certification != null && !certification.equals("") && !certification.isEmpty())
+                    ageRating = certification;
+            }
+
+            // Set section title.
+            releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, releases.getReleaseDateArrayList().size()) +
+                    " (" + currentCountry + ")";
+
+            // Append previous status info, if exists.
+            if (releaseDatesContent.isEmpty())
+                releaseDatesContent = stringBuilder.toString();
+            else
+                releaseDatesContent = releaseDatesContent + "<br>" + stringBuilder;
+        } else {
+            // If there is no local release dates, show official release date.
+            String releaseDate = movieDetails.getRelease_date();
+            if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
+                // Set section title.
+                releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
+
+                // Official release date.
+                releaseDatesContent = DateTimeUtils.getDate(releaseDate);
             }
         }
 
-        if (releaseDates > 0) {
-            String title = getResources().getQuantityString(R.plurals.release_dates, releaseDates);
-            releaseDateHtmlText = "<strong>" + title.toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + releaseDateHtmlText + "<br>" + stringBuilder + "</font>";
-            TextUtils.setHtmlText(releaseDateTextView, releaseDateHtmlText);
+        // Show this section only if there is an information about release dates.
+        if (!releaseDatesContent.equals("")) {
+            infoSectionSet = true;
+            releaseDatesContent = "<strong>" + releaseDatesTitle.toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + releaseDatesContent + "</font>";
+            TextUtils.setHtmlText(releaseDateTextView, releaseDatesContent);
             releaseDateTextView.setVisibility(View.VISIBLE);
         } else
             releaseDateTextView.setVisibility(View.GONE);
 
-        // TODO: age rating from append_to_response=release_dates
-        ageRatingTextView.setVisibility(View.GONE);
+        /* ---------- */
+        /* AGE RATING */
+        /* ---------- */
 
-        // Set original language. If there is no available original language info, hide this
-        // section.
+        // We obtained the age rating previously, if it exists, from the release dates information.
+        if (!ageRating.equals("")) {
+            String ageRatingContent = getString(R.string.age_rating_title) + " (" + currentCountry + ")";
+            ageRatingContent = "<strong>" + ageRatingContent.toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + ageRating + "</font>";
+            TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
+            ageRatingTextView.setVisibility(View.VISIBLE);
+        } else
+            ageRatingTextView.setVisibility(View.GONE);
+
+        /* ----------------- */
+        /* ORIGINAL LANGUAGE */
+        /* ----------------- */
+
         String originalLanguage = movieDetails.getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
@@ -496,7 +555,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             originalLanguageTextView.setVisibility(View.GONE);
 
-        // Set original title. If there is no available original title info, hide this section.
+        /* -------------- */
+        /* ORIGINAL TITLE */
+        /* -------------- */
+
         String originalTitle = movieDetails.getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             infoSectionSet = true;
@@ -507,7 +569,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             originalTitleTextView.setVisibility(View.GONE);
 
-        // Set production companies. If there is no available countries info, we hide this section.
+        /* -------------------- */
+        /* PRODUCTION COMPANIES */
+        /* -------------------- */
+
         ArrayList<TmdbMovieCompany> movieCompanies = movieDetails.getProduction_companies();
         if (movieCompanies != null && movieCompanies.size() > 0) {
             infoSectionSet = true;
@@ -524,13 +589,18 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             productionCompaniesTextView.setVisibility(View.GONE);
 
-        // Set production countries. If there is no available countries info, we hide this section.
+        /* -------------------- */
+        /* PRODUCTION COUNTRIES */
+        /* -------------------- */
+
         ArrayList<TmdbMovieCountry> movieCountries = movieDetails.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
+            Locale locale;
             stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCountries.size(); n++) {
-                stringBuilder.append(movieCountries.get(n).getName());
+                locale = new Locale(Locale.getDefault().getLanguage(), movieCountries.get(n).getIso_3166_1());
+                stringBuilder.append(locale.getDisplayCountry());
                 if ((n + 1) < movieCountries.size())
                     stringBuilder.append("<br>");
             }
@@ -541,7 +611,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             productionCountriesTextView.setVisibility(View.GONE);
 
-        // Set spoken languages. If there are less than two spoken languages, we hide this section.
+        /* ---------------- */
+        /* SPOKEN LANGUAGES */
+        /* ---------------- */
+
         ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
         if (movieLanguages != null && movieLanguages.size() > 1) {
             infoSectionSet = true;
@@ -561,7 +634,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             spokenLanguagesTextView.setVisibility(View.GONE);
 
-        // Set movieDetails budget. If there is no available budget info, hide this section.
+        /* ------ */
+        /* BUDGET */
+        /* ------ */
+
         int budget = movieDetails.getBudget();
         if (budget > 0) {
             infoSectionSet = true;
@@ -573,7 +649,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             budgetTextView.setVisibility(View.GONE);
 
-        // Set movieDetails revenue. If there is no available revenue info, hide this section.
+        /* ------- */
+        /* REVENUE */
+        /* ------- */
+
         int revenue = movieDetails.getRevenue();
         if (revenue > 0) {
             infoSectionSet = true;
@@ -808,6 +887,18 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                         scoresLinearLayout.setVisibility(View.VISIBLE);
                     else
                         scoresLinearLayout.setVisibility(View.GONE);
+
+                    // Set age rating to US rating from OMDB, if it has not been previously set.
+                    String omdbAgeRating = omdbMovie.getRated();
+                    if (ageRating.equals("") && omdbAgeRating != null && !omdbAgeRating.equals("") && !omdbAgeRating.isEmpty()) {
+                        String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                        String country = Locale.US.getDisplayCountry();
+                        String ageRatingTitle = getString(R.string.age_rating_title) + " (" + country + ")";
+                        String ageRatingContent = "<strong>" + ageRatingTitle.toUpperCase() + "</strong><br>" +
+                                "<font color=\"#" + color + "\">" + omdbAgeRating + "</font>";
+                        TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
+                        ageRatingTextView.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);

@@ -21,14 +21,6 @@
         tools:text="RUNTIME\n1h 30m" />
 
     <TextView
-        android:id="@+id/info_age_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
-        android:textColor="@color/colorWhite"
-        tools:text="AGE RATING\nPG-13" />
-
-    <TextView
         android:id="@+id/info_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,6 +28,15 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
         tools:text="RELEASE DATE\n2001-01-01" />
+
+    <TextView
+        android:id="@+id/info_age_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="AGE RATING\nPG-13" />
 
     <TextView
         android:id="@+id/info_original_language"

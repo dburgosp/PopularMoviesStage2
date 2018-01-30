@@ -51,12 +51,12 @@ public class Tmdb {
     public final static String TMDB_STATUS_CANCELED = "Canceled";
 
     // Release dates types.
-    private static final String TMDB_RELEASE_TYPE_PREMIERE = "Premiere";
-    private static final String TMDB_RELEASE_TYPE_THEATRICAL_LIMITED = "Theatrical (limited)";
-    private static final String TMDB_RELEASE_TYPE_THEATRICAL = "Theatrical";
-    private static final String TMDB_RELEASE_TYPE_DIGITAL = "Digital";
-    private static final String TMDB_RELEASE_TYPE_PHYSICAL = "Physical";
-    private static final String TMDB_RELEASE_TYPE_TV = "TV";
+    public static final int TMDB_RELEASE_TYPE_PREMIERE = 1;
+    public static final int TMDB_RELEASE_TYPE_THEATRICAL_LIMITED = 2;
+    public static final int TMDB_RELEASE_TYPE_THEATRICAL = 3;
+    public static final int TMDB_RELEASE_TYPE_DIGITAL = 4;
+    public static final int TMDB_RELEASE_TYPE_PHYSICAL = 5;
+    public static final int TMDB_RELEASE_TYPE_TV = 6;
 
     // Maximum number of pages.
     public final static int TMDB_MAX_PAGES = 1000;

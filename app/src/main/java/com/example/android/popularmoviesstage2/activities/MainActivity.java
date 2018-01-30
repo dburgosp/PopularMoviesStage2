@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String sortOrder = Tmdb.TMDB_POPULAR_PATH;
     private MoviesAdapter moviesAdapter;
     private int currentPage, currentScrollPosition;
-    private boolean isLoading = false, appendToEnd = true;
-    private ArrayList<TmdbMovie> moviesArrayList = new ArrayList<>();
+    private boolean isLoading, appendToEnd;
+    private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
-    private Loader<ArrayList<TmdbMovie>> loader = null;
+    private Loader<ArrayList<TmdbMovie>> loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +80,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // to configure the RecyclerView nor initialize the loader here. These tasks will be
         // performed later in the onRestoreInstanceState method, which runs after the onCreate
         // method.
-        currentPage = 1;
-        currentScrollPosition = 0;
         if (savedInstanceState == null) {
             // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
             // getting movie information from TMDB in a separate thread.
-            setRecyclerView();
+            moviesArrayList = new ArrayList<>();
+            currentPage = 1;
+            currentScrollPosition = 0;
+            isLoading = false;
             appendToEnd = true;
+            loader = null;
+            setRecyclerView();
             getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
         }
 
@@ -275,12 +278,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             noResultsTextView.setVisibility(View.INVISIBLE);
             loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, Integer.toString(currentPage));
         } else {
-            // There is no connection. Show error message.
-            progressBar.setVisibility(View.INVISIBLE);
-            noResultsTextView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
             loader = null;
+            moviesArrayList = new ArrayList<>();
+            currentPage = 1;
+            currentScrollPosition = 0;
+            isLoading = false;
+            appendToEnd = true;
+            setRecyclerView();
+            progressBar.setVisibility(View.INVISIBLE);
+            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setVisibility(View.VISIBLE);
         }
 
         return loader;

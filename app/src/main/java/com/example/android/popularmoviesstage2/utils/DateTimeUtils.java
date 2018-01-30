@@ -5,8 +5,9 @@ import android.util.Log;
 
 import com.example.android.popularmoviesstage2.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public final class DateTimeUtils {
@@ -29,7 +30,7 @@ public final class DateTimeUtils {
      */
     public static String getYear(String dateString) {
         Log.i(TAG, "(getYear) Date: " + dateString);
-        Calendar calendar = Calendar.getInstance();
+/*        Calendar calendar = Calendar.getInstance();
         String year = "";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
 
@@ -41,7 +42,10 @@ public final class DateTimeUtils {
         }
 
         Log.i(TAG, "(getYear) Year: " + year);
-        return year;
+        return year;*/
+
+        Log.i(TAG, "(getYear) Year: " + dateString.substring(0, 3));
+        return dateString.substring(0, 4);
     }
 
     /**
@@ -65,5 +69,36 @@ public final class DateTimeUtils {
         String hoursAndMinutes = stringHours + stringMinutes;
         Log.i(TAG, "(getHoursAndMinutes) Hours and minutes: " + hoursAndMinutes);
         return hoursAndMinutes;
+    }
+
+    /**
+     * Helper method to convert a string date to the normal date format for the current country.
+     *
+     * @param inputDate the original string date.
+     * @return a string containing the formatted date.
+     */
+    public static String getDate(String inputDate) {
+        // Parse input date string.
+        Date date = new Date();
+        SimpleDateFormat dateFormatIn;
+        try {
+            // Try ISO 8601 format.
+            dateFormatIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            date = dateFormatIn.parse(inputDate);
+        } catch (java.text.ParseException e1) {
+            try {
+                // If the string can't be parsed with the specified format, try another one.
+                dateFormatIn = new SimpleDateFormat("yyyy-mm-dd");
+                date = dateFormatIn.parse(inputDate);
+            } catch (java.text.ParseException e2) {
+                // Return inputDate if we can't parse it.
+                Log.e(TAG, "(getDate) Error parsing date: " + e2);
+                return inputDate;
+            }
+        }
+
+        // Format output date string.
+        DateFormat dateFormatOut = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        return dateFormatOut.format(date);
     }
 }
