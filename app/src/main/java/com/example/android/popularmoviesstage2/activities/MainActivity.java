@@ -32,6 +32,7 @@ import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -199,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         currentScrollPosition = moviesAdapter.getCurrentScrollPosition();
         currentPage = moviesAdapter.getCurrentPage();
         outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
-        outState.putInt("currentScrollPosition", currentScrollPosition);
-        outState.putInt("currentPage", currentPage);*/
+        outState.putInt("currentScrollPosition", currentScrollPosition);*/
+        outState.putInt("currentPage", currentPage);
         outState.putString("sortOrder", sortOrder);
     }
 
@@ -227,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-      // Restore sort order, last saved page and last saved position in the grid.
+        // Restore sort order, last saved page and last saved position in the grid.
         sortOrder = savedInstanceState.getString("sortOrder");
-/*          moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
         currentPage = savedInstanceState.getInt("currentPage");
+/*          moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
         currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
 
         // After restoring previous movies array and scroll position, we set the RecyclerView for
@@ -276,7 +277,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, Integer.toString(currentPage));
+            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder,
+                    Integer.toString(currentPage), Locale.getDefault().getLanguage());
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -342,7 +344,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Loaders issue? onLoadFinished triggers sometimes twice returning the same page. Avoid
         // adding the same page to the list of movies.
-        if (moviesArrayList.size() > 0 && currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
+        if (moviesArrayList != null && moviesArrayList.size() > 0 &&
+                currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
             return;
 
         // Check if there is an available connection.
@@ -484,8 +487,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                             else
                                 getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
-                        } else
+                        } else {
+                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, MainActivity.this);
                             swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 }
         );

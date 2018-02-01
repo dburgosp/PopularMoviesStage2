@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 /**
@@ -83,10 +85,13 @@ public class Tmdb {
      *
      * @param sortOrder   is the sort order for the movie list.
      * @param currentPage is the page number to fetch.
+     * @param language    is the language of the results.
      * @return an array of {@link TmdbMovie} objects.
      */
-    public static ArrayList<TmdbMovie> getTmdbMovies(String sortOrder, String currentPage) {
-        Log.i(TAG, "(getTmdbMovies) Sort order: " + sortOrder + ". Page number: " + currentPage);
+
+    public static ArrayList<TmdbMovie> getTmdbMovies(String sortOrder, String currentPage, String language) {
+        Log.i(TAG, "(getTmdbMovies) Sort order: " + sortOrder + ". Page number: " +
+                currentPage + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
@@ -98,6 +103,7 @@ public class Tmdb {
                 .appendPath(sortOrder)
                 .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                 .appendQueryParameter(TMDB_PARAM_PAGE, currentPage)
+                .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                 .build();
 
         // Use the built uri to get the JSON document with the results of the query.
@@ -124,15 +130,14 @@ public class Tmdb {
         ArrayList<TmdbMovie> movies = new ArrayList<>();
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
-        // formatted, a JSONException exception object will be thrown. 
+        // formatted, a JSONException exception object will be thrown.
         try {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
-
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(getTmdbMovies) No \"results\" section in the JSON string.");
+                Log.i(TAG, "(getMovie) No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -144,72 +149,85 @@ public class Tmdb {
             JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
             JSONObject baseJSONResponse;
             for (int n = 0; n < arrayJSONResponse.length(); n++) {
-                // Get a single result at position n within the list of results.
+                // Get a single result at position n within the list of results, extract the movie
+                // info and append it to the movies array..
                 baseJSONResponse = arrayJSONResponse.getJSONObject(n);
-
-                // Extract the required values for the corresponding keys.
-                boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
-                String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
-                int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
-                String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
-                String original_title = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_title");
-                String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
-                Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
-                String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
-                String release_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "release_date");
-                String title = NetworkUtils.getStringFromJSON(baseJSONResponse, "title");
-                Boolean video = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "video");
-                Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
-                int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
-
-                // Extract the JSONArray associated with the key called "genres", which represents
-                // the list of genres which the movie belongs to.
-                ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
-                if (!baseJSONResponse.isNull("genres")) {
-                    JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
-
-                    // For each genre in the array, create an {@link TmdbMovieGenre} object.
-                    JSONObject currentGenre;
-                    for (int i = 0; i < genresArray.length(); i++) {
-                        // Get a single genre at position i within the list of genres.
-                        currentGenre = genresArray.getJSONObject(i);
-
-                        // Extract the required values for the corresponding keys.
-                        int genre_id = NetworkUtils.getIntFromJSON(currentGenre, "id");
-                        String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
-
-                        // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                        TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, genre_name);
-                        genres.add(genre);
-                    }
-                }
-
-                // Create a new {@link TmdbMovie} object with the data retrieved from the JSON response.
-                TmdbMovie movie = new TmdbMovie(id, adult, backdrop_path, genres, original_language,
-                        original_title, overview, popularity, poster_path, release_date, title,
-                        video, vote_average, vote_count, n, page, total_pages);
-
-                // Append current element to the movies array.
+                TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages);
                 movies.add(movie);
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
-            // catch the exception here, so the app doesn't crash. 
-            Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
         }
 
-        // Return the movie.
+        // Return the movies array.
         return movies;
+    }
+
+    /**
+     * Private helper method to extract a {@link TmdbMovie} object from a JSON.
+     *
+     * @param baseJSONResponse is the JSONObject containing the movie info.
+     * @param n                is the current index of the element into the movies array.
+     * @param page             is the current page of the movie element.
+     * @param total_pages      is the number of pages of the current query.
+     * @return the {@link TmdbMovie} object parsed from the JSON.
+     * @throws JSONException from getJSONArray and getJSONObject calls.
+     */
+    private static TmdbMovie getMovie(JSONObject baseJSONResponse, int n, int page, int total_pages) throws JSONException {
+        // Extract the required values for the corresponding keys.
+        boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
+        String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
+        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
+        String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
+        String original_title = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_title");
+        String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
+        Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
+        String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
+        String release_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "release_date");
+        String title = NetworkUtils.getStringFromJSON(baseJSONResponse, "title");
+        Boolean video = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "video");
+        Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
+        int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
+
+        // Extract the JSONArray associated with the key called "genres", which represents
+        // the list of genres which the movie belongs to.
+        ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
+        if (!baseJSONResponse.isNull("genres")) {
+            JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
+
+            // For each genre in the array, create an {@link TmdbMovieGenre} object.
+            JSONObject currentGenre;
+            for (int i = 0; i < genresArray.length(); i++) {
+                // Get a single genre at position i within the list of genres.
+                currentGenre = genresArray.getJSONObject(i);
+
+                // Extract the required values for the corresponding keys.
+                int genre_id = NetworkUtils.getIntFromJSON(currentGenre, "id");
+                String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
+
+                // Create a new {@link TmdbMovieGenre} object and add it to the array.
+                TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, genre_name);
+                genres.add(genre);
+            }
+        }
+
+        // Return the {@link TmdbMovie} object parsed from the JSON.
+        return new TmdbMovie(id, adult, backdrop_path, genres, original_language,
+                original_title, overview, popularity, poster_path, release_date, title,
+                video, vote_average, vote_count, n, page, total_pages);
     }
 
     /**
      * Fetches TMDB for detailed information about a single movie.
      *
-     * @param movieId is the identifier of the movie in TMDB.
+     * @param movieId  is the identifier of the movie in TMDB.
+     * @param language is the language of the results.
      * @return a {@link TmdbMovieDetails} object.
      */
-    public static TmdbMovieDetails getTmdbMovieDetails(int movieId) {
-        Log.i(TAG, "(getTmdbMovieDetails) Movie ID: " + movieId);
+    public static TmdbMovieDetails getTmdbMovieDetails(int movieId, String language) {
+        Log.i(TAG, "(getTmdbMovieDetails) Movie ID: " + movieId + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
@@ -220,6 +238,7 @@ public class Tmdb {
                 .appendPath(TMDB_MOVIE_PATH)
                 .appendPath(Integer.toString(movieId))
                 .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                 .appendQueryParameter(TMDB_PARAM_APPEND_TO_RESPONSE, "keywords,release_dates,external_ids,recommendations,similar")
                 .build();
 
@@ -250,19 +269,7 @@ public class Tmdb {
             JSONObject baseJSONResponse = new JSONObject(JSONresponse);
 
             // Extract the required values for the corresponding keys.
-            boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
-            String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
-            int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
-            String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
-            String original_title = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_title");
-            String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
-            Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
-            String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
-            String release_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "release_date");
-            String title = NetworkUtils.getStringFromJSON(baseJSONResponse, "title");
-            Boolean video = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "video");
-            Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
-            int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
+            TmdbMovie movie = getMovie(baseJSONResponse, 0, 0, 0);
             int budget = NetworkUtils.getIntFromJSON(baseJSONResponse, "budget");
             String homepage = NetworkUtils.getStringFromJSON(baseJSONResponse, "homepage");
             String imdb_id = NetworkUtils.getStringFromJSON(baseJSONResponse, "imdb_id");
@@ -394,13 +401,25 @@ public class Tmdb {
                 releases = getMovieReleases(releasesObject);
             }
 
+            // Extract external links.
+            TmdbExternalId externalIds = null;
+            if (!baseJSONResponse.isNull("external_ids")) {
+                JSONObject externalIdsObject = baseJSONResponse.getJSONObject("external_ids");
+                externalIds = getExternalLinks(externalIdsObject);
+            }
+
+            // Extract keywords array.
+            ArrayList<TmdbKeyword> keywords = null;
+            if (!baseJSONResponse.isNull("keywords")) {
+                JSONObject keywordsObject = baseJSONResponse.getJSONObject("keywords");
+                keywords = getKeywords(keywordsObject);
+            }
+
             // Return a {@link TmdbMovieDetails} object with the data retrieved from the JSON
             // response.
-            return new TmdbMovieDetails(id, adult, backdrop_path, movieCollection, budget,
-                    genres, homepage, imdb_id, original_language, original_title, overview,
-                    popularity, poster_path, production_companies, production_countries,
-                    release_date, revenue, runtime, spoken_languages, status, tagline, title, video,
-                    vote_average, vote_count, releases, 0, 0, 0);
+            return new TmdbMovieDetails(movie, movieCollection, budget, homepage, imdb_id,
+                    production_companies, production_countries, revenue, runtime, spoken_languages,
+                    status, tagline, releases, externalIds, keywords);
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
@@ -415,7 +434,6 @@ public class Tmdb {
      * @param movieId is the identifier of the movie in TMDB.
      * @return a {@link TmdbCastCrew} object.
      */
-
     public static TmdbCastCrew getTmdbCastAndCrew(int movieId) {
         Log.i(TAG, "(getTmdbCastAndCrew) Movie ID: " + movieId);
 
@@ -610,8 +628,10 @@ public class Tmdb {
                 String content = NetworkUtils.getStringFromJSON(baseJSONResponse, "content");
                 String url = NetworkUtils.getStringFromJSON(baseJSONResponse, "url");
 
-                // Create a new {@link TmdbReview} object with the data retrieved from the JSON response.
-                TmdbReview review = new TmdbReview(id, author, content, url, "", "", "", page, n, total_pages);
+                // Create a new {@link TmdbReview} object with the data retrieved from the JSON
+                // response.
+                TmdbReview review = new TmdbReview(id, author, content, url, "",
+                        "", "", page, n, total_pages);
 
                 // Add the new {@link TmdbReview} to the list of reviews.
                 reviews.add(review);
@@ -628,12 +648,72 @@ public class Tmdb {
     }
 
     /**
+     * Fetches TMDB for information about the external links (IMDB, Facebook, Instagram, Twitter)
+     * related to a movie.
+     *
+     * @param externalIdsObject is the JSON object containing the external links information.
+     * @return a {@link TmdbExternalId} object.
+     */
+    private static TmdbExternalId getExternalLinks(JSONObject externalIdsObject) {
+        // Extract the required values for the corresponding keys.
+        String imdb_id = NetworkUtils.getStringFromJSON(externalIdsObject, "imdb_id");
+        String facebook_id = NetworkUtils.getStringFromJSON(externalIdsObject, "facebook_id");
+        String instagram_id = NetworkUtils.getStringFromJSON(externalIdsObject, "instagram_id");
+        String twitter_id = NetworkUtils.getStringFromJSON(externalIdsObject, "twitter_id");
+
+        // Create and return the {@link TmdbExternalId} object with this information.
+        return new TmdbExternalId(imdb_id, facebook_id, instagram_id, twitter_id);
+    }
+
+    /**
+     * Fetches TMDB for information about the keywords related to a movie.
+     *
+     * @param keywordsJSONObject is the JSON object containing the keywords info.
+     * @return an array of {@link TmdbKeyword} objects.
+     */
+    private static ArrayList<TmdbKeyword> getKeywords(JSONObject keywordsJSONObject) {
+        // Create an empty array of TmdbKeyword objects to add data.
+        ArrayList<TmdbKeyword> keywordArrayList = new ArrayList<>();
+
+        // Try to parse the JSON object. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // If there is no "keywords" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (keywordsJSONObject.isNull("keywords")) {
+                Log.i(TAG, "(getKeywords) No \"keywords\" section in the JSON string.");
+                return null;
+            }
+
+            // Get keywords array.
+            JSONArray keywordsJSONArray = keywordsJSONObject.getJSONArray("keywords");
+            JSONObject jsonObject;
+            for (int n = 0; n < keywordsJSONArray.length(); n++) {
+                // Get a single result at position n within the list of results.
+                jsonObject = keywordsJSONArray.getJSONObject(n);
+
+                // Extract the required values for the corresponding keys.
+                int id = NetworkUtils.getIntFromJSON(jsonObject, "id");
+                String name = NetworkUtils.getStringFromJSON(jsonObject, "name");
+
+                // Add the new keywords object to the array.
+                TmdbKeyword keyword = new TmdbKeyword(id, name);
+                keywordArrayList.add(keyword);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "(getKeywords) Error parsing JSON: " + e);
+        }
+
+        return keywordArrayList;
+    }
+
+    /**
      * Fetches TMDB for information about the release dates of a movie at the current country.
      *
-     * @param resultsJSONResponse is the JSON object containing the release dates array.
+     * @param resultsJSONObject is the JSON object containing the release dates array.
      * @return a {@link TmdbRelease} object.
      */
-    private static TmdbRelease getMovieReleases(JSONObject resultsJSONResponse) {
+    private static TmdbRelease getMovieReleases(JSONObject resultsJSONObject) {
         TmdbRelease releases = null;
         boolean countryFound = false;
 
@@ -642,46 +722,46 @@ public class Tmdb {
         try {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
-            if (resultsJSONResponse.isNull("results")) {
+            if (resultsJSONObject.isNull("results")) {
                 Log.i(TAG, "(getMovieReleases) No \"results\" section in the JSON string.");
                 return null;
             }
 
             // Get results array.
-            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
-            JSONObject baseJSONResponse;
+            JSONArray resultsJSONArray = resultsJSONObject.getJSONArray("results");
+            JSONObject currentResultJSONObject;
             String currentCountry = Locale.getDefault().getCountry();
-            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+            for (int n = 0; n < resultsJSONArray.length(); n++) {
                 // Get a single result at position n within the list of results.
-                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+                currentResultJSONObject = resultsJSONArray.getJSONObject(n);
 
                 // Create an empty array of TmdbReleaseDate objects to add data.
-                ArrayList<TmdbReleaseDate> releaseDates = new ArrayList<>();
+                ArrayList<TmdbReleaseDate> releaseDateArrayList = new ArrayList<>();
 
                 // Extract only current country info.
-                String iso_3166_1 = NetworkUtils.getStringFromJSON(baseJSONResponse, "iso_3166_1");
+                String iso_3166_1 = NetworkUtils.getStringFromJSON(currentResultJSONObject, "iso_3166_1");
                 if (iso_3166_1.equals(currentCountry)) {
                     // Extract the JSONArray associated with the key called "genres", which represents
                     // the list of genres which the tmdbMovie belongs to.
-                    if (!baseJSONResponse.isNull("release_dates")) {
-                        JSONArray releaseDatesArray = baseJSONResponse.getJSONArray("release_dates");
+                    if (!currentResultJSONObject.isNull("release_dates")) {
+                        JSONArray releaseDatesArray = currentResultJSONObject.getJSONArray("release_dates");
 
                         // For each release date in the array, create an {@link TmdbReleaseDate} object.
-                        JSONObject currentReleaseDate;
+                        JSONObject currentReleaseDatesJSONObject;
                         for (int i = 0; i < releaseDatesArray.length(); i++) {
                             // Get a single release date at position i within the list of genres.
-                            currentReleaseDate = releaseDatesArray.getJSONObject(i);
+                            currentReleaseDatesJSONObject = releaseDatesArray.getJSONObject(i);
 
                             // Extract the required values for the corresponding keys.
-                            String certification = NetworkUtils.getStringFromJSON(currentReleaseDate, "certification");
-                            String iso_639_1 = NetworkUtils.getStringFromJSON(currentReleaseDate, "iso_639_1");
-                            String note = NetworkUtils.getStringFromJSON(currentReleaseDate, "note");
-                            String release_date = NetworkUtils.getStringFromJSON(currentReleaseDate, "release_date");
-                            int type = NetworkUtils.getIntFromJSON(currentReleaseDate, "type");
+                            String certification = NetworkUtils.getStringFromJSON(currentReleaseDatesJSONObject, "certification");
+                            String iso_639_1 = NetworkUtils.getStringFromJSON(currentReleaseDatesJSONObject, "iso_639_1");
+                            String note = NetworkUtils.getStringFromJSON(currentReleaseDatesJSONObject, "note");
+                            String release_date = NetworkUtils.getStringFromJSON(currentReleaseDatesJSONObject, "release_date");
+                            int type = NetworkUtils.getIntFromJSON(currentReleaseDatesJSONObject, "type");
 
                             // Create a new {@link TmdbReleaseDate} object and add it to the array.
                             TmdbReleaseDate releaseDate = new TmdbReleaseDate(certification, iso_639_1, note, release_date, type);
-                            releaseDates.add(releaseDate);
+                            releaseDateArrayList.add(releaseDate);
                             countryFound = true;
                         }
                     }
@@ -690,9 +770,16 @@ public class Tmdb {
 
                 // Create a new {@link TmdbRelease} object with the data retrieved from the JSON
                 // response, only if there is at least one release date related to the current
-                // country.
-                if (countryFound)
-                    releases = new TmdbRelease(iso_3166_1, releaseDates);
+                // country. Previously, sort the {@link TmdbReleaseDate} array by date.
+                if (countryFound) {
+                    Collections.sort(releaseDateArrayList, new Comparator<TmdbReleaseDate>() {
+                        @Override
+                        public int compare(TmdbReleaseDate r1, TmdbReleaseDate r2) {
+                            return r1.getRelease_date().compareTo(r2.getRelease_date());
+                        }
+                    });
+                    releases = new TmdbRelease(iso_3166_1, releaseDateArrayList);
+                }
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,

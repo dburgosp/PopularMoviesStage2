@@ -54,7 +54,7 @@
         android:layout_marginBottom="@dimen/small_padding"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="PRODUCTION COUNTRIES\nList of production countries in more than one line" />
+        tools:text="PRODUCTION COUNTRIES\nList of production countries\nin more than one line" />
 
     <TextView
         android:id="@+id/info_original_title"
@@ -63,7 +63,7 @@
         android:layout_marginBottom="@dimen/small_padding"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="ORIGINAL TITLE\nOriginal title in more than one line" />
+        tools:text="ORIGINAL TITLE\nOriginal title\nin more than one line" />
 
     <TextView
         android:id="@+id/info_production_companies"
@@ -72,7 +72,7 @@
         android:layout_marginBottom="@dimen/small_padding"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="PRODUCTION COMPANIES\nList of production companies in more than one line" />
+        tools:text="PRODUCTION COMPANIES\nList of production companies\nin more than one line" />
 
     <TextView
         android:id="@+id/info_budget"
@@ -91,13 +91,4 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
         tools:text="REVENUE ($)\nRevenue" />
-
-    <TextView
-        android:id="@+id/info_spoken_languages"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/normal_plus_text_size"
-        tools:text="SPOKEN LANGUAGES\nList of spoken languages in more than one line" />
 </LinearLayout>

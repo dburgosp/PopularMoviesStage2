@@ -2,18 +2,21 @@ package com.example.android.popularmoviesstage2.utils;
 
 import android.util.Log;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 
-public final class LanguageUtils {
-    private static final String TAG = LanguageUtils.class.getSimpleName();
+public final class LocaleUtils {
+    private static final String TAG = LocaleUtils.class.getSimpleName();
 
     /**
-     * Create a private constructor because no one should ever create a {@link DateTimeUtils}
+     * Create a private constructor because no one should ever create a {@link LocaleUtils}
      * object. This class is only meant to hold static variables and methods, which can be accessed
      * directly from the class name DateTimeUtils (and an object instance of DateTimeUtils is not
      * needed).
      */
-    private LanguageUtils() {
+    private LocaleUtils() {
     }
 
     /**
@@ -32,7 +35,7 @@ public final class LanguageUtils {
      *
      * @return a string containing the name of the USA in the current device language.
      */
-    public static String getUSCountryName(){
+    public static String getUSCountryName() {
         String countryName = Locale.US.getDisplayCountry();
         Log.e(TAG, "(getUSCountryName) Country name for the USA: " + countryName);
         return countryName;
@@ -62,10 +65,40 @@ public final class LanguageUtils {
      */
     public static String getLanguageName(String isoLanguage) {
         Log.e(TAG, "(getLanguageName) isoLanguage IN: " + isoLanguage);
+
+        // Correct obsolete ISO 639 codes.
+        switch (isoLanguage) {
+            case "cn":
+                isoLanguage = "zh";
+                break;
+        }
         Locale locale = new Locale(isoLanguage);
-        String language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +
-                locale.getDisplayLanguage().substring(1);
+        String language = locale.getDisplayLanguage();
         Log.e(TAG, "(getLanguageName) language OUT: " + language);
         return language;
+    }
+
+    /**
+     * Helper method to format a quantity with a given currency in a locale-specific manner.
+     *
+     * @param number   is the input quantity.
+     * @param currency is the ISO 4217 numeric code for the currency.
+     * @return a string with the formatted quantity in the given currency.
+     */
+    public static String getCurrencyFormat(double number, String currency) {
+        Log.e(TAG, "(getCurrencyFormat) Amount: " + number + ". Currency: " + currency);
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        formatter.setCurrency(Currency.getInstance(currency));
+        String currencyFormat = formatter.format(number);
+
+        // Remove decimals. Look for decimal separator and make substrings.
+        DecimalFormat fmt = (DecimalFormat) DecimalFormat.getCurrencyInstance(Locale.getDefault());
+        String symbol = String.valueOf(fmt.getDecimalFormatSymbols().getDecimalSeparator());
+        int index = currencyFormat.indexOf(symbol);
+        currencyFormat = currencyFormat.substring(0, index) +
+                currencyFormat.substring(index + 3, currencyFormat.length());
+
+        Log.e(TAG, "(getCurrencyFormat) Formatted amount: " + currencyFormat);
+        return currencyFormat;
     }
 }

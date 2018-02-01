@@ -25,10 +25,13 @@ import android.widget.Toast;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.Facebook;
 import com.example.android.popularmoviesstage2.classes.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
+import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbKeyword;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCompany;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
@@ -36,16 +39,17 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.classes.TmdbRelease;
+import com.example.android.popularmoviesstage2.classes.Twitter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
-import com.example.android.popularmoviesstage2.utils.LanguageUtils;
+import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,8 +111,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     TextView originalTitleTextView;
     @BindView(R.id.info_production_companies)
     TextView productionCompaniesTextView;
-    @BindView(R.id.info_spoken_languages)
-    TextView spokenLanguagesTextView;
     @BindView(R.id.info_budget)
     TextView budgetTextView;
     @BindView(R.id.info_revenue)
@@ -123,12 +125,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_collection_name)
     TextView collectionNameTextView;
 
-    @BindView(R.id.info_tags_layout)
-    LinearLayout tagsLayout;
-    @BindView(R.id.info_tags_title)
-    TextView tagsTitleTextView;
-    @BindView(R.id.info_tags_flowlayout)
-    FlowLayout tagsFlowLayout;
+    @BindView(R.id.info_keywords_layout)
+    LinearLayout keywordsLayout;
+    @BindView(R.id.info_keywords_title)
+    TextView keywordsTitleTextView;
+    @BindView(R.id.info_keywords_flowlayout)
+    FlowLayout keywordsFlowLayout;
 
     @BindView(R.id.info_links_layout)
     LinearLayout linksLayout;
@@ -228,7 +230,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId);
-            return new TmdbMovieDetailsAsyncTaskLoader(getContext(), movieId);
+            return new TmdbMovieDetailsAsyncTaskLoader(getContext(), movieId,
+                    Locale.getDefault().getLanguage());
         } else {
             // There is no connection. Show error message.
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
@@ -339,7 +342,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         genresFlowLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
         linksLayout.setVisibility(View.GONE);
-        tagsLayout.setVisibility(View.GONE);
+        keywordsLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -366,7 +369,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         if (setLinksSection())
             linksLayout.setVisibility(View.VISIBLE);
 
-        // TODO. Set tags section.
+        // Set keywords section.
+        if (setKeywordsSection())
+            keywordsLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -387,7 +392,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             taglineTextView.setVisibility(View.GONE);
 
         // Set overview. If there is no overview, we show the default text for overview.
-        String overview = movieDetails.getOverview();
+        String overview = movieDetails.getMovie().getOverview();
         if (overview != null && !overview.equals("") && !overview.isEmpty()) {
             infoSectionSet = true;
             overviewTextView.setText(overview);
@@ -407,7 +412,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         boolean infoSectionSet = false;
         String color = String.format("%X",
                 getResources().getColor(R.color.colorDarkWhite)).substring(2);
-        String currentCountry = LanguageUtils.getCurrentCountryName();
+        String currentCountry = LocaleUtils.getCurrentCountryName();
         StringBuilder stringBuilder = new StringBuilder();
 
         /* ------- */
@@ -468,22 +473,28 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     stringBuilder.append(" (");
                     switch (releases.getReleaseDateArrayList().get(i).getType()) {
                         case Tmdb.TMDB_RELEASE_TYPE_DIGITAL:
-                            stringBuilder.append(getString(R.string.release_type_digital));
+                            stringBuilder.append(getString(R.string.release_type_digital,
+                                    currentCountry));
                             break;
                         case Tmdb.TMDB_RELEASE_TYPE_PHYSICAL:
-                            stringBuilder.append(getString(R.string.release_type_physical));
+                            stringBuilder.append(getString(R.string.release_type_physical,
+                                    currentCountry));
                             break;
                         case Tmdb.TMDB_RELEASE_TYPE_PREMIERE:
-                            stringBuilder.append(getString(R.string.release_type_premiere));
+                            stringBuilder.append(getString(R.string.release_type_premiere,
+                                    currentCountry));
                             break;
                         case Tmdb.TMDB_RELEASE_TYPE_THEATRICAL:
-                            stringBuilder.append(getString(R.string.release_type_theatrical));
+                            stringBuilder.append(getString(R.string.release_type_theatrical,
+                                    currentCountry));
                             break;
                         case Tmdb.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED:
-                            stringBuilder.append(getString(R.string.release_type_theatrical_limited));
+                            stringBuilder.append(getString(R.string.release_type_theatrical_limited,
+                                    currentCountry));
                             break;
                         default:
-                            stringBuilder.append(getString(R.string.release_type_tv));
+                            stringBuilder.append(getString(R.string.release_type_tv,
+                                    currentCountry));
                     }
                     stringBuilder.append(")");
                 }
@@ -499,7 +510,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
             // Set section title.
             releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates,
-                    releases.getReleaseDateArrayList().size()) + " (" + currentCountry + ")";
+                    releases.getReleaseDateArrayList().size());
 
             // Append previous status info, if exists.
             if (releaseDatesContent.isEmpty())
@@ -508,7 +519,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 releaseDatesContent = releaseDatesContent + "<br>" + stringBuilder;
         } else {
             // If there is no local release dates, show official release date.
-            String releaseDate = movieDetails.getRelease_date();
+            String releaseDate = movieDetails.getMovie().getRelease_date();
             if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
                 // Set section title.
                 releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
@@ -534,25 +545,50 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // We obtained the age rating previously, if it exists, from the release dates information.
         if (!ageRating.equals("")) {
-            String ageRatingContent = getString(R.string.age_rating_title) + " (" + currentCountry +
-                    ")";
+            String ageRatingContent = getString(R.string.age_rating_title);
             ageRatingContent = "<strong>" + ageRatingContent.toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + ageRating + "</font>";
+                    "<font color=\"#" + color + "\">" + ageRating + " (" + currentCountry +
+                    ")</font>";
             TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
             ageRatingTextView.setVisibility(View.VISIBLE);
         } else
             ageRatingTextView.setVisibility(View.GONE);
 
-        /* ----------------- */
-        /* ORIGINAL LANGUAGE */
-        /* ----------------- */
+        /* --------- */
+        /* LANGUAGES */
+        /* --------- */
 
-        String originalLanguage = movieDetails.getOriginal_language();
+        String originalLanguage = movieDetails.getMovie().getOriginal_language();
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
-            String languageName = LanguageUtils.getLanguageName(originalLanguage);
+            String languageName = LocaleUtils.getLanguageName(originalLanguage);
             String htmlText = "<strong>" + getString(R.string.original_language).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + languageName + "</font>";
+                    "</strong><br><font color=\"#" + color + "\">" +
+                    languageName.substring(0, 1).toUpperCase() + languageName.substring(1) +
+                    "</font>";
+
+            // Add other spoken languages, if available.
+            ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
+            if (movieLanguages != null && movieLanguages.size() > 1) {
+                stringBuilder = new StringBuilder();
+                String otherLanguageName;
+                for (int n = 0; n < movieLanguages.size(); n++) {
+                    otherLanguageName =
+                            LocaleUtils.getLanguageName(movieLanguages.get(n).getIso_639_1());
+
+                    // Add another language only if it is not the same as the original language.
+                    if (!languageName.equals(otherLanguageName)) {
+                        // Append ',' if this is not the first language appended.
+                        if (n > 0 && stringBuilder.length() > 0)
+                            stringBuilder.append(", ");
+
+                        stringBuilder.append(otherLanguageName);
+                    }
+                }
+                htmlText = htmlText + "<br><font color=\"#" + color + "\">" +
+                        getString(R.string.spoken_languages) + ": " + stringBuilder + "</font>";
+            }
+
             TextUtils.setHtmlText(originalLanguageTextView, htmlText);
             originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
@@ -562,7 +598,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         /* ORIGINAL TITLE */
         /* -------------- */
 
-        String originalTitle = movieDetails.getOriginal_title();
+        String originalTitle = movieDetails.getMovie().getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             infoSectionSet = true;
             String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() +
@@ -604,7 +640,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCountries.size(); n++) {
                 String countryName =
-                        LanguageUtils.getCountryName(movieCountries.get(n).getIso_3166_1());
+                        LocaleUtils.getCountryName(movieCountries.get(n).getIso_3166_1());
                 stringBuilder.append(countryName);
                 if ((n + 1) < movieCountries.size())
                     stringBuilder.append("<br>");
@@ -618,30 +654,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             productionCountriesTextView.setVisibility(View.GONE);
 
-        /* ---------------- */
-        /* SPOKEN LANGUAGES */
-        /* ---------------- */
-
-        ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
-        if (movieLanguages != null && movieLanguages.size() > 1) {
-            infoSectionSet = true;
-            stringBuilder = new StringBuilder();
-            for (int n = 0; n < movieLanguages.size(); n++) {
-                String languageName =
-                        LanguageUtils.getLanguageName(movieLanguages.get(n).getIso_639_1());
-                stringBuilder.append(languageName);
-                if ((n + 1) < movieLanguages.size())
-                    stringBuilder.append("<br>");
-            }
-            String htmlText = "<strong>" +
-                    getResources().getQuantityString(R.plurals.spoken_languages,
-                            movieLanguages.size()).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + stringBuilder + "</font>";
-            TextUtils.setHtmlText(spokenLanguagesTextView, htmlText);
-            spokenLanguagesTextView.setVisibility(View.VISIBLE);
-        } else
-            spokenLanguagesTextView.setVisibility(View.GONE);
-
         /* ------ */
         /* BUDGET */
         /* ------ */
@@ -649,10 +661,11 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         int budget = movieDetails.getBudget();
         if (budget > 0) {
             infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+
+            // Budget amounts in USD.
+            String usdBudget = LocaleUtils.getCurrencyFormat(budget, "USD");
             String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + decimalFormat.format(budget) +
-                    "</font>";
+                    "</strong><br><font color=\"#" + color + "\">" + usdBudget + "</font>";
             TextUtils.setHtmlText(budgetTextView, htmlText);
             budgetTextView.setVisibility(View.VISIBLE);
         } else
@@ -665,9 +678,11 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         int revenue = movieDetails.getRevenue();
         if (revenue > 0) {
             infoSectionSet = true;
-            DecimalFormat decimalFormat = new DecimalFormat("###,###");
+
+            // Revenue amounts in USD.
+            String usdRevenue = LocaleUtils.getCurrencyFormat(revenue, "USD");
             String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + decimalFormat.format(revenue) + "</font>";
+                    "<font color=\"#" + color + "\">" + usdRevenue + "</font>";
             TextUtils.setHtmlText(revenueTextView, htmlText);
             revenueTextView.setVisibility(View.VISIBLE);
         } else
@@ -683,7 +698,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
 
     private boolean setGenresSection() {
-        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getGenres();
+        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
 
         genresFlowLayout.removeAllViews();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -692,8 +707,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             for (int n = 0; n < movieGenres.size(); n++) {
                 // Create the genre element into the FlowLayout.
                 try {
-                    View view = inflater.inflate(R.layout.list_item_genre, null);
-                    final TextView genreTextView = (TextView) view.findViewById(R.id.genre_textview);
+                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
+                    final TextView genreTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
                     genreTextView.setText(movieGenres.get(n).getName());
                     genresFlowLayout.addView(view);
 
@@ -763,8 +778,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();
         if (homepage != null && !homepage.equals("") && !homepage.isEmpty()) {
-            infoSectionSet = true;
-
             // Implicit intent to open the homepage.
             homepageImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -774,34 +787,101 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     startActivity(intent);
                 }
             });
+            infoSectionSet = true;
         } else
             homepageImageView.setAlpha(LINK_ALPHA);
 
         // Set IMDB link. If there is no IMDB link, make this section transparent.
         final String imdb = movieDetails.getImdb_id();
-        if (imdb != null && !imdb.equals("") && !imdb.isEmpty()) {
+        if (setExternalLink(imdb, imdbImageView, Imdb.IMDB_BASE_URL))
             infoSectionSet = true;
+        else
+            imdbImageView.setAlpha(LINK_ALPHA);
 
-            // Implicit intent to open the IMDB link.
-            imdbImageView.setOnClickListener(new View.OnClickListener() {
+        // Set Facebook link. If there is no Facebook link, make this section transparent.
+        final String facebook = movieDetails.getExternalIds().getFacebook_id();
+        if (setExternalLink(facebook, facebookImageView, Facebook.FACEBOOK_BASE_URL))
+            infoSectionSet = true;
+        else
+            facebookImageView.setAlpha(LINK_ALPHA);
+
+        // Set Instagram link. If there is no Instagram link, make this section transparent.
+        final String instagram = movieDetails.getExternalIds().getInstagram_id();
+        if (setExternalLink(instagram, instagramImageView, Instagram.INSTAGRAM_BASE_URL))
+            infoSectionSet = true;
+        else
+            instagramImageView.setAlpha(LINK_ALPHA);
+
+        // Set Twitter link. If there is no Twitter link, make this section transparent.
+        final String twitter = movieDetails.getExternalIds().getTwitter_id();
+        if (setExternalLink(twitter, twitterImageView, Twitter.TWITTER_BASE_URL))
+            infoSectionSet = true;
+        else
+            twitterImageView.setAlpha(LINK_ALPHA);
+
+        return infoSectionSet;
+    }
+
+    /**
+     * Set movie keywords section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setKeywordsSection() {
+        ArrayList<TmdbKeyword> keywordsArrayList = movieDetails.getKeywords();
+
+
+        if (keywordsArrayList != null && keywordsArrayList.size() > 0) {
+            keywordsFlowLayout.removeAllViews();
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            for (int n = 0; n < keywordsArrayList.size(); n++) {
+                // Create the current keyword element into the FlowLayout.
+                try {
+                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
+                    final TextView keywordTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
+                    keywordTextView.setText(keywordsArrayList.get(n).getName());
+                    keywordsFlowLayout.addView(view);
+
+                    // Set a listener for managing click events on keywords.
+                    keywordTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getContext(), "Keyword clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "(setKeywordsSection) Error inflating view for " + keywordsArrayList.get(n).getName());
+                }
+            }
+            return true;
+        } else
+            return false;
+    }
+
+    /**
+     * Helper method to set an OnClickListener on a image for opening an external link.
+     *
+     * @param externalId is the unique identifier to append to the url.
+     * @param imageView  is the ImageView that will be set with the OnClickListener.
+     * @param url        is the base url of the external link.
+     * @return true if the externalId is not empty, false otherwise.
+     */
+    private boolean setExternalLink(final String externalId, ImageView imageView, final String url) {
+        if (externalId != null && !externalId.equals("") && !externalId.isEmpty()) {
+            // Implicit intent to open the link.
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Uri builtUri = Uri.parse(Imdb.IMDB_BASE_URL).buildUpon()
-                            .appendPath(imdb)
+                    Uri builtUri = Uri.parse(url).buildUpon()
+                            .appendPath(externalId)
                             .build();
                     Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
                     startActivity(intent);
                 }
             });
-        } else
-            imdbImageView.setAlpha(LINK_ALPHA);
-
-        // TODO: Facebook, Twitter, Instagram.
-        facebookImageView.setAlpha(LINK_ALPHA);
-        twitterImageView.setAlpha(LINK_ALPHA);
-        instagramImageView.setAlpha(LINK_ALPHA);
-
-        return infoSectionSet;
+            return true;
+        }
+        return false;
     }
 
     /* ------------- */
@@ -969,10 +1049,11 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     Log.i(TAG, "(setAgeRating) US age rating from OMDB:" + omdbAgeRating);
                     String color = String.format("%X",
                             getResources().getColor(R.color.colorDarkWhite)).substring(2);
-                    String country = LanguageUtils.getUSCountryName();
-                    String ageRatingTitle = getString(R.string.age_rating_title) + " (" + country + ")";
+                    String country = LocaleUtils.getUSCountryName();
+                    String ageRatingTitle = getString(R.string.age_rating_title);
                     String ageRatingContent = "<strong>" + ageRatingTitle.toUpperCase() +
-                            "</strong><br><font color=\"#" + color + "\">" + omdbAgeRating + "</font>";
+                            "</strong><br><font color=\"#" + color + "\">" + omdbAgeRating + " (" +
+                            country + ")</font>";
                     TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
                     return true;
                 } else

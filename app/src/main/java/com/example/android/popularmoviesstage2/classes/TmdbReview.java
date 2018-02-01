@@ -3,6 +3,9 @@ package com.example.android.popularmoviesstage2.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Public class for managing the user movie reviews.
+ */
 public class TmdbReview implements Parcelable {
     private String id;
     private String author;

@@ -68,18 +68,10 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     RecyclerView directingDepartmentRecyclerView;
     @BindView(R.id.crew_relative_layout)
     RelativeLayout crewRelativeLayout;
-    @BindView(R.id.writing_title)
-    TextView writingDepartmentTitleTextView;
-    @BindView(R.id.writing_content)
+    @BindView(R.id.writing_textview)
     TextView writingDepartmentTextView;
-    @BindView(R.id.production_title)
-    TextView productionDepartmentTitleTextView;
-    @BindView(R.id.production_content)
+    @BindView(R.id.production_textview)
     TextView productionDepartmentTextView;
-    @BindView(R.id.writing_linear_layout)
-    LinearLayout writingLinearLayout;
-    @BindView(R.id.production_linear_layout)
-    LinearLayout productionLinearLayout;
 
     private int movieId;
     private CastAdapter castAdapter;
@@ -294,7 +286,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                     ArrayList<TmdbCrew> crewWritingArrayList = getFilteredCrewArrayList(crewArrayList, "Writing");
 
                     // Set the corresponding crew section if there is data.
-                    setCrewTextView(crewWritingArrayList, writingDepartmentTextView, writingLinearLayout);
+                    setCrewTextView(crewWritingArrayList, writingDepartmentTextView, getString(R.string.department_writing));
 
                     /* --------------------- */
                     /* Production department */
@@ -304,7 +296,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                     ArrayList<TmdbCrew> crewProductionArrayList = getFilteredCrewArrayList(crewArrayList, "Production");
 
                     // Set the corresponding crew section if there is data.
-                    setCrewTextView(crewProductionArrayList, productionDepartmentTextView, productionLinearLayout);
+                    setCrewTextView(crewProductionArrayList, productionDepartmentTextView, getString(R.string.department_production));
                 } else {
                     // Hide section if there is no crew information for this movie.
                     separatorView.setVisibility(View.GONE);
@@ -418,9 +410,9 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
      *
      * @param crewArrayList is the ArrayList containing the crew elements to be shown.
      * @param textView      is the TextView where the crew elements are going to be written.
-     * @param linearLayout  is the LinearLayout that contains the current crew section.
+     * @param title         is a String containing the title of the current crew section.
      */
-    private void setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, LinearLayout linearLayout) {
+    private void setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
         if (crewArrayList.size() > 0) {
             String text = "";
             String color = String.format("%X", getResources().getColor(R.color.colorBlack)).substring(2);
@@ -428,23 +420,27 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 // Add members of the current department to the corresponding TextView.
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(text);
-                stringBuilder.append("<font color=\"#");
-                stringBuilder.append(color);
-                stringBuilder.append("\"><strong>");
+                //stringBuilder.append("<font color=\"#");
+                //stringBuilder.append(color);
+                //stringBuilder.append("\"><strong>");
                 stringBuilder.append(crewArrayList.get(i).getName());
-                stringBuilder.append("</strong></font> (");
+                //stringBuilder.append("</strong></font> (");
+                stringBuilder.append(" <em>(");
                 stringBuilder.append(crewArrayList.get(i).getJob());
-                stringBuilder.append(")");
+                stringBuilder.append(")</em>");
                 if (i < (crewArrayList.size() - 1)) {
                     // Don't append newline character to the last element.
                     stringBuilder.append("<br>");
                 }
                 text = stringBuilder.toString();
             }
+
+            // Add title and set text.
+            text = "<font color=\"#" + color+"\"><strong>"+title.toUpperCase() + "</strong></font><br>" + text;
             TextUtils.setHtmlText(textView, text);
         } else {
             // Hide crew section if there is no information for the current department.
-            linearLayout.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
         }
     }
 }

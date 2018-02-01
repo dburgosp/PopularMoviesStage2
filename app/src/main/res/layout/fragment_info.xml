@@ -37,7 +37,7 @@
             <include layout="@layout/layout_info_links" />
 
             <!-- Tags section -->
-            <include layout="@layout/layout_info_tags" />
+            <include layout="@layout/layout_info_keywords" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->

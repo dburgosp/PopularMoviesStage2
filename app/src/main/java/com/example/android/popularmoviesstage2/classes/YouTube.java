@@ -14,7 +14,7 @@ public class YouTube {
     /**
      * Create a private constructor because no one should ever create a {@link YouTube} object.
      * This class is only meant to hold static variables and methods, which can be accessed
-     * directly from the class name NetworkUtils (and an object instance of NetworkUtils is not
+     * directly from the class name YouTube (and an object instance of NetworkUtils is not
      * needed).
      */
     private YouTube() {

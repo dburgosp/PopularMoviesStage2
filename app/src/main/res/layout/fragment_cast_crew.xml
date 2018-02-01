@@ -116,85 +116,25 @@
                 android:layout_marginBottom="@dimen/tiny_padding"
                 android:scrollbars="vertical" />
 
-            <LinearLayout
-                android:id="@+id/writing_linear_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/writing_textview"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/regular_padding"
+                android:textSize="@dimen/normal_plus_text_size"
+                tools:text="WRITING\nName Surname (job)\nName Surname (job)" />
 
-                <TextView
-                    android:id="@+id/writing_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:text="@string/department_writing"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separator"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding"
-                    android:alpha="0.5"
-                    android:background="@color/colorGrey" />
-
-                <TextView
-                    android:id="@+id/writing_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/tiny_padding"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:text="@string/department_writing"
-                    android:textSize="@dimen/normal_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/production_linear_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/production_textview"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/production_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/regular_padding"
-                    android:text="@string/department_production"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/normal_plus_text_size"
-                    android:textStyle="bold" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/separator"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding"
-                    android:alpha="0.5"
-                    android:background="@color/colorGrey" />
-
-                <TextView
-                    android:id="@+id/production_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/tiny_padding"
-                    android:layout_marginEnd="@dimen/regular_padding"
-                    android:layout_marginStart="@dimen/regular_padding"
-                    android:layout_marginTop="@dimen/tiny_padding"
-                    android:fontFamily="sans-serif-smallcaps"
-                    android:text="@string/department_production"
-                    android:textSize="@dimen/normal_text_size" />
-            </LinearLayout>
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_marginTop="@dimen/regular_padding"
+                android:textSize="@dimen/normal_plus_text_size"
+                tools:text="PRODUCTION\nName Surname (job)\nName Surname (job)" />
         </LinearLayout>
 
         <TextView

@@ -90,6 +90,7 @@
                             android:layout_marginEnd="@dimen/small_padding"
                             android:layout_marginStart="@dimen/regular_padding"
                             android:layout_toStartOf="@id/movie_details_score"
+                            android:gravity="end"
                             android:orientation="vertical">
 
                             <TextView
@@ -105,7 +106,6 @@
                                 android:id="@+id/movie_details_score_votes"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
                                 android:textColor="@color/colorGrey"
                                 android:textSize="@dimen/normal_text_size"
                                 tools:text="(0 votes)" />

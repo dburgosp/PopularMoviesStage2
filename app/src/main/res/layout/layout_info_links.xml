@@ -25,13 +25,6 @@
         android:src="@drawable/icon_imdb_48dp" />
 
     <ImageView
-        android:id="@+id/info_links_twitter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/icon_twitter_48dp" />
-
-    <ImageView
         android:id="@+id/info_links_facebook"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -44,4 +37,11 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:src="@drawable/icon_instagram_48dp" />
+
+    <ImageView
+        android:id="@+id/info_links_twitter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@drawable/icon_twitter_48dp" />
 </LinearLayout>
