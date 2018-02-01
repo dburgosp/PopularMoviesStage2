@@ -135,15 +135,15 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_links_layout)
     LinearLayout linksLayout;
     @BindView(R.id.info_links_homepage)
-    ImageView homepageImageView;
+    TextView homepageImageView;
     @BindView(R.id.info_links_imdb)
-    ImageView imdbImageView;
+    TextView imdbImageView;
     @BindView(R.id.info_links_twitter)
-    ImageView twitterImageView;
+    TextView twitterImageView;
     @BindView(R.id.info_links_facebook)
-    ImageView facebookImageView;
+    TextView facebookImageView;
     @BindView(R.id.info_links_instagram)
-    ImageView instagramImageView;
+    TextView instagramImageView;
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
@@ -339,7 +339,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         scoresLinearLayout.setVisibility(View.GONE);
         overviewLinearLayout.setVisibility(View.GONE);
         mainLinearLayout.setVisibility(View.GONE);
-        genresFlowLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
         linksLayout.setVisibility(View.GONE);
         keywordsLayout.setVisibility(View.GONE);
@@ -356,10 +355,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         // Set main info section.
         if (setMainInfoSection())
             mainLinearLayout.setVisibility(View.VISIBLE);
-
-        // Set genres list.
-        if (setGenresSection())
-            genresFlowLayout.setVisibility(View.VISIBLE);
 
         // Set collection section.
         if (setCollectionSection())
@@ -688,22 +683,15 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             revenueTextView.setVisibility(View.GONE);
 
-        return infoSectionSet;
-    }
+        /* ------ */
+        /* GENRES */
+        /* ------ */
 
-    /**
-     * Set genres section.
-     *
-     * @return true if there is one genre at least, false otherwise.
-     */
-
-    private boolean setGenresSection() {
         ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
-
         genresFlowLayout.removeAllViews();
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         if (movieGenres != null && movieGenres.size() > 0) {
+            infoSectionSet = true;
             for (int n = 0; n < movieGenres.size(); n++) {
                 // Create the genre element into the FlowLayout.
                 try {
@@ -716,16 +704,17 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     genreTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            view.setElevation(0);
                             Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
                         }
                     });
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "(setGenresSection) Error inflating view for " + movieGenres.get(n).getName());
+                } catch (java.lang.NullPointerException e) {
+                    Log.e(TAG, "(setMainInfoSection) Error inflating view for " + movieGenres.get(n).getName());
                 }
             }
-            return true;
-        } else
-            return false;
+        }
+
+        return infoSectionSet;
     }
 
     /**
@@ -866,7 +855,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @param url        is the base url of the external link.
      * @return true if the externalId is not empty, false otherwise.
      */
-    private boolean setExternalLink(final String externalId, ImageView imageView, final String url) {
+    private boolean setExternalLink(final String externalId, TextView imageView, final String url) {
         if (externalId != null && !externalId.equals("") && !externalId.isEmpty()) {
             // Implicit intent to open the link.
             imageView.setOnClickListener(new View.OnClickListener() {

@@ -27,6 +27,7 @@
     <string name="department_visual_effects">Efectos visuales</string>
     <string name="department_sound">Sonido</string>
     <string name="department_writing">Narrativa</string>
+    <string name="external_links_title">Enlaces externos</string>
     <string name="fetching_cast_crew_info">Obteniendo el reparto y el equipo de la película&#8230;</string>
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>
     <string name="film_crew">Equipo destacado</string>

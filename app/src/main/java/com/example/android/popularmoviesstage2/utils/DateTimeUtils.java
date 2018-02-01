@@ -44,8 +44,9 @@ public final class DateTimeUtils {
         Log.i(TAG, "(getYear) Year: " + year);
         return year;*/
 
-        Log.i(TAG, "(getYear) Year: " + dateString.substring(0, 3));
-        return dateString.substring(0, 4);
+        String year = dateString.substring(0, 4);
+        Log.i(TAG, "(getYear) Year: " + year);
+        return year;
     }
 
     /**

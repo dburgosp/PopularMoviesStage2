@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.example.android.popularmoviesstage2.classes.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/info_genres_flowlayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/big_padding"
-    android:layout_marginEnd="@dimen/regular_padding"
-    android:layout_marginStart="@dimen/regular_padding" />

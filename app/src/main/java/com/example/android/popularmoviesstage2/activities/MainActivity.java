@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // to configure the RecyclerView nor initialize the loader here. These tasks will be
         // performed later in the onRestoreInstanceState method, which runs after the onCreate
         // method.
-        if (savedInstanceState == null) {
+        //if (savedInstanceState == null) {
             // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
             // getting movie information from TMDB in a separate thread.
             moviesArrayList = new ArrayList<>();
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             loader = null;
             setRecyclerView();
             getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
-        }
+        //}
 
         Log.i(TAG, "(onCreate) Activity created");
     }

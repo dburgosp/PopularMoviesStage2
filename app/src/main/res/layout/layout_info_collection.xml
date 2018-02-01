@@ -5,8 +5,7 @@
     android:id="@+id/info_collection_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/backdrop_collection_height"
-    android:background="@color/colorAccent"
-    android:paddingBottom="@dimen/separator">
+    android:background="@color/colorAccent">
 
     <ImageView
         android:id="@+id/info_collection_background"

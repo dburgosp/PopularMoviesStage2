@@ -5,17 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorDarkWhite"
-    android:baselineAligned="false"
+    android:elevation="@dimen/tiny_padding"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/regular_padding"
-    android:paddingTop="@dimen/tiny_padding">
+    android:paddingBottom="@dimen/big_padding"
+    android:paddingTop="@dimen/big_padding">
 
     <LinearLayout
         android:id="@+id/info_imdb_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/regular_padding"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -48,7 +47,6 @@
         android:id="@+id/info_rottentomatoes_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/regular_padding"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
@@ -83,7 +81,6 @@
         android:id="@+id/info_metacritic_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/regular_padding"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">

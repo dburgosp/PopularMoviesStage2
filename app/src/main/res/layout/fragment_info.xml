@@ -24,9 +24,6 @@
             <!-- Overview section -->
             <include layout="@layout/layout_info_overview" />
 
-            <!-- Genres section -->
-            <include layout="@layout/layout_info_genres" />
-
             <!-- Main info section -->
             <include layout="@layout/layout_info_movie" />
 
