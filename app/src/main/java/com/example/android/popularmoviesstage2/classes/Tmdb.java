@@ -278,28 +278,6 @@ public class Tmdb {
             String status = NetworkUtils.getStringFromJSON(baseJSONResponse, "status");
             String tagline = NetworkUtils.getStringFromJSON(baseJSONResponse, "tagline");
 
-            // Extract the JSONArray associated with the key called "genres", which represents
-            // the list of genres which the movie belongs to.
-            ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
-            if (!baseJSONResponse.isNull("genres")) {
-                JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
-
-                // For each genre in the array, create an {@link TmdbMovieGenre} object.
-                JSONObject currentGenre;
-                for (int i = 0; i < genresArray.length(); i++) {
-                    // Get a single genre at position i within the list of genres.
-                    currentGenre = genresArray.getJSONObject(i);
-
-                    // Extract the required values for the corresponding keys.
-                    int genre_id = NetworkUtils.getIntFromJSON(currentGenre, "id");
-                    String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
-
-                    // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                    TmdbMovieGenre movieGenre = new TmdbMovieGenre(genre_id, genre_name);
-                    genres.add(movieGenre);
-                }
-            }
-
             // Extract the value for the key called "belongs_to_collection", which represents an
             // optional JSON object with information about the collection which the current movie
             // belongs to.
@@ -415,11 +393,26 @@ public class Tmdb {
                 keywords = getKeywords(keywordsObject);
             }
 
+            // Extract similar movies array.
+            ArrayList<TmdbMovie> similarMovies = null;
+            if (!baseJSONResponse.isNull("similar")) {
+                JSONObject moviesObject = baseJSONResponse.getJSONObject("similar");
+                similarMovies = getMovies(moviesObject);
+            }
+
+            // Extract recommended movies array.
+            ArrayList<TmdbMovie> recommendedMovies = null;
+            if (!baseJSONResponse.isNull("recommendations")) {
+                JSONObject moviesObject = baseJSONResponse.getJSONObject("recommendations");
+                recommendedMovies = getMovies(moviesObject);
+            }
+
             // Return a {@link TmdbMovieDetails} object with the data retrieved from the JSON
             // response.
             return new TmdbMovieDetails(movie, movieCollection, budget, homepage, imdb_id,
                     production_companies, production_countries, revenue, runtime, spoken_languages,
-                    status, tagline, releases, externalIds, keywords);
+                    status, tagline, releases, externalIds, keywords, similarMovies,
+                    recommendedMovies);
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
@@ -705,6 +698,44 @@ public class Tmdb {
         }
 
         return keywordArrayList;
+    }
+
+    /**
+     * Fetches TMDB for a list of similar or recommended movies.
+     *
+     * @param moviesJSONObject is the JSON object containing the list of movies.
+     * @return an array of {@link TmdbMovie} objects.
+     */
+    private static ArrayList<TmdbMovie> getMovies(JSONObject moviesJSONObject) {
+        // Create an empty array of TmdbMovie objects to add data.
+        ArrayList<TmdbMovie> movieArrayList = new ArrayList<>();
+
+        // Try to parse the JSON object. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (moviesJSONObject.isNull("results")) {
+                Log.i(TAG, "(getMovies) No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            // Get the movies array.
+            JSONArray moviesJSONArray = moviesJSONObject.getJSONArray("results");
+            JSONObject jsonObject;
+            for (int n = 0; n < moviesJSONArray.length(); n++) {
+                // Get a single result at position n within the list of results.
+                jsonObject = moviesJSONArray.getJSONObject(n);
+
+                // Extract the current movie and add it to the array.
+                TmdbMovie movie = getMovie(jsonObject, 0, 0, 0);
+                movieArrayList.add(movie);
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "(getMovies) Error parsing JSON: " + e);
+        }
+
+        return movieArrayList;
     }
 
     /**

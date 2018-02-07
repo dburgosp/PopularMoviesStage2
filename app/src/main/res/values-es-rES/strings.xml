@@ -51,12 +51,15 @@
     <string name="original_title">Título original</string>
     <string name="overview">Sinopsis</string>
     <string name="posters_title">Pósters</string>
+    <string name="recommended_movies">Recomendaciones</string>
+    <string name="recommended_hint">A otros usuarios que les gustó %s también les interesaron estas otras películas:</string>
     <string name="remove_from_favorites">Quitar de mis favoritos</string>
     <string name="revenue_title">Beneficios</string>
     <string name="reviews_title">Opiniones de usuarios</string>
     <string name="runtime">Duración</string>
     <string name="score_title">Valoración TMDB</string>
     <string name="share_this">Comparte</string>
+    <string name="similar_movies">Películas similares</string>
     <string name="size">Tamaño</string>
     <string name="sort_order_changed">La clasificación se ha cambiado a %s</string>
     <string name="spoken_languages">Otros idiomas en versión original</string>

@@ -23,6 +23,8 @@ public class TmdbMovieDetails {
     private TmdbRelease releases;
     private TmdbExternalId externalIds;
     private ArrayList<TmdbKeyword> keywords;
+    private ArrayList<TmdbMovie> similarMovies;
+    private ArrayList<TmdbMovie> recommendedMovies;
 
     /**
      * Constructor for objects of this class, containing the whole information of a movie.
@@ -56,13 +58,19 @@ public class TmdbMovieDetails {
      *                              about the external links related to the movie.
      * @param keywords              is an array of {@link TmdbKeyword} object containing the
      *                              keywords related to the movie.
+     * @param similarMovies         is an array of {@link TmdbMovie} object containing a list of
+     *                              movies that are similar to the current one.
+     * @param recommendedMovies     is an array of {@link TmdbMovie} object containing a list of
+     *                              recommended movies. This is not the same list than similarMovies.
      */
     TmdbMovieDetails(TmdbMovie movie, TmdbMovieCollection belongs_to_collection, int budget,
                      String homepage, String imdb_id,
                      ArrayList<TmdbMovieCompany> production_companies,
                      ArrayList<TmdbMovieCountry> production_countries, int revenue, int runtime,
                      ArrayList<TmdbMovieLanguage> spoken_languages, String status, String tagline,
-                     TmdbRelease releases, TmdbExternalId externalIds, ArrayList<TmdbKeyword> keywords) {
+                     TmdbRelease releases, TmdbExternalId externalIds,
+                     ArrayList<TmdbKeyword> keywords, ArrayList<TmdbMovie> similarMovies,
+                     ArrayList<TmdbMovie> recommendedMovies) {
         this.movie = movie;
         this.belongs_to_collection = belongs_to_collection;
         this.budget = budget;
@@ -78,6 +86,8 @@ public class TmdbMovieDetails {
         this.releases = releases;
         this.externalIds = externalIds;
         this.keywords = keywords;
+        this.similarMovies = similarMovies;
+        this.recommendedMovies = recommendedMovies;
     }
 
     // Getters and setters.
@@ -200,5 +210,21 @@ public class TmdbMovieDetails {
 
     public void setKeywords(ArrayList<TmdbKeyword> keywords) {
         this.keywords = keywords;
+    }
+
+    public ArrayList<TmdbMovie> getSimilarMovies() {
+        return similarMovies;
+    }
+
+    public void setSimilarMovies(ArrayList<TmdbMovie> similarMovies) {
+        this.similarMovies = similarMovies;
+    }
+
+    public ArrayList<TmdbMovie> getRecommendedMovies() {
+        return recommendedMovies;
+    }
+
+    public void setRecommendedMovies(ArrayList<TmdbMovie> recommendedMovies) {
+        this.recommendedMovies = recommendedMovies;
     }
 }

@@ -1,19 +1,28 @@
 package com.example.android.popularmoviesstage2.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbCrew;
-import com.example.android.popularmoviesstage2.viewholders.CrewViewHolder;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static android.support.v4.content.ContextCompat.getDrawable;
+
+public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder> {
     private static final String TAG = CrewAdapter.class.getSimpleName();
     private final CrewAdapter.OnItemClickListener listener;
     private ArrayList<TmdbCrew> tmdbCrewArrayList;
@@ -23,7 +32,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
      * Constructor for this class.
      *
      * @param tmdbCrewArrayList is the list of persons that will be represented into the adapter.
-     * @param listener      is the listener for receiving the clicks.
+     * @param listener          is the listener for receiving the clicks.
      */
     public CrewAdapter(ArrayList<TmdbCrew> tmdbCrewArrayList, CrewAdapter.OnItemClickListener listener) {
         this.tmdbCrewArrayList = tmdbCrewArrayList;
@@ -124,5 +133,69 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewViewHolder> {
      */
     public interface OnItemClickListener {
         void onItemClick(TmdbCrew item);
+    }
+
+    /* ----------- */
+    /* VIEW HOLDER */
+    /* ----------- */
+
+    class CrewViewHolder extends RecyclerView.ViewHolder {
+        private final String TAG = CrewViewHolder.class.getSimpleName();
+        // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
+        // cast the corresponding views.
+        @BindView(R.id.cast_crew_image)
+        ImageView posterImageView;
+        @BindView(R.id.cast_crew_name)
+        TextView nameTextView;
+        @BindView(R.id.cast_crew_character)
+        TextView characterTextView;
+        private View viewHolder;
+        private Context context;
+
+        /**
+         * Constructor for our ViewHolder.
+         *
+         * @param itemView The View that we inflated in {@link CrewAdapter#onCreateViewHolder}.
+         */
+        CrewViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            context = itemView.getContext();
+            viewHolder = itemView;
+            Log.i(TAG, "(CrewViewHolder) New ViewHolder created");
+        }
+
+        /**
+         * Helper method for setting TmdbPerson information for the current CrewViewHolder from the
+         * {@link CrewAdapter#onBindViewHolder(CrewViewHolder, int)} method.
+         *
+         * @param currentPerson is the TmdbCrew object attached to the current CrewViewHolder element.
+         * @param listener      is the listener for click events.
+         */
+        void bind(final TmdbCrew currentPerson, final CrewAdapter.OnItemClickListener listener) {
+            Log.i(TAG, "(bind) Binding data for the current CrewViewHolder.");
+
+            // Draw profile image for current person and resize image to fit screen size and orientation.
+            String profilePath = currentPerson.getProfile_path();
+            if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
+                String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + profilePath;
+                Picasso.with(context).load(posterPath).into(posterImageView);
+            } else
+                posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));
+
+            // Set person name.
+            nameTextView.setText(currentPerson.getName());
+
+            // Set person character/job.
+            characterTextView.setText(currentPerson.getJob());
+
+            // Set the listener for click events.
+            viewHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(currentPerson);
+                }
+            });
+        }
     }
 }

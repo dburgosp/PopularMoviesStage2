@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/similar_movies_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gradient_section_bg"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/big_padding"
+    android:paddingTop="@dimen/big_padding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:layout_marginEnd="@dimen/regular_padding"
+        android:layout_marginStart="@dimen/regular_padding">
+
+        <TextView
+            android:id="@+id/similar_movies_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/similar_movies"
+            android:textAllCaps="true"
+            android:textSize="@dimen/normal_plus_text_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/similar_movies_view_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/regular_padding"
+            android:text="@string/view_all"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/normal_plus_text_size"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/similar_movies_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
+</LinearLayout>

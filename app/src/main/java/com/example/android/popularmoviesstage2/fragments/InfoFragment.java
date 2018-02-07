@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
+import com.example.android.popularmoviesstage2.adapters.MoviesShortListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Facebook;
@@ -135,18 +139,28 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     @BindView(R.id.info_links_layout)
     LinearLayout linksLayout;
     @BindView(R.id.info_links_homepage)
-    TextView homepageImageView;
+    TextView homepageTextView;
     @BindView(R.id.info_links_imdb)
-    TextView imdbImageView;
+    TextView imdbTextView;
     @BindView(R.id.info_links_twitter)
-    TextView twitterImageView;
+    TextView twitterTextView;
     @BindView(R.id.info_links_facebook)
-    TextView facebookImageView;
+    TextView facebookTextView;
     @BindView(R.id.info_links_instagram)
-    TextView instagramImageView;
+    TextView instagramTextView;
+
+    @BindView(R.id.recommended_movies_layout)
+    LinearLayout recommendedMoviesLayout;
+    @BindView(R.id.recommended_movies_view_all)
+    TextView recommendedMoviesViewAllTextView;
+    @BindView(R.id.recommended_movies_subtitle)
+    TextView recommendedMoviesSubtitleTextView;
+    @BindView(R.id.recommended_movies_recyclerview)
+    RecyclerView recommendedMoviesRecyclerView;
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
+    private MoviesShortListAdapter recommendedMoviesAdapter;
     String ageRating = "";
     private Unbinder unbinder;
 
@@ -182,6 +196,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Clean all elements in the layout when creating this fragment.
         clearLayout();
+
+        // Set recycler views for recommended movies.
+        setRecyclerView();
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -341,7 +358,36 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         mainLinearLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
         linksLayout.setVisibility(View.GONE);
+        recommendedMoviesLayout.setVisibility(View.GONE);
         keywordsLayout.setVisibility(View.GONE);
+    }
+
+    /**
+     * Helper method for setting the RecyclerView in order to display lists of recommended movies
+     * with a horizontal arrangement.
+     */
+    void setRecyclerView() {
+        // Set the LayoutManager for the RecyclerView.
+        recommendedMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recommendedMoviesRecyclerView.setHasFixedSize(true);
+
+        // Set the listeners for click events in the adapter.
+        MoviesShortListAdapter.OnItemClickListener recommendedMovieListener = new MoviesShortListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(TmdbMovie movie, View clickedView) {
+
+                    // Start MovieDetailsActivity to show movie details when the current element is
+                    // clicked. We need to know when the other activity finishes, so we use
+                    // startActivityForResult. No need a requestCode, we don't care for any result.
+                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
+                    startActivity(intent);
+            }
+        };
+
+        // Set the Adapter for the RecyclerView.
+        recommendedMoviesAdapter = new MoviesShortListAdapter(new ArrayList<TmdbMovie>(), recommendedMovieListener);
+        recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
     }
 
     /**
@@ -367,6 +413,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         // Set keywords section.
         if (setKeywordsSection())
             keywordsLayout.setVisibility(View.VISIBLE);
+
+        // Recommended moviessection.
+        if (setRecommendedMoviesSection())
+            recommendedMoviesLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -761,14 +811,14 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      * @return true if any of the elements of this section has been set, false otherwise.
      */
     private boolean setLinksSection() {
-        final Float LINK_ALPHA = 0.1f;
+        final Float LINK_ALPHA = 0.4f;
         boolean infoSectionSet = false;
 
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();
         if (homepage != null && !homepage.equals("") && !homepage.isEmpty()) {
             // Implicit intent to open the homepage.
-            homepageImageView.setOnClickListener(new View.OnClickListener() {
+            homepageTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Uri uri = Uri.parse(homepage);
@@ -778,35 +828,56 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             });
             infoSectionSet = true;
         } else
-            homepageImageView.setAlpha(LINK_ALPHA);
+            homepageTextView.setAlpha(LINK_ALPHA);
 
         // Set IMDB link. If there is no IMDB link, make this section transparent.
         final String imdb = movieDetails.getImdb_id();
-        if (setExternalLink(imdb, imdbImageView, Imdb.IMDB_BASE_URL))
+        if (setExternalLink(imdb, imdbTextView, Imdb.IMDB_BASE_URL))
             infoSectionSet = true;
         else
-            imdbImageView.setAlpha(LINK_ALPHA);
+            imdbTextView.setAlpha(LINK_ALPHA);
 
         // Set Facebook link. If there is no Facebook link, make this section transparent.
         final String facebook = movieDetails.getExternalIds().getFacebook_id();
-        if (setExternalLink(facebook, facebookImageView, Facebook.FACEBOOK_BASE_URL))
+        if (setExternalLink(facebook, facebookTextView, Facebook.FACEBOOK_BASE_URL))
             infoSectionSet = true;
         else
-            facebookImageView.setAlpha(LINK_ALPHA);
+            facebookTextView.setAlpha(LINK_ALPHA);
 
         // Set Instagram link. If there is no Instagram link, make this section transparent.
         final String instagram = movieDetails.getExternalIds().getInstagram_id();
-        if (setExternalLink(instagram, instagramImageView, Instagram.INSTAGRAM_BASE_URL))
+        if (setExternalLink(instagram, instagramTextView, Instagram.INSTAGRAM_BASE_URL))
             infoSectionSet = true;
         else
-            instagramImageView.setAlpha(LINK_ALPHA);
+            instagramTextView.setAlpha(LINK_ALPHA);
 
         // Set Twitter link. If there is no Twitter link, make this section transparent.
         final String twitter = movieDetails.getExternalIds().getTwitter_id();
-        if (setExternalLink(twitter, twitterImageView, Twitter.TWITTER_BASE_URL))
+        if (setExternalLink(twitter, twitterTextView, Twitter.TWITTER_BASE_URL))
             infoSectionSet = true;
         else
-            twitterImageView.setAlpha(LINK_ALPHA);
+            twitterTextView.setAlpha(LINK_ALPHA);
+
+        return infoSectionSet;
+    }
+
+    /**
+     * Set recommended movies section.
+     *
+     * @return true if any of the elements of this section has been set, false otherwise.
+     */
+    private boolean setRecommendedMoviesSection() {
+        boolean infoSectionSet = false;
+
+        ArrayList<TmdbMovie> recommendedMovies = movieDetails.getRecommendedMovies();
+        if (recommendedMovies != null && recommendedMovies.size() > 0) {
+            infoSectionSet = true;
+            TextUtils.setHtmlText(recommendedMoviesSubtitleTextView,
+                    getString(R.string.recommended_hint,
+                            "<strong>" + movieDetails.getMovie().getTitle() + "</strong>"));
+            recommendedMoviesAdapter.setMoviesArrayList(recommendedMovies);
+            recommendedMoviesAdapter.notifyDataSetChanged();
+        }
 
         return infoSectionSet;
     }
@@ -848,17 +919,18 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     /**
-     * Helper method to set an OnClickListener on a image for opening an external link.
+     * Helper method to set an OnClickListener on a TextView with a Drawable for opening an external
+     * link.
      *
      * @param externalId is the unique identifier to append to the url.
-     * @param imageView  is the ImageView that will be set with the OnClickListener.
+     * @param textView   is the TextView that will be set with the OnClickListener.
      * @param url        is the base url of the external link.
      * @return true if the externalId is not empty, false otherwise.
      */
-    private boolean setExternalLink(final String externalId, TextView imageView, final String url) {
+    private boolean setExternalLink(final String externalId, TextView textView, final String url) {
         if (externalId != null && !externalId.equals("") && !externalId.isEmpty()) {
             // Implicit intent to open the link.
-            imageView.setOnClickListener(new View.OnClickListener() {
+            textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Uri builtUri = Uri.parse(url).buildUpon()
@@ -1003,13 +1075,13 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
          * Metacritic) is set, false otherwise.
          */
         private boolean setUserScores() {
-            boolean imdbRating = ScoreUtils.setRating(getContext(),
+            boolean imdbRating = ScoreUtils.setDonutProgressRating(getContext(),
                     String.valueOf(omdbMovie.getImdb_vote_average()),
                     imdbDonutProgress);
-            boolean rottenTomatoesRating = ScoreUtils.setRating(getContext(),
+            boolean rottenTomatoesRating = ScoreUtils.setDonutProgressRating(getContext(),
                     String.valueOf(omdbMovie.getRt_vote_average()),
                     rottenTomatoesDonutProgress);
-            boolean metacriticRating = ScoreUtils.setRating(getContext(),
+            boolean metacriticRating = ScoreUtils.setDonutProgressRating(getContext(),
                     String.valueOf(omdbMovie.getMc_vote_average()),
                     metacriticDonutProgress);
 

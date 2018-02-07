@@ -1,20 +1,27 @@
 package com.example.android.popularmoviesstage2.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
-import com.example.android.popularmoviesstage2.viewholders.PersonsViewHolder;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsViewHolder> {
     private static final String TAG = PersonsAdapter.class.getSimpleName();
     private final PersonsAdapter.OnItemClickListener listener;
     private ArrayList<TmdbPerson> tmdbPersonArrayList;
@@ -25,9 +32,9 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
      * Constructor for this class.
      *
      * @param tmdbPersonArrayList is the list of persons that will be represented into the adapter.
-     * @param widthPixels     is the width in pixels of a movie poster.
-     * @param heightPixels    is the height in pixels of a movie poster.
-     * @param listener        is the listener for receiving the clicks.
+     * @param widthPixels         is the width in pixels of a movie poster.
+     * @param heightPixels        is the height in pixels of a movie poster.
+     * @param listener            is the listener for receiving the clicks.
      */
     PersonsAdapter(ArrayList<TmdbPerson> tmdbPersonArrayList, int widthPixels, int heightPixels, PersonsAdapter.OnItemClickListener listener) {
         Log.i(TAG, "(PersonsAdapter) Object created");
@@ -70,7 +77,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
     public PersonsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_movie, parent, false);
+        View view = inflater.inflate(R.layout.list_item_movie_full_list, parent, false);
         return new PersonsViewHolder(view);
     }
 
@@ -129,5 +136,62 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsViewHolder> {
      */
     public interface OnItemClickListener {
         void onItemClick(TmdbPerson item);
+    }
+
+    /* ----------- */
+    /* VIEW HOLDER */
+    /* ----------- */
+
+    class PersonsViewHolder extends RecyclerView.ViewHolder {
+        private final String TAG = PersonsViewHolder.class.getSimpleName();
+        // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
+        // cast the corresponding views.
+        @BindView(R.id.cast_crew_image)
+        ImageView posterImageView;
+        @BindView(R.id.cast_crew_name)
+        TextView nameTextView;
+        @BindView(R.id.cast_crew_character)
+        TextView characterTextView;
+        private Context context;
+
+        /**
+         * Constructor for our ViewHolder.
+         *
+         * @param itemView The View that we inflated in {@link PersonsAdapter#onCreateViewHolder}.
+         */
+        PersonsViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            context = itemView.getContext();
+            Log.i(TAG, "(PersonsViewHolder) New ViewHolder created");
+        }
+
+        /**
+         * Helper method for setting TmdbPerson information for the current PersonsViewHolder from the
+         * {@link PersonsAdapter#onBindViewHolder(PersonsViewHolder, int)} method.
+         *
+         * @param currentTmdbPerson is the TmdbPerson object attached to the current PersonsViewHolder element.
+         * @param listener          is the listener for click events.
+         * @param layoutParams      contains the width and height for displaying the profile image.
+         */
+        public void bind(final TmdbPerson currentTmdbPerson, final PersonsAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
+            Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
+
+            // Draw profile image for current person and resize image to fit screen size and orientation.
+            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbPerson.getProfile_path();
+            Picasso.with(context).load(posterPath).into(posterImageView);
+            posterImageView.setLayoutParams(layoutParams);
+
+            // Set person name.
+            nameTextView.setText(currentTmdbPerson.getName());
+
+            // Set the listener for click events.
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(currentTmdbPerson);
+                }
+            });
+        }
     }
 }

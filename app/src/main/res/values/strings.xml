@@ -56,6 +56,8 @@
     <string name="original_title">Original title</string>
     <string name="overview">Overview</string>
     <string name="posters_title">Posters</string>
+    <string name="recommended_movies">Recommended movies</string>
+    <string name="recommended_hint">If you like %s maybe you like these other movies too:</string>
     <string name="release_status_rumored">Rumored</string>
     <string name="release_status_planned">Planned</string>
     <string name="release_status_in_production">In Production</string>
@@ -77,6 +79,7 @@
     <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
     <string name="score_metacritic">Metacritic</string>
     <string name="share_this">Share this</string>
+    <string name="similar_movies">Similar movies</string>
     <string name="size">Size</string>
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="spoken_languages">Also spoken</string>
@@ -84,7 +87,8 @@
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
     <string name="thumbnail_description">Thumbnail image</string>
-    <string name="transition_poster">poster_transition</string>
+    <string name="transition_details_to_details">poster_transition_2</string>
+    <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>

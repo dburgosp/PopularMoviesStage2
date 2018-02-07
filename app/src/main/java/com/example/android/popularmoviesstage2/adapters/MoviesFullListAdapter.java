@@ -1,21 +1,28 @@
 package com.example.android.popularmoviesstage2.adapters;
 
+import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
-import com.example.android.popularmoviesstage2.viewholders.MoviesViewHolder;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
-    private static final String TAG = MoviesAdapter.class.getSimpleName();
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAdapter.MoviesFullListViewHolder> {
+    private static final String TAG = MoviesFullListAdapter.class.getSimpleName();
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;
     private FrameLayout.LayoutParams layoutParams;
@@ -29,8 +36,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * @param heightPixels    is the height in pixels of a movie poster.
      * @param listener        is the listener for receiving the clicks.
      */
-    public MoviesAdapter(ArrayList<TmdbMovie> moviesArrayList, int widthPixels, int heightPixels, OnItemClickListener listener) {
-        Log.i(TAG, "(MoviesAdapter) Object created");
+    public MoviesFullListAdapter(ArrayList<TmdbMovie> moviesArrayList, int widthPixels, int heightPixels,
+                                 OnItemClickListener listener) {
+        Log.i(TAG, "(MoviesFullListAdapter) Object created");
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
         this.currentPage = 0;
@@ -66,7 +74,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
             this.moviesArrayList.addAll(moviesArrayList);
         else
             this.moviesArrayList.addAll(0, moviesArrayList);
-        Log.i(TAG, "(updateMoviesArrayList) TmdbMovie list updated. Current size is " + this.moviesArrayList.size());
+        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " + 
+                this.moviesArrayList.size());
     }
 
     // Getter methods.
@@ -94,7 +103,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
     }
 
     /**
-     * Called when RecyclerView needs a new {@link MoviesViewHolder} of the given type to represent
+     * Called when RecyclerView needs a new {@link MoviesFullListViewHolder} of the given type to represent
      * an item.
      * <p>
      * This new ViewHolder should be constructed with a new View that can represent the items
@@ -102,7 +111,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * layout file.
      * <p>
      * The new ViewHolder will be used to display items of the adapter using
-     * {@link #onBindViewHolder(MoviesViewHolder, int)}. Since it will be re-used to display
+     * {@link #onBindViewHolder(MoviesFullListViewHolder, int)}. Since it will be re-used to display
      * different items in the data set, it is a good idea to cache references to sub views of
      * the View to avoid unnecessary {@link View#findViewById(int)} calls.
      *
@@ -111,19 +120,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * @param viewType The view type of the new View.
      * @return A new ViewHolder that holds a View of the given view type.
      * @see #getItemViewType(int)
-     * @see #onBindViewHolder(MoviesViewHolder, int)
+     * @see #onBindViewHolder(MoviesFullListViewHolder, int)
      */
     @Override
-    public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MoviesFullListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_movie, parent, false);
-        return new MoviesViewHolder(view);
+        View view = inflater.inflate(R.layout.list_item_movie_full_list, parent, false);
+        return new MoviesFullListViewHolder(view);
     }
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link MoviesViewHolder#itemView} to reflect the item at the given
+     * update the contents of the {@link MoviesFullListViewHolder#itemView} to reflect the item at the given
      * position.
      * <p>
      * Note that unlike {@link ListView}, RecyclerView will not call this method
@@ -131,7 +140,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * invalidated or the new position cannot be determined. For this reason, you should only
      * use the <code>position</code> parameter while acquiring the related data item inside
      * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use {@link MoviesViewHolder#getAdapterPosition()} which will
+     * on (e.g. in a click listener), use {@link MoviesFullListViewHolder#getAdapterPosition()} which will
      * have the updated adapter position.
      * <p>
      *
@@ -140,10 +149,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      * @param position   The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(MoviesViewHolder viewHolder, int position) {
+    public void onBindViewHolder(MoviesFullListViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!moviesArrayList.isEmpty()) {
-            // Update MoviesViewHolder with the movie details at current position in the adapter.
+            // Update MoviesFullListViewHolder with the movie details at current position in the adapter.
             TmdbMovie currentTmdbMovie = moviesArrayList.get(position);
             viewHolder.bind(currentTmdbMovie, listener, layoutParams);
 
@@ -189,5 +198,64 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesViewHolder> {
      */
     public interface OnItemClickListener {
         void onItemClick(TmdbMovie item, View clickedView);
+    }
+
+    /* ----------- */
+    /* VIEW HOLDER */
+    /* ----------- */
+    
+    public class MoviesFullListViewHolder extends RecyclerView.ViewHolder {
+
+        private final String TAG = MoviesFullListViewHolder.class.getSimpleName();
+        // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
+        // cast the corresponding views.
+        @BindView(R.id.movie_list_item_image)
+        ImageView posterImageView;
+        private Context context;
+        private View viewHolder;
+
+        /**
+         * Constructor for our ViewHolder.
+         *
+         * @param itemView The View that we inflated in {@link MoviesFullListAdapter#onCreateViewHolder}.
+         */
+        MoviesFullListViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            context = itemView.getContext();
+            viewHolder = itemView;
+            Log.i(TAG, "(MoviesFullListViewHolder) New ViewHolder created");
+        }
+
+        /**
+         * Helper method for setting TmdbMovie information for the current MoviesFullListViewHolder from the
+         * {@link MoviesFullListAdapter#onBindViewHolder(MoviesFullListViewHolder, int)} method.
+         *
+         * @param currentTmdbMovie is the TmdbMovie object attached to the current MoviesFullListViewHolder element.
+         * @param listener         is the listener for click events.
+         * @param layoutParams     contains the width and height for displaying the movie poster.
+         */
+        public void bind(final TmdbMovie currentTmdbMovie,
+                         final MoviesFullListAdapter.OnItemClickListener listener,
+                         FrameLayout.LayoutParams layoutParams) {
+            Log.i(TAG, "(bind) Binding data for the current MoviesFullListViewHolder.");
+
+            // Draw poster for current movie and resize image to fit screen size and orientation.
+            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbMovie.getPoster_path();
+            Picasso.with(context).load(posterPath).into(posterImageView);
+            posterImageView.setLayoutParams(layoutParams);
+
+            // Set transition name to the current view, so it can be animated if clicked.
+            ViewCompat.setTransitionName(posterImageView,
+                    context.getResources().getString(R.string.transition_list_to_details));
+
+            // Set the listener for click events.
+            viewHolder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(currentTmdbMovie, posterImageView);
+                }
+            });
+        }
     }
 }

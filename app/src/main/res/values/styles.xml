@@ -46,6 +46,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorDarkWhite</item>
+        <item name="android:drawablePadding">@dimen/tiny_padding</item>
         <item name="android:textSize">@dimen/normal_text_size</item>
     </style>
 </resources>

@@ -21,17 +21,25 @@
             <!-- User reviews section -->
             <include layout="@layout/layout_info_reviews" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLightGrey" />
+
             <!-- Overview section -->
             <include layout="@layout/layout_info_overview" />
 
             <!-- Main info section -->
             <include layout="@layout/layout_info_movie" />
 
+            <!-- External links section -->
+            <include layout="@layout/layout_info_links" />
+
             <!-- Collection section -->
             <include layout="@layout/layout_info_collection" />
 
-            <!-- Main info section -->
-            <include layout="@layout/layout_info_links" />
+            <!-- Recommended movies section -->
+            <include layout="@layout/layout_info_recommended" />
 
             <!-- Tags section -->
             <include layout="@layout/layout_info_keywords" />

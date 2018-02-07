@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.adapters.MoviesAdapter;
+import com.example.android.popularmoviesstage2.adapters.MoviesFullListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private boolean allowClicks = true;
     private String sortOrder = Tmdb.TMDB_POPULAR_PATH;
-    private MoviesAdapter moviesAdapter;
+    private MoviesFullListAdapter moviesFullListAdapter;
     private int currentPage, currentScrollPosition;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
@@ -82,16 +82,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // performed later in the onRestoreInstanceState method, which runs after the onCreate
         // method.
         //if (savedInstanceState == null) {
-            // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
-            // getting movie information from TMDB in a separate thread.
-            moviesArrayList = new ArrayList<>();
-            currentPage = 1;
-            currentScrollPosition = 0;
-            isLoading = false;
-            appendToEnd = true;
-            loader = null;
-            setRecyclerView();
-            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+        // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
+        // getting movie information from TMDB in a separate thread.
+        moviesArrayList = new ArrayList<>();
+        currentPage = 1;
+        currentScrollPosition = 0;
+        isLoading = false;
+        appendToEnd = true;
+        loader = null;
+        setRecyclerView();
+        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
         //}
 
         Log.i(TAG, "(onCreate) Activity created");
@@ -175,13 +175,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // Update activity title.
             this.setTitle(sortOrderText);
 
-            // Clear the current moviesAdapter and fetch the new list of movies from TMDB from the
+            // Clear the current moviesFullListAdapter and fetch the new list of movies from TMDB from the
             // first page, and show it on the adapter from the first position.
             currentPage = 1;
             appendToEnd = true;
             currentScrollPosition = 0;
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
-            moviesAdapter.clearMoviesArrayList();
+            moviesFullListAdapter.clearMoviesArrayList();
             if (loader != null)
                 getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
             else
@@ -195,12 +195,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-/*        // Save current sort order, current page and current scroll position.
-        moviesArrayList = moviesAdapter.getMoviesArrayList();
-        currentScrollPosition = moviesAdapter.getCurrentScrollPosition();
-        currentPage = moviesAdapter.getCurrentPage();
+        // Save current sort order, current page and current scroll position.
+        moviesArrayList = moviesFullListAdapter.getMoviesArrayList();
+        currentScrollPosition = moviesFullListAdapter.getCurrentScrollPosition();
+        currentPage = moviesFullListAdapter.getCurrentPage();
         outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
-        outState.putInt("currentScrollPosition", currentScrollPosition);*/
+        outState.putInt("currentScrollPosition", currentScrollPosition);
         outState.putInt("currentPage", currentPage);
         outState.putString("sortOrder", sortOrder);
     }
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Restore sort order, last saved page and last saved position in the grid.
         sortOrder = savedInstanceState.getString("sortOrder");
         currentPage = savedInstanceState.getInt("currentPage");
-/*          moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
+        moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
         currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
 
         // After restoring previous movies array and scroll position, we set the RecyclerView for
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
 
         // Restore last currentPosition in the grid.
-        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);*/
+        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
     }
 
     @Override
@@ -350,11 +350,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(this)) {
-            // If there is a valid list of {@link TmdbMovie}s, then add them to the adapter's data set.
+            // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
+            // set.
             if (data != null && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
-                moviesAdapter.updateMoviesArrayList(data, appendToEnd);
-                moviesAdapter.notifyDataSetChanged();
+                moviesFullListAdapter.updateMoviesArrayList(data, appendToEnd);
+                moviesFullListAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
@@ -400,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.setHasFixedSize(true);
 
         // Set the listener for click events in the Adapter.
-        MoviesAdapter.OnItemClickListener listener = new MoviesAdapter.OnItemClickListener() {
+        MoviesFullListAdapter.OnItemClickListener listener = new MoviesFullListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
                 if (allowClicks) {
@@ -412,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     // Create an ActivityOptions to transition between Activities using cross-Activity
                     // scene animations.
                     ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            MainActivity.this, clickedView, getString(R.string.transition_poster));
+                            MainActivity.this, clickedView, getString(R.string.transition_list_to_details));
 
                     // Start MovieDetailsActivity to show movie details when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
@@ -426,11 +427,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
-        moviesAdapter = new MoviesAdapter(moviesArrayList,
+        moviesFullListAdapter = new MoviesFullListAdapter(moviesArrayList,
                 displayUtils.getListPosterWidthPixels(),
                 displayUtils.getListPosterHeightPixels(),
                 listener);
-        recyclerView.setAdapter(moviesAdapter);
+        recyclerView.setAdapter(moviesFullListAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to
         // load another page of results.
@@ -452,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 int visibleItemCount = gridLayoutManager.getChildCount();
                 int totalItemCount = gridLayoutManager.getItemCount();
                 int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
-                int totalPages = moviesAdapter.getTotalPages();
+                int totalPages = moviesFullListAdapter.getTotalPages();
 
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
@@ -475,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        int currentShownPage = moviesAdapter.getCurrentPage();
+                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
 
                         if (!isLoading && currentShownPage > 1) {
                             // If we are at the top of the list and we are showing a page number

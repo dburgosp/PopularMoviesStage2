@@ -3,15 +3,16 @@
     android:id="@+id/info_keywords_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/big_padding"
-    android:layout_marginTop="@dimen/big_padding"
+    android:background="@color/colorDarkWhite"
+    android:paddingBottom="@dimen/big_padding"
+    android:paddingTop="@dimen/big_padding"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/info_keywords_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
+        android:layout_marginBottom="@dimen/regular_padding"
         android:layout_marginEnd="@dimen/regular_padding"
         android:layout_marginStart="@dimen/regular_padding"
         android:text="@string/keywords_title"

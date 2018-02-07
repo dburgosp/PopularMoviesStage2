@@ -206,7 +206,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
-        posterImageView.setTransitionName(getString(R.string.transition_poster));
+        posterImageView.setTransitionName(getString(R.string.transition_list_to_details));
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
             // Set transition between the poster in MainActivity and this.
             Picasso.with(this)
@@ -248,7 +248,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         String rating = String.valueOf(movie.getVote_average());
         if (!rating.equals("0.0")) {
             // Set custom progress bar.
-            ScoreUtils.setRating(this, rating, scoreDonutProgress);
+            ScoreUtils.setDonutProgressRating(this, rating, scoreDonutProgress);
             scoreDonutProgress.setVisibility(View.VISIBLE);
 
             // Set number of votes with decimal separator according to the current regional

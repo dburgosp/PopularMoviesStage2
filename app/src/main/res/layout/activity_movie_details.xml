@@ -167,6 +167,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            android:elevation="@dimen/tiny_padding"
             android:fontFamily="sans-serif-smallcaps"
             app:tabIndicatorColor="@color/colorAccent"
             app:tabMode="scrollable"
