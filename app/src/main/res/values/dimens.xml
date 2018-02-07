@@ -28,6 +28,7 @@
     <dimen name="padding_top_movie_details_cardview">56dp</dimen>
     <dimen name="padding_top_movie_details_header">22dp</dimen>
     <dimen name="padding_list_header">120dp</dimen>
+    <dimen name="height_collection_header">130dp</dimen>
 
     <!-- Number of columns for the movie list depending on the device orientation. -->
     <integer name="default_vertical_span_count">3</integer>

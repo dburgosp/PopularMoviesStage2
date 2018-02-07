@@ -6,9 +6,19 @@
             android:layout_height="wrap_content">
             <gradient
                 android:angle="270"
-                android:centerColor="@android:color/transparent"
                 android:endColor="@color/colorPrimaryDark"
                 android:startColor="@android:color/transparent"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item>
+        <shape
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <gradient
+                android:angle="270"
+                android:endColor="@android:color/transparent"
+                android:startColor="@color/colorAccent"
                 android:type="linear" />
         </shape>
     </item>

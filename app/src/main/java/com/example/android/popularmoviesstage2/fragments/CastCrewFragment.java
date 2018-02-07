@@ -423,11 +423,11 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
                 //stringBuilder.append("<font color=\"#");
                 //stringBuilder.append(color);
                 //stringBuilder.append("\"><strong>");
-                stringBuilder.append(crewArrayList.get(i).getName());
+                stringBuilder.append(crewArrayList.get(i).getName().toUpperCase());
                 //stringBuilder.append("</strong></font> (");
-                stringBuilder.append(" <em>(");
+                stringBuilder.append(" (");
                 stringBuilder.append(crewArrayList.get(i).getJob());
-                stringBuilder.append(")</em>");
+                stringBuilder.append(")");
                 if (i < (crewArrayList.size() - 1)) {
                     // Don't append newline character to the last element.
                     stringBuilder.append("<br>");

@@ -23,11 +23,18 @@
         android:id="@+id/info_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
         android:layout_marginEnd="@dimen/regular_padding"
         android:layout_marginStart="@dimen/regular_padding"
         android:layout_marginTop="@dimen/small_padding"
         tools:text="@string/no_overview" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/regular_padding"
+        android:layout_marginStart="@dimen/regular_padding"
+        android:text="Genres"
+        android:textStyle="bold" />
 
     <com.example.android.popularmoviesstage2.classes.FlowLayout
         android:id="@+id/info_genres_flowlayout"
