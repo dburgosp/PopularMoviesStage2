@@ -64,6 +64,7 @@
     <string name="sort_order_changed">La clasificación se ha cambiado a %s</string>
     <string name="spoken_languages">Otros idiomas en versión original</string>
     <string name="status">Estado</string>
+    <string name="synopsis">Sinopsis</string>
     <string name="keywords_title">Etiquetas</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
     <string name="videos_title">Vídeos</string>

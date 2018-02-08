@@ -98,6 +98,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @BindView(R.id.info_genres_flowlayout)
     FlowLayout genresFlowLayout;
+    @BindView(R.id.info_genres_title)
+    TextView genresTextView;
 
     @BindView(R.id.info_main_layout)
     LinearLayout mainLinearLayout;
@@ -153,8 +155,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     LinearLayout recommendedMoviesLayout;
     @BindView(R.id.recommended_movies_view_all)
     TextView recommendedMoviesViewAllTextView;
-    @BindView(R.id.recommended_movies_subtitle)
-    TextView recommendedMoviesSubtitleTextView;
     @BindView(R.id.recommended_movies_recyclerview)
     RecyclerView recommendedMoviesRecyclerView;
 
@@ -428,23 +428,65 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setOverviewSection() {
         boolean infoSectionSet = false;
 
-        // Set tagline. If there is no tagline, we hide this section.
-        String tagline = movieDetails.getTagline();
-        if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
-            infoSectionSet = true;
-            taglineTextView.setText(tagline);
-            taglineTextView.setVisibility(View.VISIBLE);
-        } else
-            taglineTextView.setVisibility(View.GONE);
+        /* -------------------- */
+        /* TAGLINE AND OVERVIEW */
+        /* -------------------- */
 
-        // Set overview. If there is no overview, we show the default text for overview.
         String overview = movieDetails.getMovie().getOverview();
         if (overview != null && !overview.equals("") && !overview.isEmpty()) {
             infoSectionSet = true;
             overviewTextView.setText(overview);
-            overviewLinearLayout.setVisibility(View.VISIBLE);
-        } else
+
+            // Show only the tagline if there is an overview.
+            String tagline = movieDetails.getTagline();
+            if (tagline != null && !tagline.equals("") && !tagline.isEmpty()) {
+                infoSectionSet = true;
+                taglineTextView.setText(tagline);
+            } else {
+                // There is no tagline but there is an overview. Write "Synopsis" text instead.
+                taglineTextView.setText(getString(R.string.synopsis).toUpperCase());
+            }
+        } else {
+            taglineTextView.setVisibility(View.GONE);
             overviewLinearLayout.setVisibility(View.GONE);
+        }
+
+        /* ------ */
+        /* GENRES */
+        /* ------ */
+
+        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
+        genresFlowLayout.removeAllViews();
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (movieGenres != null && movieGenres.size() > 0) {
+            infoSectionSet = true;
+
+            // Set section title.
+            String genresTitle = getResources().getQuantityString(R.plurals.genres, movieGenres.size());
+            genresTextView.setText(genresTitle);
+
+            // Manage genres array.
+            for (int n = 0; n < movieGenres.size(); n++) {
+                // Create the genre element into the FlowLayout.
+                try {
+                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
+                    final TextView genreTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
+                    genreTextView.setText(movieGenres.get(n).getName());
+                    genresFlowLayout.addView(view);
+
+                    // Set a listener for managing click events on genres.
+                    genreTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            view.setElevation(0);
+                            Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (java.lang.NullPointerException e) {
+                    Log.e(TAG, "(setMainInfoSection) Error inflating view for " + movieGenres.get(n).getName());
+                }
+            }
+        }
 
         return infoSectionSet;
     }
@@ -736,37 +778,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         } else
             revenueTextView.setVisibility(View.GONE);
 
-        /* ------ */
-        /* GENRES */
-        /* ------ */
-
-        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
-        genresFlowLayout.removeAllViews();
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (movieGenres != null && movieGenres.size() > 0) {
-            infoSectionSet = true;
-            for (int n = 0; n < movieGenres.size(); n++) {
-                // Create the genre element into the FlowLayout.
-                try {
-                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
-                    final TextView genreTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
-                    genreTextView.setText(movieGenres.get(n).getName());
-                    genresFlowLayout.addView(view);
-
-                    // Set a listener for managing click events on genres.
-                    genreTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            view.setElevation(0);
-                            Toast.makeText(getContext(), "Genre clicked", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (java.lang.NullPointerException e) {
-                    Log.e(TAG, "(setMainInfoSection) Error inflating view for " + movieGenres.get(n).getName());
-                }
-            }
-        }
-
         return infoSectionSet;
     }
 
@@ -875,9 +886,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         ArrayList<TmdbMovie> recommendedMovies = movieDetails.getRecommendedMovies();
         if (recommendedMovies != null && recommendedMovies.size() > 0) {
             infoSectionSet = true;
-            TextViewUtils.setHtmlText(recommendedMoviesSubtitleTextView,
-                    getString(R.string.recommended_hint,
-                            "<strong>" + movieDetails.getMovie().getTitle() + "</strong>"));
             recommendedMoviesAdapter.setMoviesArrayList(recommendedMovies);
             recommendedMoviesAdapter.notifyDataSetChanged();
         }

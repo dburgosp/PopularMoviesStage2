@@ -90,7 +90,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (intent != null) {
             // Get current movie simple information.
             movie = intent.getParcelableExtra(EXTRA_PARAM_MOVIE);
-
         }
 
         // Set the custom tool bar and show the back button.
@@ -153,7 +152,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override

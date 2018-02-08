@@ -4,9 +4,13 @@
     android:id="@+id/info_overview_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/regular_padding"
-    android:layout_marginTop="@dimen/regular_padding"
+    android:layout_marginBottom="@dimen/big_padding"
     android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
 
     <TextView
         android:id="@+id/info_tagline"
@@ -14,8 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/regular_padding"
         android:layout_marginStart="@dimen/regular_padding"
-        android:layout_marginTop="@dimen/small_padding"
+        android:layout_marginTop="@dimen/big_padding"
         android:textAllCaps="true"
+        android:textSize="@dimen/normal_plus_text_size"
         android:textStyle="bold"
         tools:text="Tagline" />
 
@@ -26,19 +31,25 @@
         android:layout_marginEnd="@dimen/regular_padding"
         android:layout_marginStart="@dimen/regular_padding"
         android:layout_marginTop="@dimen/small_padding"
+        android:textSize="@dimen/normal_plus_text_size"
         tools:text="@string/no_overview" />
 
     <TextView
+        android:id="@+id/info_genres_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/regular_padding"
         android:layout_marginStart="@dimen/regular_padding"
-        android:text="Genres"
-        android:textStyle="bold" />
+        android:layout_marginTop="@dimen/big_padding"
+        android:textAllCaps="true"
+        android:textSize="@dimen/normal_plus_text_size"
+        android:textStyle="bold"
+        tools:text="Genres" />
 
     <com.example.android.popularmoviesstage2.classes.FlowLayout
         android:id="@+id/info_genres_flowlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/small_padding" />
+        android:layout_marginEnd="@dimen/small_padding"
+        android:layout_marginStart="@dimen/small_padding"
+        android:layout_marginTop="@dimen/small_padding" />
 </LinearLayout>

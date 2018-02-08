@@ -1,56 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recommended_movies_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/gradient_section_bg"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/big_padding"
-    android:paddingTop="@dimen/big_padding">
+    android:background="@color/colorDarkWhite"
+    android:paddingBottom="@dimen/big_padding">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_padding"
-        android:layout_marginEnd="@dimen/regular_padding"
-        android:layout_marginStart="@dimen/regular_padding">
+        android:background="@drawable/gradient_section_bg"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/big_padding">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/small_padding"
+            android:layout_marginEnd="@dimen/regular_padding"
+            android:layout_marginStart="@dimen/regular_padding">
+
+            <TextView
+                android:id="@+id/recommended_movies_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recommended_movies"
+                android:textAllCaps="true"
+                android:textSize="@dimen/normal_plus_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recommended_movies_view_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/regular_padding"
+                android:layout_toEndOf="@id/recommended_movies_title"
+                android:gravity="end"
+                android:text="@string/view_all"
+                android:textAllCaps="true"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/normal_plus_text_size"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recommended_movies_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_keywords_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorDarkWhite"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/big_padding">
 
         <TextView
-            android:id="@+id/recommended_movies_title"
+            android:id="@+id/info_keywords_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/recommended_movies"
-            android:textAllCaps="true"
-            android:textSize="@dimen/normal_plus_text_size"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/recommended_movies_view_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/regular_padding"
             android:layout_marginStart="@dimen/regular_padding"
-            android:text="@string/view_all"
+            android:text="@string/keywords_title"
             android:textAllCaps="true"
-            android:textColor="@color/colorAccent"
             android:textSize="@dimen/normal_plus_text_size"
             android:textStyle="bold" />
-    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/recommended_movies_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/regular_padding"
-        android:textSize="@dimen/normal_plus_text_size"
-        tools:text="If you like this movie maybe you like these other movies too:" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recommended_movies_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical" />
+        <com.example.android.popularmoviesstage2.classes.FlowLayout
+            android:id="@+id/info_keywords_flowlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/small_padding"
+            android:layout_marginStart="@dimen/small_padding"
+            android:layout_marginTop="@dimen/small_padding" />
+    </LinearLayout>
 </LinearLayout>

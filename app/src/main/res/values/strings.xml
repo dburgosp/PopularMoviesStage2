@@ -86,6 +86,7 @@
     <string name="status">Status</string>
     <string name="string_hours">h</string>
     <string name="string_minutes">m</string>
+    <string name="synopsis">Synopsis</string>
     <string name="thumbnail_description">Thumbnail image</string>
     <string name="transition_details_to_details">poster_transition_2</string>
     <string name="transition_list_to_details">poster_transition_1</string>
