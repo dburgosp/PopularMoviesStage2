@@ -15,7 +15,7 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbImage;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -223,7 +223,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
                 language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() + locale.getDisplayLanguage().substring(1);
             } else
                 language = context.getResources().getString(R.string.no_language);
-            TextUtils.setHtmlText(languageTextView, language);
+            TextViewUtils.setHtmlText(languageTextView, language);
 
             // Write image size for backdrops.
             switch (imageType)

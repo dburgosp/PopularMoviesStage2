@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -24,7 +25,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -33,6 +34,7 @@ import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -67,6 +69,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private static TmdbMovie movie;
     private Bundle options;
+    private static Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         supportPostponeEnterTransition();
 
         setContentView(R.layout.activity_movie_details);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         // Get parameters from intent.
         Intent intent = getIntent();
@@ -95,7 +98,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set title for this activity, depending on the collapsing state of the toolbar..
+        // Set title for this activity, depending on the collapsing state of the toolbar.
         setTitle("");
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -130,6 +133,58 @@ public class MovieDetailsActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);
 
         Log.i(TAG, "(onCreate) Activity created");
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        posterImageView = null;
+        backgroundImageView = null;
+    }
+
+    /**
+     * This method is called after {@link #onStart} when the activity is
+     * being re-initialized from a previously saved state, given here in
+     * <var>savedInstanceState</var>.  Most implementations will simply use {@link #onCreate}
+     * to restore their state, but it is sometimes convenient to do it here
+     * after all of the initialization has been done or to allow subclasses to
+     * decide whether to use your default implementation.  The default
+     * implementation of this method performs a restore of any view state that
+     * had previously been frozen by {@link #onSaveInstanceState}.
+     * <p>
+     * <p>This method is called between {@link #onStart} and
+     * {@link #onPostCreate}.
+     *
+     * @param savedInstanceState the data most recently supplied in {@link #onSaveInstanceState}.
+     * @see #onCreate
+     * @see #onPostCreate
+     * @see #onResume
+     * @see #onSaveInstanceState
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -237,10 +292,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
             if (year != null && !year.equals("") && !year.isEmpty()) {
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
-                TextUtils.setHtmlText(titleTextView, "<strong><big>" + title + " </big></strong>" +
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title + " </big></strong>" +
                         "<small><font color=\"#" + сolorString + "\">(" + year + ")</font></small>");
             } else
-                TextUtils.setHtmlText(titleTextView, "<strong><big>" + title + "</big></strong>");
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title + "</big></strong>");
         else
             titleTextView.setText(getResources().getString(R.string.no_title));
 

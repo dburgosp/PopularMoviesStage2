@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
 
@@ -207,7 +207,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
             Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
 
             // Set content for the current review. This text is stored in Markdown format.
-            TextUtils.setMarkdownText(contentTextView, currentTmdbReview.getContent());
+            TextViewUtils.setMarkdownText(contentTextView, currentTmdbReview.getContent());
 
             // Set current review author.
             authorTextView.setText(currentTmdbReview.getAuthor());

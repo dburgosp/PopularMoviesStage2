@@ -48,7 +48,7 @@ import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Picasso;
 
@@ -368,25 +368,26 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     void setRecyclerView() {
         // Set the LayoutManager for the RecyclerView.
-        recommendedMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recommendedMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         recommendedMoviesRecyclerView.setHasFixedSize(true);
 
         // Set the listeners for click events in the adapter.
         MoviesShortListAdapter.OnItemClickListener recommendedMovieListener = new MoviesShortListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
-
-                    // Start MovieDetailsActivity to show movie details when the current element is
-                    // clicked. We need to know when the other activity finishes, so we use
-                    // startActivityForResult. No need a requestCode, we don't care for any result.
-                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
-                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                    startActivity(intent);
+                // Start MovieDetailsActivity to show movie details when the current element is
+                // clicked. We need to know when the other activity finishes, so we use
+                // startActivityForResult. No need a requestCode, we don't care for any result.
+                Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
+                startActivity(intent);
             }
         };
 
         // Set the Adapter for the RecyclerView.
-        recommendedMoviesAdapter = new MoviesShortListAdapter(new ArrayList<TmdbMovie>(), recommendedMovieListener);
+        recommendedMoviesAdapter = new MoviesShortListAdapter(new ArrayList<TmdbMovie>(),
+                recommendedMovieListener);
         recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
     }
 
@@ -469,7 +470,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             infoSectionSet = true;
             String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() + "</strong><br>" +
                     "<font color=\"#" + color + "\">" + runtime + "</font>";
-            TextUtils.setHtmlText(runtimeTextView, htmlText);
+            TextViewUtils.setHtmlText(runtimeTextView, htmlText);
             runtimeTextView.setVisibility(View.VISIBLE);
         } else {
             runtimeTextView.setVisibility(View.GONE);
@@ -484,7 +485,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Show release status if it is other than "released".
         String status = movieDetails.getStatus();
-        if (status != null && !status.equals("") && !status.isEmpty() && !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+        if (status != null && !status.equals("") && !status.isEmpty() &&
+                !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
             switch (status) {
                 case Tmdb.TMDB_STATUS_CANCELED:
                     status = getString(R.string.release_status_canceled);
@@ -510,7 +512,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             // Extract release dates info related to current country.
             stringBuilder = new StringBuilder();
             for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
-                stringBuilder.append(DateTimeUtils.getDate(releases.getReleaseDateArrayList().get(i).getRelease_date()));
+                String date = releases.getReleaseDateArrayList().get(i).getRelease_date();
+                stringBuilder.append(DateTimeUtils.getDate(date));
 
                 // Set release type, if exists and if it is not a theatrical release date.
                 int type = releases.getReleaseDateArrayList().get(i).getType();
@@ -579,7 +582,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             infoSectionSet = true;
             releaseDatesContent = "<strong>" + releaseDatesTitle.toUpperCase() + "</strong><br>" +
                     "<font color=\"#" + color + "\">" + releaseDatesContent + "</font>";
-            TextUtils.setHtmlText(releaseDateTextView, releaseDatesContent);
+            TextViewUtils.setHtmlText(releaseDateTextView, releaseDatesContent);
             releaseDateTextView.setVisibility(View.VISIBLE);
         } else
             releaseDateTextView.setVisibility(View.GONE);
@@ -594,7 +597,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             ageRatingContent = "<strong>" + ageRatingContent.toUpperCase() + "</strong><br>" +
                     "<font color=\"#" + color + "\">" + ageRating + " (" + currentCountry +
                     ")</font>";
-            TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
+            TextViewUtils.setHtmlText(ageRatingTextView, ageRatingContent);
             ageRatingTextView.setVisibility(View.VISIBLE);
         } else
             ageRatingTextView.setVisibility(View.GONE);
@@ -634,7 +637,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                         getString(R.string.spoken_languages) + ": " + stringBuilder + "</font>";
             }
 
-            TextUtils.setHtmlText(originalLanguageTextView, htmlText);
+            TextViewUtils.setHtmlText(originalLanguageTextView, htmlText);
             originalLanguageTextView.setVisibility(View.VISIBLE);
         } else
             originalLanguageTextView.setVisibility(View.GONE);
@@ -648,7 +651,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             infoSectionSet = true;
             String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() +
                     "</strong><br><font color=\"#" + color + "\">" + originalTitle + "</font>";
-            TextUtils.setHtmlText(originalTitleTextView, htmlText);
+            TextViewUtils.setHtmlText(originalTitleTextView, htmlText);
             originalTitleTextView.setVisibility(View.VISIBLE);
         } else
             originalTitleTextView.setVisibility(View.GONE);
@@ -670,7 +673,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     getResources().getQuantityString(R.plurals.production_companies,
                             movieCompanies.size()).toUpperCase() +
                     "</strong><br><font color=\"#" + color + "\">" + stringBuilder + "</font>";
-            TextUtils.setHtmlText(productionCompaniesTextView, htmlText);
+            TextViewUtils.setHtmlText(productionCompaniesTextView, htmlText);
             productionCompaniesTextView.setVisibility(View.VISIBLE);
         } else
             productionCompaniesTextView.setVisibility(View.GONE);
@@ -694,7 +697,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     getResources().getQuantityString(R.plurals.production_countries,
                             movieCountries.size()).toUpperCase() +
                     "</strong><br><font color=\"#" + color + "\">" + stringBuilder + "</font>";
-            TextUtils.setHtmlText(productionCountriesTextView, htmlText);
+            TextViewUtils.setHtmlText(productionCountriesTextView, htmlText);
             productionCountriesTextView.setVisibility(View.VISIBLE);
         } else
             productionCountriesTextView.setVisibility(View.GONE);
@@ -711,7 +714,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             String usdBudget = LocaleUtils.getCurrencyFormat(budget, "USD");
             String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() +
                     "</strong><br><font color=\"#" + color + "\">" + usdBudget + "</font>";
-            TextUtils.setHtmlText(budgetTextView, htmlText);
+            TextViewUtils.setHtmlText(budgetTextView, htmlText);
             budgetTextView.setVisibility(View.VISIBLE);
         } else
             budgetTextView.setVisibility(View.GONE);
@@ -728,7 +731,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             String usdRevenue = LocaleUtils.getCurrencyFormat(revenue, "USD");
             String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() + "</strong><br>" +
                     "<font color=\"#" + color + "\">" + usdRevenue + "</font>";
-            TextUtils.setHtmlText(revenueTextView, htmlText);
+            TextViewUtils.setHtmlText(revenueTextView, htmlText);
             revenueTextView.setVisibility(View.VISIBLE);
         } else
             revenueTextView.setVisibility(View.GONE);
@@ -872,7 +875,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         ArrayList<TmdbMovie> recommendedMovies = movieDetails.getRecommendedMovies();
         if (recommendedMovies != null && recommendedMovies.size() > 0) {
             infoSectionSet = true;
-            TextUtils.setHtmlText(recommendedMoviesSubtitleTextView,
+            TextViewUtils.setHtmlText(recommendedMoviesSubtitleTextView,
                     getString(R.string.recommended_hint,
                             "<strong>" + movieDetails.getMovie().getTitle() + "</strong>"));
             recommendedMoviesAdapter.setMoviesArrayList(recommendedMovies);
@@ -889,7 +892,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
      */
     private boolean setKeywordsSection() {
         ArrayList<TmdbKeyword> keywordsArrayList = movieDetails.getKeywords();
-
 
         if (keywordsArrayList != null && keywordsArrayList.size() > 0) {
             keywordsFlowLayout.removeAllViews();
@@ -1115,7 +1117,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     String ageRatingContent = "<strong>" + ageRatingTitle.toUpperCase() +
                             "</strong><br><font color=\"#" + color + "\">" + omdbAgeRating + " (" +
                             country + ")</font>";
-                    TextUtils.setHtmlText(ageRatingTextView, ageRatingContent);
+                    TextViewUtils.setHtmlText(ageRatingTextView, ageRatingContent);
                     return true;
                 } else
                     Log.i(TAG, "(setAgeRating) No US age rating from OMDB");

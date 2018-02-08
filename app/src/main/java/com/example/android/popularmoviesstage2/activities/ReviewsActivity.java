@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -155,7 +155,7 @@ public class ReviewsActivity extends AppCompatActivity {
         // Set user name if exists. Otherwise, we show a default text.
         String username = review.getAuthor();
         if (username != null && !username.equals("") && !username.isEmpty())
-            TextUtils.setHtmlText(authorTextView,
+            TextViewUtils.setHtmlText(authorTextView,
                     "<small>" + getResources().getString(R.string.a_review_by) +
                             "</small> <strong>" + username + "</strong>");
         else
@@ -165,7 +165,7 @@ public class ReviewsActivity extends AppCompatActivity {
         String content = review.getContent();
         if (content != null && !content.equals("") && !content.isEmpty()) {
             // Text reviews are stored in Markdown format.
-            TextUtils.setMarkdownText(contentTextView, content);
+            TextViewUtils.setMarkdownText(contentTextView, content);
         } else
             contentTextView.setText(getResources().getString(R.string.no_content));
 

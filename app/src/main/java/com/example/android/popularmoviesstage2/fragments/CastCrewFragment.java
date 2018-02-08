@@ -30,7 +30,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbCastCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
 
@@ -437,7 +437,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
 
             // Add title and set text.
             text = "<font color=\"#" + color+"\"><strong>"+title.toUpperCase() + "</strong></font><br>" + text;
-            TextUtils.setHtmlText(textView, text);
+            TextViewUtils.setHtmlText(textView, text);
         } else {
             // Hide crew section if there is no information for the current department.
             textView.setVisibility(View.GONE);

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.TmdbVideo;
 import com.example.android.popularmoviesstage2.classes.YouTube;
-import com.example.android.popularmoviesstage2.utils.TextUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -190,7 +190,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
                 language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() + locale.getDisplayLanguage().substring(1);
             } else
                 language = context.getResources().getString(R.string.no_language);
-            TextUtils.setHtmlText(languageTextView, language);
+            TextViewUtils.setHtmlText(languageTextView, language);
 
             // Set video resolution.
             String resolution = Integer.toString(currentTmdbVideo.getSize());

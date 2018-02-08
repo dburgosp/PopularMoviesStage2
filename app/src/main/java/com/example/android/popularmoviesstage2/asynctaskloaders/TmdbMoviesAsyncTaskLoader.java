@@ -79,7 +79,8 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
                 Integer.valueOf(currentPage) <= Tmdb.TMDB_MAX_PAGES &&
                 Integer.valueOf(currentPage) > 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Sort order: " + sortOrder + ". Page number: " + currentPage);
+            Log.i(TAG, "(loadInBackground) Sort order: " + sortOrder + ". Page number: " +
+                    currentPage);
             return Tmdb.getTmdbMovies(sortOrder, currentPage, language);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");

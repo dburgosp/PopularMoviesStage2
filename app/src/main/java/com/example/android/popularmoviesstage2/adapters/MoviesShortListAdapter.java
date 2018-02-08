@@ -1,8 +1,6 @@
 package com.example.android.popularmoviesstage2.adapters;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,6 +16,7 @@ import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -166,8 +165,8 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
         ImageView posterImageView;
         @BindView(R.id.movie_short_list_title)
         TextView titleTextView;
-        @BindView(R.id.movie_short_list_year_rating)
-        TextView yearScoreTextView;
+        @BindView(R.id.movie_short_list_year)
+        TextView yearTextView;
         @BindView(R.id.movie_short_list_rating)
         TextView scoreTextView;
 
@@ -214,17 +213,15 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
             // Write production year.
             String year = DateTimeUtils.getYear(currentTmdbMovie.getRelease_date());
             if (year != null && !year.equals("") && !year.isEmpty()) {
-                // Color for left drawable, if it exists.
-                Drawable[] drawables = yearScoreTextView.getCompoundDrawables();
-                if (drawables[0] != null) {
-                    int color = context.getResources().getColor(R.color.colorGrey);
-                    drawables[0].setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                }
-
                 // Set text.
-                yearScoreTextView.setText(year);
+                yearTextView.setText(year);
+
+                // Color grey for left drawable.
+                TextViewUtils.setTintedCompoundDrawable(context, yearTextView,
+                        TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
+                        R.color.colorGrey, R.dimen.separator);
             } else
-                yearScoreTextView.setVisibility(View.GONE);
+                yearTextView.setVisibility(View.GONE);
 
             // Write users rating.
             String score = String.valueOf(currentTmdbMovie.getVote_average());
