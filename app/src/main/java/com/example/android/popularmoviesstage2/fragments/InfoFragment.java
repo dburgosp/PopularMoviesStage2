@@ -447,8 +447,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                 taglineTextView.setText(getString(R.string.synopsis).toUpperCase());
             }
         } else {
+            // Hide tagline and overview sections.
             taglineTextView.setVisibility(View.GONE);
-            overviewLinearLayout.setVisibility(View.GONE);
+            overviewTextView.setVisibility(View.GONE);
         }
 
         /* ------ */
@@ -456,8 +457,6 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
         /* ------ */
 
         ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
-        genresFlowLayout.removeAllViews();
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (movieGenres != null && movieGenres.size() > 0) {
             infoSectionSet = true;
 
@@ -466,6 +465,8 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             genresTextView.setText(genresTitle);
 
             // Manage genres array.
+            genresFlowLayout.removeAllViews();
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             for (int n = 0; n < movieGenres.size(); n++) {
                 // Create the genre element into the FlowLayout.
                 try {
@@ -486,6 +487,10 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
                     Log.e(TAG, "(setMainInfoSection) Error inflating view for " + movieGenres.get(n).getName());
                 }
             }
+        } else {
+            // Hide genres section.
+            genresTextView.setVisibility(View.GONE);
+            genresFlowLayout.setVisibility(View.GONE);
         }
 
         return infoSectionSet;
