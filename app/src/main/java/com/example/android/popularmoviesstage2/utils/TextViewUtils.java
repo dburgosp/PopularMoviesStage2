@@ -49,7 +49,14 @@ public class TextViewUtils {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(markdown);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
-        setHtmlText(textView, renderer.render(document));
+
+        // Remove the final blank character.
+        String htmlText = renderer.render(document);
+        if (htmlText.substring(htmlText.length() - 1, htmlText.length() ).equals("\n") &&
+                htmlText.length() > 1)
+            htmlText = htmlText.substring(0, htmlText.length() - 1);
+
+        setHtmlText(textView, htmlText);
     }
 
     /**

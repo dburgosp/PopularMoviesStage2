@@ -2,7 +2,6 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.ReviewsActivity;
 import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbReviewsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
@@ -243,29 +241,13 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false);
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
 
-        // Set the listener for click events in the TmdbReview.
-        final ReviewsAdapter.OnItemClickListener reviewListener = new ReviewsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(TmdbReview item, View clickedView) {
-                // Set movie title and images from the info passed to the fragment when instantiated.
-                item.setMovieTitle(movieTitle);
-                item.setPosterPath(posterPath);
-
-                // Start "ReviewsActivity" activity to show the complete review when the current
-                // element is clicked.
-                Intent intent = new Intent(getContext(), ReviewsActivity.class);
-                intent.putExtra(ReviewsActivity.EXTRA_PARAM_REVIEW, item);
-                intent.putExtra(ReviewsActivity.EXTRA_PARAM_YEAR, movieYear);
-                startActivity(intent);
-            }
-        };
-
         // Set the Adapter for the RecyclerView.
-        reviewsAdapter = new ReviewsAdapter(new ArrayList<TmdbReview>(), reviewListener);
+        reviewsAdapter = new ReviewsAdapter(new ArrayList<TmdbReview>());
         reviewsRecyclerView.setAdapter(reviewsAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to

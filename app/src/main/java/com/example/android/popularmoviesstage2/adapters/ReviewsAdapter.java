@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsViewHolder> {
     private static final String TAG = ReviewsAdapter.class.getSimpleName();
-    private final ReviewsAdapter.OnItemClickListener listener;
     private ArrayList<TmdbReview> reviewsArrayList;
     private LinearLayout.LayoutParams layoutParams;
     private int currentPosition, currentPage, totalPages;
@@ -31,11 +30,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      * Constructor for this class.
      *
      * @param reviewsArrayList is the list of reviews that will be represented into the adapter.
-     * @param listener         is the listener for receiving the clicks.
      */
-    public ReviewsAdapter(ArrayList<TmdbReview> reviewsArrayList, ReviewsAdapter.OnItemClickListener listener) {
+    public ReviewsAdapter(ArrayList<TmdbReview> reviewsArrayList) {
         this.reviewsArrayList = reviewsArrayList;
-        this.listener = listener;
         this.currentPosition = 0;
         this.currentPage = 0;
         this.totalPages = 0;
@@ -78,7 +75,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
             this.reviewsArrayList.addAll(reviewsArrayList);
         else
             this.reviewsArrayList.addAll(0, reviewsArrayList);
-        Log.i(TAG, "(updateReviewsArray) TmdbReview list updated. Current size is " + this.reviewsArrayList.size());
+        Log.i(TAG, "(updateReviewsArray) Review list updated. Current size is " +
+                this.reviewsArrayList.size());
     }
 
     /**
@@ -134,7 +132,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
             // Get current review object and update the view holder with the review details at
             // current position in the adapter.
             TmdbReview currentTmdbReview = reviewsArrayList.get(position);
-            viewHolder.bind(currentTmdbReview, listener);
+            viewHolder.bind(currentTmdbReview);
 
             // Set private variables in order to manage paging information.
             currentPosition = currentTmdbReview.getPosition();
@@ -171,6 +169,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
 
     class ReviewsViewHolder extends RecyclerView.ViewHolder {
         private final String TAG = ReviewsViewHolder.class.getSimpleName();
+        private final int PREVIEW_MAX_LINES = 3;
 
         // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
         // cast the corresponding views.
@@ -189,7 +188,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
          *
          * @param itemView The View that we inflated in {@link ReviewsAdapter#onCreateViewHolder}.
          */
-        public ReviewsViewHolder(View itemView) {
+        ReviewsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             context = itemView.getContext();
@@ -203,7 +202,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
          *
          * @param currentTmdbReview is the TmdbReview object attached to the current ReviewsViewHolder element.
          */
-        public void bind(final TmdbReview currentTmdbReview, final ReviewsAdapter.OnItemClickListener listener) {
+        public void bind(final TmdbReview currentTmdbReview) {
             Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
 
             // Set content for the current review. This text is stored in Markdown format.
@@ -216,7 +215,13 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
             viewHolder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onItemClick(currentTmdbReview, contentTextView);
+                    int oldMaxLines = contentTextView.getMaxLines();
+                    int newMaxLines;
+                    if (oldMaxLines == PREVIEW_MAX_LINES)
+                        newMaxLines = 1000;
+                    else
+                        newMaxLines = PREVIEW_MAX_LINES;
+                    contentTextView.setMaxLines(newMaxLines);
                 }
             });
         }
