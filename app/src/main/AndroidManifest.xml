@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,13 +23,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.PopularMoviesActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.MovieDetailsActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activities.PopularMoviesActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activities.PopularMoviesActivity" />
         </activity>
         <activity
             android:name=".activities.ReviewsActivity"
