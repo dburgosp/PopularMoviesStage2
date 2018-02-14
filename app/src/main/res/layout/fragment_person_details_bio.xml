@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/regular_padding"
     android:fillViewport="true"
-    tools:context="com.example.android.popularmoviesstage2.fragments.CastCrewFragment">
+    tools:context="com.example.android.popularmoviesstage2.fragments.PersonDetailsBioFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

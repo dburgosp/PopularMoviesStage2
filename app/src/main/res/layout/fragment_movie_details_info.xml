@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/regular_padding"
+    android:fillViewport="true"
+    tools:context="com.example.android.popularmoviesstage2.fragments.MovieDetailsCastCrewFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
+
+        <!-- Info section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Overview section -->
+            <include layout="@layout/layout_info_bio" />
+
+            <!-- Main info section -->
+            <include layout="@layout/layout_info_person" />
+
+            <!-- External links section -->
+            <include layout="@layout/layout_info_links" />
+        </LinearLayout>
+
+        <!-- Views to be shown while retrieving info -->
+        <TextView
+            android:id="@+id/info_no_result_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/regular_padding"
+            android:textSize="@dimen/alert_text_size"
+            tools:text="Message to display when there are no search results" />
+
+        <ProgressBar
+            android:id="@+id/info_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/info_no_result_text_view"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

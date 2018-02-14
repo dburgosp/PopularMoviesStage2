@@ -24,14 +24,15 @@ public class Tmdb {
 
     // URLs.
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
-    public final static String TMDB_THUMBNAIL_IMAGE_URL = "https://image.tmdb.org/t/p/w185";
-    public final static String TMDB_FULL_IMAGE_URL = "https://image.tmdb.org/t/p/w500";
+    public final static String TMDB_POSTER_SIZE_W185_URL = "https://image.tmdb.org/t/p/w185";
+    public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
     // Paths for appending to urls.
     public final static String TMDB_POPULAR_PATH = "popular";
     public final static String TMDB_TOP_RATED_PATH = "top_rated";
     public final static String TMDB_FAVORITES_PATH = "favorites";
     private final static String TMDB_MOVIE_PATH = "movie";
+    private final static String TMDB_PERSON_PATH = "person";
     private final static String TMDB_CREDITS_PATH = "credits";
     private final static String TMDB_REVIEWS_PATH = "reviews";
     private final static String TMDB_VIDEOS_PATH = "videos";
@@ -217,6 +218,45 @@ public class Tmdb {
         return new TmdbMovie(id, adult, backdrop_path, genres, original_language,
                 original_title, overview, popularity, poster_path, release_date, title,
                 video, vote_average, vote_count, n, page, total_pages);
+    }
+
+    /**
+     * Private helper method to extract a {@link TmdbPerson} object from a JSON.
+     *
+     * @param baseJSONResponse is the JSONObject containing the movie info.
+     * @return the {@link TmdbPerson} object parsed from the JSON.
+     * @throws JSONException from getJSONArray and getJSONObject calls.
+     */
+    private static TmdbPerson getPerson(JSONObject baseJSONResponse) throws JSONException {
+        // Extract the required values for the corresponding keys.
+        boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
+        String biography = NetworkUtils.getStringFromJSON(baseJSONResponse, "biography");
+        String birthday = NetworkUtils.getStringFromJSON(baseJSONResponse, "birthday");
+        String deathday = NetworkUtils.getStringFromJSON(baseJSONResponse, "deathday");
+        int gender = NetworkUtils.getIntFromJSON(baseJSONResponse, "gender");
+        String homepage = NetworkUtils.getStringFromJSON(baseJSONResponse, "homepage");
+        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
+        String imdb_id = NetworkUtils.getStringFromJSON(baseJSONResponse, "imdb_id");
+        String name = NetworkUtils.getStringFromJSON(baseJSONResponse, "name");
+        String place_of_birth = NetworkUtils.getStringFromJSON(baseJSONResponse, "place_of_birth");
+        Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
+        String profile_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "profile_path");
+
+        // Extract the JSONArray associated with the key called "also_known_as", which represents
+        // the list of other possible names for the person.
+        ArrayList<String> also_known_as = new ArrayList<>();
+        if (!baseJSONResponse.isNull("also_known_as")) {
+            JSONArray alsoKnownAsJsonArray = baseJSONResponse.getJSONArray("also_known_as");
+            for (int i = 0; i < alsoKnownAsJsonArray.length(); i++) {
+                // For each element in the array, get the String alias and add it to the alias array.
+                String alsoKnownAs = alsoKnownAsJsonArray.getJSONObject(i).toString();
+                also_known_as.add(alsoKnownAs);
+            }
+        }
+
+        // Return the {@link TmdbPerson} object parsed from the JSON.
+        return new TmdbPerson(adult, also_known_as, biography, birthday, deathday, gender, homepage,
+                id, imdb_id, name, place_of_birth, popularity, profile_path);
     }
 
     /**
@@ -542,6 +582,76 @@ public class Tmdb {
 
         // Return the TmdbCastCrew object.
         return castCrew;
+    }
+
+    /**
+     * Fetches TMDB for detailed information about a person.
+     *
+     * @param personId is the identifier of the person in TMDB.
+     * @param language is the language of the results.
+     * @return a {@link TmdbPersonDetails} object.
+     */
+    public static TmdbPersonDetails getTmdbPersonDetails(int personId, String language) {
+        Log.i(TAG, "(getTmdbPersonDetails) Person ID: " + personId + ". Language: " + language);
+
+        /* ------------ */
+        /* Get the JSON */
+        /* ------------ */
+
+        // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(TMDB_PERSON_PATH)
+                .appendPath(Integer.toString(personId))
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                .appendQueryParameter(TMDB_PARAM_APPEND_TO_RESPONSE, "external_ids,movie_credits,tv_credits,images,tagged_images")
+                .build();
+
+        // Use the built uri to get the JSON document with the results of the query.
+        String JSONresponse;
+        try {
+            JSONresponse = NetworkUtils.getJSONresponse(builtUri);
+        } catch (java.io.IOException e) {
+            // If getJSONresponse has thrown an exception, exit returning null.
+            Log.e(TAG, "(getTmdbPersonDetails) Error retrieving JSON response: ", e);
+            return null;
+        }
+
+        /* -------------- */
+        /* Parse the JSON */
+        /* -------------- */
+
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG, "(getTmdbPersonDetails) The JSON string is empty.");
+            return null;
+        }
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject baseJSONResponse = new JSONObject(JSONresponse);
+
+            // Extract the required values for the corresponding keys.
+            TmdbPerson person = getPerson(baseJSONResponse);
+
+            // Extract external links.
+            TmdbExternalId externalIds = null;
+            if (!baseJSONResponse.isNull("external_ids")) {
+                JSONObject externalIdsObject = baseJSONResponse.getJSONObject("external_ids");
+                externalIds = getExternalLinks(externalIdsObject);
+            }
+
+            // Return a {@link TmdbPersonDetails} object with the data retrieved from the JSON
+            // response.
+            return new TmdbPersonDetails(person, externalIds);
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG, "(getTmdbPersonDetails) Error parsing the JSON response: ", e);
+            return null;
+        }
     }
 
     /**

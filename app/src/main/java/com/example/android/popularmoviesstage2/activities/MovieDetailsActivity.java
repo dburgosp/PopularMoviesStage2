@@ -28,6 +28,8 @@ import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -37,7 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class MovieDetailsActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = MovieDetailsActivity.class.getSimpleName();
     public static final String EXTRA_PARAM_MOVIE = "movie";
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -102,7 +104,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+                if (collapsingToolbarLayout.getHeight() + verticalOffset <
+                        2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
                     // CollapsingToolbar is collapsed. Show title.
                     String title = movie.getTitle();
                     String year = DateTimeUtils.getYear(movie.getRelease_date());
@@ -255,7 +258,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
      * Helper method to display current movie information in the header of this activity.
      */
     void setMovieInfo() {
-        Log.i(TAG, "(setMovieInfo) Display movie information on the header");
+        Log.i(TAG, "(setPersonInfo) Display movie information on the header");
 
         // Set poster, if it exists.
         String posterPath = movie.getPoster_path();
@@ -263,8 +266,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
             // Set transition between the poster in MainActivity and this.
             Picasso.with(this)
-                    .load(Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath)
+                    .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
                     .noFade()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
                     .into(posterImageView, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -281,7 +286,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this).load(Tmdb.TMDB_FULL_IMAGE_URL + backdropPath).into(backgroundImageView);
+            Picasso.with(this)
+                    .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into(backgroundImageView);
 
         // Set movie title and year.
         String title = movie.getTitle();

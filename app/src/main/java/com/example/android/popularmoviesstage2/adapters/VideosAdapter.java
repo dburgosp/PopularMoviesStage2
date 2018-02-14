@@ -14,6 +14,8 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.TmdbVideo;
 import com.example.android.popularmoviesstage2.classes.YouTube;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -176,7 +178,11 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
             String videoImagePath = currentTmdbVideo.getKey();
             if (videoImagePath != null && !videoImagePath.equals("") && !videoImagePath.isEmpty()) {
                 String posterPath = YouTube.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + YouTube.YOUTUBE_VIDEO_MQDEFAULT_IMAGE;
-                Picasso.with(context).load(posterPath).into(videoImageView);
+                Picasso.with(context)
+                        .load(posterPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(videoImageView);
             } else
                 videoImageView.setImageDrawable(getDrawable(context, R.drawable.no_movie));
 

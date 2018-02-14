@@ -16,6 +16,8 @@ import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbImage;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -317,8 +319,12 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
         private void drawImage(TmdbImage currentTmdbImage, int defaultDrawableRes) {
             String imagePath = currentTmdbImage.getFile_path();
             if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-                String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + imagePath;
-                Picasso.with(context).load(posterPath).into(imageView);
+                String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + imagePath;
+                Picasso.with(context)
+                        .load(posterPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(imageView);
             } else
                 // No image. Show default image.
                 imageView.setImageDrawable(getDrawable(context, defaultDrawableRes));

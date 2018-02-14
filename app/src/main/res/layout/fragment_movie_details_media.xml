@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context="com.example.android.popularmoviesstage2.fragments.MediaFragment">
+    tools:context="com.example.android.popularmoviesstage2.fragments.MovieDetailsMediaFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

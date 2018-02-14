@@ -12,6 +12,8 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.FullSizeImageActivity;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbImage;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -87,8 +89,12 @@ public class FullSizeImageFragment extends Fragment {
             TmdbImage image = getArguments().getParcelable(PARAM_IMAGE);
             String imagePath = image.getFile_path();
             if (imagePath != null && !imagePath.equals("") && !imagePath.isEmpty()) {
-                String posterPath = Tmdb.TMDB_FULL_IMAGE_URL + imagePath;
-                Picasso.with(getContext()).load(posterPath).into(imageView);
+                String posterPath = Tmdb.TMDB_POSTER_SIZE_W500_URL + imagePath;
+                Picasso.with(getContext())
+                        .load(posterPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(imageView);
             } else {
                 // No image. Show default image.
                 switch (imageType) {

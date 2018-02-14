@@ -25,6 +25,7 @@ import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbReviewsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
+import com.example.android.popularmoviesstage2.itemdecorations.VerticalSpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -35,8 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<TmdbReview>> {
-    private static final String TAG = ReviewsFragment.class.getSimpleName();
+public class MovieDetailsReviewsFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<TmdbReview>> {
+    private static final String TAG = MovieDetailsReviewsFragment.class.getSimpleName();
 
     @BindView(R.id.reviews_relative_layout)
     RelativeLayout mainLayout;
@@ -58,22 +59,22 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
     /**
      * Required empty public constructor.
      */
-    public ReviewsFragment() {
+    public MovieDetailsReviewsFragment() {
     }
 
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
      * @param tmdbMovie is the {@link TmdbMovie} object.
-     * @return a new instance of fragment ReviewsFragment.
+     * @return a new instance of fragment MovieDetailsReviewsFragment.
      */
-    public static ReviewsFragment newInstance(TmdbMovie tmdbMovie) {
+    public static MovieDetailsReviewsFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", tmdbMovie.getId());
         bundle.putString("title", tmdbMovie.getTitle());
         bundle.putString("poster", tmdbMovie.getPoster_path());
         bundle.putString("year", DateTimeUtils.getYear(tmdbMovie.getRelease_date()));
-        ReviewsFragment fragment = new ReviewsFragment();
+        MovieDetailsReviewsFragment fragment = new MovieDetailsReviewsFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -85,7 +86,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_reviews, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details_reviews, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
@@ -245,6 +246,9 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                 LinearLayoutManager.VERTICAL, false);
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
+        int verticalSeparation =
+                getContext().getResources().getDimensionPixelOffset(R.dimen.regular_padding);
+        reviewsRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(verticalSeparation));
 
         // Set the Adapter for the RecyclerView.
         reviewsAdapter = new ReviewsAdapter(new ArrayList<TmdbReview>());
@@ -290,7 +294,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                         // end of the RecyclerView.
                         currentPage++;
                         appendToEnd = true;
-                        getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                        getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, MovieDetailsReviewsFragment.this);
                     }
                 }
             }
@@ -310,7 +314,7 @@ public class ReviewsFragment extends Fragment implements LoaderManager.LoaderCal
                             // fetched reviews will be appended to the start of the RecyclerView.
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
-                            getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, ReviewsFragment.this);
+                            getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, MovieDetailsReviewsFragment.this);
                         } else
                             swipeRefreshLayout.setRefreshing(false);
                     }

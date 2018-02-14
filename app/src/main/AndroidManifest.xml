@@ -48,5 +48,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MovieDetailsActivity" />
         </activity>
+        <activity
+            android:name=".activities.PersonDetailsActivity"
+            android:parentActivityName=".activities.MovieDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
     </application>
+
 </manifest>

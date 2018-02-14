@@ -22,9 +22,9 @@ public class TmdbMovieCollection implements Parcelable {
      *                      language for retrieving information from the TMDB API.
      * @param overview      is the overview of the movie collection, given in the currently selected
      *                      language for retrieving information from the TMDB API.
-     * @param poster_path   is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param poster_path   is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL}
      *                      and get the poster of the movie collection.
-     * @param backdrop_path is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL}
      *                      and get the backdrop image of the movie collection.
      * @param parts         is an array of {@link TmdbMovie} elements containing some simple information
      *                      about the movies in the current collection.

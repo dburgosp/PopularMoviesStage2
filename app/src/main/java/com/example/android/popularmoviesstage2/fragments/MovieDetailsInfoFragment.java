@@ -50,6 +50,8 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,8 +66,8 @@ import static android.support.v4.content.ContextCompat.getDrawable;
 /**
  * {@link Fragment} that displays the main information about the current movieDetails.
  */
-public class InfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
-    private static final String TAG = InfoFragment.class.getSimpleName();
+public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
+    private static final String TAG = MovieDetailsInfoFragment.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -103,23 +105,23 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @BindView(R.id.info_main_layout)
     LinearLayout mainLinearLayout;
-    @BindView(R.id.info_runtime)
+    @BindView(R.id.info_movie_runtime)
     TextView runtimeTextView;
-    @BindView(R.id.info_release_date)
+    @BindView(R.id.info_movie_release_date)
     TextView releaseDateTextView;
-    @BindView(R.id.info_age_rating)
+    @BindView(R.id.info_movie_age_rating)
     TextView ageRatingTextView;
-    @BindView(R.id.info_original_language)
+    @BindView(R.id.info_movie_original_language)
     TextView originalLanguageTextView;
-    @BindView(R.id.info_production_countries)
+    @BindView(R.id.info_movie_production_countries)
     TextView productionCountriesTextView;
-    @BindView(R.id.info_original_title)
+    @BindView(R.id.info_movie_original_title)
     TextView originalTitleTextView;
-    @BindView(R.id.info_production_companies)
+    @BindView(R.id.info_movie_production_companies)
     TextView productionCompaniesTextView;
-    @BindView(R.id.info_budget)
+    @BindView(R.id.info_movie_budget)
     TextView budgetTextView;
-    @BindView(R.id.info_revenue)
+    @BindView(R.id.info_movie_revenue)
     TextView revenueTextView;
 
     @BindView(R.id.info_collection_layout)
@@ -167,19 +169,19 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     /**
      * Required empty public constructor.
      */
-    public InfoFragment() {
+    public MovieDetailsInfoFragment() {
     }
 
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
      * @param movie is the {@link TmdbMovie} object.
-     * @return a new instance of fragment InfoFragment.
+     * @return a new instance of fragment MovieDetailsInfoFragment.
      */
-    public static InfoFragment newInstance(TmdbMovie movie) {
+    public static MovieDetailsInfoFragment newInstance(TmdbMovie movie) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", movie.getId());
-        InfoFragment fragment = new InfoFragment();
+        MovieDetailsInfoFragment fragment = new MovieDetailsInfoFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -191,7 +193,7 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_info, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details_info, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
         // Clean all elements in the layout when creating this fragment.
@@ -796,8 +798,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             // Set poster, if it exists.
             String posterPath = movieDetails.getBelongs_to_collection().getPoster_path();
             if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
-                posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath;
-                Picasso.with(getContext()).load(posterPath).into(collectionPosterImageView);
+                posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath;
+                Picasso.with(getContext())
+                        .load(posterPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(collectionPosterImageView);
             } else
                 // No image. Show default image.
                 collectionPosterImageView.setImageDrawable(getDrawable(getContext(),
@@ -806,8 +812,12 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
             // Set background image, if it exists.
             String backdropPath = movieDetails.getBelongs_to_collection().getBackdrop_path();
             if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty()) {
-                backdropPath = Tmdb.TMDB_FULL_IMAGE_URL + backdropPath;
-                Picasso.with(getContext()).load(backdropPath).into(collectionBackgroundImageView);
+                backdropPath = Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath;
+                Picasso.with(getContext())
+                        .load(backdropPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(collectionBackgroundImageView);
             }
 
             // Set collection title.
@@ -832,6 +842,9 @@ public class InfoFragment extends Fragment implements LoaderManager.LoaderCallba
     private boolean setLinksSection() {
         final Float LINK_ALPHA = 0.4f;
         boolean infoSectionSet = false;
+
+        // Set background color for this section.
+        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorAccent));
 
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();

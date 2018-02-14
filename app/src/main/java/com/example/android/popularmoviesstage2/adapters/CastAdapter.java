@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbCast;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -187,8 +189,12 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
             // Draw profile image for current person and resize image to fit screen size and orientation.
             String profilePath = currentPerson.getProfile_path();
             if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
-                String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + profilePath;
-                Picasso.with(context).load(posterPath).into(posterImageView);
+                String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + profilePath;
+                Picasso.with(context)
+                        .load(posterPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(posterImageView);
             } else
                 posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));
 

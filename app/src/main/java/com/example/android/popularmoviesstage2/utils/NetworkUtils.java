@@ -99,7 +99,8 @@ public final class NetworkUtils {
      * Helper method to get the String value of a key into a JSON object.
      *
      * @param jsonObject is the JSON object that is being parsed.
-     * @param key        is the key to search into the JSON object.
+     * @param key        is the key
+     *                   to search into the JSON object.
      * @return the String value associated to the given key, or an empty String if the key does not
      * exist.
      */

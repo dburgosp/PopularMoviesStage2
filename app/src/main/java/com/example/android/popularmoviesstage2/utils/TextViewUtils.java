@@ -40,22 +40,23 @@ public class TextViewUtils {
     }
 
     /**
-     * Helper method to set text in a TextView using Markdown sintax.
+     * Helper method to set text in a TextView using Markdown syntax.
      *
      * @param textView is the TextView to be set.
-     * @param markdown is the text containing Markdown sintax.
+     * @param markdown is the text containing Markdown syntax.
      */
     public static void setMarkdownText(TextView textView, String markdown) {
+        // Disables onClick ?
+        // Markwon.setMarkdown(textView, markdown);
+
         Parser parser = Parser.builder().build();
         Node document = parser.parse(markdown);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
 
-        // Remove the final blank character.
-        String htmlText = renderer.render(document);
-        if (htmlText.substring(htmlText.length() - 1, htmlText.length() ).equals("\n") &&
-                htmlText.length() > 1)
-            htmlText = htmlText.substring(0, htmlText.length() - 1);
+        // Remove all the "\n" characters.
+        String htmlText = renderer.render(document).replace("\n","");
 
+        // Set text.
         setHtmlText(textView, htmlText);
     }
 

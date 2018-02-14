@@ -42,6 +42,7 @@
     <string name="no_connection">No hay conexión a Internet.</string>
     <string name="no_content">Nada que mostrar&#8230;</string>
     <string name="no_language">Sin idioma</string>
+    <string name="no_name">Sin nombre</string>
     <string name="no_overview">No tenemos sinopsis para esta película.</string>
     <string name="no_results">La búsqueda no ha producido ningún resultado.</string>
     <string name="no_title">Sin título</string>
@@ -50,6 +51,10 @@
     <string name="original_language">Idioma original</string>
     <string name="original_title">Título original</string>
     <string name="overview">Sinopsis</string>
+    <string name="person_details_bio">Biografía</string>
+    <string name="person_details_movies">Películas</string>
+    <string name="person_details_tv">TV</string>
+    <string name="person_details_images">Imágenes</string>
     <string name="posters_title">Pósters</string>
     <string name="recommended_movies">Recomendaciones</string>
     <string name="recommended_hint">A otros usuarios que les gustó %s también les interesaron estas otras películas:</string>

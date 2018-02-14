@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,9 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.PersonDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.CastAdapter;
 import com.example.android.popularmoviesstage2.adapters.CrewAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbCastCrewAsyncTaskLoader;
@@ -29,6 +30,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbCast;
 import com.example.android.popularmoviesstage2.classes.TmdbCastCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbPerson;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
@@ -38,8 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbCastCrew> {
-    private static final String TAG = CastCrewFragment.class.getSimpleName();
+public class MovieDetailsCastCrewFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbCastCrew> {
+    private static final String TAG = MovieDetailsCastCrewFragment.class.getSimpleName();
     private static final int CAST_CREW_MAX_ELEMENTS = 10;
 
     @BindView(R.id.cast_crew_no_result_text_view)
@@ -81,19 +83,19 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     /**
      * Required empty public constructor.
      */
-    public CastCrewFragment() {
+    public MovieDetailsCastCrewFragment() {
     }
 
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
      * @param movie is the {@link TmdbMovie} object.
-     * @return a new instance of fragment CastCrewFragment.
+     * @return a new instance of fragment MovieDetailsCastCrewFragment.
      */
-    public static CastCrewFragment newInstance(TmdbMovie movie) {
+    public static MovieDetailsCastCrewFragment newInstance(TmdbMovie movie) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", movie.getId());
-        CastCrewFragment fragment = new CastCrewFragment();
+        MovieDetailsCastCrewFragment fragment = new MovieDetailsCastCrewFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,7 +107,7 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_cast_crew, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details_cast_crew, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
         // Clean all elements in the layout when creating this fragment.
@@ -359,14 +361,22 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
         // Set the listeners for click events in the CastAdapters.
         CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(TmdbCast item) {
-                Toast.makeText(getContext(), "Cast item clicked", Toast.LENGTH_SHORT).show();
+            public void onItemClick(TmdbCast cast) {
+                // Open a new PersonDetailsActivity to show info about the current cast member.
+                Intent intent = new Intent(getContext(), PersonDetailsActivity.class);
+                TmdbPerson person = new TmdbPerson(cast.getId(), cast.getName(), cast.getProfile_path());
+                intent.putExtra(PersonDetailsActivity.EXTRA_PARAM_PERSON, person);
+                startActivity(intent);
             }
         };
         CrewAdapter.OnItemClickListener crewListener = new CrewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(TmdbCrew item) {
-                Toast.makeText(getContext(), "Crew item clicked", Toast.LENGTH_SHORT).show();
+            public void onItemClick(TmdbCrew crew) {
+                // Open a new PersonDetailsActivity to show info about the current crew member.
+                Intent intent = new Intent(getContext(), PersonDetailsActivity.class);
+                TmdbPerson person = new TmdbPerson(crew.getId(), crew.getName(), crew.getProfile_path());
+                intent.putExtra(PersonDetailsActivity.EXTRA_PARAM_PERSON, person);
+                startActivity(intent);
             }
         };
 
@@ -415,19 +425,18 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
     private void setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
         if (crewArrayList.size() > 0) {
             String text = "";
-            String color = String.format("%X", getResources().getColor(R.color.colorBlack)).substring(2);
+            String color = String.format("%X", getResources().getColor(R.color.colorDarkGrey)).substring(2);
             for (int i = 0; i < crewArrayList.size(); i++) {
                 // Add members of the current department to the corresponding TextView.
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(text);
-                //stringBuilder.append("<font color=\"#");
-                //stringBuilder.append(color);
-                //stringBuilder.append("\"><strong>");
-                stringBuilder.append(crewArrayList.get(i).getName().toUpperCase());
-                //stringBuilder.append("</strong></font> (");
-                stringBuilder.append(" (");
+                stringBuilder.append("<font color=\"#");
+                stringBuilder.append(color);
+                stringBuilder.append("\"><strong>");
+                stringBuilder.append(crewArrayList.get(i).getName());
+                stringBuilder.append("</strong> (");
                 stringBuilder.append(crewArrayList.get(i).getJob());
-                stringBuilder.append(")");
+                stringBuilder.append(")</font>");
                 if (i < (crewArrayList.size() - 1)) {
                     // Don't append newline character to the last element.
                     stringBuilder.append("<br>");
@@ -436,7 +445,8 @@ public class CastCrewFragment extends Fragment implements LoaderManager.LoaderCa
             }
 
             // Add title and set text.
-            text = "<font color=\"#" + color+"\"><strong>"+title.toUpperCase() + "</strong></font><br>" + text;
+            //text = "<font color=\"#" + color+"\"><strong>"+title.toUpperCase() + "</strong></font><br>" + text;
+            text = "<strong>" + title.toUpperCase() + "</strong><br>" + text;
             TextViewUtils.setHtmlText(textView, text);
         } else {
             // Hide crew section if there is no information for the current department.

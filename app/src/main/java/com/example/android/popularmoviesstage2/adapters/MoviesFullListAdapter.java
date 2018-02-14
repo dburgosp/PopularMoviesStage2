@@ -74,7 +74,7 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
             this.moviesArrayList.addAll(moviesArrayList);
         else
             this.moviesArrayList.addAll(0, moviesArrayList);
-        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " + 
+        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " +
                 this.moviesArrayList.size());
     }
 
@@ -203,7 +203,7 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
     /* ----------- */
     /* VIEW HOLDER */
     /* ----------- */
-    
+
     public class MoviesFullListViewHolder extends RecyclerView.ViewHolder {
 
         private final String TAG = MoviesFullListViewHolder.class.getSimpleName();
@@ -241,7 +241,7 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
             Log.i(TAG, "(bind) Binding data for the current MoviesFullListViewHolder.");
 
             // Draw poster for current movie and resize image to fit screen size and orientation.
-            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbMovie.getPoster_path();
+            String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentTmdbMovie.getPoster_path();
             Picasso.with(context).load(posterPath).into(posterImageView);
             posterImageView.setLayoutParams(layoutParams);
 

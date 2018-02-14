@@ -13,6 +13,8 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -139,7 +141,11 @@ public class ReviewsActivity extends AppCompatActivity {
         // Set poster. If there is no poster, set the default poster.
         String posterPath = review.getPosterPath();
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty())
-            Picasso.with(this).load(Tmdb.TMDB_THUMBNAIL_IMAGE_URL + posterPath).into(posterImageView);
+            Picasso.with(this)
+                    .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into(posterImageView);
         else
             posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 

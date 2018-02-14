@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
-import com.example.android.popularmoviesstage2.fragments.CastCrewFragment;
-import com.example.android.popularmoviesstage2.fragments.InfoFragment;
-import com.example.android.popularmoviesstage2.fragments.MediaFragment;
-import com.example.android.popularmoviesstage2.fragments.ReviewsFragment;
+import com.example.android.popularmoviesstage2.fragments.MovieDetailsCastCrewFragment;
+import com.example.android.popularmoviesstage2.fragments.MovieDetailsInfoFragment;
+import com.example.android.popularmoviesstage2.fragments.MovieDetailsMediaFragment;
+import com.example.android.popularmoviesstage2.fragments.MovieDetailsReviewsFragment;
 
 /**
  * Provides the appropriate {@link Fragment} for a view pager.
@@ -35,13 +35,13 @@ public class MovieDetailsFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return InfoFragment.newInstance(tmdbMovie);
+                return MovieDetailsInfoFragment.newInstance(tmdbMovie);
             case 1:
-                return CastCrewFragment.newInstance(tmdbMovie);
+                return MovieDetailsCastCrewFragment.newInstance(tmdbMovie);
             case 2:
-                return MediaFragment.newInstance(tmdbMovie);
+                return MovieDetailsMediaFragment.newInstance(tmdbMovie);
             default:
-                return ReviewsFragment.newInstance(tmdbMovie);
+                return MovieDetailsReviewsFragment.newInstance(tmdbMovie);
         }
     }
 

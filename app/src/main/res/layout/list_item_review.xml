@@ -5,20 +5,21 @@
     android:id="@+id/reviews_cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/small_padding"
     android:layout_marginEnd="@dimen/regular_padding"
     android:layout_marginStart="@dimen/regular_padding"
-    android:layout_marginTop="@dimen/small_padding"
     android:background="@color/colorWhite"
     app:cardCornerRadius="@dimen/small_padding"
-    app:cardElevation="@dimen/tiny_padding">
+    app:cardElevation="@dimen/separator">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
         android:orientation="vertical"
-        android:padding="@dimen/regular_padding">
+        android:paddingBottom="@dimen/big_padding"
+        android:paddingEnd="@dimen/regular_padding"
+        android:paddingStart="@dimen/regular_padding"
+        android:paddingTop="@dimen/big_padding">
 
         <TextView
             android:id="@+id/reviews_content_text_view"
@@ -28,6 +29,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:maxLines="3"
+            android:textSize="@dimen/normal_plus_text_size"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
 
         <View

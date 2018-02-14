@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/big_padding">
 
     <TextView
-        android:id="@+id/info_runtime"
+        android:id="@+id/info_movie_runtime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -21,7 +21,7 @@
         tools:text="RUNTIME\n1h 30m" />
 
     <TextView
-        android:id="@+id/info_release_date"
+        android:id="@+id/info_movie_release_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -30,7 +30,7 @@
         tools:text="RELEASE DATE\n2001-01-01" />
 
     <TextView
-        android:id="@+id/info_age_rating"
+        android:id="@+id/info_movie_age_rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -39,7 +39,7 @@
         tools:text="AGE RATING\nPG-13" />
 
     <TextView
-        android:id="@+id/info_original_language"
+        android:id="@+id/info_movie_original_language"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -48,7 +48,7 @@
         tools:text="ORIGINAL LANGUAGE\nLanguage" />
 
     <TextView
-        android:id="@+id/info_production_countries"
+        android:id="@+id/info_movie_production_countries"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -57,7 +57,7 @@
         tools:text="PRODUCTION COUNTRIES\nList of production countries\nin more than one line" />
 
     <TextView
-        android:id="@+id/info_original_title"
+        android:id="@+id/info_movie_original_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -66,7 +66,7 @@
         tools:text="ORIGINAL TITLE\nOriginal title\nin more than one line" />
 
     <TextView
-        android:id="@+id/info_production_companies"
+        android:id="@+id/info_movie_production_companies"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -75,7 +75,7 @@
         tools:text="PRODUCTION COMPANIES\nList of production companies\nin more than one line" />
 
     <TextView
-        android:id="@+id/info_budget"
+        android:id="@+id/info_movie_budget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -84,7 +84,7 @@
         tools:text="BUDGET ($)\nBudget" />
 
     <TextView
-        android:id="@+id/info_revenue"
+        android:id="@+id/info_movie_revenue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"

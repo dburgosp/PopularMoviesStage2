@@ -17,6 +17,8 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -200,8 +202,12 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
             Log.i(TAG, "(bind) Binding data for the current MoviesShortListViewHolder.");
 
             // Draw poster for current movie.
-            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbMovie.getPoster_path();
-            Picasso.with(context).load(posterPath).into(posterImageView);
+            String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentTmdbMovie.getPoster_path();
+            Picasso.with(context)
+                    .load(posterPath)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into(posterImageView);
 
             // Write movie title.
             String title = currentTmdbMovie.getTitle();

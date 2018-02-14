@@ -153,16 +153,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         return itemCount;
     }
 
-    /**
-     * Set a click listener to the RecyclerView, so we can manage OnClick events from the activity
-     * from which the RecyclerView is created.
-     * <p>
-     * For more information: https://antonioleiva.com/recyclerview-listener/
-     */
-    public interface OnItemClickListener {
-        void onItemClick(TmdbReview item, View clickedView);
-    }
-
     /* ----------- */
     /* VIEW HOLDER */
     /* ----------- */
@@ -197,31 +187,30 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         }
 
         /**
-         * Helper method for setting TmdbPerson information for the current ReviewsViewHolder from the
-         * {@link ReviewsAdapter#onBindViewHolder(ReviewsViewHolder, int)} method.
+         * Helper method for setting TmdbPerson information for the current ReviewsViewHolder from
+         * the {@link ReviewsAdapter#onBindViewHolder(ReviewsViewHolder, int)} method.
          *
-         * @param currentTmdbReview is the TmdbReview object attached to the current ReviewsViewHolder element.
+         * @param currentTmdbReview is the TmdbReview object attached to the current
+         *                          ReviewsViewHolder element.
          */
         public void bind(final TmdbReview currentTmdbReview) {
             Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
 
-            // Set content for the current review. This text is stored in Markdown format.
-            TextViewUtils.setMarkdownText(contentTextView, currentTmdbReview.getContent());
-
             // Set current review author.
             authorTextView.setText(currentTmdbReview.getAuthor());
+
+            // Set content for the current review. This text is stored in Markdown format.
+            TextViewUtils.setMarkdownText(contentTextView, currentTmdbReview.getContent());
 
             // Set the listener for click events.
             viewHolder.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int oldMaxLines = contentTextView.getMaxLines();
-                    int newMaxLines;
-                    if (oldMaxLines == PREVIEW_MAX_LINES)
-                        newMaxLines = 1000;
+                    // Show/hide the full preview.
+                    if (contentTextView.getMaxLines() == PREVIEW_MAX_LINES)
+                        contentTextView.setMaxLines(Integer.MAX_VALUE);
                     else
-                        newMaxLines = PREVIEW_MAX_LINES;
-                    contentTextView.setMaxLines(newMaxLines);
+                        contentTextView.setMaxLines(PREVIEW_MAX_LINES);
                 }
             });
         }

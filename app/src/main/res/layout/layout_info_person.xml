@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/info_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/regular_padding"
+    android:paddingEnd="@dimen/regular_padding"
+    android:paddingStart="@dimen/regular_padding"
+    android:paddingTop="@dimen/big_padding">
+
+    <TextView
+        android:id="@+id/info_person_birthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="BIRTH DATE\n2001-01-01 (Madrid, Spain, 36 years old)" />
+
+    <TextView
+        android:id="@+id/info_person_deathday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="DEATH DATE\n2001-01-01 (84 years old)" />
+
+    <TextView
+        android:id="@+id/info_person_known_for_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="KNOWN FOR\nActing, directing, writing, producing" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/info_person_known_for_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding" />
+
+    <TextView
+        android:id="@+id/info_person_aka"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="ALSO KNOWN AS\nOther name 1\nOther name 2\nOther name 3" />
+</LinearLayout>

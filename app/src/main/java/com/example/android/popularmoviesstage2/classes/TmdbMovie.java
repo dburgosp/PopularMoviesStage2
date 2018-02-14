@@ -33,7 +33,7 @@ public class TmdbMovie implements Parcelable {
      * @param id                is the unique identifier of the movie on TMDB.
      * @param adult             is a boolean value that indicates whether the movie has adult
      *                          content or not.
-     * @param backdrop_path     is a string for appending to {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL}
+     * @param backdrop_path     is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL}
      *                          and get the backdrop image of the movie.
      * @param genres            is an array with {@link TmdbMovieGenre} objects, containing the
      *                          genres of the movie.
@@ -44,7 +44,7 @@ public class TmdbMovie implements Parcelable {
      * @param popularity        is a double value indicating how popular is the movie on TMDB
      *                          (based on views, ratings, favourite additions, etc.).
      * @param poster_path       is a string for appending to
-     *                          {@link Tmdb#TMDB_THUMBNAIL_IMAGE_URL} and get the poster of
+     *                          {@link Tmdb#TMDB_POSTER_SIZE_W185_URL} and get the poster of
      *                          the movie.
      * @param release_date      is the date in which the movie was released.
      * @param title             is the movie title, given in the currently selected language for

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -178,8 +180,12 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
             Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
 
             // Draw profile image for current person and resize image to fit screen size and orientation.
-            String posterPath = Tmdb.TMDB_THUMBNAIL_IMAGE_URL + currentTmdbPerson.getProfile_path();
-            Picasso.with(context).load(posterPath).into(posterImageView);
+            String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentTmdbPerson.getProfile_path();
+            Picasso.with(context)
+                    .load(posterPath)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .into(posterImageView);
             posterImageView.setLayoutParams(layoutParams);
 
             // Set person name.

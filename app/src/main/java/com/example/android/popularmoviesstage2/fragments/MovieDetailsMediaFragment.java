@@ -40,8 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMedia> {
-    private static final String TAG = MediaFragment.class.getSimpleName();
+public class MovieDetailsMediaFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMedia> {
+    private static final String TAG = MovieDetailsMediaFragment.class.getSimpleName();
 
     @BindView(R.id.media_no_result_text_view)
     TextView noResultsTextView;
@@ -96,19 +96,19 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
     /**
      * Required empty public constructor.
      */
-    public MediaFragment() {
+    public MovieDetailsMediaFragment() {
     }
 
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
      * @param tmdbMovie is the {@link TmdbMovie} object.
-     * @return a new instance of fragment MediaFragment.
+     * @return a new instance of fragment MovieDetailsMediaFragment.
      */
-    public static MediaFragment newInstance(TmdbMovie tmdbMovie) {
+    public static MovieDetailsMediaFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", tmdbMovie.getId());
-        MediaFragment fragment = new MediaFragment();
+        MovieDetailsMediaFragment fragment = new MovieDetailsMediaFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -120,7 +120,7 @@ public class MediaFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_media, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_movie_details_media, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.

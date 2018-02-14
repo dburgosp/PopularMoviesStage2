@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context="com.example.android.popularmoviesstage2.fragments.CastCrewFragment">
+    tools:context="com.example.android.popularmoviesstage2.fragments.MovieDetailsCastCrewFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -73,7 +73,7 @@
             android:layout_below="@id/cast_crew_separator"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/regular_padding"
+            android:paddingBottom="@dimen/big_padding"
             android:paddingTop="@dimen/regular_padding">
 
             <RelativeLayout

@@ -3,7 +3,7 @@ package com.example.android.popularmoviesstage2.classes;
 import java.util.ArrayList;
 
 /**
- * Public class for managing the complete information of a movie.
+ * Public class for managing the complete information about a movie.
  */
 public class TmdbMovieDetails {
     private TmdbMovie movie;
