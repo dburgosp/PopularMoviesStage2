@@ -28,6 +28,7 @@
     <string name="department_writing">Writing</string>
     <string name="external_links_title">External links</string>
     <string name="fetching_cast_crew_info">Fetching cast &#038; crew information&#8230;</string>
+    <string name="fetching_info">Fetching information&#8230;</string>
     <string name="fetching_movie_info">Fetching movie information&#8230;</string>
     <string name="film_crew">Main film crew</string>
     <string name="full_size_image_description">Full size image</string>
@@ -46,10 +47,11 @@
     <string name="no_author">Unknown author</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
     <string name="no_content">Nothing to show&#8230;</string>
+    <string name="no_date">No date</string>
     <string name="no_language">No language</string>
     <string name="no_name">No name</string>
     <string name="no_overview">There is no available overview for this movie right now.</string>
-    <string name="no_results">The query has not produced any result.</string>
+    <string name="no_results">The query has not produced any result</string>
     <string name="no_title">No title</string>
     <string name="order_popular">Popular Movies</string>
     <string name="order_top_rated">Top rated Movies</string>
@@ -96,6 +98,7 @@
     <string name="transition_details_to_details">poster_transition_2</string>
     <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
+    <string name="upcoming_movies_title">Upcoming movies</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
     <string name="view_all_crew">View complete Film Crew</string>

@@ -26,6 +26,7 @@ public class TmdbMovie implements Parcelable {
     private int position;
     private int page;
     private int total_pages;
+    private int total_results;
 
     /**
      * Constructor for objects of this class.
@@ -56,12 +57,13 @@ public class TmdbMovie implements Parcelable {
      * @param position          is the position of the movie into the current page.
      * @param page              is the current page in the list of movies.
      * @param total_pages       is the total number of movie pages.
+     * @param total_results     is the total number of movies.
      */
     public TmdbMovie(int id, boolean adult, String backdrop_path, ArrayList<TmdbMovieGenre> genres,
                      String original_language, String original_title, String overview,
                      Double popularity, String poster_path, String release_date, String title,
                      boolean video, Double vote_average, int vote_count, int position, int page,
-                     int total_pages) {
+                     int total_pages, int total_results) {
         this.id = id;
         this.adult = adult;
         this.backdrop_path = backdrop_path;
@@ -79,6 +81,7 @@ public class TmdbMovie implements Parcelable {
         this.position = position;
         this.page = page;
         this.total_pages = total_pages;
+        this.total_results = total_results;
     }
 
     // Getters and setters.
@@ -219,6 +222,13 @@ public class TmdbMovie implements Parcelable {
         this.total_pages = total_pages;
     }
 
+    public int getTotal_results() {
+        return total_results;
+    }
+
+    public void setTotal_results(int total_results) {
+        this.total_results = total_results;
+    }
     // Parcelable configuration.
 
     @Override
@@ -245,6 +255,7 @@ public class TmdbMovie implements Parcelable {
         dest.writeInt(this.position);
         dest.writeInt(this.page);
         dest.writeInt(this.total_pages);
+        dest.writeInt(this.total_results);
     }
 
     protected TmdbMovie(Parcel in) {
@@ -265,6 +276,7 @@ public class TmdbMovie implements Parcelable {
         this.position = in.readInt();
         this.page = in.readInt();
         this.total_pages = in.readInt();
+        this.total_results = in.readInt();
     }
 
     public static final Parcelable.Creator<TmdbMovie> CREATOR = new Parcelable.Creator<TmdbMovie>() {

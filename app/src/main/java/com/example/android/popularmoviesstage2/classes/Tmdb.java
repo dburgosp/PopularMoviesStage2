@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.popularmoviesstage2.BuildConfig;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -27,14 +28,18 @@ public class Tmdb {
     public final static String TMDB_POSTER_SIZE_W185_URL = "https://image.tmdb.org/t/p/w185";
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
+    // Sort movies list by...
+    public final static String TMDB_SORT_BY_POPULAR = "popular";
+    public final static String TMDB_SORT_BY_TOP_RATED = "top_rated";
+    public final static String TMDB_SORT_BY_FAVORITES = "favorites";
+    public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
+
     // Paths for appending to urls.
-    public final static String TMDB_POPULAR_PATH = "popular";
-    public final static String TMDB_TOP_RATED_PATH = "top_rated";
-    public final static String TMDB_FAVORITES_PATH = "favorites";
     private final static String TMDB_MOVIE_PATH = "movie";
     private final static String TMDB_PERSON_PATH = "person";
     private final static String TMDB_CREDITS_PATH = "credits";
     private final static String TMDB_REVIEWS_PATH = "reviews";
+    private final static String TMDB_DISCOVER_PATH = "discover";
     private final static String TMDB_VIDEOS_PATH = "videos";
     private final static String TMDB_IMAGES_PATH = "images";
 
@@ -43,6 +48,7 @@ public class Tmdb {
     private final static String TMDB_PARAM_PAGE = "page";
     private final static String TMDB_PARAM_APPEND_TO_RESPONSE = "append_to_response";
     private final static String TMDB_PARAM_LANGUAGE = "language";
+    private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "primary_release_date.gte";
     private final static String TMDB_PARAM_REGION = "region";
 
     // Available release status for movies.
@@ -84,28 +90,48 @@ public class Tmdb {
     /**
      * Fetches TMDB for a list of movies.
      *
-     * @param sortOrder   is the sort order for the movie list.
+     * @param sortBy      is the sort order for the movie list.
      * @param currentPage is the page number to fetch.
      * @param language    is the language of the results.
      * @return an array of {@link TmdbMovie} objects.
      */
 
-    public static ArrayList<TmdbMovie> getTmdbMovies(String sortOrder, String currentPage, String language) {
-        Log.i(TAG, "(getTmdbMovies) Sort order: " + sortOrder + ". Page number: " +
+    public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language) {
+        Log.i(TAG, "(getTmdbMovies) Sort by: " + sortBy + ". Page number: " +
                 currentPage + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
         /* ------------ */
 
-        // Build the uniform resource indentifier (uri) for fetching data from TMDB API.
-        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                .appendPath(TMDB_MOVIE_PATH)
-                .appendPath(sortOrder)
-                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                .appendQueryParameter(TMDB_PARAM_PAGE, currentPage)
-                .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                .build();
+        // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Uri builtUri;
+        switch (sortBy) {
+            case TMDB_SORT_BY_UPCOMING: {
+                String currentDate = DateTimeUtils.getCurrentDate();
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .build();
+                break;
+            }
+            default: {
+                // Sort by "popular" or "top_rated" means only appending the sort string as a path
+                // to the url.
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendPath(sortBy)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .build();
+                break;
+            }
+        }
 
         // Use the built uri to get the JSON document with the results of the query.
         String JSONresponse;
@@ -145,6 +171,7 @@ public class Tmdb {
             // Get paging info.
             int page = NetworkUtils.getIntFromJSON(resultsJSONResponse, "page");
             int total_pages = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_pages");
+            int total_results = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_results");
 
             // Get results array.
             JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
@@ -153,7 +180,7 @@ public class Tmdb {
                 // Get a single result at position n within the list of results, extract the movie
                 // info and append it to the movies array..
                 baseJSONResponse = arrayJSONResponse.getJSONObject(n);
-                TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages);
+                TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
                 movies.add(movie);
             }
         } catch (JSONException e) {
@@ -173,10 +200,12 @@ public class Tmdb {
      * @param n                is the current index of the element into the movies array.
      * @param page             is the current page of the movie element.
      * @param total_pages      is the number of pages of the current query.
+     * @param total_results    is the number of movies of the current query.
      * @return the {@link TmdbMovie} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
-    private static TmdbMovie getMovie(JSONObject baseJSONResponse, int n, int page, int total_pages) throws JSONException {
+    private static TmdbMovie getMovie(JSONObject baseJSONResponse, int n, int page, int total_pages,
+                                      int total_results) throws JSONException {
         // Extract the required values for the corresponding keys.
         boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
         String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
@@ -217,7 +246,7 @@ public class Tmdb {
         // Return the {@link TmdbMovie} object parsed from the JSON.
         return new TmdbMovie(id, adult, backdrop_path, genres, original_language,
                 original_title, overview, popularity, poster_path, release_date, title,
-                video, vote_average, vote_count, n, page, total_pages);
+                video, vote_average, vote_count, n, page, total_pages, total_results);
     }
 
     /**
@@ -309,7 +338,7 @@ public class Tmdb {
             JSONObject baseJSONResponse = new JSONObject(JSONresponse);
 
             // Extract the required values for the corresponding keys.
-            TmdbMovie movie = getMovie(baseJSONResponse, 0, 0, 0);
+            TmdbMovie movie = getMovie(baseJSONResponse, 0, 0, 0, 0);
             int budget = NetworkUtils.getIntFromJSON(baseJSONResponse, "budget");
             String homepage = NetworkUtils.getStringFromJSON(baseJSONResponse, "homepage");
             String imdb_id = NetworkUtils.getStringFromJSON(baseJSONResponse, "imdb_id");
@@ -838,7 +867,7 @@ public class Tmdb {
                 jsonObject = moviesJSONArray.getJSONObject(n);
 
                 // Extract the current movie and add it to the array.
-                TmdbMovie movie = getMovie(jsonObject, 0, 0, 0);
+                TmdbMovie movie = getMovie(jsonObject, 0, 0, 0, 0);
                 movieArrayList.add(movie);
             }
         } catch (JSONException e) {
@@ -1055,9 +1084,10 @@ public class Tmdb {
      * @return true if the sort order is allowed, false otherwise.
      */
     public static boolean isAllowedSortOrder(String sortOrder) {
-        return sortOrder.equals(TMDB_POPULAR_PATH) ||
-                sortOrder.equals(TMDB_TOP_RATED_PATH) ||
-                sortOrder.equals(TMDB_FAVORITES_PATH);
+        return sortOrder.equals(TMDB_SORT_BY_POPULAR) ||
+                sortOrder.equals(TMDB_SORT_BY_TOP_RATED) ||
+                sortOrder.equals(TMDB_SORT_BY_FAVORITES) ||
+                sortOrder.equals(TMDB_SORT_BY_UPCOMING);
     }
 
     /**

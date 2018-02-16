@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/upcoming_movies_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
@@ -18,11 +19,13 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/regular_padding"
             android:layout_marginStart="@dimen/regular_padding"
-            android:text="UPCOMING MOVIES"
+            android:text="@string/upcoming_movies_title"
+            android:textAllCaps="true"
             android:textColor="@color/colorWhite"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/upcoming_movies_view_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -42,6 +45,7 @@
     </RelativeLayout>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/upcoming_movies_cardview"
         android:layout_width="match_parent"
         android:layout_height="170dp"
         android:layout_margin="@dimen/regular_padding"
@@ -52,6 +56,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/upcoming_movies_cardview_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
@@ -65,7 +70,7 @@
                 android:tint="@color/colorHighScoreBackground" />
 
             <TextView
-                android:id="@+id/upcoming_textview"
+                android:id="@+id/upcoming_movies_cardview_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -78,22 +83,23 @@
                 tools:text="Movie Title" />
 
             <TextView
-                android:id="@+id/upcoming_date"
+                android:id="@+id/upcoming_movies_cardview_release_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/upcoming_textview"
+                android:layout_above="@+id/upcoming_movies_cardview_title"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="@dimen/small_padding"
                 android:drawablePadding="@dimen/tiny_padding"
                 android:drawableStart="@drawable/ic_date_range_white_18dp"
                 android:gravity="center_vertical"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorGrey"
                 android:textSize="@dimen/normal_text_size"
                 tools:text="2018-07-13" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/upcoming_movies_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

@@ -14,20 +14,21 @@ import java.util.ArrayList;
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String sortOrder, currentPage, language;
+    private String sortBy, language;
+    private int currentPage;
 
     /**
      * Constructor for this class.
      *
      * @param context     is the context of the activity.
-     * @param sortOrder   is the sort order of the movies list.
+     * @param sortBy      is the sort order of the movies list.
      * @param currentPage is the current page to fetch results from TMDB.
      * @param language    is the language for retrieving results from TMDB.
      */
-    public TmdbMoviesAsyncTaskLoader(Context context, String sortOrder, String currentPage,
+    public TmdbMoviesAsyncTaskLoader(Context context, String sortBy, int currentPage,
                                      String language) {
         super(context);
-        this.sortOrder = sortOrder;
+        this.sortBy = sortBy;
         this.currentPage = currentPage;
         this.language = language;
     }
@@ -75,13 +76,11 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      */
     @Override
     public ArrayList<TmdbMovie> loadInBackground() {
-        if (Tmdb.isAllowedSortOrder(sortOrder) &&
-                Integer.valueOf(currentPage) <= Tmdb.TMDB_MAX_PAGES &&
-                Integer.valueOf(currentPage) > 0) {
+        if (Tmdb.isAllowedSortOrder(sortBy) && currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Sort order: " + sortOrder + ". Page number: " +
+            Log.i(TAG, "(loadInBackground) Sort by: " + sortBy + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(sortOrder, currentPage, language);
+            return Tmdb.getTmdbMovies(sortBy, currentPage, language);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

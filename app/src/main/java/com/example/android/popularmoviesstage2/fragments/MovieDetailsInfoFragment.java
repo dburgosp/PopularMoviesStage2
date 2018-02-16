@@ -388,8 +388,9 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
         };
 
         // Set the Adapter for the RecyclerView.
-        recommendedMoviesAdapter = new MoviesShortListAdapter(new ArrayList<TmdbMovie>(),
-                recommendedMovieListener);
+        recommendedMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_movie_short_list,
+                new ArrayList<TmdbMovie>(), recommendedMovieListener,
+                MoviesShortListAdapter.DATE_FORMAT_LONG);
         recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
     }
 
@@ -417,7 +418,7 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
         if (setKeywordsSection())
             keywordsLayout.setVisibility(View.VISIBLE);
 
-        // Recommended moviessection.
+        // Recommended movies section.
         if (setRecommendedMoviesSection())
             recommendedMoviesLayout.setVisibility(View.VISIBLE);
     }

@@ -25,7 +25,7 @@ import com.example.android.popularmoviesstage2.adapters.ReviewsAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbReviewsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
-import com.example.android.popularmoviesstage2.itemdecorations.VerticalSpaceItemDecoration;
+import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -246,9 +246,9 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
                 LinearLayoutManager.VERTICAL, false);
         reviewsRecyclerView.setLayoutManager(linearLayoutManager);
         reviewsRecyclerView.setHasFixedSize(true);
-        int verticalSeparation =
-                getContext().getResources().getDimensionPixelOffset(R.dimen.regular_padding);
-        reviewsRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(verticalSeparation));
+        int verticalSeparation = getContext().getResources().getDimensionPixelOffset(R.dimen.regular_padding);
+        reviewsRecyclerView.addItemDecoration(new SpaceItemDecoration(verticalSeparation,
+                SpaceItemDecoration.VERTICAL_SEPARATION));
 
         // Set the Adapter for the RecyclerView.
         reviewsAdapter = new ReviewsAdapter(new ArrayList<TmdbReview>());

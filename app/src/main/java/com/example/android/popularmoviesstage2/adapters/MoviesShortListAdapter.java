@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage2.adapters;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,19 +29,31 @@ import butterknife.ButterKnife;
 
 public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortListAdapter.MoviesShortListViewHolder> {
     private static final String TAG = MoviesShortListAdapter.class.getSimpleName();
+    public static final int DATE_FORMAT_SHORT = 0;
+    public static final int DATE_FORMAT_LONG = 1;
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;
+    private @LayoutRes
+    int resource;
+    private int dateFormat;
 
     /**
      * Constructor for this class.
      *
+     * @param resource        is the identifier of the layout resource to be inflated.
      * @param moviesArrayList is the list of movies that will be represented into the adapter.
      * @param listener        is the listener for receiving the clicks.
+     * @param dateFormat      is the date format for the release date. Available values are:
+     *                        {@link MoviesShortListAdapter#DATE_FORMAT_SHORT},
+     *                        {@link MoviesShortListAdapter#DATE_FORMAT_LONG}.
      */
-    public MoviesShortListAdapter(ArrayList<TmdbMovie> moviesArrayList, OnItemClickListener listener) {
+    public MoviesShortListAdapter(@LayoutRes int resource, ArrayList<TmdbMovie> moviesArrayList,
+                                  OnItemClickListener listener, int dateFormat) {
         Log.i(TAG, "(MoviesShortListAdapter) Object created");
+        this.resource = resource;
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
+        this.dateFormat = dateFormat;
     }
 
     /**
@@ -88,7 +101,7 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
     public MoviesShortListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_movie_short_list, parent, false);
+        View view = inflater.inflate(resource, parent, false);
         return new MoviesShortListViewHolder(view);
     }
 
@@ -116,7 +129,7 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
         if (!moviesArrayList.isEmpty()) {
             // Update MoviesShortListViewHolder with the movie details at current position in the adapter.
             TmdbMovie currentTmdbMovie = moviesArrayList.get(position);
-            viewHolder.bind(currentTmdbMovie, listener);
+            viewHolder.bind(currentTmdbMovie, listener, dateFormat);
         }
     }
 
@@ -196,9 +209,12 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
          * @param currentTmdbMovie is the TmdbMovie object attached to the current
          *                         MoviesShortListViewHolder element.
          * @param listener         is the listener for click events.
+         * @param dateFormat       is the date format for the release date. Available values are:
+         *                         {@link MoviesShortListAdapter#DATE_FORMAT_SHORT},
+         *                         {@link MoviesShortListAdapter#DATE_FORMAT_LONG}.
          */
         public void bind(final TmdbMovie currentTmdbMovie,
-                         final MoviesShortListAdapter.OnItemClickListener listener) {
+                         final MoviesShortListAdapter.OnItemClickListener listener, int dateFormat) {
             Log.i(TAG, "(bind) Binding data for the current MoviesShortListViewHolder.");
 
             // Draw poster for current movie.
@@ -216,11 +232,18 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
             else
                 titleTextView.setText(title);
 
-            // Write production year.
-            String year = DateTimeUtils.getYear(currentTmdbMovie.getRelease_date());
-            if (year != null && !year.equals("") && !year.isEmpty()) {
+            // Write release date.
+            String releaseDate;
+            switch (dateFormat) {
+                case MoviesShortListAdapter.DATE_FORMAT_LONG:
+                    releaseDate = DateTimeUtils.getYear(currentTmdbMovie.getRelease_date());
+                    break;
+                default:
+                    releaseDate = currentTmdbMovie.getRelease_date();
+            }
+            if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
                 // Set text.
-                yearTextView.setText(year);
+                yearTextView.setText(releaseDate);
 
                 // Color grey for left drawable.
                 TextViewUtils.setTintedCompoundDrawable(context, yearTextView,

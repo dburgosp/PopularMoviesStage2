@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/regular_padding"
     android:fillViewport="true"
-    tools:context="com.example.android.popularmoviesstage2.fragments.MovieDetailsCastCrewFragment">
+    tools:context="com.example.android.popularmoviesstage2.fragments.PersonDetailsBioFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,14 +18,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- User reviews section -->
+            <include layout="@layout/layout_info_reviews" />
+
             <!-- Overview section -->
-            <include layout="@layout/layout_info_bio" />
+            <include layout="@layout/layout_info_overview" />
 
             <!-- Main info section -->
-            <include layout="@layout/layout_info_person" />
+            <include layout="@layout/layout_info_movie" />
 
             <!-- External links section -->
             <include layout="@layout/layout_info_links" />
+
+            <!-- Collection section -->
+            <include layout="@layout/layout_info_collection" />
+
+            <!-- Recommended movies section -->
+            <include layout="@layout/layout_info_recommended" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->

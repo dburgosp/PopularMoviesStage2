@@ -102,4 +102,16 @@ public final class DateTimeUtils {
         DateFormat dateFormatOut = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return dateFormatOut.format(date);
     }
+
+    /**
+     * Helper method to get a string with the current date in "yyyy-MM-dd" format.
+     *
+     * @return a string containing the current date.
+     */
+    public static String getCurrentDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date date = new Date();
+        String currentDate = dateFormat.format(date);
+        return currentDate;
+    }
 }

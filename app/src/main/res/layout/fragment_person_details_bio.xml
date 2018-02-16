@@ -18,23 +18,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- User reviews section -->
-            <include layout="@layout/layout_info_reviews" />
-
             <!-- Overview section -->
-            <include layout="@layout/layout_info_overview" />
+            <include layout="@layout/layout_info_bio" />
 
             <!-- Main info section -->
-            <include layout="@layout/layout_info_movie" />
+            <include layout="@layout/layout_info_person" />
 
             <!-- External links section -->
             <include layout="@layout/layout_info_links" />
-
-            <!-- Collection section -->
-            <include layout="@layout/layout_info_collection" />
-
-            <!-- Recommended movies section -->
-            <include layout="@layout/layout_info_recommended" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->

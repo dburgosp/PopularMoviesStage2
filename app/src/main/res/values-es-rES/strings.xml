@@ -29,6 +29,7 @@
     <string name="department_writing">Narrativa</string>
     <string name="external_links_title">Enlaces externos</string>
     <string name="fetching_cast_crew_info">Obteniendo el reparto y el equipo de la película&#8230;</string>
+    <string name="fetching_info">Obteniendo información&#8230;</string>
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>
     <string name="film_crew">Equipo destacado</string>
     <string name="full_size_image_description">Imagen a tamaño completo</string>
@@ -41,6 +42,7 @@
     <string name="no_author">Autor desconocido</string>
     <string name="no_connection">No hay conexión a Internet.</string>
     <string name="no_content">Nada que mostrar&#8230;</string>
+    <string name="no_date">Sin fecha</string>
     <string name="no_language">Sin idioma</string>
     <string name="no_name">Sin nombre</string>
     <string name="no_overview">No tenemos sinopsis para esta película.</string>
@@ -72,6 +74,7 @@
     <string name="synopsis">Sinopsis</string>
     <string name="keywords_title">Etiquetas</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
+    <string name="upcoming_movies_title">Próximos estrenos</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>
     <string name="view_all_crew">Ver equipo completo</string>

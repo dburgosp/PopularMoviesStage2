@@ -53,7 +53,7 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
     SwipeRefreshLayout swipeRefreshLayout;
 
     private boolean allowClicks = true;
-    private String sortOrder = Tmdb.TMDB_POPULAR_PATH;
+    private String sortOrder = Tmdb.TMDB_SORT_BY_POPULAR;
     private MoviesFullListAdapter moviesFullListAdapter;
     private int currentPage, currentScrollPosition;
     private boolean isLoading, appendToEnd;
@@ -91,7 +91,7 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
         appendToEnd = true;
         loader = null;
         setRecyclerView();
-        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
         //}
 
         Log.i(TAG, "(onCreate) Activity created");
@@ -154,11 +154,11 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
         String newSortOrder;
         switch (itemId) {
             case R.id.order_popular:
-                newSortOrder = Tmdb.TMDB_POPULAR_PATH;
+                newSortOrder = Tmdb.TMDB_SORT_BY_POPULAR;
                 break;
 
             case R.id.order_top_rated:
-                newSortOrder = Tmdb.TMDB_TOP_RATED_PATH;
+                newSortOrder = Tmdb.TMDB_SORT_BY_TOP_RATED;
                 break;
 
             default:
@@ -183,9 +183,9 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
             recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
             moviesFullListAdapter.clearMoviesArrayList();
             if (loader != null)
-                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
             else
-                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
         }
 
         return true;
@@ -239,7 +239,7 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
         // information from internet in a separate thread.
         appendToEnd = true;
         setRecyclerView();
-        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, this);
+        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
 
         // Restore last currentPosition in the grid.
         recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
@@ -277,8 +277,8 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder,
-                    Integer.toString(currentPage), Locale.getDefault().getLanguage());
+            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, currentPage,
+                    Locale.getDefault().getLanguage());
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -462,9 +462,9 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                         currentPage++;
                         appendToEnd = true;
                         if (loader != null)
-                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
                         else
-                            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
                     }
                 }
             }
@@ -485,11 +485,11 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
                             if (loader != null)
-                                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
                             else
-                                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
                         } else {
-                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     }
@@ -504,10 +504,10 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
      */
     private String getSortOrderText() {
         switch (sortOrder) {
-            case Tmdb.TMDB_POPULAR_PATH:
+            case Tmdb.TMDB_SORT_BY_POPULAR:
                 return getResources().getString(R.string.order_popular);
 
-            case Tmdb.TMDB_TOP_RATED_PATH:
+            case Tmdb.TMDB_SORT_BY_TOP_RATED:
                 return getResources().getString(R.string.order_top_rated);
 
             default:
