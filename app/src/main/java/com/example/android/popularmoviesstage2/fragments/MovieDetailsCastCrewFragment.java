@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -31,6 +30,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbCastCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbCrew;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
+import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
@@ -48,7 +48,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView noResultsTextView;
     @BindView(R.id.cast_crew_loading_indicator)
     ProgressBar progressBar;
-    @BindView(R.id.cast_linear_layout)
+    @BindView(R.id.cast_layout)
     LinearLayout castLinearLayout;
     @BindView(R.id.cast_title)
     TextView castTitleTextView;
@@ -56,11 +56,11 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView viewAllCastTextView;
     @BindView(R.id.cast_recycler_view)
     RecyclerView castRecyclerView;
-    @BindView(R.id.cast_relative_layout)
-    RelativeLayout castRelativeLayout;
+    @BindView(R.id.cast_title_layout)
+    LinearLayout castLayout;
     @BindView(R.id.cast_crew_separator)
     View separatorView;
-    @BindView(R.id.crew_linear_layout)
+    @BindView(R.id.crew_layout)
     LinearLayout crewLinearLayout;
     @BindView(R.id.crew_title)
     TextView crewTextView;
@@ -68,8 +68,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView viewAllCrewTextView;
     @BindView(R.id.crew_recycler_view)
     RecyclerView directingDepartmentRecyclerView;
-    @BindView(R.id.crew_relative_layout)
-    RelativeLayout crewRelativeLayout;
+    @BindView(R.id.crew_title_layout)
+    LinearLayout crewRelativeLayout;
     @BindView(R.id.writing_textview)
     TextView writingDepartmentTextView;
     @BindView(R.id.production_textview)
@@ -353,10 +353,16 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
-        castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         castRecyclerView.setHasFixedSize(true);
+
+        int verticalSeparation = getResources().getDimensionPixelOffset(R.dimen.small_padding);
+        directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, false));
         directingDepartmentRecyclerView.setHasFixedSize(true);
+        directingDepartmentRecyclerView.addItemDecoration(new SpaceItemDecoration(verticalSeparation,
+                SpaceItemDecoration.VERTICAL_SEPARATION));
 
         // Set the listeners for click events in the CastAdapters.
         CastAdapter.OnItemClickListener castListener = new CastAdapter.OnItemClickListener() {
@@ -369,6 +375,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                 startActivity(intent);
             }
         };
+
         CrewAdapter.OnItemClickListener crewListener = new CrewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbCrew crew) {
@@ -382,8 +389,9 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
 
         // Set the Adapters for the RecyclerViews.
         castAdapter = new CastAdapter(new ArrayList<TmdbCast>(), castListener);
-        directingDepartmentAdapter = new CrewAdapter(new ArrayList<TmdbCrew>(), crewListener);
         castRecyclerView.setAdapter(castAdapter);
+
+        directingDepartmentAdapter = new CrewAdapter(new ArrayList<TmdbCrew>(), crewListener);
         directingDepartmentRecyclerView.setAdapter(directingDepartmentAdapter);
     }
 

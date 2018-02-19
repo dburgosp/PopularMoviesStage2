@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,27 +13,27 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/cast_linear_layout"
+            android:id="@+id/cast_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
-            android:paddingTop="@dimen/regular_padding">
+            android:paddingBottom="@dimen/regular_padding"
+            android:paddingTop="@dimen/big_padding">
 
-            <RelativeLayout
-                android:id="@+id/cast_relative_layout"
+            <LinearLayout
+                android:id="@+id/cast_title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginBottom="@dimen/tiny_padding"
                 android:layout_marginEnd="@dimen/regular_padding"
                 android:layout_marginStart="@dimen/regular_padding"
-                android:layout_marginTop="@dimen/tiny_padding">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/cast_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:text="@string/cast_of_characters"
                     android:textAllCaps="true"
                     android:textSize="@dimen/normal_plus_text_size"
@@ -40,23 +41,21 @@
 
                 <TextView
                     android:id="@+id/cast_view_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/regular_padding"
+                    android:gravity="end"
                     android:text="@string/view_all"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/normal_plus_text_size"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/cast_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/regular_padding"
                 android:scrollbars="vertical" />
         </LinearLayout>
 
@@ -64,33 +63,32 @@
             android:id="@+id/cast_crew_separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_below="@id/cast_linear_layout"
+            android:layout_below="@id/cast_layout"
             android:background="@color/colorLightGrey" />
 
         <LinearLayout
-            android:id="@+id/crew_linear_layout"
+            android:id="@+id/crew_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/cast_crew_separator"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/big_padding"
-            android:paddingTop="@dimen/regular_padding">
+            android:paddingBottom="@dimen/regular_padding">
 
-            <RelativeLayout
-                android:id="@+id/crew_relative_layout"
+            <LinearLayout
+                android:id="@+id/crew_title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small_padding"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding"
-                android:layout_marginTop="@dimen/tiny_padding">
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/tiny_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:paddingTop="@dimen/big_padding">
 
                 <TextView
                     android:id="@+id/crew_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
                     android:text="@string/film_crew"
                     android:textAllCaps="true"
                     android:textSize="@dimen/normal_plus_text_size"
@@ -98,53 +96,64 @@
 
                 <TextView
                     android:id="@+id/crew_view_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/regular_padding"
+                    android:gravity="end"
                     android:text="@string/view_all"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/normal_plus_text_size"
                     android:textStyle="bold" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/crew_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
                 android:scrollbars="vertical" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/crew_linear_layout"
-            android:layout_marginBottom="@dimen/big_padding"
-            android:layout_marginEnd="@dimen/regular_padding"
-            android:layout_marginStart="@dimen/regular_padding"
-            android:background="@color/colorAccent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/writing_textview"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.CardView
+                android:id="@+id/writing_production_cardview"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/big_padding"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/normal_plus_text_size"
-                tools:text="WRITING\nName Surname (job)\nName Surname (job)" />
+                android:layout_marginBottom="@dimen/small_padding"
+                android:layout_marginEnd="@dimen/regular_padding"
+                android:layout_marginStart="@dimen/regular_padding"
+                app:cardCornerRadius="@dimen/small_padding"
+                app:cardElevation="@dimen/separator">
 
-            <TextView
-                android:id="@+id/production_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/big_padding"
-                android:textColor="@color/colorWhite"
-                android:textSize="@dimen/normal_plus_text_size"
-                tools:text="PRODUCTION\nName Surname (job)\nName Surname (job)" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/regular_padding"
+                    android:paddingEnd="@dimen/regular_padding"
+                    android:paddingStart="@dimen/regular_padding"
+                    android:paddingTop="@dimen/big_padding">
+
+                    <TextView
+                        android:id="@+id/writing_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/small_padding"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/normal_plus_text_size"
+                        tools:text="WRITING\nName Surname (job)\nName Surname (job)" />
+
+                    <TextView
+                        android:id="@+id/production_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/small_padding"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/normal_plus_text_size"
+                        tools:text="PRODUCTION\nName Surname (job)\nName Surname (job)" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <TextView

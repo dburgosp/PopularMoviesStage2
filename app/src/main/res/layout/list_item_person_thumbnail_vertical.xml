@@ -4,10 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/tiny_padding"
-    android:layout_marginEnd="@dimen/small_padding"
-    android:layout_marginStart="@dimen/small_padding"
-    android:layout_marginTop="@dimen/tiny_padding"
     app:cardCornerRadius="@dimen/small_padding"
     app:cardElevation="@dimen/separator">
 

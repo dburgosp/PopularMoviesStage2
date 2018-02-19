@@ -28,21 +28,17 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         if (orientation == VERTICAL_SEPARATION) {
-            // Add top margin only to the first element.
+            // Add bottom margin to every element and top margin only to the first element..
+            outRect.bottom = spaceSeparation;
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.top = spaceSeparation;
             }
-
-            // Add bottom margin to every element.
-            outRect.bottom = spaceSeparation;
         } else {
-            // Add start margin only to the first element.
+            // Add end margin to every element and start margin only to the first element.
+            outRect.right = spaceSeparation;
             if (parent.getChildAdapterPosition(view) == 0) {
                 outRect.left = spaceSeparation;
             }
-
-            // Add end margin to every element.
-            outRect.right = spaceSeparation;
         }
     }
 }
