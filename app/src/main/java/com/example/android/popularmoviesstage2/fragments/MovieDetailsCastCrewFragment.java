@@ -425,16 +425,16 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     private void setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
         if (crewArrayList.size() > 0) {
             String text = "";
-            String color = String.format("%X", getResources().getColor(R.color.colorDarkGrey)).substring(2);
+            String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
             for (int i = 0; i < crewArrayList.size(); i++) {
                 // Add members of the current department to the corresponding TextView.
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append(text);
                 stringBuilder.append("<font color=\"#");
                 stringBuilder.append(color);
-                stringBuilder.append("\"><strong>");
+                stringBuilder.append("\">");
                 stringBuilder.append(crewArrayList.get(i).getName());
-                stringBuilder.append("</strong> (");
+                stringBuilder.append(" (");
                 stringBuilder.append(crewArrayList.get(i).getJob());
                 stringBuilder.append(")</font>");
                 if (i < (crewArrayList.size() - 1)) {
