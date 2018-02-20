@@ -372,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements
         TextViewUtils.setTintedCompoundDrawable(this, upcomingMoviesCardviewReleaseDate,
                 TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
                 R.color.colorGrey, R.dimen.separator);
-        String releaseDate = DateTimeUtils.getDate(upcomingMovies.get(0).getRelease_date());
+        String releaseDate = DateTimeUtils.getLongDate(upcomingMovies.get(0).getRelease_date());
         if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
             upcomingMoviesCardviewReleaseDate.setText(releaseDate);
         else

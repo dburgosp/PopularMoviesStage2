@@ -73,27 +73,28 @@ public final class DateTimeUtils {
     }
 
     /**
-     * Helper method to convert a string date to the normal date format for the current country.
+     * Helper method to convert a string date to the long date format for the current country.
      *
-     * @param inputDate the original string date.
+     * @param inputDate the original string date, in ISO 8601 or "yyyy-MM-dd" format.
      * @return a string containing the formatted date.
      */
-    public static String getDate(String inputDate) {
+    public static String getLongDate(String inputDate) {
         // Parse input date string.
         Date date = new Date();
         SimpleDateFormat dateFormatIn;
         try {
             // Try ISO 8601 format.
-            dateFormatIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            dateFormatIn = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                    Locale.getDefault());
             date = dateFormatIn.parse(inputDate);
         } catch (java.text.ParseException e1) {
             try {
                 // If the string can't be parsed with the specified format, try another one.
-                dateFormatIn = new SimpleDateFormat("yyyy-mm-dd");
+                dateFormatIn = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                 date = dateFormatIn.parse(inputDate);
             } catch (java.text.ParseException e2) {
                 // Return inputDate if we can't parse it.
-                Log.e(TAG, "(getDate) Error parsing date: " + e2);
+                Log.e(TAG, "(getLongDate) Error parsing date: " + e2);
                 return inputDate;
             }
         }

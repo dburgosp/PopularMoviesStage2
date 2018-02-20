@@ -48,24 +48,9 @@ public class Tmdb {
     private final static String TMDB_PARAM_PAGE = "page";
     private final static String TMDB_PARAM_APPEND_TO_RESPONSE = "append_to_response";
     private final static String TMDB_PARAM_LANGUAGE = "language";
-    private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "primary_release_date.gte";
+    private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER = "primary_release_date.gte";
+    private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
-
-    // Available release status for movies.
-    public final static String TMDB_STATUS_RUMORED = "Rumored";
-    public final static String TMDB_STATUS_PLANNED = "Planned";
-    public final static String TMDB_STATUS_IN_PRODUCTION = "In Production";
-    public final static String TMDB_STATUS_POST_PRODUCTION = "Post Production";
-    public final static String TMDB_STATUS_RELEASED = "Released";
-    public final static String TMDB_STATUS_CANCELED = "Canceled";
-
-    // Release dates types.
-    public static final int TMDB_RELEASE_TYPE_PREMIERE = 1;
-    public static final int TMDB_RELEASE_TYPE_THEATRICAL_LIMITED = 2;
-    public static final int TMDB_RELEASE_TYPE_THEATRICAL = 3;
-    public static final int TMDB_RELEASE_TYPE_DIGITAL = 4;
-    public static final int TMDB_RELEASE_TYPE_PHYSICAL = 5;
-    public static final int TMDB_RELEASE_TYPE_TV = 6;
 
     // Maximum number of pages.
     public final static int TMDB_MAX_PAGES = 1000;
@@ -109,11 +94,14 @@ public class Tmdb {
         switch (sortBy) {
             case TMDB_SORT_BY_UPCOMING: {
                 String currentDate = DateTimeUtils.getCurrentDate();
+                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
+                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                         .appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .build();

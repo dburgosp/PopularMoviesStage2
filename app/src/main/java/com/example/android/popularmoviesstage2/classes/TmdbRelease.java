@@ -6,6 +6,23 @@ import java.util.ArrayList;
  * Public class for managing the releases of a movie.
  */
 public class TmdbRelease {
+    // Available release status for movies.
+    public final static String TMDB_RELEASE_STATUS_RUMORED = "Rumored";
+    public final static String TMDB_RELEASE_STATUS_PLANNED = "Planned";
+    public final static String TMDB_RELEASE_STATUS_IN_PRODUCTION = "In Production";
+    public final static String TMDB_RELEASE_STATUS_POST_PRODUCTION = "Post Production";
+    public final static String TMDB_RELEASE_STATUS_RELEASED = "Released";
+    public final static String TMDB_RELEASE_STATUS_CANCELED = "Canceled";
+
+    // Release types.
+    public static final int TMDB_RELEASE_TYPE_PREMIERE = 1;
+    public static final int TMDB_RELEASE_TYPE_THEATRICAL_LIMITED = 2;
+    public static final int TMDB_RELEASE_TYPE_THEATRICAL = 3;
+    public static final int TMDB_RELEASE_TYPE_DIGITAL = 4;
+    public static final int TMDB_RELEASE_TYPE_PHYSICAL = 5;
+    public static final int TMDB_RELEASE_TYPE_TV = 6;
+
+    // Private variables.
     private String iso_3166_1;
     private ArrayList<TmdbReleaseDate> releaseDateArrayList;
 

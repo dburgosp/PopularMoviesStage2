@@ -536,18 +536,18 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
         // Show release status if it is other than "released".
         String status = movieDetails.getStatus();
         if (status != null && !status.equals("") && !status.isEmpty() &&
-                !status.equals(Tmdb.TMDB_STATUS_RELEASED)) {
+                !status.equals(TmdbRelease.TMDB_RELEASE_STATUS_RELEASED)) {
             switch (status) {
-                case Tmdb.TMDB_STATUS_CANCELED:
+                case TmdbRelease.TMDB_RELEASE_STATUS_CANCELED:
                     status = getString(R.string.release_status_canceled);
                     break;
-                case Tmdb.TMDB_STATUS_IN_PRODUCTION:
+                case TmdbRelease.TMDB_RELEASE_STATUS_IN_PRODUCTION:
                     status = getString(R.string.release_status_in_production);
                     break;
-                case Tmdb.TMDB_STATUS_PLANNED:
+                case TmdbRelease.TMDB_RELEASE_STATUS_PLANNED:
                     status = getString(R.string.release_status_planned);
                     break;
-                case Tmdb.TMDB_STATUS_POST_PRODUCTION:
+                case TmdbRelease.TMDB_RELEASE_STATUS_POST_PRODUCTION:
                     status = getString(R.string.release_status_post_production);
                     break;
                 default:
@@ -563,30 +563,30 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
             stringBuilder = new StringBuilder();
             for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
                 String date = releases.getReleaseDateArrayList().get(i).getRelease_date();
-                stringBuilder.append(DateTimeUtils.getDate(date));
+                stringBuilder.append(DateTimeUtils.getLongDate(date));
 
                 // Set release type, if exists and if it is not a theatrical release date.
                 int type = releases.getReleaseDateArrayList().get(i).getType();
                 if (type > 0) {
                     stringBuilder.append(" (");
                     switch (releases.getReleaseDateArrayList().get(i).getType()) {
-                        case Tmdb.TMDB_RELEASE_TYPE_DIGITAL:
+                        case TmdbRelease.TMDB_RELEASE_TYPE_DIGITAL:
                             stringBuilder.append(getString(R.string.release_type_digital,
                                     currentCountry));
                             break;
-                        case Tmdb.TMDB_RELEASE_TYPE_PHYSICAL:
+                        case TmdbRelease.TMDB_RELEASE_TYPE_PHYSICAL:
                             stringBuilder.append(getString(R.string.release_type_physical,
                                     currentCountry));
                             break;
-                        case Tmdb.TMDB_RELEASE_TYPE_PREMIERE:
+                        case TmdbRelease.TMDB_RELEASE_TYPE_PREMIERE:
                             stringBuilder.append(getString(R.string.release_type_premiere,
                                     currentCountry));
                             break;
-                        case Tmdb.TMDB_RELEASE_TYPE_THEATRICAL:
+                        case TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL:
                             stringBuilder.append(getString(R.string.release_type_theatrical,
                                     currentCountry));
                             break;
-                        case Tmdb.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED:
+                        case TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED:
                             stringBuilder.append(getString(R.string.release_type_theatrical_limited,
                                     currentCountry));
                             break;
@@ -623,7 +623,7 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
                 releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
 
                 // Official release date.
-                releaseDatesContent = DateTimeUtils.getDate(releaseDate);
+                releaseDatesContent = DateTimeUtils.getLongDate(releaseDate);
             }
         }
 

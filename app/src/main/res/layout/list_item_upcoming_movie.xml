@@ -27,7 +27,7 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/padding_top_movie_details_cardview"
                 android:layout_alignParentBottom="true"
                 android:src="@drawable/gradient_header_bg"
                 android:tint="@color/colorHighScoreBackground" />

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -74,6 +75,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView writingDepartmentTextView;
     @BindView(R.id.production_textview)
     TextView productionDepartmentTextView;
+    @BindView(R.id.writing_production_cardview)
+    CardView writingProductionCardview;
 
     private int movieId;
     private CastAdapter castAdapter;
@@ -261,7 +264,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                     crewLinearLayout.setVisibility(View.VISIBLE);
 
                     // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" + crewArrayList.size() + ")";
+                    String viewAllText = getResources().getString(R.string.view_all) + " (" +
+                            crewArrayList.size() + ")";
                     viewAllCrewTextView.setText(viewAllText);
 
                     /* -------------------- */
@@ -269,7 +273,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                     /* -------------------- */
 
                     // Get an array list with only the crew members of the directing department.
-                    ArrayList<TmdbCrew> crewDirectingArrayList = getFilteredCrewArrayList(crewArrayList, "Directing");
+                    ArrayList<TmdbCrew> crewDirectingArrayList =
+                            getFilteredCrewArrayList(crewArrayList, "Directing");
 
                     // Set the corresponding crew section if there is data.
                     if (crewDirectingArrayList.size() > 0) {
@@ -285,20 +290,28 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                     /* ------------------ */
 
                     // Get an array list with only the crew members of the writing department.
-                    ArrayList<TmdbCrew> crewWritingArrayList = getFilteredCrewArrayList(crewArrayList, "Writing");
+                    ArrayList<TmdbCrew> crewWritingArrayList =
+                            getFilteredCrewArrayList(crewArrayList, "Writing");
 
                     // Set the corresponding crew section if there is data.
-                    setCrewTextView(crewWritingArrayList, writingDepartmentTextView, getString(R.string.department_writing));
+                    boolean writingCrewIsSet = setCrewTextView(crewWritingArrayList,
+                            writingDepartmentTextView, getString(R.string.department_writing));
 
                     /* --------------------- */
                     /* Production department */
                     /* --------------------- */
 
                     // Get an array list with only the crew members of the production department.
-                    ArrayList<TmdbCrew> crewProductionArrayList = getFilteredCrewArrayList(crewArrayList, "Production");
+                    ArrayList<TmdbCrew> crewProductionArrayList =
+                            getFilteredCrewArrayList(crewArrayList, "Production");
 
                     // Set the corresponding crew section if there is data.
-                    setCrewTextView(crewProductionArrayList, productionDepartmentTextView, getString(R.string.department_production));
+                    boolean productionCrewIsSet = setCrewTextView(crewProductionArrayList,
+                            productionDepartmentTextView, getString(R.string.department_production));
+
+                    // Hide writing and production CardView if there is no information to display.
+                    if (!writingCrewIsSet && !productionCrewIsSet)
+                        writingProductionCardview.setVisibility(View.GONE);
                 } else {
                     // Hide section if there is no crew information for this movie.
                     separatorView.setVisibility(View.GONE);
@@ -429,8 +442,9 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
      * @param crewArrayList is the ArrayList containing the crew elements to be shown.
      * @param textView      is the TextView where the crew elements are going to be written.
      * @param title         is a String containing the title of the current crew section.
+     * @return true if the size of crewArrayList is greater than zero, false otherwise.
      */
-    private void setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
+    private boolean setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
         if (crewArrayList.size() > 0) {
             String text = "";
             String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
@@ -456,9 +470,11 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
             //text = "<font color=\"#" + color+"\"><strong>"+title.toUpperCase() + "</strong></font><br>" + text;
             text = "<strong>" + title.toUpperCase() + "</strong><br>" + text;
             TextViewUtils.setHtmlText(textView, text);
+            return true;
         } else {
             // Hide crew section if there is no information for the current department.
             textView.setVisibility(View.GONE);
+            return false;
         }
     }
 }
