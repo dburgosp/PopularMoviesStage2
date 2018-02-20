@@ -278,7 +278,7 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
             loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, currentPage,
-                    Locale.getDefault().getLanguage());
+                    Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -428,8 +428,8 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
         moviesFullListAdapter = new MoviesFullListAdapter(moviesArrayList,
-                displayUtils.getListPosterWidthPixels(),
-                displayUtils.getListPosterHeightPixels(),
+                displayUtils.getFullListPosterWidthPixels(),
+                displayUtils.getFullListPosterHeightPixels(),
                 listener);
         recyclerView.setAdapter(moviesFullListAdapter);
 

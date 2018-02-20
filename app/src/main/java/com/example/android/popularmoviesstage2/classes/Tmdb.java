@@ -32,7 +32,9 @@ public class Tmdb {
     public final static String TMDB_SORT_BY_POPULAR = "popular";
     public final static String TMDB_SORT_BY_TOP_RATED = "top_rated";
     public final static String TMDB_SORT_BY_FAVORITES = "favorites";
+    public final static String TMDB_SORT_BY_NOW_PLAYING = "now_playing";
     public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
+    public final static String TMDB_SORT_BY_THIS_WEEK_RELEASES = "this_week_releases";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";
@@ -48,7 +50,10 @@ public class Tmdb {
     private final static String TMDB_PARAM_PAGE = "page";
     private final static String TMDB_PARAM_APPEND_TO_RESPONSE = "append_to_response";
     private final static String TMDB_PARAM_LANGUAGE = "language";
+    private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS = "primary_release_date.lte";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER = "primary_release_date.gte";
+    private final static String TMDB_PARAM_RELEASE_DATE_LESS = "release_date.lte";
+    private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "release_date.gte";
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
 
@@ -78,12 +83,14 @@ public class Tmdb {
      * @param sortBy      is the sort order for the movie list.
      * @param currentPage is the page number to fetch.
      * @param language    is the language of the results.
+     * @param region      is the region for getting results.
      * @return an array of {@link TmdbMovie} objects.
      */
 
-    public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language) {
+    public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language,
+                                                     String region) {
         Log.i(TAG, "(getTmdbMovies) Sort by: " + sortBy + ". Page number: " +
-                currentPage + ". Language: " + language);
+                currentPage + ". Language: " + language + ". Region: " + region);
 
         /* ------------ */
         /* Get the JSON */
@@ -92,18 +99,63 @@ public class Tmdb {
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
         Uri builtUri;
         switch (sortBy) {
-            case TMDB_SORT_BY_UPCOMING: {
-                String currentDate = DateTimeUtils.getCurrentDate();
+            case TMDB_SORT_BY_NOW_PLAYING: {
+                // Get movies with release type 2 or 3 and with release date between 30 days ago and
+                // today.
+                String initDate = DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), -30);
+                String currentDate = DateTimeUtils.getStringCurrentDate();
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                         .appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, currentDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .build();
+                break;
+            }
+            case TMDB_SORT_BY_THIS_WEEK_RELEASES: {
+                // Get movies that are going to be released this week.
+                String currentDate = DateTimeUtils.getStringCurrentDate();
+                String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
+                        DateTimeUtils.WEEK_DAY_SUNDAY);
+                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
+                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, sunday)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .build();
+                break;
+            }
+            case TMDB_SORT_BY_UPCOMING: {
+                // Get movies with primary release date greater or equal than next monday.
+                String monday = DateTimeUtils.getStringWeekday(
+                        DateTimeUtils.getAddedDaysToDate(DateTimeUtils.getCurrentDate(), 7),
+                        DateTimeUtils.WEEK_DAY_MONDAY);
+                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
+                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
                         .build();
                 break;
             }
@@ -116,6 +168,7 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
                         .build();
                 break;
             }
@@ -1075,7 +1128,9 @@ public class Tmdb {
         return sortOrder.equals(TMDB_SORT_BY_POPULAR) ||
                 sortOrder.equals(TMDB_SORT_BY_TOP_RATED) ||
                 sortOrder.equals(TMDB_SORT_BY_FAVORITES) ||
-                sortOrder.equals(TMDB_SORT_BY_UPCOMING);
+                sortOrder.equals(TMDB_SORT_BY_UPCOMING) ||
+                sortOrder.equals(TMDB_SORT_BY_NOW_PLAYING) ||
+                sortOrder.equals(TMDB_SORT_BY_THIS_WEEK_RELEASES);
     }
 
     /**

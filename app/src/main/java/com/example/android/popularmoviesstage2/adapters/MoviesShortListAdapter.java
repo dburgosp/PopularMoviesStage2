@@ -29,8 +29,8 @@ import butterknife.ButterKnife;
 
 public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortListAdapter.MoviesShortListViewHolder> {
     private static final String TAG = MoviesShortListAdapter.class.getSimpleName();
-    public static final int DATE_FORMAT_SHORT = 0;
-    public static final int DATE_FORMAT_LONG = 1;
+    public static final int DATE_FORMAT_MEDIUM = 0;
+    public static final int DATE_FORMAT_YEAR = 1;
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;
     private @LayoutRes
@@ -44,8 +44,8 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
      * @param moviesArrayList is the list of movies that will be represented into the adapter.
      * @param listener        is the listener for receiving the clicks.
      * @param dateFormat      is the date format for the release date. Available values are:
-     *                        {@link MoviesShortListAdapter#DATE_FORMAT_SHORT},
-     *                        {@link MoviesShortListAdapter#DATE_FORMAT_LONG}.
+     *                        {@link MoviesShortListAdapter#DATE_FORMAT_MEDIUM},
+     *                        {@link MoviesShortListAdapter#DATE_FORMAT_YEAR}.
      */
     public MoviesShortListAdapter(@LayoutRes int resource, ArrayList<TmdbMovie> moviesArrayList,
                                   OnItemClickListener listener, int dateFormat) {
@@ -210,8 +210,8 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
          *                         MoviesShortListViewHolder element.
          * @param listener         is the listener for click events.
          * @param dateFormat       is the date format for the release date. Available values are:
-         *                         {@link MoviesShortListAdapter#DATE_FORMAT_SHORT},
-         *                         {@link MoviesShortListAdapter#DATE_FORMAT_LONG}.
+         *                         {@link MoviesShortListAdapter#DATE_FORMAT_MEDIUM},
+         *                         {@link MoviesShortListAdapter#DATE_FORMAT_YEAR}.
          */
         public void bind(final TmdbMovie currentTmdbMovie,
                          final MoviesShortListAdapter.OnItemClickListener listener, int dateFormat) {
@@ -235,11 +235,15 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
             // Write release date.
             String releaseDate;
             switch (dateFormat) {
-                case MoviesShortListAdapter.DATE_FORMAT_LONG:
+                case MoviesShortListAdapter.DATE_FORMAT_YEAR:
+                    // Show only the year.
                     releaseDate = DateTimeUtils.getYear(currentTmdbMovie.getRelease_date());
                     break;
-                default:
-                    releaseDate = currentTmdbMovie.getRelease_date();
+                default: {
+                    // Show date in medium format.
+                    releaseDate = DateTimeUtils.getStringDate(currentTmdbMovie.getRelease_date(),
+                            DateTimeUtils.DATE_FORMAT_MEDIUM);
+                }
             }
             if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
                 // Set text.
@@ -248,7 +252,7 @@ public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortList
                 // Color grey for left drawable.
                 TextViewUtils.setTintedCompoundDrawable(context, yearTextView,
                         TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
-                        R.color.colorGrey, R.dimen.separator);
+                        R.color.colorGrey, R.dimen.tiny_padding);
             } else
                 yearTextView.setVisibility(View.GONE);
 

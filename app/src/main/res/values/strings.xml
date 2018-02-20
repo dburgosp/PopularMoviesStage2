@@ -53,6 +53,7 @@
     <string name="no_overview">There is no available overview for this movie right now.</string>
     <string name="no_results">The query has not produced any result</string>
     <string name="no_title">No title</string>
+    <string name="now_playing_movies_title">Now playing</string>
     <string name="order_popular">Popular Movies</string>
     <string name="order_top_rated">Top rated Movies</string>
     <string name="original_language">Original language</string>
@@ -77,6 +78,7 @@
     <string name="release_type_digital">%s Digital</string>
     <string name="release_type_physical">%s Physical</string>
     <string name="release_type_tv">%s TV</string>
+    <string name="released_this_week_movies_title">This week</string>
     <string name="remove_from_favorites">Remove from favorites</string>
     <string name="revenue_title">Revenue</string>
     <string name="reviews_title">User reviews</string>

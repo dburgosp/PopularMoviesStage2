@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String sortBy, language;
+    private String sortBy, language, region;
     private int currentPage;
 
     /**
@@ -26,11 +26,12 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      * @param language    is the language for retrieving results from TMDB.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String sortBy, int currentPage,
-                                     String language) {
+                                     String language, String region) {
         super(context);
         this.sortBy = sortBy;
         this.currentPage = currentPage;
         this.language = language;
+        this.region = region;
     }
 
     /**
@@ -80,7 +81,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Sort by: " + sortBy + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(sortBy, currentPage, language);
+            return Tmdb.getTmdbMovies(sortBy, currentPage, language, region);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

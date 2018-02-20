@@ -390,7 +390,7 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
         // Set the Adapter for the RecyclerView.
         recommendedMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_movie_short_list,
                 new ArrayList<TmdbMovie>(), recommendedMovieListener,
-                MoviesShortListAdapter.DATE_FORMAT_LONG);
+                MoviesShortListAdapter.DATE_FORMAT_YEAR);
         recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
     }
 
@@ -563,7 +563,7 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
             stringBuilder = new StringBuilder();
             for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
                 String date = releases.getReleaseDateArrayList().get(i).getRelease_date();
-                stringBuilder.append(DateTimeUtils.getLongDate(date));
+                stringBuilder.append(DateTimeUtils.getStringDate(date, DateTimeUtils.DATE_FORMAT_LONG));
 
                 // Set release type, if exists and if it is not a theatrical release date.
                 int type = releases.getReleaseDateArrayList().get(i).getType();
@@ -623,7 +623,8 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
                 releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
 
                 // Official release date.
-                releaseDatesContent = DateTimeUtils.getLongDate(releaseDate);
+                releaseDatesContent = DateTimeUtils.getStringDate(releaseDate,
+                        DateTimeUtils.DATE_FORMAT_LONG);
             }
         }
 

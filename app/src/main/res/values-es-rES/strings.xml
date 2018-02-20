@@ -48,6 +48,7 @@
     <string name="no_overview">No tenemos sinopsis para esta película.</string>
     <string name="no_results">La búsqueda no ha producido ningún resultado.</string>
     <string name="no_title">Sin título</string>
+    <string name="now_playing_movies_title">En cartelera</string>
     <string name="order_popular">Populares</string>
     <string name="order_top_rated">Destacadas</string>
     <string name="original_language">Idioma original</string>
@@ -74,7 +75,7 @@
     <string name="synopsis">Sinopsis</string>
     <string name="keywords_title">Etiquetas</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
-    <string name="upcoming_movies_title">Próximos estrenos</string>
+    <string name="upcoming_movies_title">Próximamente</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>
     <string name="view_all_crew">Ver equipo completo</string>
@@ -90,6 +91,7 @@
     <string name="release_type_digital">Formato digital en %s</string>
     <string name="release_type_physical">Formato físico en %s</string>
     <string name="release_type_tv">TV en %s</string>
+    <string name="released_this_week_movies_title">Estrenos</string>
 
     <!-- Plurals -->
 

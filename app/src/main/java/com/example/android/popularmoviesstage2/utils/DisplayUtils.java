@@ -13,11 +13,16 @@ import com.example.android.popularmoviesstage2.R;
 public class DisplayUtils {
     private static final String TAG = DisplayUtils.class.getSimpleName();
 
-    // Width and height in pixels for posters in the main movie list, depending on display
-    // dimensions, current device orientation and desired number of elements to be displayed for
-    // each column ("vertical_span_count" and "horizontal_span_count" defined in dimens.xml).
-    private int listPosterWidthPixels;
-    private int listPosterHeightPixels;
+    // Width and height in pixels for posters in the full movies list without any margin at all,
+    // depending on display dimensions, current device orientation and desired number of elements to
+    // be displayed for each column ("vertical_span_count" and "horizontal_span_count" defined in
+    // dimens.xml).
+    private int fullListPosterWidthPixels;
+    private int fullListPosterHeightPixels;
+
+    // Width and height in pixels for backdrops displaying on full screen with a regular_padding.
+    private int fullDisplayBackdropWidthPixels;
+    private int fullDisplayBackdropHeightPixels;
 
     // Number of column elements to be displayed in a vertical GridLayoutManager showing the main
     // list of movies.
@@ -80,32 +85,49 @@ public class DisplayUtils {
         if (resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             // When display orientation is portrait, we use screen width for setting the width of
             // the photographs.
-            spanCount = (int) resources.getInteger(R.integer.default_vertical_span_count);
+            spanCount = resources.getInteger(R.integer.default_vertical_span_count);
             Log.i(TAG, "Portrait orientation");
         } else {
             // When display orientation is landscape, we use screen height for setting the width of
             // the photographs.
-            spanCount = (int) resources.getInteger(R.integer.default_horizontal_span_count);
+            spanCount = resources.getInteger(R.integer.default_horizontal_span_count);
             Log.i(TAG, "Landscape orientation");
         }
 
         // Number of columns for the movies list in the RecyclerView (spanCount) is different
         // depending on device rotation, so poster width and height for this list also depend on
         // device rotation.
-        listPosterWidthPixels = displayWidthPixels / spanCount;
-        listPosterHeightPixels = 3 * listPosterWidthPixels / 2;
-        Log.i(TAG, "Poster width for movies list: " + listPosterWidthPixels);
-        Log.i(TAG, "Poster height for movies list: " + listPosterHeightPixels);
+        fullListPosterWidthPixels = displayWidthPixels / spanCount;
+        fullListPosterHeightPixels = 3 * fullListPosterWidthPixels / 2;
+        Log.i(TAG, "Poster width for movies full list with no margins: " + fullListPosterWidthPixels);
+        Log.i(TAG, "Poster height for movies full list with no margins: " + fullListPosterHeightPixels);
+
+        // Sizes for backdrops.
+        fullDisplayBackdropWidthPixels = displayWidthPixels -
+                (2 * context.getResources().getDimensionPixelSize(R.dimen.regular_padding));
+        fullDisplayBackdropHeightPixels = fullDisplayBackdropWidthPixels * 9 / 16;
+        Log.i(TAG, "Backdrop width in full size with regular_padding: " +
+                fullDisplayBackdropWidthPixels);
+        Log.i(TAG, "Backdrop height in full size with regular_padding: " +
+                fullDisplayBackdropHeightPixels);
     }
 
     // Getters.
 
-    public int getListPosterWidthPixels() {
-        return listPosterWidthPixels;
+    public int getFullListPosterWidthPixels() {
+        return fullListPosterWidthPixels;
     }
 
-    public int getListPosterHeightPixels() {
-        return listPosterHeightPixels;
+    public int getFullListPosterHeightPixels() {
+        return fullListPosterHeightPixels;
+    }
+
+    public int getFullDisplayBackdropWidthPixels() {
+        return fullDisplayBackdropWidthPixels;
+    }
+
+    public int getFullDisplayBackdropHeightPixels() {
+        return fullDisplayBackdropHeightPixels;
     }
 
     public int getSpanCount() {
