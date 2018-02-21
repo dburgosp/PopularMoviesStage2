@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,15 +20,16 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.connection_status_loading_indicator)
     ProgressBar connectionStatusLoadingIndicator;
 
+    private boolean allowClicks = true;
     private Unbinder unbinder;
     private MoviesShortListAdapter nowPlayingMoviesAdapter, thisWeekReleasesMoviesAdapter,
             upcomingMoviesAdapter;
@@ -102,6 +105,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Define transitions to exit and enter to this activity.
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        getWindow().setEnterTransition(new Explode());
+        getWindow().setExitTransition(new Explode());
+
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
@@ -192,6 +202,14 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // When MovieDetailsActivity has finished, we enabled clicks again. We don't need to know
+        // any result from MovieDetailsActivity, only when it has finished.
+        allowClicks = true;
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
@@ -227,28 +245,45 @@ public class MainActivity extends AppCompatActivity implements
                 new MoviesShortListAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(TmdbMovie movie, View clickedView) {
-                        // Start MovieDetailsActivity to show movie details when the current element
-                        // is clicked. We need to know when the other activity finishes, so we use
-                        // startActivityForResult. No need a requestCode, we don't care for any
-                        // result.
-                        Intent intent = new Intent(MainActivity.this,
-                                MovieDetailsActivity.class);
-                        intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                        startActivity(intent);
+                        if (allowClicks) {
+                            // Disable clicks for now, in order to prevent more than one click while
+                            // the transition is running. Clicks will be enabled again when we
+                            // return from MovieDetailsActivity.
+                            allowClicks = false;
+
+                            // Create an ActivityOptions to transition between Activities using
+                            // cross-Activity scene animations.
+                            ActivityOptionsCompat options =
+                                    ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                            MainActivity.this, clickedView,
+                                            getString(R.string.transition_list_to_details));
+
+                            // Start MovieDetailsActivity to show movie details when the current
+                            // element is clicked. We need to know when the other activity finishes,
+                            // so we use startActivityForResult. No need a requestCode, we don't
+                            // care for any result.
+                            Intent intent = new Intent(MainActivity.this,
+                                    MovieDetailsActivity.class);
+                            intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
+                            startActivityForResult(intent, 0, options.toBundle());
+                        }
                     }
                 };
 
         // Set the Adapters for the RecyclerViews.
-        nowPlayingMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_main_activity_movie,
-                new ArrayList<TmdbMovie>(), movieListener, MoviesShortListAdapter.DATE_FORMAT_MEDIUM);
+        nowPlayingMoviesAdapter = new MoviesShortListAdapter(
+                R.layout.list_item_poster_horizontal_layout_3, new ArrayList<TmdbMovie>(),
+                movieListener);
         nowPlayingMoviesRecyclerview.setAdapter(nowPlayingMoviesAdapter);
 
-        thisWeekReleasesMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_main_activity_movie,
-                new ArrayList<TmdbMovie>(), movieListener, MoviesShortListAdapter.DATE_FORMAT_MEDIUM);
+        thisWeekReleasesMoviesAdapter = new MoviesShortListAdapter(
+                R.layout.list_item_poster_horizontal_layout_2, new ArrayList<TmdbMovie>(),
+                movieListener);
         thisWeekReleasesMoviesRecyclerview.setAdapter(thisWeekReleasesMoviesAdapter);
 
-        upcomingMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_main_activity_movie,
-                new ArrayList<TmdbMovie>(), movieListener, MoviesShortListAdapter.DATE_FORMAT_MEDIUM);
+        upcomingMoviesAdapter = new MoviesShortListAdapter(
+                R.layout.list_item_poster_horizontal_layout_2, new ArrayList<TmdbMovie>(),
+                movieListener);
         upcomingMoviesRecyclerview.setAdapter(upcomingMoviesAdapter);
     }
 
@@ -265,124 +300,126 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method to display the list of now playing movies.
      */
     void setNowPlayingMovies() {
-        // Set view all text.
-        String viewAllText = getString(R.string.view_all) + " (" +
-                nowPlayingMovies.get(0).getTotal_results() + ")";
-        nowPlayingMoviesViewAll.setText(viewAllText);
+        if (nowPlayingMovies != null && nowPlayingMovies.size() > 0) {
+            // Set view all text.
+            String viewAllText = getString(R.string.view_all) + " (" +
+                    nowPlayingMovies.get(0).getTotal_results() + ")";
+            nowPlayingMoviesViewAll.setText(viewAllText);
 
-        // Set the now playing movies list.
-        if (nowPlayingMovies.size() > 0) {
-            nowPlayingMoviesAdapter.setMoviesArrayList(nowPlayingMovies);
-            nowPlayingMoviesAdapter.notifyDataSetChanged();
-        } else
-            nowPlayingMoviesRecyclerview.setVisibility(View.GONE);
+            // Set the now playing movies list.
+            if (nowPlayingMovies.size() > 0) {
+                nowPlayingMoviesAdapter.setMoviesArrayList(nowPlayingMovies);
+                nowPlayingMoviesAdapter.notifyDataSetChanged();
+            } else
+                nowPlayingMoviesRecyclerview.setVisibility(View.GONE);
 
-        // Show the now playing movies section.
-        nowPlayingMoviesLayout.setVisibility(View.VISIBLE);
+            // Show the now playing movies section.
+            nowPlayingMoviesLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * Helper method to display the list of movies that are being released this week.
      */
     void setThisWeekReleasedMovies() {
-        // Set view all text.
-        String viewAllText = getString(R.string.view_all) + " (" +
-                thisWeekReleasesMovies.get(0).getTotal_results() + ")";
-        thisWeekReleasesMoviesViewAll.setText(viewAllText);
+        if (thisWeekReleasesMovies != null && thisWeekReleasesMovies.size() > 0) {
+            // Set view all text.
+            String viewAllText = getString(R.string.view_all) + " (" +
+                    thisWeekReleasesMovies.get(0).getTotal_results() + ")";
+            thisWeekReleasesMoviesViewAll.setText(viewAllText);
 
-        // Set the movies list.
-        if (thisWeekReleasesMovies.size() > 0) {
-            thisWeekReleasesMoviesAdapter.setMoviesArrayList(thisWeekReleasesMovies);
-            thisWeekReleasesMoviesAdapter.notifyDataSetChanged();
-        } else
-            thisWeekReleasesMoviesRecyclerview.setVisibility(View.GONE);
+            // Set the movies list.
+            if (thisWeekReleasesMovies.size() > 0) {
+                thisWeekReleasesMoviesAdapter.setMoviesArrayList(thisWeekReleasesMovies);
+                thisWeekReleasesMoviesAdapter.notifyDataSetChanged();
+            } else
+                thisWeekReleasesMoviesRecyclerview.setVisibility(View.GONE);
 
-        // Show the this week releases movies section.
-        thisWeekReleasesMoviesLayout.setVisibility(View.VISIBLE);
+            // Show the this week releases movies section.
+            thisWeekReleasesMoviesLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * Helper method to display all the movieDetails information in this fragment.
      */
     void setUpcomingMovies() {
-
-        /* -------------- */
-        /* SECTION HEADER */
-        /* -------------- */
-
-        String viewAllText = getString(R.string.view_all) + " (" +
-                upcomingMovies.get(0).getTotal_results() + ")";
-        upcomingMoviesViewAll.setText(viewAllText);
+        if (upcomingMovies != null && upcomingMovies.size() > 0) {
+            // Set view all text.
+            String viewAllText = getString(R.string.view_all) + " (" +
+                    upcomingMovies.get(0).getTotal_results() + ")";
+            upcomingMoviesViewAll.setText(viewAllText);
 
         /* ------------ */
         /* MAIN ELEMENT */
         /* ------------ */
 
-        // Set background for the main element, if it exists.
-        String backdropPath = upcomingMovies.get(0).getBackdrop_path();
-        if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty()) {
-            // Draw image.
-            backdropPath = Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath;
-            Picasso.with(MainActivity.this)
-                    .load(backdropPath)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .into(upcomingMoviesCardviewImage);
+            // Set background for the main element, if it exists.
+            String backdropPath = upcomingMovies.get(0).getBackdrop_path();
+            if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty()) {
+                // Draw image.
+                backdropPath = Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath;
+                Picasso.with(MainActivity.this)
+                        .load(backdropPath)
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        .into(upcomingMoviesCardviewImage);
+            }
 
-            // Set width and height.
+            // Set width and height for the background image, according to the display dimensions.
             final DisplayUtils displayUtils = new DisplayUtils(MainActivity.this);
             int widthPixels = displayUtils.getFullDisplayBackdropWidthPixels();
             int heightPixels = displayUtils.getFullDisplayBackdropHeightPixels();
-            RelativeLayout.LayoutParams layoutParams =
-                    new RelativeLayout.LayoutParams(widthPixels, heightPixels);
+            LinearLayout.LayoutParams layoutParams =
+                    new LinearLayout.LayoutParams(widthPixels, heightPixels);
             upcomingMoviesCardviewImage.setLayoutParams(layoutParams);
-        }
 
-        // Set movie title for the main element.
-        String movieTitle = upcomingMovies.get(0).getTitle();
-        if (movieTitle != null && !movieTitle.equals("") && !movieTitle.isEmpty())
-            upcomingMoviesCardviewTitle.setText(movieTitle);
-        else
-            upcomingMoviesCardviewTitle.setText(getResources().getString(R.string.no_title));
+            // Set movie title for the main element.
+            String movieTitle = upcomingMovies.get(0).getTitle();
+            if (movieTitle != null && !movieTitle.equals("") && !movieTitle.isEmpty())
+                upcomingMoviesCardviewTitle.setText(movieTitle);
+            else
+                upcomingMoviesCardviewTitle.setText(getResources().getString(R.string.no_title));
 
-        // Set release date for the main element. Add a left drawable with grey tint color.
-        TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
-                upcomingMoviesCardviewReleaseDate, TextViewUtils.DRAWABLE_LEFT_INDEX,
-                R.drawable.ic_date_range_black_18dp, R.color.colorGrey, R.dimen.tiny_padding);
-        String releaseDate = DateTimeUtils.getStringDate(upcomingMovies.get(0).getRelease_date(),
-                DateTimeUtils.DATE_FORMAT_LONG);
-        if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
-            upcomingMoviesCardviewReleaseDate.setText(releaseDate);
-        else
-            upcomingMoviesCardviewReleaseDate.setText(getResources().getString(R.string.no_date));
+            // Set release date for the main element. Add a left drawable with grey tint color.
+            TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
+                    upcomingMoviesCardviewReleaseDate, TextViewUtils.DRAWABLE_LEFT_INDEX,
+                    R.drawable.ic_date_range_black_18dp, R.color.colorGrey, R.dimen.tiny_padding);
+            String releaseDate = DateTimeUtils.getStringDate(upcomingMovies.get(0).getRelease_date(),
+                    DateTimeUtils.DATE_FORMAT_LONG);
+            if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
+                upcomingMoviesCardviewReleaseDate.setText(releaseDate);
+            else
+                upcomingMoviesCardviewReleaseDate.setText(getResources().getString(R.string.no_date));
 
-        // Set the listeners for click events in the main element.
-        upcomingMoviesCardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open a new MovieDetailsActivity to show detailed info about the current movie.
-                Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, upcomingMovies.get(0));
-                startActivity(intent);
-            }
-        });
+            // Set the listener for click events in the main element.
+            upcomingMoviesCardview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Open a new MovieDetailsActivity to show detailed info about the current movie.
+                    Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, upcomingMovies.get(0));
+                    startActivity(intent);
+                }
+            });
 
         /* ----------- */
         /* MOVIES LIST */
         /* ----------- */
 
-        // Set the upcoming movies list from the second element.
-        @SuppressWarnings("unchecked")
-        ArrayList<TmdbMovie> upcomingMoviesCopy = (ArrayList<TmdbMovie>) upcomingMovies.clone();
-        upcomingMoviesCopy.remove(0);
-        if (upcomingMoviesCopy.size() > 0) {
-            upcomingMoviesAdapter.setMoviesArrayList(upcomingMoviesCopy);
-            upcomingMoviesAdapter.notifyDataSetChanged();
-        } else
-            upcomingMoviesRecyclerview.setVisibility(View.GONE);
+            // Set the upcoming movies list from the second element.
+            @SuppressWarnings("unchecked")
+            ArrayList<TmdbMovie> upcomingMoviesCopy = (ArrayList<TmdbMovie>) upcomingMovies.clone();
+            upcomingMoviesCopy.remove(0);
+            if (upcomingMoviesCopy.size() > 0) {
+                upcomingMoviesAdapter.setMoviesArrayList(upcomingMoviesCopy);
+                upcomingMoviesAdapter.notifyDataSetChanged();
+            } else
+                upcomingMoviesRecyclerview.setVisibility(View.GONE);
 
-        // Show the upcoming movies section.
-        upcomingMoviesLayout.setVisibility(View.VISIBLE);
+            // Show the upcoming movies section.
+            upcomingMoviesLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     /* ----------- */

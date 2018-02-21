@@ -410,15 +410,17 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                     // MovieDetailsActivity.
                     allowClicks = false;
 
-                    // Create an ActivityOptions to transition between Activities using cross-Activity
-                    // scene animations.
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    // Create an ActivityOptions to transition between Activities using
+                    // cross-Activity scene animations.
+                    ActivityOptionsCompat options =
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(
                             PopularMoviesActivity.this, clickedView, getString(R.string.transition_list_to_details));
 
                     // Start MovieDetailsActivity to show movie details when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
                     // startActivityForResult. No need a requestCode, we don't care for any result.
-                    Intent intent = new Intent(PopularMoviesActivity.this, MovieDetailsActivity.class);
+                    Intent intent = new Intent(PopularMoviesActivity.this,
+                            MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
                     startActivityForResult(intent, 0, options.toBundle());
                 }

@@ -9,10 +9,12 @@
     <string name="budget_title">Budget</string>
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_alpha">Transparent layer for background</string>
+    <string name="content_description_backdrop">Backdrop</string>
     <string name="content_description_favorites">Add to favorites icon</string>
-    <string name="content_description_person_image">Person image</string>
+    <string name="content_description_gradient">Gradient background</string>
+    <string name="content_description_person_image">Person</string>
     <string name="content_description_play">Play video icon</string>
-    <string name="content_description_poster">Movie Poster</string>
+    <string name="content_description_poster">Poster</string>
     <string name="department_actors">Actors</string>
     <string name="department_art">Art</string>
     <string name="department_camera">Camera</string>
@@ -97,6 +99,7 @@
     <string name="string_minutes">m</string>
     <string name="synopsis">Synopsis</string>
     <string name="thumbnail_description">Thumbnail image</string>
+    <string name="title_activity_main">Movies &#038; Series</string>
     <string name="transition_details_to_details">poster_transition_2</string>
     <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
@@ -185,10 +188,6 @@
         <item quantity="one">(1 vote)</item>
         <item quantity="other">(%s votes)</item>
     </plurals>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

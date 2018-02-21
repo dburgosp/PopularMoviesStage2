@@ -126,7 +126,7 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
     public MoviesFullListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_movie_full_list, parent, false);
+        View view = inflater.inflate(R.layout.list_item_poster_grid_layout, parent, false);
         return new MoviesFullListViewHolder(view);
     }
 
@@ -241,8 +241,12 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
             Log.i(TAG, "(bind) Binding data for the current MoviesFullListViewHolder.");
 
             // Draw poster for current movie and resize image to fit screen size and orientation.
-            String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentTmdbMovie.getPoster_path();
-            Picasso.with(context).load(posterPath).into(posterImageView);
+            String posterPath = currentTmdbMovie.getPoster_path();
+            if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
+                Picasso.with(context)
+                        .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
+                        .into(posterImageView);
+            }
             posterImageView.setLayoutParams(layoutParams);
 
             // Set transition name to the current view, so it can be animated if clicked.

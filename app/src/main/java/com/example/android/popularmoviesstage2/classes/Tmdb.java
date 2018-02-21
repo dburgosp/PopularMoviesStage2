@@ -121,7 +121,7 @@ public class Tmdb {
                 break;
             }
             case TMDB_SORT_BY_THIS_WEEK_RELEASES: {
-                // Get movies that are going to be released this week.
+                // Get movies with release type 2 or 3 that are going to be released this week.
                 String currentDate = DateTimeUtils.getStringCurrentDate();
                 String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
                         DateTimeUtils.WEEK_DAY_SUNDAY);
@@ -141,7 +141,8 @@ public class Tmdb {
                 break;
             }
             case TMDB_SORT_BY_UPCOMING: {
-                // Get movies with primary release date greater or equal than next monday.
+                // Get movies with release type 2 or 3 and release date greater or equal than next
+                // monday.
                 String monday = DateTimeUtils.getStringWeekday(
                         DateTimeUtils.getAddedDaysToDate(DateTimeUtils.getCurrentDate(), 7),
                         DateTimeUtils.WEEK_DAY_MONDAY);

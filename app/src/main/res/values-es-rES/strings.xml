@@ -10,10 +10,11 @@
     <string name="cast_of_characters">Reparto principal</string>
     <string name="a_review_by">La opinión de</string>
     <string name="content_description_alpha">Capa transparente para el fondo</string>
+    <string name="content_description_backdrop">Fondo</string>
     <string name="content_description_favorites">Icono de añadir a favoritos</string>
     <string name="content_description_person_image">Imagen de la persona</string>
     <string name="content_description_play">Icono de reproducción de vídeo</string>
-    <string name="content_description_poster">Póster de la película</string>
+    <string name="content_description_poster">Póster</string>
     <string name="department_actors">Actores</string>
     <string name="department_art">Arte</string>
     <string name="department_camera">Cámara</string>
@@ -33,6 +34,7 @@
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>
     <string name="film_crew">Equipo destacado</string>
     <string name="full_size_image_description">Imagen a tamaño completo</string>
+    <string name="keywords_title">Etiquetas</string>
     <string name="language">Idioma</string>
     <string name="movie_details_info">Información</string>
     <string name="movie_details_cast_crew">Reparto y equipo</string>
@@ -73,8 +75,8 @@
     <string name="spoken_languages">Otros idiomas en versión original</string>
     <string name="status">Estado</string>
     <string name="synopsis">Sinopsis</string>
-    <string name="keywords_title">Etiquetas</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
+    <string name="title_activity_main">Pelis y Tele</string>
     <string name="upcoming_movies_title">Próximamente</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>

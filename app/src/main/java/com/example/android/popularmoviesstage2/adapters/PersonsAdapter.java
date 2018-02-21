@@ -79,7 +79,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
     public PersonsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_movie_full_list, parent, false);
+        View view = inflater.inflate(R.layout.list_item_poster_grid_layout, parent, false);
         return new PersonsViewHolder(view);
     }
 

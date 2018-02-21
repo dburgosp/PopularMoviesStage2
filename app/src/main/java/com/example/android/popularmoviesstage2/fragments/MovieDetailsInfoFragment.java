@@ -388,9 +388,8 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
         };
 
         // Set the Adapter for the RecyclerView.
-        recommendedMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_movie_short_list,
-                new ArrayList<TmdbMovie>(), recommendedMovieListener,
-                MoviesShortListAdapter.DATE_FORMAT_YEAR);
+        recommendedMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_poster_horizontal_layout_1,
+                new ArrayList<TmdbMovie>(), recommendedMovieListener);
         recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
     }
 

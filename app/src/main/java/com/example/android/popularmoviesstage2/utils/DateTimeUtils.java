@@ -45,21 +45,9 @@ public final class DateTimeUtils {
      */
     public static String getYear(String dateString) {
         Log.i(TAG, "(getYear) Date: " + dateString);
-/*        Calendar calendar = Calendar.getInstance();
         String year = "";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
-
-        try {
-            calendar.setTime(format.parse(dateString));
-            year = String.valueOf(calendar.get(Calendar.YEAR));
-        } catch (java.text.ParseException e) {
-            Log.e(TAG, "(getYear) Error parsing string: " + e);
-        }
-
-        Log.i(TAG, "(getYear) Year: " + year);
-        return year;*/
-
-        String year = dateString.substring(0, 4);
+        if (dateString != null && !dateString.equals("") && !dateString.isEmpty())
+            year = dateString.substring(0, 4);
         Log.i(TAG, "(getYear) Year: " + year);
         return year;
     }
