@@ -103,8 +103,7 @@ public class DisplayUtils {
         Log.i(TAG, "Poster height for movies full list with no margins: " + fullListPosterHeightPixels);
 
         // Sizes for backdrops.
-        fullDisplayBackdropWidthPixels = displayWidthPixels -
-                (2 * context.getResources().getDimensionPixelSize(R.dimen.regular_padding));
+        fullDisplayBackdropWidthPixels = displayWidthPixels;
         fullDisplayBackdropHeightPixels = fullDisplayBackdropWidthPixels * 9 / 16;
         Log.i(TAG, "Backdrop width in full size with regular_padding: " +
                 fullDisplayBackdropWidthPixels);

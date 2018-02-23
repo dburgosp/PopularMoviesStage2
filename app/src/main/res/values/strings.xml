@@ -41,6 +41,7 @@
     <string name="link_imdb">IMDB</string>
     <string name="link_instagram">Instagram</string>
     <string name="link_twitter">Twitter</string>
+    <string name="most_popular">Most popular</string>
     <string name="movie_details_info">Info</string>
     <string name="movie_details_cast_crew">Cast &#038; Crew</string>
     <string name="movie_details_reviews">Reviews</string>
@@ -104,8 +105,12 @@
     <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
     <string name="upcoming_movies_title">Upcoming movies</string>
+    <string name="week">From %s to %s</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
+    <string name="view_all_now_playing_movies">View the %d movies that are now playing in theaters in %s</string>
+    <string name="view_all_this_week_released_movies">View the %d movies to be released this week in %s</string>
+    <string name="view_all_upcoming_movies">View the %d upcoming movies to be released in %s</string>
     <string name="view_all_crew">View complete Film Crew</string>
 
     <!-- MPAA movie age ratings from OMDB API -->

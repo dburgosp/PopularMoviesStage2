@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesShortListAdapter extends RecyclerView.Adapter<MoviesShortListAdapter.MoviesShortListViewHolder> {
+public class MoviesShortListAdapter
+        extends RecyclerView.Adapter<MoviesShortListAdapter.MoviesShortListViewHolder> {
     private static final String TAG = MoviesShortListAdapter.class.getSimpleName();
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;

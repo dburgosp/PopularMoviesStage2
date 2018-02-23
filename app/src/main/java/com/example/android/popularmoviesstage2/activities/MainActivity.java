@@ -5,9 +5,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -16,7 +14,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +37,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
+import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.MemoryPolicy;
@@ -65,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements
     TextView nowPlayingMoviesViewAll;
     @BindView(R.id.now_playing_movies_recyclerview)
     RecyclerView nowPlayingMoviesRecyclerview;
+    @BindView(R.id.now_playing_movies_view_all_action)
+    TextView nowPlayingMoviesViewAllAction;
 
     @BindView(R.id.released_this_week_movies_layout)
     LinearLayout thisWeekReleasesMoviesLayout;
@@ -72,21 +72,29 @@ public class MainActivity extends AppCompatActivity implements
     TextView thisWeekReleasesMoviesViewAll;
     @BindView(R.id.released_this_week_movies_recyclerview)
     RecyclerView thisWeekReleasesMoviesRecyclerview;
+    @BindView(R.id.released_this_week_movies_view_all_action)
+    TextView thisWeekReleasesMoviesViewAllAction;
 
     @BindView(R.id.upcoming_movies_layout)
     LinearLayout upcomingMoviesLayout;
     @BindView(R.id.upcoming_movies_view_all)
     TextView upcomingMoviesViewAll;
-    @BindView(R.id.upcoming_movies_cardview)
-    CardView upcomingMoviesCardview;
-    @BindView(R.id.upcoming_movies_cardview_image)
-    ImageView upcomingMoviesCardviewImage;
-    @BindView(R.id.upcoming_movies_cardview_release_date)
-    TextView upcomingMoviesCardviewReleaseDate;
-    @BindView(R.id.upcoming_movies_cardview_title)
-    TextView upcomingMoviesCardviewTitle;
+    @BindView(R.id.upcoming_movies_most_popular)
+    LinearLayout upcomingMoviesMostPopularLayout;
+    @BindView(R.id.upcoming_movies_most_popular_image)
+    ImageView upcomingMoviesMostPopularImage;
+    @BindView(R.id.upcoming_movies_most_popular_release_date)
+    TextView upcomingMoviesMostPopularReleaseDate;
+    @BindView(R.id.upcoming_movies_most_popular_most_popular)
+    TextView upcomingMoviesMostPopularMostPopular;
+    @BindView(R.id.upcoming_movies_most_popular_title)
+    TextView upcomingMoviesMostPopularTitle;
+    @BindView(R.id.upcoming_movies_most_popular_overwiew)
+    TextView upcomingMoviesMostPopularOverview;
     @BindView(R.id.upcoming_movies_recyclerview)
     RecyclerView upcomingMoviesRecyclerview;
+    @BindView(R.id.upcoming_movies_view_all_action)
+    TextView upcomingMoviesViewAllAction;
 
     @BindView(R.id.connection_status_layout)
     LinearLayout connectionStatusLayout;
@@ -117,15 +125,6 @@ public class MainActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -220,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
-        int horizontalSeparation = getResources().getDimensionPixelOffset(R.dimen.regular_padding);
+        int horizontalSeparation = getResources().getDimensionPixelOffset(R.dimen.small_padding);
 
         nowPlayingMoviesRecyclerview.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
@@ -301,10 +300,18 @@ public class MainActivity extends AppCompatActivity implements
      */
     void setNowPlayingMovies() {
         if (nowPlayingMovies != null && nowPlayingMovies.size() > 0) {
-            // Set view all text.
-            String viewAllText = getString(R.string.view_all) + " (" +
-                    nowPlayingMovies.get(0).getTotal_results() + ")";
-            nowPlayingMoviesViewAll.setText(viewAllText);
+            // Show/hide "view all" texts.
+            int totalResults = nowPlayingMovies.get(0).getTotal_results();
+            if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
+                String viewAllText = getString(R.string.view_all_now_playing_movies, totalResults,
+                        LocaleUtils.getCurrentCountryName());
+                nowPlayingMoviesViewAllAction.setText(viewAllText);
+                nowPlayingMoviesViewAllAction.setVisibility(View.VISIBLE);
+                nowPlayingMoviesViewAll.setVisibility(View.VISIBLE);
+            } else {
+                nowPlayingMoviesViewAllAction.setVisibility(View.GONE);
+                nowPlayingMoviesViewAll.setVisibility(View.GONE);
+            }
 
             // Set the now playing movies list.
             if (nowPlayingMovies.size() > 0) {
@@ -323,10 +330,18 @@ public class MainActivity extends AppCompatActivity implements
      */
     void setThisWeekReleasedMovies() {
         if (thisWeekReleasesMovies != null && thisWeekReleasesMovies.size() > 0) {
-            // Set view all text.
-            String viewAllText = getString(R.string.view_all) + " (" +
-                    thisWeekReleasesMovies.get(0).getTotal_results() + ")";
-            thisWeekReleasesMoviesViewAll.setText(viewAllText);
+            // Show/hide "view all" texts.
+            int totalResults = thisWeekReleasesMovies.get(0).getTotal_results();
+            if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
+                String viewAllText = getString(R.string.view_all_this_week_released_movies,
+                        totalResults, LocaleUtils.getCurrentCountryName());
+                thisWeekReleasesMoviesViewAllAction.setText(viewAllText);
+                thisWeekReleasesMoviesViewAllAction.setVisibility(View.VISIBLE);
+                thisWeekReleasesMoviesViewAll.setVisibility(View.VISIBLE);
+            } else {
+                thisWeekReleasesMoviesViewAllAction.setVisibility(View.GONE);
+                thisWeekReleasesMoviesViewAll.setVisibility(View.GONE);
+            }
 
             // Set the movies list.
             if (thisWeekReleasesMovies.size() > 0) {
@@ -345,14 +360,22 @@ public class MainActivity extends AppCompatActivity implements
      */
     void setUpcomingMovies() {
         if (upcomingMovies != null && upcomingMovies.size() > 0) {
-            // Set view all text.
-            String viewAllText = getString(R.string.view_all) + " (" +
-                    upcomingMovies.get(0).getTotal_results() + ")";
-            upcomingMoviesViewAll.setText(viewAllText);
+            // Show/hide "view all" texts.
+            int totalResults = upcomingMovies.get(0).getTotal_results();
+            if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
+                String viewAllText = getString(R.string.view_all_upcoming_movies, totalResults,
+                        LocaleUtils.getCurrentCountryName());
+                upcomingMoviesViewAllAction.setText(viewAllText);
+                upcomingMoviesViewAllAction.setVisibility(View.VISIBLE);
+                upcomingMoviesViewAll.setVisibility(View.VISIBLE);
+            } else {
+                upcomingMoviesViewAllAction.setVisibility(View.GONE);
+                upcomingMoviesViewAll.setVisibility(View.GONE);
+            }
 
-        /* ------------ */
-        /* MAIN ELEMENT */
-        /* ------------ */
+            /* ------------ */
+            /* MAIN ELEMENT */
+            /* ------------ */
 
             // Set background for the main element, if it exists.
             String backdropPath = upcomingMovies.get(0).getBackdrop_path();
@@ -363,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements
                         .load(backdropPath)
                         .memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(upcomingMoviesCardviewImage);
+                        .into(upcomingMoviesMostPopularImage);
             }
 
             // Set width and height for the background image, according to the display dimensions.
@@ -372,28 +395,40 @@ public class MainActivity extends AppCompatActivity implements
             int heightPixels = displayUtils.getFullDisplayBackdropHeightPixels();
             LinearLayout.LayoutParams layoutParams =
                     new LinearLayout.LayoutParams(widthPixels, heightPixels);
-            upcomingMoviesCardviewImage.setLayoutParams(layoutParams);
+            upcomingMoviesMostPopularImage.setLayoutParams(layoutParams);
 
             // Set movie title for the main element.
             String movieTitle = upcomingMovies.get(0).getTitle();
             if (movieTitle != null && !movieTitle.equals("") && !movieTitle.isEmpty())
-                upcomingMoviesCardviewTitle.setText(movieTitle);
+                upcomingMoviesMostPopularTitle.setText(movieTitle);
             else
-                upcomingMoviesCardviewTitle.setText(getResources().getString(R.string.no_title));
+                upcomingMoviesMostPopularTitle.setText(getResources().getString(R.string.no_title));
+
+            // Set overview for the main element.
+            String overview = upcomingMovies.get(0).getOverview();
+            if (overview != null && !overview.equals("") && !overview.isEmpty())
+                upcomingMoviesMostPopularOverview.setText(overview);
+            else
+                upcomingMoviesMostPopularOverview.setVisibility(View.GONE);
 
             // Set release date for the main element. Add a left drawable with grey tint color.
             TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
-                    upcomingMoviesCardviewReleaseDate, TextViewUtils.DRAWABLE_LEFT_INDEX,
+                    upcomingMoviesMostPopularReleaseDate, TextViewUtils.DRAWABLE_LEFT_INDEX,
                     R.drawable.ic_date_range_black_18dp, R.color.colorGrey, R.dimen.tiny_padding);
             String releaseDate = DateTimeUtils.getStringDate(upcomingMovies.get(0).getRelease_date(),
                     DateTimeUtils.DATE_FORMAT_LONG);
             if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
-                upcomingMoviesCardviewReleaseDate.setText(releaseDate);
+                upcomingMoviesMostPopularReleaseDate.setText(releaseDate);
             else
-                upcomingMoviesCardviewReleaseDate.setText(getResources().getString(R.string.no_date));
+                upcomingMoviesMostPopularReleaseDate.setText(getResources().getString(R.string.no_date));
+
+            // Tint color for "Most popular" icon.
+            TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
+                    upcomingMoviesMostPopularMostPopular, TextViewUtils.DRAWABLE_RIGHT_INDEX,
+                    R.drawable.ic_thumb_up_white_18dp, R.color.colorGrey, R.dimen.tiny_padding);
 
             // Set the listener for click events in the main element.
-            upcomingMoviesCardview.setOnClickListener(new View.OnClickListener() {
+            upcomingMoviesMostPopularLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // Open a new MovieDetailsActivity to show detailed info about the current movie.
@@ -403,9 +438,9 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
 
-        /* ----------- */
-        /* MOVIES LIST */
-        /* ----------- */
+            /* ----------- */
+            /* MOVIES LIST */
+            /* ----------- */
 
             // Set the upcoming movies list from the second element.
             @SuppressWarnings("unchecked")

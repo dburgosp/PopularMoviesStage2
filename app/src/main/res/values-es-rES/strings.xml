@@ -36,6 +36,7 @@
     <string name="full_size_image_description">Imagen a tamaño completo</string>
     <string name="keywords_title">Etiquetas</string>
     <string name="language">Idioma</string>
+    <string name="most_popular">La más popular</string>
     <string name="movie_details_info">Información</string>
     <string name="movie_details_cast_crew">Reparto y equipo</string>
     <string name="movie_details_reviews">Opiniones</string>
@@ -93,7 +94,11 @@
     <string name="release_type_digital">Formato digital en %s</string>
     <string name="release_type_physical">Formato físico en %s</string>
     <string name="release_type_tv">TV en %s</string>
-    <string name="released_this_week_movies_title">Estrenos</string>
+    <string name="released_this_week_movies_title">Estrenos esta semana</string>
+    <string name="view_all_now_playing_movies">Ver las %d películas en cartelera hoy en %s</string>
+    <string name="view_all_this_week_released_movies">Ver los %d estrenos de esta semana en cines en %s</string>
+    <string name="view_all_upcoming_movies">Ver los próximos %d estrenos de cine en %s</string>
+    <string name="week">Semana del %s al %s</string>
 
     <!-- Plurals -->
 

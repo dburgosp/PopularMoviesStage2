@@ -57,8 +57,9 @@ public class Tmdb {
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
 
-    // Maximum number of pages.
+    // Values.
     public final static int TMDB_MAX_PAGES = 1000;
+    public final static int TMDB_RESULTS_PER_PAGE = 20;
 
     // API KEY is defined into gradle.properties and referenced from app:build.gradle. The file
     // gradle.properties is included in the .gitignore file, so the API KEY will not be published
