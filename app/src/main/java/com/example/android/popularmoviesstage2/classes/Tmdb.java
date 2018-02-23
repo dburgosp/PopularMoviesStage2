@@ -35,6 +35,7 @@ public class Tmdb {
     public final static String TMDB_SORT_BY_NOW_PLAYING = "now_playing";
     public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
     public final static String TMDB_SORT_BY_THIS_WEEK_RELEASES = "this_week_releases";
+    public final static String TMDB_SORT_BY_FOR_BUY_AND_RENT = "buy_and_rent";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";

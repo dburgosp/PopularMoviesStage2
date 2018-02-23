@@ -22,7 +22,7 @@
             android:layout_marginStart="@dimen/regular_padding"
             android:drawablePadding="@dimen/tiny_padding"
             android:drawableStart="@drawable/ic_local_movies_white_18dp"
-            android:text="@string/now_playing_movies_title"
+            android:text="@string/movies_sort_by_now_playing"
             android:textAllCaps="true"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/normal_plus_text_size" />
@@ -40,6 +40,7 @@
             android:textSize="@dimen/normal_plus_text_size"
             android:textStyle="bold" />
     </LinearLayout>
+
 
     <HorizontalScrollView
         android:layout_width="match_parent"

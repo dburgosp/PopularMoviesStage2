@@ -1,29 +1,26 @@
-package com.example.android.popularmoviesstage2.activities;
+package com.example.android.popularmoviesstage2.fragments;
 
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesFullListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
@@ -38,8 +35,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class PopularMoviesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
-    private static final String TAG = PopularMoviesActivity.class.getSimpleName();
+public class MoviesFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+    private static final String TAG = MoviesFragment.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -61,21 +59,46 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    /**
+     * Required empty public constructor.
+     */
+    public MoviesFragment() {
+    }
 
-        // Define transitions to exit and enter to this activity.
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+    /**
+     * Factory method to create a new instance of this fragment using the provided parameters.
+     *
+     * @param sortOrder is the sort order of the movies list.
+     * @return a new instance of fragment MoviesFragment.
+     */
+    public static MoviesFragment newInstance(String sortOrder) {
+        Bundle bundle = new Bundle();
+        bundle.putString("sortOrder", sortOrder);
+        MoviesFragment fragment = new MoviesFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: Define transitions to exit and enter to this activity.
+/*        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
         getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());
+        getWindow().setExitTransition(new Explode());*/
 
-        setContentView(R.layout.activity_popular_movies);
-        unbinder = ButterKnife.bind(this);
+        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
-        // Set the title for this activity, using the sort order.
-        this.setTitle(getSortOrderText());
+        // Get arguments from calling activity.
+        if (getArguments() != null) {
+            sortOrder = getArguments().getString("sortOrder");
+        }
 
         // After re-creating this activity (for example, after rotating the device) we do not want
         // to configure the RecyclerView nor initialize the loader here. These tasks will be
@@ -91,172 +114,26 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
         appendToEnd = true;
         loader = null;
         setRecyclerView();
-        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
+        getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
         //}
 
-        Log.i(TAG, "(onCreate) Activity created");
+        Log.i(TAG, "(onCreate) Fragment created");
+        return rootView;
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu.  You
-     * should place your menu items in to <var>menu</var>.
-     * <p>
-     * <p>This is only called once, the first time the options menu is
-     * displayed.  To update the menu every time it is displayed, see
-     * {@link #onPrepareOptionsMenu}.
-     * <p>
-     * <p>The default implementation populates the menu with standard system
-     * menu items.  These are placed in the {@link Menu#CATEGORY_SYSTEM} group so that
-     * they will be correctly ordered with application-defined menu items.
-     * Deriving classes should always call through to the base implementation.
-     * <p>
-     * <p>You can safely hold on to <var>menu</var> (and any items created
-     * from it), making modifications to it as desired, until the next
-     * time onCreateOptionsMenu() is called.
-     * <p>
-     * <p>When you add items to the menu, you can implement the Activity's
-     * {@link #onOptionsItemSelected} method to handle them there.
-     *
-     * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
-     * @see #onPrepareOptionsMenu
-     * @see #onOptionsItemSelected
+     * Called when the view previously created by {@link #onCreateView} has
+     * been detached from the fragment.  The next time the fragment needs
+     * to be displayed, a new view will be created.  This is called
+     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
+     * <em>regardless</em> of whether {@link #onCreateView} returned a
+     * non-null view.  Internally it is called after the view's state has
+     * been saved but before it has been removed from its parent.
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.movies, menu);
-        return true;
-    }
-
-    /**
-     * This hook is called whenever an item in your options menu is selected.
-     * The default implementation simply returns false to have the normal
-     * processing happen (calling the item's Runnable or sending a message to
-     * its Handler as appropriate).  You can use this method for any items
-     * for which you would like to do processing without those other
-     * facilities.
-     * <p>
-     * <p>Derived classes should call through to the base class for it to
-     * perform the default menu handling.</p>
-     *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
-     * @see #onCreateOptionsMenu
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int itemId = item.getItemId();
-        Log.i(TAG, "(onOptionsItemSelected) Item ID: " + itemId);
-
-        // New sort order for the list of movies.
-        String newSortOrder;
-        switch (itemId) {
-            case R.id.order_popular:
-                newSortOrder = Tmdb.TMDB_SORT_BY_POPULAR;
-                break;
-
-            case R.id.order_top_rated:
-                newSortOrder = Tmdb.TMDB_SORT_BY_TOP_RATED;
-                break;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-        // Only load new movies array if we are changing the sort order.
-        if (!newSortOrder.equals(sortOrder)) {
-            // Set new global sort order and show it on screen.
-            sortOrder = newSortOrder;
-            String sortOrderText = getSortOrderText();
-            Toast.makeText(this, getResources().getString(R.string.sort_order_changed, sortOrderText), Toast.LENGTH_SHORT).show();
-
-            // Update activity title.
-            this.setTitle(sortOrderText);
-
-            // Clear the current moviesFullListAdapter and fetch the new list of movies from TMDB from the
-            // first page, and show it on the adapter from the first position.
-            currentPage = 1;
-            appendToEnd = true;
-            currentScrollPosition = 0;
-            recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
-            moviesFullListAdapter.clearMoviesArrayList();
-            if (loader != null)
-                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
-            else
-                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
-        }
-
-        return true;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Save current sort order, current page and current scroll position.
-        moviesArrayList = moviesFullListAdapter.getMoviesArrayList();
-        currentScrollPosition = moviesFullListAdapter.getCurrentScrollPosition();
-        currentPage = moviesFullListAdapter.getCurrentPage();
-        outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
-        outState.putInt("currentScrollPosition", currentScrollPosition);
-        outState.putInt("currentPage", currentPage);
-        outState.putString("sortOrder", sortOrder);
-    }
-
-    /**
-     * This method is called after {@link #onStart} when the activity is
-     * being re-initialized from a previously saved state, given here in
-     * <var>savedInstanceState</var>.  Most implementations will simply use {@link #onCreate}
-     * to restore their state, but it is sometimes convenient to do it here
-     * after all of the initialization has been done or to allow subclasses to
-     * decide whether to use your default implementation.  The default
-     * implementation of this method performs a restore of any view state that
-     * had previously been frozen by {@link #onSaveInstanceState}.
-     * <p>
-     * <p>This method is called between {@link #onStart} and
-     * {@link #onPostCreate}.
-     *
-     * @param savedInstanceState the data most recently supplied in {@link #onSaveInstanceState}.
-     * @see #onCreate
-     * @see #onPostCreate
-     * @see #onResume
-     * @see #onSaveInstanceState
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Restore sort order, last saved page and last saved position in the grid.
-        sortOrder = savedInstanceState.getString("sortOrder");
-        currentPage = savedInstanceState.getInt("currentPage");
-        moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
-        currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
-
-        // After restoring previous movies array and scroll position, we set the RecyclerView for
-        // displaying movie posters and try to create the AsyncTaskLoader for getting movie
-        // information from internet in a separate thread.
-        appendToEnd = true;
-        setRecyclerView();
-        getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
-
-        // Restore last currentPosition in the grid.
-        recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         unbinder.unbind();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // When MovieDetailsActivity has finished, we enabled clicks again. We don't need to know
-        // any result from MovieDetailsActivity, only when it has finished.
-        allowClicks = true;
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /* ------ */
@@ -272,12 +149,12 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
      */
     @Override
     public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-        if (NetworkUtils.isConnected(this)) {
+        if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(this, sortOrder, currentPage,
+            loader = new TmdbMoviesAsyncTaskLoader(getContext(), sortOrder, currentPage,
                     Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
         } else {
             // There is no connection. Restart everything and show error message.
@@ -349,7 +226,7 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
             return;
 
         // Check if there is an available connection.
-        if (NetworkUtils.isConnected(this)) {
+        if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
             // set.
             if (data != null && !data.isEmpty()) {
@@ -390,11 +267,12 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
      */
     void setRecyclerView() {
         // Get current display metrics, depending on device rotation.
-        final DisplayUtils displayUtils = new DisplayUtils(this);
+        final DisplayUtils displayUtils = new DisplayUtils(getContext());
 
         // Vertical GridLayoutManager for displaying movie posters with a number of columns
         // determined by the current orientation of the device.
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(this, displayUtils.getSpanCount());
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
+                displayUtils.getSpanCount());
 
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -410,19 +288,19 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                     // MovieDetailsActivity.
                     allowClicks = false;
 
-                    // Create an ActivityOptions to transition between Activities using
+                    // TODO: Create an ActivityOptions to transition between Activities using
                     // cross-Activity scene animations.
-                    ActivityOptionsCompat options =
+/*                    ActivityOptionsCompat options =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            PopularMoviesActivity.this, clickedView, getString(R.string.transition_list_to_details));
+                                    getContext(), clickedView, getString(R.string.transition_list_to_details));*/
 
                     // Start MovieDetailsActivity to show movie details when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
                     // startActivityForResult. No need a requestCode, we don't care for any result.
-                    Intent intent = new Intent(PopularMoviesActivity.this,
-                            MovieDetailsActivity.class);
+                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                    startActivityForResult(intent, 0, options.toBundle());
+                    //startActivityForResult(intent, 0, options.toBundle());
+                    startActivity(intent);
                 }
             }
         };
@@ -464,9 +342,9 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                         currentPage++;
                         appendToEnd = true;
                         if (loader != null)
-                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
                         else
-                            getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
                     }
                 }
             }
@@ -487,11 +365,11 @@ public class PopularMoviesActivity extends AppCompatActivity implements LoaderMa
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
                             if (loader != null)
-                                getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                                getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
                             else
-                                getSupportLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                                getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
                         } else {
-                            getSupportLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, PopularMoviesActivity.this);
+                            getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     }

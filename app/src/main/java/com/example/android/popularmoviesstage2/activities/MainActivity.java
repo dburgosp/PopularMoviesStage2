@@ -109,6 +109,14 @@ public class MainActivity extends AppCompatActivity implements
             upcomingMoviesAdapter;
     private ArrayList<TmdbMovie> nowPlayingMovies = null, thisWeekReleasesMovies = null,
             upcomingMovies = null;
+    private View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // Start MoviesActivity to display the available sort orders for movies lists.
+            Intent intent = new Intent(MainActivity.this, MoviesActivity.class);
+            startActivity(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -308,6 +316,10 @@ public class MainActivity extends AppCompatActivity implements
                 nowPlayingMoviesViewAllAction.setText(viewAllText);
                 nowPlayingMoviesViewAllAction.setVisibility(View.VISIBLE);
                 nowPlayingMoviesViewAll.setVisibility(View.VISIBLE);
+
+                // Set the listener for click events in the "view all" elements.
+                nowPlayingMoviesViewAll.setOnClickListener(listener);
+                nowPlayingMoviesViewAllAction.setOnClickListener(listener);
             } else {
                 nowPlayingMoviesViewAllAction.setVisibility(View.GONE);
                 nowPlayingMoviesViewAll.setVisibility(View.GONE);
@@ -338,6 +350,10 @@ public class MainActivity extends AppCompatActivity implements
                 thisWeekReleasesMoviesViewAllAction.setText(viewAllText);
                 thisWeekReleasesMoviesViewAllAction.setVisibility(View.VISIBLE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.VISIBLE);
+
+                // Set the listener for click events in the "view all" elements.
+                thisWeekReleasesMoviesViewAllAction.setOnClickListener(listener);
+                thisWeekReleasesMoviesViewAll.setOnClickListener(listener);
             } else {
                 thisWeekReleasesMoviesViewAllAction.setVisibility(View.GONE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.GONE);
@@ -368,6 +384,10 @@ public class MainActivity extends AppCompatActivity implements
                 upcomingMoviesViewAllAction.setText(viewAllText);
                 upcomingMoviesViewAllAction.setVisibility(View.VISIBLE);
                 upcomingMoviesViewAll.setVisibility(View.VISIBLE);
+
+                // Set the listener for click events in the "view all" elements.
+                upcomingMoviesViewAll.setOnClickListener(listener);
+                upcomingMoviesViewAllAction.setOnClickListener(listener);
             } else {
                 upcomingMoviesViewAllAction.setVisibility(View.GONE);
                 upcomingMoviesViewAll.setVisibility(View.GONE);

@@ -51,9 +51,9 @@
     <string name="no_overview">No tenemos sinopsis para esta película.</string>
     <string name="no_results">La búsqueda no ha producido ningún resultado.</string>
     <string name="no_title">Sin título</string>
-    <string name="now_playing_movies_title">En cartelera</string>
-    <string name="order_popular">Populares</string>
-    <string name="order_top_rated">Destacadas</string>
+    <string name="movies_sort_by_now_playing">En cartelera</string>
+    <string name="movies_sort_by_popular">Populares</string>
+    <string name="movies_sort_by_top_rated">Mejor valoradas</string>
     <string name="original_language">Idioma original</string>
     <string name="original_title">Título original</string>
     <string name="overview">Sinopsis</string>
@@ -78,7 +78,7 @@
     <string name="synopsis">Sinopsis</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
     <string name="title_activity_main">Pelis y Tele</string>
-    <string name="upcoming_movies_title">Próximamente</string>
+    <string name="movies_sort_by_upcoming">Próximamente</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>
     <string name="view_all_crew">Ver equipo completo</string>
@@ -94,7 +94,7 @@
     <string name="release_type_digital">Formato digital en %s</string>
     <string name="release_type_physical">Formato físico en %s</string>
     <string name="release_type_tv">TV en %s</string>
-    <string name="released_this_week_movies_title">Estrenos esta semana</string>
+    <string name="movies_sort_by_released_this_week">Estrenos esta semana</string>
     <string name="view_all_now_playing_movies">Ver las %d películas en cartelera hoy en %s</string>
     <string name="view_all_this_week_released_movies">Ver los %d estrenos de esta semana en cines en %s</string>
     <string name="view_all_upcoming_movies">Ver los próximos %d estrenos de cine en %s</string>
@@ -126,4 +126,6 @@
         <item quantity="one">(1 voto)</item>
         <item quantity="other">(%s votos)</item>
     </plurals>
+    <string name="movies_sort_by_for_buy_and_rent">Compra y alquiler</string>
+    <string name="movies_sort_by_favorites">Favoritos</string>
 </resources>
