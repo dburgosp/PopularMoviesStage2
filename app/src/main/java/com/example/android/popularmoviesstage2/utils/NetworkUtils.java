@@ -19,15 +19,19 @@ public final class NetworkUtils {
     private final static String TAG = NetworkUtils.class.getSimpleName();
 
     // Unique identifiers for loaders.
-    public static final int TMDB_POPULAR_MOVIES_LOADER_ID = 1;
-    public static final int TMDB_MOVIE_DETAILS_LOADER_ID = 2;
-    public static final int TMDB_CAST_CREW_LOADER_ID = 3;
-    public static final int TMDB_MEDIA_LOADER_ID = 4;
-    public static final int TMDB_REVIEWS_LOADER_ID = 5;
-    public static final int OMDB_MOVIES_LOADER_ID = 6;
-    public static final int TMDB_NOW_PLAYING_MOVIES_LOADER_ID = 7;
-    public static final int TMDB_UPCOMING_MOVIES_LOADER_ID = 8;
-    public static final int TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID = 9;
+    public static final int TMDB_NOW_PLAYING_MOVIES_LOADER_ID = 0;
+    public static final int TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID = 1;
+    public static final int TMDB_UPCOMING_MOVIES_LOADER_ID = 2;
+    public static final int TMDB_POPULAR_MOVIES_LOADER_ID = 3;
+    public static final int TMDB_TOP_RATED_MOVIES_LOADER_ID = 4;
+    public static final int TMDB_BUY_AND_RENT_MOVIES_LOADER_ID = 5;
+    public static final int TMDB_FAVORITE_MOVIES_LOADER_ID = 6;
+
+    public static final int TMDB_MOVIE_DETAILS_LOADER_ID = 7;
+    public static final int TMDB_CAST_CREW_LOADER_ID = 8;
+    public static final int TMDB_MEDIA_LOADER_ID = 9;
+    public static final int TMDB_REVIEWS_LOADER_ID = 10;
+    public static final int OMDB_MOVIES_LOADER_ID = 11;
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils} object.

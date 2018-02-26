@@ -124,7 +124,8 @@ public class Tmdb {
             }
             case TMDB_SORT_BY_THIS_WEEK_RELEASES: {
                 // Get movies with release type 2 or 3 that are going to be released this week.
-                String currentDate = DateTimeUtils.getStringCurrentDate();
+                String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
+                        DateTimeUtils.WEEK_DAY_MONDAY);
                 String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
                         DateTimeUtils.WEEK_DAY_SUNDAY);
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
@@ -133,7 +134,7 @@ public class Tmdb {
                         .appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, sunday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))

@@ -47,6 +47,7 @@
     <string name="movie_details_reviews">Reviews</string>
     <string name="movie_details_media">Media</string>
     <string name="movie_details_title">Movie details</string>
+    <string name="movies">Movies</string>
     <string name="movies_sort_by_favorites">Favorites</string>
     <string name="movies_sort_by_for_buy_and_rent">Buy and rent</string>
     <string name="movies_sort_by_now_playing">Now playing</string>

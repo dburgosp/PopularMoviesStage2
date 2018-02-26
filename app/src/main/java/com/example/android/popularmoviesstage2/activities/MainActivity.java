@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -109,12 +110,34 @@ public class MainActivity extends AppCompatActivity implements
             upcomingMoviesAdapter;
     private ArrayList<TmdbMovie> nowPlayingMovies = null, thisWeekReleasesMovies = null,
             upcomingMovies = null;
-    private View.OnClickListener listener = new View.OnClickListener() {
+    private View.OnClickListener onClickMoviesListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            // Start MoviesActivity to display the available sort orders for movies lists.
+            // Start MoviesActivity to display the available sort orders for movies lists. The
+            // default sort order depends on the element ("now playing", "upcoming", etc.) clicked
+            // on MainActivity.
+            int sort;
+            switch (view.getId()) {
+                case R.id.now_playing_movies_view_all_action: {
+                    sort = 0;
+                    break;
+                }
+                case R.id.released_this_week_movies_view_all_action: {
+                    sort = 1;
+                    break;
+                }
+                default: {
+                    sort = 2;
+                    break;
+                }
+            }
             Intent intent = new Intent(MainActivity.this, MoviesActivity.class);
-            startActivity(intent);
+            intent.putExtra("sort", sort);
+
+            // Start MoviesActivity with animation.
+            Bundle option = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this)
+                    .toBundle();
+            startActivity(intent, option);
         }
     };
 
@@ -247,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements
         upcomingMoviesRecyclerview.addItemDecoration(new SpaceItemDecoration(horizontalSeparation,
                 SpaceItemDecoration.HORIZONTAL_SEPARATION));
 
-        // Set the listener for click events in the adapters.
+        // Set the onClickMoviesListener for click events in the adapters.
         MoviesShortListAdapter.OnItemClickListener movieListener =
                 new MoviesShortListAdapter.OnItemClickListener() {
                     @Override
@@ -317,9 +340,9 @@ public class MainActivity extends AppCompatActivity implements
                 nowPlayingMoviesViewAllAction.setVisibility(View.VISIBLE);
                 nowPlayingMoviesViewAll.setVisibility(View.VISIBLE);
 
-                // Set the listener for click events in the "view all" elements.
-                nowPlayingMoviesViewAll.setOnClickListener(listener);
-                nowPlayingMoviesViewAllAction.setOnClickListener(listener);
+                // Set the onClickMoviesListener for click events in the "view all" elements.
+                nowPlayingMoviesViewAll.setOnClickListener(onClickMoviesListener);
+                nowPlayingMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
             } else {
                 nowPlayingMoviesViewAllAction.setVisibility(View.GONE);
                 nowPlayingMoviesViewAll.setVisibility(View.GONE);
@@ -351,9 +374,9 @@ public class MainActivity extends AppCompatActivity implements
                 thisWeekReleasesMoviesViewAllAction.setVisibility(View.VISIBLE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.VISIBLE);
 
-                // Set the listener for click events in the "view all" elements.
-                thisWeekReleasesMoviesViewAllAction.setOnClickListener(listener);
-                thisWeekReleasesMoviesViewAll.setOnClickListener(listener);
+                // Set the onClickMoviesListener for click events in the "view all" elements.
+                thisWeekReleasesMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
+                thisWeekReleasesMoviesViewAll.setOnClickListener(onClickMoviesListener);
             } else {
                 thisWeekReleasesMoviesViewAllAction.setVisibility(View.GONE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.GONE);
@@ -385,9 +408,9 @@ public class MainActivity extends AppCompatActivity implements
                 upcomingMoviesViewAllAction.setVisibility(View.VISIBLE);
                 upcomingMoviesViewAll.setVisibility(View.VISIBLE);
 
-                // Set the listener for click events in the "view all" elements.
-                upcomingMoviesViewAll.setOnClickListener(listener);
-                upcomingMoviesViewAllAction.setOnClickListener(listener);
+                // Set the onClickMoviesListener for click events in the "view all" elements.
+                upcomingMoviesViewAll.setOnClickListener(onClickMoviesListener);
+                upcomingMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
             } else {
                 upcomingMoviesViewAllAction.setVisibility(View.GONE);
                 upcomingMoviesViewAll.setVisibility(View.GONE);
@@ -447,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements
                     upcomingMoviesMostPopularMostPopular, TextViewUtils.DRAWABLE_RIGHT_INDEX,
                     R.drawable.ic_thumb_up_white_18dp, R.color.colorGrey, R.dimen.tiny_padding);
 
-            // Set the listener for click events in the main element.
+            // Set the onClickMoviesListener for click events in the main element.
             upcomingMoviesMostPopularLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

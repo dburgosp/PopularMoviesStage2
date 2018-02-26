@@ -168,12 +168,11 @@
             android:id="@+id/movie_details_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorPrimaryDark"
             android:elevation="@dimen/separator"
-            android:fontFamily="sans-serif-smallcaps"
             app:tabIndicatorColor="@color/colorAccent"
             app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabSelectedTextColor="@color/colorWhite"
             app:tabTextColor="@color/colorGrey" />
 
         <android.support.v4.view.ViewPager

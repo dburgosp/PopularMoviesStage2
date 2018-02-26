@@ -1,9 +1,11 @@
 package com.example.android.popularmoviesstage2.fragments;
 
+import android.app.Activity;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -53,7 +55,7 @@ public class MoviesFragment extends Fragment
     private boolean allowClicks = true;
     private String sortOrder = Tmdb.TMDB_SORT_BY_POPULAR;
     private MoviesFullListAdapter moviesFullListAdapter;
-    private int currentPage, currentScrollPosition;
+    private int currentPage, currentScrollPosition, loaderId;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
@@ -98,24 +100,19 @@ public class MoviesFragment extends Fragment
         // Get arguments from calling activity.
         if (getArguments() != null) {
             sortOrder = getArguments().getString("sortOrder");
+            loaderId = getLoaderId();
         }
 
         // After re-creating this activity (for example, after rotating the device) we do not want
         // to configure the RecyclerView nor initialize the loader here. These tasks will be
         // performed later in the onRestoreInstanceState method, which runs after the onCreate
         // method.
-        //if (savedInstanceState == null) {
-        // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
-        // getting movie information from TMDB in a separate thread.
-        moviesArrayList = new ArrayList<>();
-        currentPage = 1;
-        currentScrollPosition = 0;
-        isLoading = false;
-        appendToEnd = true;
-        loader = null;
-        setRecyclerView();
-        getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, this);
-        //}
+        if (savedInstanceState == null) {
+            // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
+            // getting movie information from TMDB in a separate thread.
+            init();
+            getLoaderManager().initLoader(loaderId, null, this);
+        }
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -134,6 +131,94 @@ public class MoviesFragment extends Fragment
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    /**
+     * Receive the result from a previous call to
+     * {@link #startActivityForResult(Intent, int)}.  This follows the
+     * related Activity API as described there in
+     * {@link Activity#onActivityResult(int, int, Intent)}.
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode  The integer result code returned by the child activity
+     *                    through its setResult().
+     * @param data        An Intent, which can return result data to the caller
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        allowClicks = true;
+    }
+
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it
+     * can later be reconstructed in a new instance of its process is
+     * restarted.  If a new instance of the fragment later needs to be
+     * created, the data you place in the Bundle here will be available
+     * in the Bundle given to {@link #onCreate(Bundle)},
+     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}, and
+     * {@link #onActivityCreated(Bundle)}.
+     * <p>
+     * <p>This corresponds to {@link Activity#onSaveInstanceState(Bundle)
+     * Activity.onSaveInstanceState(Bundle)} and most of the discussion there
+     * applies here as well.  Note however: <em>this method may be called
+     * at any time before {@link #onDestroy()}</em>.  There are many situations
+     * where a fragment may be mostly torn down (such as when placed on the
+     * back stack with no UI showing), but its state will not be saved until
+     * its owning activity actually needs to save its state.
+     *
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Save current sort order, current page and current scroll position.
+        moviesArrayList = moviesFullListAdapter.getMoviesArrayList();
+        currentScrollPosition = moviesFullListAdapter.getCurrentScrollPosition();
+        //currentPage = moviesFullListAdapter.getCurrentPage();
+        outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
+        outState.putInt("currentScrollPosition", currentScrollPosition);
+        outState.putInt("currentPage", currentPage);
+        outState.putString("sortOrder", sortOrder);
+        outState.putInt("loaderId", loaderId);
+    }
+
+    /**
+     * Called when all saved state has been restored into the view hierarchy
+     * of the fragment.  This can be used to do initialization based on saved
+     * state that you are letting the view hierarchy track itself, such as
+     * whether check box widgets are currently checked.  This is called
+     * after {@link #onActivityCreated(Bundle)} and before
+     * {@link #onStart()}.
+     *
+     * @param savedInstanceState If the fragment is being re-created from
+     *                           a previous saved state, this is the state.
+     */
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        // Restore sort order, last saved page and last saved position in the grid.
+        if (savedInstanceState != null) {
+            sortOrder = savedInstanceState.getString("sortOrder");
+            currentPage = savedInstanceState.getInt("currentPage");
+            moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
+            currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
+            loaderId = savedInstanceState.getInt("loaderId");
+
+            // After restoring previous movies array and scroll position, we set the RecyclerView for
+            // displaying movie posters and try to create the AsyncTaskLoader for getting movie
+            // information from internet in a separate thread.
+            appendToEnd = true;
+            setRecyclerView();
+            getLoaderManager().initLoader(loaderId, null, this);
+
+            // Restore last currentPosition in the grid.
+            recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
+        }
     }
 
     /* ------ */
@@ -159,13 +244,7 @@ public class MoviesFragment extends Fragment
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
-            loader = null;
-            moviesArrayList = new ArrayList<>();
-            currentPage = 1;
-            currentScrollPosition = 0;
-            isLoading = false;
-            appendToEnd = true;
-            setRecyclerView();
+            init();
             progressBar.setVisibility(View.INVISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
@@ -261,6 +340,16 @@ public class MoviesFragment extends Fragment
     /* HELPER METHODS */
     /* -------------- */
 
+    void init() {
+        moviesArrayList = new ArrayList<>();
+        currentScrollPosition = 0;
+        currentPage = 1;
+        loader = null;
+        isLoading = false;
+        appendToEnd = true;
+        setRecyclerView();
+    }
+
     /**
      * Helper method for setting the RecyclerView in order to display a list of movies with a grid
      * arrangement.
@@ -284,15 +373,13 @@ public class MoviesFragment extends Fragment
             public void onItemClick(TmdbMovie movie, View clickedView) {
                 if (allowClicks) {
                     // Disable clicks for now, in order to prevent more than one click while the
-                    // transition is running. Clicks will be enabled again when we return from
-                    // MovieDetailsActivity.
+                    // transition is running. Clicks will be enabled again into onActivityResult,
+                    // when we return from MovieDetailsActivity.
                     allowClicks = false;
 
-                    // TODO: Create an ActivityOptions to transition between Activities using
+                    // Create an ActivityOptions to transition between Activities using
                     // cross-Activity scene animations.
-/*                    ActivityOptionsCompat options =
-                            ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    getContext(), clickedView, getString(R.string.transition_list_to_details));*/
+                    //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getContext(), clickedView, getString(R.string.transition_list_to_details));
 
                     // Start MovieDetailsActivity to show movie details when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
@@ -300,7 +387,7 @@ public class MoviesFragment extends Fragment
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
                     //startActivityForResult(intent, 0, options.toBundle());
-                    startActivity(intent);
+                    startActivityForResult(intent, 0);
                 }
             }
         };
@@ -338,13 +425,13 @@ public class MoviesFragment extends Fragment
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
                     // there are more pages to load.
-                    if (currentPage < totalPages && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
+                    if ((currentPage < totalPages) && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
                         appendToEnd = true;
                         if (loader != null)
-                            getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
+                            getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
                         else
-                            getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
+                            getLoaderManager().initLoader(loaderId, null, MoviesFragment.this);
                     }
                 }
             }
@@ -356,8 +443,9 @@ public class MoviesFragment extends Fragment
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
-
+                        init();
+                        getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
+/*                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
                         if (!isLoading && currentShownPage > 1) {
                             // If we are at the top of the list and we are showing a page number
                             // bigger than 1, we need to reload the previous page of results. The
@@ -365,33 +453,45 @@ public class MoviesFragment extends Fragment
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
                             if (loader != null)
-                                getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
+                                getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
                             else
-                                getLoaderManager().initLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
+                                getLoaderManager().initLoader(loaderId, null, MoviesFragment.this);
                         } else {
-                            getLoaderManager().restartLoader(NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID, null, MoviesFragment.this);
+                            getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
                             swipeRefreshLayout.setRefreshing(false);
-                        }
+                        }*/
                     }
                 }
         );
     }
 
     /**
-     * Helper method that returns a text string describing the current sort order.
+     * Helper method that returns the loader id depending on the current sort order.
      *
-     * @return a String with the current sort order.
+     * @return a number with the loader id .
      */
-    private String getSortOrderText() {
+    private int getLoaderId() {
         switch (sortOrder) {
+            case Tmdb.TMDB_SORT_BY_NOW_PLAYING:
+                return NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID;
+
+            case Tmdb.TMDB_SORT_BY_THIS_WEEK_RELEASES:
+                return NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID;
+
+            case Tmdb.TMDB_SORT_BY_UPCOMING:
+                return NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID;
+
             case Tmdb.TMDB_SORT_BY_POPULAR:
-                return getResources().getString(R.string.movies_sort_by_popular);
+                return NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID;
 
             case Tmdb.TMDB_SORT_BY_TOP_RATED:
-                return getResources().getString(R.string.movies_sort_by_top_rated);
+                return NetworkUtils.TMDB_TOP_RATED_MOVIES_LOADER_ID;
+
+            case Tmdb.TMDB_SORT_BY_FOR_BUY_AND_RENT:
+                return NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID;
 
             default:
-                return null;
+                return NetworkUtils.TMDB_FAVORITE_MOVIES_LOADER_ID;
         }
     }
 }

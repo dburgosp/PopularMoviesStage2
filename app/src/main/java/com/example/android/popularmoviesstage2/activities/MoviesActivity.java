@@ -31,6 +31,7 @@ public class MoviesActivity extends AppCompatActivity implements
     TabLayout tabLayout;
 
     private Unbinder unbinder;
+    private int sort = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,8 @@ public class MoviesActivity extends AppCompatActivity implements
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());
+        getWindow().setEnterTransition(new Explode().setDuration(500));
+        getWindow().setExitTransition(new Explode().setDuration(500));
 
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
@@ -57,13 +58,19 @@ public class MoviesActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // If we have passed a "sort" param into the intent, take this param as the default sort
+        // order to show (selected page in the ViewPager) when this activity is created.
+        if (getIntent().hasExtra("sort"))
+            sort = getIntent().getIntExtra("sort", 0);
+
         // Set TabLayout and ViewPager to manage the fragments with the different ways of displaying
         // movies lists.
         tabLayout.setupWithViewPager(viewPager);
-        MoviesFragmentPagerAdapter adapter = new MoviesFragmentPagerAdapter(getSupportFragmentManager(),
-                MoviesActivity.this);
+        MoviesFragmentPagerAdapter adapter =
+                new MoviesFragmentPagerAdapter(getSupportFragmentManager(),
+                        MoviesActivity.this);
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(sort);
     }
 
     @Override

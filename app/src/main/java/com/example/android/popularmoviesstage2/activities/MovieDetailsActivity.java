@@ -111,7 +111,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     String year = DateTimeUtils.getYear(movie.getRelease_date());
                     if (title != null && !title.equals("") && !title.isEmpty())
                         if (year != null && !year.equals("") && !year.isEmpty())
-                            collapsingToolbarLayout.setTitle(movie.getTitle() + " (" + DateTimeUtils.getYear(movie.getRelease_date()) + ")");
+                            collapsingToolbarLayout.setTitle(movie.getTitle() + " (" +
+                                    DateTimeUtils.getYear(movie.getRelease_date()) + ")");
                         else
                             collapsingToolbarLayout.setTitle(movie.getTitle());
                     else
@@ -129,7 +130,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set TabLayout and ViewPager to manage the fragments with info for the current movie.
         tabLayout.setupWithViewPager(viewPager);
-        MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(),
+        MovieDetailsFragmentPagerAdapter adapter =
+                new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(),
                 MovieDetailsActivity.this, movie);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
