@@ -12,7 +12,6 @@
     android:paddingTop="@dimen/big_padding">
 
     <TextView
-        android:id="@+id/info_person_birthday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -21,7 +20,6 @@
         tools:text="BIRTH DATE\n2001-01-01 (Madrid, Spain, 36 years old)" />
 
     <TextView
-        android:id="@+id/info_person_deathday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -30,7 +28,6 @@
         tools:text="DEATH DATE\n2001-01-01 (84 years old)" />
 
     <TextView
-        android:id="@+id/info_person_known_for_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"
@@ -39,13 +36,11 @@
         tools:text="KNOWN FOR\nActing, directing, writing, producing" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/info_person_known_for_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding" />
 
     <TextView
-        android:id="@+id/info_person_aka"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/small_padding"

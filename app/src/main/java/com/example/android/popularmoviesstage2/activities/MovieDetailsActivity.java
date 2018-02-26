@@ -140,6 +140,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        unbinder.unbind();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        unbinder = ButterKnife.bind(this);
+    }
+
+    @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
     }

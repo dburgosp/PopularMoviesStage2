@@ -4,19 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MovieDetailsActivity">
     <item
-        android:id="@+id/favorites_home"
         android:icon="@drawable/ic_home_white_24dp"
         android:orderInCategory="100"
         android:title="@string/share_this"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/favorites_share"
         android:icon="@drawable/ic_share_white_24dp"
         android:orderInCategory="200"
         android:title="@string/share_this"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/favorites_action"
         android:icon="@drawable/ic_favorite_border_white_24dp"
         android:orderInCategory="300"
         android:title="@string/add_to_favorites"

@@ -246,7 +246,8 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
                 Picasso.with(context)
                         .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
                         .into(posterImageView);
-            }
+            } else
+                posterImageView.setImageDrawable(context.getDrawable(R.drawable.default_poster));
             posterImageView.setLayoutParams(layoutParams);
 
             // Set transition name to the current view, so it can be animated if clicked.

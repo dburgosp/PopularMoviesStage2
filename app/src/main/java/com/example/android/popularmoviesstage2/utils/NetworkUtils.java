@@ -31,7 +31,9 @@ public final class NetworkUtils {
     public static final int TMDB_CAST_CREW_LOADER_ID = 8;
     public static final int TMDB_MEDIA_LOADER_ID = 9;
     public static final int TMDB_REVIEWS_LOADER_ID = 10;
-    public static final int OMDB_MOVIES_LOADER_ID = 11;
+    public static final int TMDB_COLLECTION_LOADER_ID = 11;
+
+    public static final int OMDB_MOVIES_LOADER_ID = 12;
 
     /**
      * Create a private constructor because no one should ever create a {@link NetworkUtils} object.

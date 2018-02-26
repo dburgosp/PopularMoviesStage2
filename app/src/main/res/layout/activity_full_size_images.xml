@@ -7,7 +7,6 @@
     tools:context="com.example.android.popularmoviesstage2.activities.FullSizeImageActivity">
 
     <TextView
-        android:id="@+id/full_posters_result_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -18,7 +17,6 @@
         tools:text="Message to display when there are no search results" />
 
     <ProgressBar
-        android:id="@+id/full_posters_loading_indicator"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

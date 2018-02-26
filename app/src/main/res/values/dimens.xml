@@ -7,7 +7,6 @@
     <dimen name="poster_height">180dp</dimen>
     <dimen name="small_poster_width">60dp</dimen>
     <dimen name="small_poster_height">90dp</dimen>
-    <dimen name="backdrop_collection_height">174dp</dimen>
     <dimen name="backdrop_info_height">192dp</dimen>
     <dimen name="backdrop_width">178dp</dimen>
     <dimen name="backdrop_height">100dp</dimen>
@@ -27,7 +26,6 @@
     <dimen name="padding_start_with_small_poster">84dp</dimen>
     <dimen name="padding_top_movie_details_cardview">56dp</dimen>
     <dimen name="padding_top_movie_details_header">22dp</dimen>
-    <dimen name="padding_list_header">120dp</dimen>
     <dimen name="height_collection_header">130dp</dimen>
 
     <!-- Number of columns for the movie list depending on the device orientation. -->
@@ -54,6 +52,4 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="appbar_padding_top">8dp</dimen>
 </resources>

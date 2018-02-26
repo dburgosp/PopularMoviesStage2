@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -25,10 +24,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.MainActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesShortListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Facebook;
 import com.example.android.popularmoviesstage2.classes.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
@@ -50,9 +51,6 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -61,12 +59,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static android.support.v4.content.ContextCompat.getDrawable;
-
 /**
  * {@link Fragment} that displays the main information about the current movieDetails.
  */
-public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
+public class MovieDetailsInfoFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
     private static final String TAG = MovieDetailsInfoFragment.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -126,12 +123,10 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
 
     @BindView(R.id.info_collection_layout)
     RelativeLayout collectionLayout;
-    @BindView(R.id.info_collection_background)
-    ImageView collectionBackgroundImageView;
-    @BindView(R.id.info_collection_poster)
-    ImageView collectionPosterImageView;
     @BindView(R.id.info_collection_name)
     TextView collectionNameTextView;
+    @BindView(R.id.info_collection_recyclerview)
+    RecyclerView collectionRecyclerView;
 
     @BindView(R.id.info_keywords_layout)
     LinearLayout keywordsLayout;
@@ -796,37 +791,16 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
      */
     private boolean setCollectionSection() {
         if (movieDetails.getBelongs_to_collection() != null) {
-            // Set poster, if it exists.
-            String posterPath = movieDetails.getBelongs_to_collection().getPoster_path();
-            if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
-                posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath;
-                Picasso.with(getContext())
-                        .load(posterPath)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(collectionPosterImageView);
-            } else
-                // No image. Show default image.
-                collectionPosterImageView.setImageDrawable(getDrawable(getContext(),
-                        R.drawable.default_poster));
-
-            // Set background image, if it exists.
-            String backdropPath = movieDetails.getBelongs_to_collection().getBackdrop_path();
-            if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty()) {
-                backdropPath = Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath;
-                Picasso.with(getContext())
-                        .load(backdropPath)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(collectionBackgroundImageView);
-            }
-
             // Set collection title.
+            String color = String.format("%X",
+                    getResources().getColor(R.color.colorDarkWhite)).substring(2);
             String name = movieDetails.getBelongs_to_collection().getName();
             if (name != null && !name.equals("") && !name.isEmpty())
-                collectionNameTextView.setText(name);
-            else
-                collectionNameTextView.setText(getResources().getString(R.string.no_title));
+                name = getResources().getString(R.string.no_title);
+            String htmlText = "<strong>" + getString(R.string.belongs_to_collection).toUpperCase() + "</strong><br>" +
+                    "<font color=\"#" + color + "\">" + name + "</font>";
+            TextViewUtils.setHtmlText(collectionNameTextView, htmlText);
+            collectionNameTextView.setVisibility(View.VISIBLE);
 
             // TODO: setOnClickListener for opening the collection into another activity.
 
@@ -978,6 +952,141 @@ public class MovieDetailsInfoFragment extends Fragment implements LoaderManager.
     /* INNER CLASSES */
     /* ------------- */
 
+    // Private inner class to retrieve the list of movies of a given collection.
+    private class CollectionMoviesList implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+        private final String TAG = MovieDetailsInfoFragment.CollectionMoviesList.class.getSimpleName();
+
+        // Constructor for objects of this class.
+        CollectionMoviesList() {
+            // Create an AsyncTaskLoader for retrieving the list of movies.
+            getLoaderManager().initLoader(NetworkUtils.TMDB_COLLECTION_LOADER_ID, null, this);
+        }
+
+        /* ------ */
+        /* LOADER */
+        /* ------ */
+
+        /**
+         * Instantiate and return a new Loader for the given ID.
+         *
+         * @param id   The ID whose loaderId is to be created.
+         * @param args Any arguments supplied by the caller.
+         * @return Return a new Loader instance that is ready to start loading.
+         */
+        @Override
+        public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+            if (NetworkUtils.isConnected(getContext())) {
+                // There is an available connection. Fetch results from TMDB.
+                return new TmdbMoviesAsyncTaskLoader(getContext(),
+                                Tmdb.TMDB_SORT_BY_NOW_PLAYING, 1,
+                                Locale.getDefault().getLanguage(),
+                                Locale.getDefault().getCountry());
+            } else {
+                // There is no connection. Show error message.
+                connectionStatusText.setText(getResources().getString(R.string.no_connection));
+                connectionStatusLoadingIndicator.setVisibility(View.INVISIBLE);
+                Log.i(TAG, "(onCreateLoader) No internet connection.");
+                return null;
+            }
+        }
+
+        /**
+         * Called when a previously created loaderId has finished its load.  Note
+         * that normally an application is <em>not</em> allowed to commit fragment
+         * transactions while in this call, since it can happen after an
+         * activity's state is saved.  See {@link FragmentManager#beginTransaction()
+         * FragmentManager.openTransaction()} for further discussion on this.
+         * <p>
+         * <p>This function is guaranteed to be called prior to the release of
+         * the last data that was supplied for this Loader.  At this point
+         * you should remove all use of the old data (since it will be released
+         * soon), but should not do your own release of the data since its Loader
+         * owns it and will take care of that.  The Loader will take care of
+         * management of its data so you don't have to.  In particular:
+         * <p>
+         * <ul>
+         * <li> <p>The Loader will monitor for changes to the data, and report
+         * them to you through new calls here.  You should not monitor the
+         * data yourself.  For example, if the data is a {@link Cursor}
+         * and you place it in a {@link CursorAdapter}, use
+         * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
+         * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
+         * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
+         * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
+         * from doing its own observing of the Cursor, which is not needed since
+         * when a change happens you will get a new Cursor throw another call
+         * here.
+         * <li> The Loader will release the data once it knows the application
+         * is no longer using it.  For example, if the data is
+         * a {@link Cursor} from a {@link CursorLoader},
+         * you should not call close() on it yourself.  If the Cursor is being placed in a
+         * {@link CursorAdapter}, you should use the
+         * {@link CursorAdapter#swapCursor(Cursor)}
+         * method so that the old Cursor is not closed.
+         * </ul>
+         *
+         * @param loader The Loader that has finished.
+         * @param data   The data generated by the Loader.
+         */
+        @Override
+        public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
+            // Hide connection layout.
+            connectionStatusLayout.setVisibility(View.GONE);
+
+            // Check if there is an available connection.
+            if (NetworkUtils.isConnected(MainActivity.this)) {
+                // If there is a valid result, then update its data into the current {@link TmdbMovieDetails}
+                // object.
+                if (data != null) {
+                    Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                    // Get movies list and display it.
+                    switch (loader.getId()) {
+                        case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                            nowPlayingMovies = data;
+                            setNowPlayingMovies();
+                            break;
+                        }
+                        case NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID: {
+                            thisWeekReleasesMovies = data;
+                            setThisWeekReleasedMovies();
+                            break;
+                        }
+                        default: {
+                            upcomingMovies = data;
+                            setUpcomingMovies();
+                        }
+                    }
+                } else {
+                    Log.i(TAG, "(onLoadFinished) No search results.");
+                    connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
+                    connectionStatusText.setText(getResources().getString(R.string.no_results));
+                    connectionStatusText.setVisibility(View.VISIBLE);
+                }
+            } else
+
+            {
+                // There is no connection. Show error message.
+                Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
+                connectionStatusText.setText(getResources().getString(R.string.no_connection));
+                connectionStatusText.setVisibility(View.VISIBLE);
+            }
+
+        }
+
+        /**
+         * Called when a previously created loaderId is being reset, and thus
+         * making its data unavailable.  The application should at this point
+         * remove any references it has to the Loader's data.
+         *
+         * @param loader The Loader that is being reset.
+         */
+        @Override
+        public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
+        }
+    }
+    
     /**
      * Inner class for fetching info from OMDB API.
      */

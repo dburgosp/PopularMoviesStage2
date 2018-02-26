@@ -43,6 +43,7 @@ public class Tmdb {
     private final static String TMDB_CREDITS_PATH = "credits";
     private final static String TMDB_REVIEWS_PATH = "reviews";
     private final static String TMDB_DISCOVER_PATH = "discover";
+    private final static String TMDB_COLLECTION_PATH = "collection";
     private final static String TMDB_VIDEOS_PATH = "videos";
     private final static String TMDB_IMAGES_PATH = "images";
 
@@ -88,7 +89,6 @@ public class Tmdb {
      * @param region      is the region for getting results.
      * @return an array of {@link TmdbMovie} objects.
      */
-
     public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language,
                                                      String region) {
         Log.i(TAG, "(getTmdbMovies) Sort by: " + sortBy + ". Page number: " +
@@ -195,6 +195,92 @@ public class Tmdb {
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
             Log.i(TAG, "(getTmdbMovies) The JSON string is empty.");
+            return null;
+        }
+
+        // Create an empty array of TmdbMovie objects to append data.
+        ArrayList<TmdbMovie> movies = new ArrayList<>();
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("results")) {
+                Log.i(TAG, "(getMovie) No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            // Get paging info.
+            int page = NetworkUtils.getIntFromJSON(resultsJSONResponse, "page");
+            int total_pages = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_pages");
+            int total_results = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_results");
+
+            // Get results array.
+            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
+            JSONObject baseJSONResponse;
+            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results, extract the movie
+                // info and append it to the movies array..
+                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+                TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
+                movies.add(movie);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
+        }
+
+        // Return the movies array.
+        return movies;
+    }
+
+    /**
+     * Fetches TMDB for the list of movies of a given collection.
+     *
+     * @param collectionId is the unique identifier of the collection.
+     * @param language     is the language of the results.
+     * @param region       is the region for getting results.
+     * @return an array of {@link TmdbMovie} objects.
+     */
+    public static ArrayList<TmdbMovie> getTmdbCollection(int collectionId, String language,
+                                                         String region) {
+        Log.i(TAG, "(getTmdbCollection) Collection ID: " + collectionId + ". Language: " +
+                language + ". Region: " + region);
+
+        /* ------------ */
+        /* Get the JSON */
+        /* ------------ */
+
+        // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(TMDB_COLLECTION_PATH)
+                .appendPath(Integer.toString(collectionId))
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                .appendQueryParameter(TMDB_PARAM_REGION, region)
+                .build();
+
+        // Use the built uri to get the JSON document with the results of the query.
+        String JSONresponse;
+        try {
+            JSONresponse = NetworkUtils.getJSONresponse(builtUri);
+        } catch (java.io.IOException e) {
+            // If getJSONresponse has thrown an exception, exit returning null.
+            Log.e(TAG, "(getTmdbCollection) Error retrieving JSON response: ", e);
+            return null;
+        }
+
+        /* -------------- */
+        /* Parse the JSON */
+        /* -------------- */
+
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG, "(getTmdbCollection) The JSON string is empty.");
             return null;
         }
 

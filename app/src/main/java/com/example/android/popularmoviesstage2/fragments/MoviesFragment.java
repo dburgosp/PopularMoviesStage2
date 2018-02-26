@@ -5,7 +5,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -53,13 +52,13 @@ public class MoviesFragment extends Fragment
     SwipeRefreshLayout swipeRefreshLayout;
 
     private boolean allowClicks = true;
-    private String sortOrder = Tmdb.TMDB_SORT_BY_POPULAR;
+    private String sortOrder = Tmdb.TMDB_SORT_BY_NOW_PLAYING;
     private MoviesFullListAdapter moviesFullListAdapter;
-    private int currentPage, currentScrollPosition, loaderId;
+    private int currentPage = 1, currentScrollPosition = 0, loaderId = 0;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
-    private Loader<ArrayList<TmdbMovie>> loader;
+    private Loader<ArrayList<TmdbMovie>> loader = null;
 
     /**
      * Required empty public constructor.
@@ -98,21 +97,16 @@ public class MoviesFragment extends Fragment
         unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
-        if (getArguments() != null) {
-            sortOrder = getArguments().getString("sortOrder");
-            loaderId = getLoaderId();
-        }
+        sortOrder = getArguments().getString("sortOrder");
+        loaderId = getLoaderId();
 
-        // After re-creating this activity (for example, after rotating the device) we do not want
-        // to configure the RecyclerView nor initialize the loader here. These tasks will be
-        // performed later in the onRestoreInstanceState method, which runs after the onCreate
-        // method.
-        if (savedInstanceState == null) {
-            // Set the RecyclerView for displaying movie posters and create the AsyncTaskLoader for
-            // getting movie information from TMDB in a separate thread.
-            init();
+        // Initialize variables, set the RecyclerView for displaying movie posters and create the
+        // AsyncTaskLoader for getting movies lists from TMDB in a separate thread.
+        init();
+        if (getLoaderManager().getLoader(loaderId) == null)
             getLoaderManager().initLoader(loaderId, null, this);
-        }
+        else
+            getLoaderManager().restartLoader(loaderId, null, this);
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -150,75 +144,6 @@ public class MoviesFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         allowClicks = true;
-    }
-
-    /**
-     * Called to ask the fragment to save its current dynamic state, so it
-     * can later be reconstructed in a new instance of its process is
-     * restarted.  If a new instance of the fragment later needs to be
-     * created, the data you place in the Bundle here will be available
-     * in the Bundle given to {@link #onCreate(Bundle)},
-     * {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}, and
-     * {@link #onActivityCreated(Bundle)}.
-     * <p>
-     * <p>This corresponds to {@link Activity#onSaveInstanceState(Bundle)
-     * Activity.onSaveInstanceState(Bundle)} and most of the discussion there
-     * applies here as well.  Note however: <em>this method may be called
-     * at any time before {@link #onDestroy()}</em>.  There are many situations
-     * where a fragment may be mostly torn down (such as when placed on the
-     * back stack with no UI showing), but its state will not be saved until
-     * its owning activity actually needs to save its state.
-     *
-     * @param outState Bundle in which to place your saved state.
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Save current sort order, current page and current scroll position.
-        moviesArrayList = moviesFullListAdapter.getMoviesArrayList();
-        currentScrollPosition = moviesFullListAdapter.getCurrentScrollPosition();
-        //currentPage = moviesFullListAdapter.getCurrentPage();
-        outState.putParcelableArrayList("moviesArrayList", moviesArrayList);
-        outState.putInt("currentScrollPosition", currentScrollPosition);
-        outState.putInt("currentPage", currentPage);
-        outState.putString("sortOrder", sortOrder);
-        outState.putInt("loaderId", loaderId);
-    }
-
-    /**
-     * Called when all saved state has been restored into the view hierarchy
-     * of the fragment.  This can be used to do initialization based on saved
-     * state that you are letting the view hierarchy track itself, such as
-     * whether check box widgets are currently checked.  This is called
-     * after {@link #onActivityCreated(Bundle)} and before
-     * {@link #onStart()}.
-     *
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        // Restore sort order, last saved page and last saved position in the grid.
-        if (savedInstanceState != null) {
-            sortOrder = savedInstanceState.getString("sortOrder");
-            currentPage = savedInstanceState.getInt("currentPage");
-            moviesArrayList = savedInstanceState.getParcelableArrayList("moviesArrayList");
-            currentScrollPosition = savedInstanceState.getInt("currentScrollPosition");
-            loaderId = savedInstanceState.getInt("loaderId");
-
-            // After restoring previous movies array and scroll position, we set the RecyclerView for
-            // displaying movie posters and try to create the AsyncTaskLoader for getting movie
-            // information from internet in a separate thread.
-            appendToEnd = true;
-            setRecyclerView();
-            getLoaderManager().initLoader(loaderId, null, this);
-
-            // Restore last currentPosition in the grid.
-            recyclerView.getLayoutManager().scrollToPosition(currentScrollPosition);
-        }
     }
 
     /* ------ */
