@@ -19,25 +19,23 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.MainActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesShortListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesCollectionAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Facebook;
 import com.example.android.popularmoviesstage2.classes.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
-import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbKeyword;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCompany;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
@@ -45,6 +43,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.classes.TmdbRelease;
 import com.example.android.popularmoviesstage2.classes.Twitter;
+import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
@@ -100,6 +99,9 @@ public class MovieDetailsInfoFragment extends Fragment
     @BindView(R.id.info_genres_title)
     TextView genresTextView;
 
+    @BindView(R.id.info_data_layout)
+    LinearLayout dataLayout;
+
     @BindView(R.id.info_main_layout)
     LinearLayout mainLinearLayout;
     @BindView(R.id.info_movie_runtime)
@@ -122,7 +124,7 @@ public class MovieDetailsInfoFragment extends Fragment
     TextView revenueTextView;
 
     @BindView(R.id.info_collection_layout)
-    RelativeLayout collectionLayout;
+    LinearLayout collectionLayout;
     @BindView(R.id.info_collection_name)
     TextView collectionNameTextView;
     @BindView(R.id.info_collection_recyclerview)
@@ -157,7 +159,7 @@ public class MovieDetailsInfoFragment extends Fragment
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
-    private MoviesShortListAdapter recommendedMoviesAdapter;
+    private MoviesShortListAdapter recommendedMoviesAdapter, collectionAdapter;
     String ageRating = "";
     private Unbinder unbinder;
 
@@ -194,8 +196,8 @@ public class MovieDetailsInfoFragment extends Fragment
         // Clean all elements in the layout when creating this fragment.
         clearLayout();
 
-        // Set recycler views for recommended movies.
-        setRecyclerView();
+        // Set recycler views for recommended movies and collection, if available.
+        setRecyclerViews();
 
         // Get arguments from calling activity.
         if (getArguments() != null) {
@@ -352,6 +354,7 @@ public class MovieDetailsInfoFragment extends Fragment
     void clearLayout() {
         scoresLinearLayout.setVisibility(View.GONE);
         overviewLinearLayout.setVisibility(View.GONE);
+        dataLayout.setVisibility(View.GONE);
         mainLinearLayout.setVisibility(View.GONE);
         collectionLayout.setVisibility(View.GONE);
         linksLayout.setVisibility(View.GONE);
@@ -363,13 +366,21 @@ public class MovieDetailsInfoFragment extends Fragment
      * Helper method for setting the RecyclerView in order to display lists of recommended movies
      * with a horizontal arrangement.
      */
-    void setRecyclerView() {
-        // Set the LayoutManager for the RecyclerView.
+    void setRecyclerViews() {
+        // Set the LayoutManager for the RecyclerViews.
+        int horizontalSeparation = getResources().getDimensionPixelOffset(R.dimen.small_padding);
+
         recommendedMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         recommendedMoviesRecyclerView.setHasFixedSize(true);
 
-        // Set the listeners for click events in the adapter.
+        collectionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        collectionRecyclerView.setHasFixedSize(true);
+        collectionRecyclerView.addItemDecoration(new SpaceItemDecoration(horizontalSeparation,
+                SpaceItemDecoration.HORIZONTAL_SEPARATION));
+
+        // Set the listeners for click events in the adapters.
         MoviesShortListAdapter.OnItemClickListener recommendedMovieListener = new MoviesShortListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
@@ -382,10 +393,16 @@ public class MovieDetailsInfoFragment extends Fragment
             }
         };
 
-        // Set the Adapter for the RecyclerView.
-        recommendedMoviesAdapter = new MoviesShortListAdapter(R.layout.list_item_poster_horizontal_layout_1,
-                new ArrayList<TmdbMovie>(), recommendedMovieListener);
+        // Set the Adapter for the RecyclerViews.
+        recommendedMoviesAdapter = new MoviesShortListAdapter(
+                R.layout.list_item_poster_horizontal_layout_1, new ArrayList<TmdbMovie>(),
+                recommendedMovieListener);
         recommendedMoviesRecyclerView.setAdapter(recommendedMoviesAdapter);
+
+        collectionAdapter = new MoviesShortListAdapter(
+                R.layout.list_item_poster_horizontal_layout_3, new ArrayList<TmdbMovie>(),
+                recommendedMovieListener);
+        collectionRecyclerView.setAdapter(collectionAdapter);
     }
 
     /**
@@ -407,6 +424,11 @@ public class MovieDetailsInfoFragment extends Fragment
         // Set links section.
         if (setLinksSection())
             linksLayout.setVisibility(View.VISIBLE);
+
+        if (mainLinearLayout.getVisibility() == View.VISIBLE ||
+                collectionLayout.getVisibility() == View.VISIBLE ||
+                linksLayout.getVisibility() == View.VISIBLE)
+            dataLayout.setVisibility(View.VISIBLE);
 
         // Set keywords section.
         if (setKeywordsSection())
@@ -795,15 +817,15 @@ public class MovieDetailsInfoFragment extends Fragment
             String color = String.format("%X",
                     getResources().getColor(R.color.colorDarkWhite)).substring(2);
             String name = movieDetails.getBelongs_to_collection().getName();
-            if (name != null && !name.equals("") && !name.isEmpty())
+            if (name == null || name.equals("") || name.isEmpty())
                 name = getResources().getString(R.string.no_title);
-            String htmlText = "<strong>" + getString(R.string.belongs_to_collection).toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + name + "</font>";
+            String htmlText = "<strong>" +
+                    getString(R.string.belongs_to_collection).toUpperCase() +
+                    "</strong><br><font color=\"#" + color + "\">" + name + "</font>";
             TextViewUtils.setHtmlText(collectionNameTextView, htmlText);
-            collectionNameTextView.setVisibility(View.VISIBLE);
 
-            // TODO: setOnClickListener for opening the collection into another activity.
-
+            // Retrieve the list of movies that belong to the collection, and return.
+            new CollectionMoviesList(movieDetails.getBelongs_to_collection().getId());
             return true;
         } else
             return false;
@@ -953,11 +975,14 @@ public class MovieDetailsInfoFragment extends Fragment
     /* ------------- */
 
     // Private inner class to retrieve the list of movies of a given collection.
-    private class CollectionMoviesList implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+    private class CollectionMoviesList implements LoaderManager.LoaderCallbacks<TmdbMovieCollection> {
         private final String TAG = MovieDetailsInfoFragment.CollectionMoviesList.class.getSimpleName();
+        private int collectionID;
 
         // Constructor for objects of this class.
-        CollectionMoviesList() {
+        CollectionMoviesList(int collectionID) {
+            this.collectionID = collectionID;
+
             // Create an AsyncTaskLoader for retrieving the list of movies.
             getLoaderManager().initLoader(NetworkUtils.TMDB_COLLECTION_LOADER_ID, null, this);
         }
@@ -974,17 +999,14 @@ public class MovieDetailsInfoFragment extends Fragment
          * @return Return a new Loader instance that is ready to start loading.
          */
         @Override
-        public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+        public Loader<TmdbMovieCollection> onCreateLoader(int id, Bundle args) {
             if (NetworkUtils.isConnected(getContext())) {
                 // There is an available connection. Fetch results from TMDB.
-                return new TmdbMoviesAsyncTaskLoader(getContext(),
-                                Tmdb.TMDB_SORT_BY_NOW_PLAYING, 1,
-                                Locale.getDefault().getLanguage(),
-                                Locale.getDefault().getCountry());
+                return new TmdbMoviesCollectionAsyncTaskLoader(getContext(), collectionID,
+                        Locale.getDefault().getLanguage(),
+                        Locale.getDefault().getCountry());
             } else {
                 // There is no connection. Show error message.
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionStatusLoadingIndicator.setVisibility(View.INVISIBLE);
                 Log.i(TAG, "(onCreateLoader) No internet connection.");
                 return null;
             }
@@ -1029,50 +1051,29 @@ public class MovieDetailsInfoFragment extends Fragment
          * @param data   The data generated by the Loader.
          */
         @Override
-        public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
-            // Hide connection layout.
-            connectionStatusLayout.setVisibility(View.GONE);
-
+        public void onLoadFinished(Loader<TmdbMovieCollection> loader, TmdbMovieCollection data) {
             // Check if there is an available connection.
-            if (NetworkUtils.isConnected(MainActivity.this)) {
-                // If there is a valid result, then update its data into the current {@link TmdbMovieDetails}
-                // object.
+            if (NetworkUtils.isConnected(getContext())) {
+                // If there is a valid result, then update its data into the current
+                // {@link TmdbMovieDetails} object.
                 if (data != null) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                    // Get movies list and display it.
-                    switch (loader.getId()) {
-                        case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
-                            nowPlayingMovies = data;
-                            setNowPlayingMovies();
-                            break;
-                        }
-                        case NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID: {
-                            thisWeekReleasesMovies = data;
-                            setThisWeekReleasedMovies();
-                            break;
-                        }
-                        default: {
-                            upcomingMovies = data;
-                            setUpcomingMovies();
-                        }
+                    // Set adapter.
+                    ArrayList<TmdbMovie> movieCollection = data.getParts();
+                    if (movieCollection != null && movieCollection.size() > 0) {
+                        collectionAdapter.setMoviesArrayList(movieCollection);
+                        collectionAdapter.notifyDataSetChanged();
                     }
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
-                    connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                    connectionStatusText.setText(getResources().getString(R.string.no_results));
-                    connectionStatusText.setVisibility(View.VISIBLE);
                 }
             } else
 
             {
                 // There is no connection. Show error message.
                 Log.i(TAG, "(onLoadFinished) No connection to internet.");
-                connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionStatusText.setVisibility(View.VISIBLE);
             }
-
         }
 
         /**
@@ -1083,10 +1084,10 @@ public class MovieDetailsInfoFragment extends Fragment
          * @param loader The Loader that is being reset.
          */
         @Override
-        public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
+        public void onLoaderReset(Loader<TmdbMovieCollection> loader) {
         }
     }
-    
+
     /**
      * Inner class for fetching info from OMDB API.
      */

@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.connection_status_loading_indicator)
     ProgressBar connectionStatusLoadingIndicator;
 
+    @BindView(R.id.main_toolbar)
+    Toolbar toolbar;
+
     private boolean allowClicks = true;
     private Unbinder unbinder;
     private MoviesShortListAdapter nowPlayingMoviesAdapter, thisWeekReleasesMoviesAdapter,
@@ -154,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

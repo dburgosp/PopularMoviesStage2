@@ -102,10 +102,10 @@ public class Tmdb {
         Uri builtUri;
         switch (sortBy) {
             case TMDB_SORT_BY_NOW_PLAYING: {
-                // Get movies with release type 2 or 3 and with release date between 30 days ago and
+                // Get movies with release type 2 or 3 and with release date between 45 days ago and
                 // today.
                 String initDate = DateTimeUtils.getStringAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), -30);
+                        DateTimeUtils.getCurrentDate(), -45);
                 String currentDate = DateTimeUtils.getStringCurrentDate();
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
@@ -244,10 +244,10 @@ public class Tmdb {
      * @param collectionId is the unique identifier of the collection.
      * @param language     is the language of the results.
      * @param region       is the region for getting results.
-     * @return an array of {@link TmdbMovie} objects.
+     * @return a {@link TmdbMovieCollection} object.
      */
-    public static ArrayList<TmdbMovie> getTmdbCollection(int collectionId, String language,
-                                                         String region) {
+    public static TmdbMovieCollection getTmdbCollection(int collectionId, String language,
+                                                        String region) {
         Log.i(TAG, "(getTmdbCollection) Collection ID: " + collectionId + ". Language: " +
                 language + ". Region: " + region);
 
@@ -284,36 +284,43 @@ public class Tmdb {
             return null;
         }
 
-        // Create an empty array of TmdbMovie objects to append data.
-        ArrayList<TmdbMovie> movies = new ArrayList<>();
+        // Create an empty TmdbMovieCollection object.
+        TmdbMovieCollection collection = null;
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown.
         try {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
-            // If there is no "results" section exit returning null. Otherwise, create a new
+
+            // If there is no "parts" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
-            if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(getMovie) No \"results\" section in the JSON string.");
+            if (resultsJSONResponse.isNull("parts")) {
+                Log.i(TAG, "(getMovie) No \"parts\" section in the JSON string.");
                 return null;
             }
 
-            // Get paging info.
-            int page = NetworkUtils.getIntFromJSON(resultsJSONResponse, "page");
-            int total_pages = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_pages");
-            int total_results = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_results");
+            // Extract the required values for the corresponding keys.
+            int id = NetworkUtils.getIntFromJSON(resultsJSONResponse, "id");
+            String name = NetworkUtils.getStringFromJSON(resultsJSONResponse, "name");
+            String overview = NetworkUtils.getStringFromJSON(resultsJSONResponse, "overview");
+            String poster_path = NetworkUtils.getStringFromJSON(resultsJSONResponse, "poster_path");
+            String backdrop_path = NetworkUtils.getStringFromJSON(resultsJSONResponse, "backdrop_path");
 
-            // Get results array.
-            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
-            JSONObject baseJSONResponse;
-            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+            // Get parts array.
+            JSONArray partsJSONarray = resultsJSONResponse.getJSONArray("parts");
+            JSONObject partJSONObject;
+            ArrayList<TmdbMovie> parts = new ArrayList<>();
+            for (int n = 0; n < partsJSONarray.length(); n++) {
                 // Get a single result at position n within the list of results, extract the movie
-                // info and append it to the movies array..
-                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
-                TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
-                movies.add(movie);
+                // info and append it to the movies array.
+                partJSONObject = partsJSONarray.getJSONObject(n);
+                TmdbMovie movie = getMovie(partJSONObject, n, 0, 0, 0);
+                parts.add(movie);
             }
+
+            // Create the TmdbMovieCollection object.
+            collection = new TmdbMovieCollection(id, name, overview, poster_path, backdrop_path, parts);
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
@@ -321,7 +328,7 @@ public class Tmdb {
         }
 
         // Return the movies array.
-        return movies;
+        return collection;
     }
 
     /**

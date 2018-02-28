@@ -102,7 +102,7 @@ public class MoviesFragment extends Fragment
 
         // Initialize variables, set the RecyclerView for displaying movie posters and create the
         // AsyncTaskLoader for getting movies lists from TMDB in a separate thread.
-        init();
+        initFragmentData();
         if (getLoaderManager().getLoader(loaderId) == null)
             getLoaderManager().initLoader(loaderId, null, this);
         else
@@ -169,7 +169,7 @@ public class MoviesFragment extends Fragment
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
-            init();
+            initFragmentData();
             progressBar.setVisibility(View.INVISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
@@ -265,7 +265,7 @@ public class MoviesFragment extends Fragment
     /* HELPER METHODS */
     /* -------------- */
 
-    void init() {
+    void initFragmentData() {
         moviesArrayList = new ArrayList<>();
         currentScrollPosition = 0;
         currentPage = 1;
@@ -368,7 +368,7 @@ public class MoviesFragment extends Fragment
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        init();
+                        initFragmentData();
                         getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
 /*                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
                         if (!isLoading && currentShownPage > 1) {

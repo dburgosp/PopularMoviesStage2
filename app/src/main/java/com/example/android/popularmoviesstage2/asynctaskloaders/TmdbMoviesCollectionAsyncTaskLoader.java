@@ -1,3 +1,4 @@
+
 package com.example.android.popularmoviesstage2.asynctaskloaders;
 
 import android.content.Context;
@@ -7,25 +8,28 @@ import android.support.v4.os.OperationCanceledException;
 import android.util.Log;
 
 import com.example.android.popularmoviesstage2.classes.Tmdb;
-import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
+import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
 
-public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDetails> {
-    private final String TAG = TmdbMovieDetailsAsyncTaskLoader.class.getSimpleName();
-    private TmdbMovieDetails movieDetails;
-    private int movieId;
-    private String language;
+public class TmdbMoviesCollectionAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieCollection> {
+    private final String TAG = TmdbMoviesCollectionAsyncTaskLoader.class.getSimpleName();
+    private TmdbMovieCollection movieCollection;
+    private int collectionId;
+    private String language, region;
 
     /**
      * Constructor for this class.
      *
-     * @param context  is the context of the activity.
-     * @param movieId  is the unique identifier of the movie at TMDB.
-     * @param language is the language for retrieving results from TMDB.
+     * @param context      is the context of the calling activity.
+     * @param collectionId is the unique identifier of the collection at TMDB.
+     * @param language     is the language for retrieving results from TMDB.
+     * @param region       is the region for retrieving results from TMDB.
      */
-    public TmdbMovieDetailsAsyncTaskLoader(Context context, int movieId, String language) {
+    public TmdbMoviesCollectionAsyncTaskLoader(Context context, int collectionId, String language,
+                                               String region) {
         super(context);
-        this.movieId = movieId;
+        this.collectionId = collectionId;
         this.language = language;
+        this.region = region;
     }
 
     /**
@@ -35,9 +39,9 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      */
     @Override
     protected void onStartLoading() {
-        if (movieDetails != null) {
+        if (movieCollection != null) {
             Log.i(TAG, "(onStartLoading) Reload existing results.");
-            deliverResult(movieDetails);
+            deliverResult(movieCollection);
         } else {
             Log.i(TAG, "(onStartLoading) Load new results.");
             forceLoad();
@@ -70,11 +74,12 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      * @see #onCanceled
      */
     @Override
-    public TmdbMovieDetails loadInBackground() {
-        if (movieId >= 0) {
+    public TmdbMovieCollection loadInBackground() {
+        if (collectionId >= 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Movie id: " + movieId + ". Language: " + language);
-            return Tmdb.getTmdbMovieDetails(movieId, language);
+            Log.i(TAG, "(loadInBackground) Movie id: " + collectionId + ". Language: " +
+                    language + ". Region: " + region);
+            return Tmdb.getTmdbCollection(collectionId, language, region);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;
@@ -89,12 +94,12 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      * @param data the result of the load
      */
     @Override
-    public void deliverResult(TmdbMovieDetails data) {
+    public void deliverResult(TmdbMovieCollection data) {
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
         else
             Log.i(TAG, "(deliverResult) Movie details delivered.");
-        movieDetails = data;
+        movieCollection = data;
         super.deliverResult(data);
     }
 }

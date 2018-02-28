@@ -6,10 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/regular_padding"
     android:paddingEnd="@dimen/regular_padding"
-    android:paddingStart="@dimen/regular_padding"
-    android:paddingTop="@dimen/big_padding">
+    android:paddingStart="@dimen/regular_padding">
 
     <TextView
         android:id="@+id/info_movie_runtime"

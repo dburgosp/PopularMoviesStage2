@@ -4,44 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorAccent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/big_padding">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/small_padding"
+    android:paddingEnd="@dimen/tiny_padding"
+    android:paddingStart="@dimen/tiny_padding"
+    android:paddingTop="@dimen/regular_padding">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/tiny_padding"
-        android:layout_marginStart="@dimen/tiny_padding"
-        android:orientation="horizontal">
+    <TextView
+        android:id="@+id/info_links_imdb"
+        style="@style/style_info_link_element"
+        android:drawableTop="@drawable/icon_imdb_48dp"
+        android:text="@string/link_imdb" />
 
-        <TextView
-            android:id="@+id/info_links_imdb"
-            style="@style/style_info_link_element"
-            android:drawableTop="@drawable/icon_imdb_48dp"
-            android:text="@string/link_imdb" />
+    <TextView
+        android:id="@+id/info_links_facebook"
+        style="@style/style_info_link_element"
+        android:drawableTop="@drawable/icon_facebook_48dp"
+        android:text="@string/link_facebook" />
 
-        <TextView
-            android:id="@+id/info_links_facebook"
-            style="@style/style_info_link_element"
-            android:drawableTop="@drawable/icon_facebook_48dp"
-            android:text="@string/link_facebook" />
+    <TextView
+        android:id="@+id/info_links_twitter"
+        style="@style/style_info_link_element"
+        android:drawableTop="@drawable/icon_twitter_48dp"
+        android:text="@string/link_twitter" />
 
-        <TextView
-            android:id="@+id/info_links_twitter"
-            style="@style/style_info_link_element"
-            android:drawableTop="@drawable/icon_twitter_48dp"
-            android:text="@string/link_twitter" />
+    <TextView
+        android:id="@+id/info_links_instagram"
+        style="@style/style_info_link_element"
+        android:drawableTop="@drawable/icon_instagram_48dp"
+        android:text="@string/link_instagram" />
 
-        <TextView
-            android:id="@+id/info_links_instagram"
-            style="@style/style_info_link_element"
-            android:drawableTop="@drawable/icon_instagram_48dp"
-            android:text="@string/link_instagram" />
-
-        <TextView
-            android:id="@+id/info_links_homepage"
-            style="@style/style_info_link_element"
-            android:drawableTop="@drawable/icon_home_48dp"
-            android:text="@string/link_home" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/info_links_homepage"
+        style="@style/style_info_link_element"
+        android:drawableTop="@drawable/icon_home_48dp"
+        android:text="@string/link_home" />
 </LinearLayout>

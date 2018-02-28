@@ -24,14 +24,24 @@
             <!-- Overview section -->
             <include layout="@layout/layout_info_overview" />
 
-            <!-- Main info section -->
-            <include layout="@layout/layout_info_movie" />
+            <LinearLayout
+                android:id="@+id/info_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorAccent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/regular_padding"
+                android:paddingTop="@dimen/big_padding">
 
-            <!-- External links section -->
-            <include layout="@layout/layout_info_links" />
+                <!-- Main info section -->
+                <include layout="@layout/layout_info_movie" />
 
-            <!-- Collection section -->
-            <include layout="@layout/layout_info_collection" />
+                <!-- Collection section -->
+                <include layout="@layout/layout_info_collection" />
+
+                <!-- External links section -->
+                <include layout="@layout/layout_info_links" />
+            </LinearLayout>
 
             <!-- Recommended movies section -->
             <include layout="@layout/layout_info_recommended" />
