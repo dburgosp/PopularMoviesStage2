@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/small_padding"
-    android:layout_marginStart="@dimen/regular_padding"
     android:layout_marginTop="@dimen/small_padding"
     app:cardCornerRadius="@dimen/small_padding"
     app:cardElevation="@dimen/separator">
@@ -34,10 +33,9 @@
             android:id="@+id/cast_crew_image"
             android:layout_width="@dimen/photo_thumbnail_width"
             android:layout_height="@dimen/photo_thumbnail_height"
-            android:background="@color/colorDarkWhite"
+            android:background="@drawable/no_person"
             android:contentDescription="@string/content_description_person_image"
-            android:scaleType="centerCrop"
-            android:src="@drawable/no_person" />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"

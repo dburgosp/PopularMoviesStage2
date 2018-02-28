@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -75,8 +74,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView writingDepartmentTextView;
     @BindView(R.id.production_textview)
     TextView productionDepartmentTextView;
-    @BindView(R.id.writing_production_cardview)
-    CardView writingProductionCardview;
+    @BindView(R.id.writing_production_layout)
+    LinearLayout writingProductionLayout;
 
     private int movieId;
     private CastAdapter castAdapter;
@@ -311,7 +310,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
 
                     // Hide writing and production CardView if there is no information to display.
                     if (!writingCrewIsSet && !productionCrewIsSet)
-                        writingProductionCardview.setVisibility(View.GONE);
+                        writingProductionLayout.setVisibility(View.GONE);
                 } else {
                     // Hide section if there is no crew information for this movie.
                     separatorView.setVisibility(View.GONE);
@@ -366,15 +365,18 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
      */
     void setRecyclerViews() {
         // Set the LayoutManager for the RecyclerViews.
+        int separation = getResources().getDimensionPixelOffset(R.dimen.small_padding);
+
         castRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         castRecyclerView.setHasFixedSize(true);
+        castRecyclerView.addItemDecoration(new SpaceItemDecoration(separation,
+                SpaceItemDecoration.HORIZONTAL_SEPARATION));
 
-        int verticalSeparation = getResources().getDimensionPixelOffset(R.dimen.small_padding);
         directingDepartmentRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false));
         directingDepartmentRecyclerView.setHasFixedSize(true);
-        directingDepartmentRecyclerView.addItemDecoration(new SpaceItemDecoration(verticalSeparation,
+        directingDepartmentRecyclerView.addItemDecoration(new SpaceItemDecoration(separation,
                 SpaceItemDecoration.VERTICAL_SEPARATION));
 
         // Set the listeners for click events in the CastAdapters.
@@ -447,7 +449,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     private boolean setCrewTextView(ArrayList<TmdbCrew> crewArrayList, TextView textView, String title) {
         if (crewArrayList.size() > 0) {
             String text = "";
-            String color = String.format("%X", getResources().getColor(R.color.colorDarkWhite)).substring(2);
+            String color = String.format("%X", getResources().getColor(R.color.colorDarkGrey)).substring(2);
             for (int i = 0; i < crewArrayList.size(); i++) {
                 // Add members of the current department to the corresponding TextView.
                 StringBuilder stringBuilder = new StringBuilder();

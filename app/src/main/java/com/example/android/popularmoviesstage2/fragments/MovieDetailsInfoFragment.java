@@ -546,7 +546,7 @@ public class MovieDetailsInfoFragment extends Fragment
         /* RELEASE DATES */
         /* ------------- */
 
-        String releaseDatesTitle = "";
+        String releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
         String releaseDatesContent = "";
 
         // Show release status if it is other than "released".
@@ -635,9 +635,6 @@ public class MovieDetailsInfoFragment extends Fragment
             // If there is no local release dates, show official release date.
             String releaseDate = movieDetails.getMovie().getRelease_date();
             if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty()) {
-                // Set section title.
-                releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates, 1);
-
                 // Official release date.
                 releaseDatesContent = DateTimeUtils.getStringDate(releaseDate,
                         DateTimeUtils.DATE_FORMAT_LONG);

@@ -104,8 +104,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (collapsingToolbarLayout.getHeight() + verticalOffset <
-                        2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+                if (collapsingToolbarLayout != null &&
+                        (collapsingToolbarLayout.getHeight() + verticalOffset <
+                                2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout))) {
                     // CollapsingToolbar is collapsed. Show title.
                     String title = movie.getTitle();
                     String year = DateTimeUtils.getYear(movie.getRelease_date());
@@ -135,7 +136,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         MovieDetailsFragmentPagerAdapter adapter =
                 new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(),
-                MovieDetailsActivity.this, movie);
+                        MovieDetailsActivity.this, movie);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 

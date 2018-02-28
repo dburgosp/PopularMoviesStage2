@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -72,7 +71,7 @@
             android:layout_below="@id/cast_crew_separator"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/regular_padding">
+            android:paddingBottom="@dimen/big_padding">
 
             <LinearLayout
                 android:id="@+id/crew_title_layout"
@@ -110,49 +109,32 @@
                 android:id="@+id/crew_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
                 android:scrollbars="vertical" />
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/writing_production_cardview"
+            <LinearLayout
+                android:id="@+id/writing_production_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small_padding"
-                android:layout_marginEnd="@dimen/regular_padding"
-                android:layout_marginStart="@dimen/regular_padding"
-                app:cardCornerRadius="@dimen/small_padding"
-                app:cardElevation="@dimen/separator">
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/regular_padding"
+                android:paddingStart="@dimen/regular_padding"
+                android:paddingTop="@dimen/small_padding">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/writing_textview"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorAccent"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/regular_padding"
-                    android:paddingEnd="@dimen/regular_padding"
-                    android:paddingStart="@dimen/regular_padding"
-                    android:paddingTop="@dimen/big_padding">
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/small_padding"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    tools:text="WRITING\nName Surname (job)\nName Surname (job)" />
 
-                    <TextView
-                        android:id="@+id/writing_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/small_padding"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/normal_plus_text_size"
-                        tools:text="WRITING\nName Surname (job)\nName Surname (job)" />
-
-                    <TextView
-                        android:id="@+id/production_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/small_padding"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="@dimen/normal_plus_text_size"
-                        tools:text="PRODUCTION\nName Surname (job)\nName Surname (job)" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
+                <TextView
+                    android:id="@+id/production_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/normal_plus_text_size"
+                    tools:text="PRODUCTION\nName Surname (job)\nName Surname (job)" />
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
