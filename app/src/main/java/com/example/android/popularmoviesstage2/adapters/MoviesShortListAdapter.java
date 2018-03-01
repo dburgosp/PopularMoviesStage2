@@ -67,7 +67,7 @@ public class MoviesShortListAdapter
      * @param moviesArrayList is the new list of movies.
      */
     public void setMoviesArrayList(ArrayList<TmdbMovie> moviesArrayList) {
-        this.moviesArrayList.addAll(moviesArrayList);
+        this.moviesArrayList = moviesArrayList;
         Log.i(TAG, "(setMoviesArrayList) TmdbMovie list updated. Current size is " +
                 this.moviesArrayList.size());
     }

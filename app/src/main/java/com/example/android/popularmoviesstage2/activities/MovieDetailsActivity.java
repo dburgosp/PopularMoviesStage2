@@ -104,24 +104,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (collapsingToolbarLayout != null &&
-                        (collapsingToolbarLayout.getHeight() + verticalOffset <
-                                2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout))) {
-                    // CollapsingToolbar is collapsed. Show title.
-                    String title = movie.getTitle();
-                    String year = DateTimeUtils.getYear(movie.getRelease_date());
-                    if (title != null && !title.equals("") && !title.isEmpty())
-                        if (year != null && !year.equals("") && !year.isEmpty())
-                            collapsingToolbarLayout.setTitle(movie.getTitle() + " (" +
-                                    DateTimeUtils.getYear(movie.getRelease_date()) + ")");
+                if (collapsingToolbarLayout != null)
+                    if (collapsingToolbarLayout.getHeight() + verticalOffset <
+                            2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+                        // CollapsingToolbar is collapsed. Show title.
+                        String title = movie.getTitle();
+                        String year = DateTimeUtils.getYear(movie.getRelease_date());
+                        if (title != null && !title.equals("") && !title.isEmpty())
+                            if (year != null && !year.equals("") && !year.isEmpty())
+                                collapsingToolbarLayout.setTitle(movie.getTitle() + " (" +
+                                        DateTimeUtils.getYear(movie.getRelease_date()) + ")");
+                            else
+                                collapsingToolbarLayout.setTitle(movie.getTitle());
                         else
-                            collapsingToolbarLayout.setTitle(movie.getTitle());
-                    else
-                        collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
-                } else {
-                    // CollapsingToolbar is expanded. Hide title.
-                    collapsingToolbarLayout.setTitle("");
-                }
+                            collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
+                    } else {
+                        // CollapsingToolbar is expanded. Hide title.
+                        collapsingToolbarLayout.setTitle("");
+                    }
             }
         };
         appBarLayout.addOnOffsetChangedListener(listener);

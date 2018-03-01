@@ -14,6 +14,7 @@
     <string name="content_description_poster">Póster</string>
     <string name="department_production">Producción</string>
     <string name="department_writing">Narrativa</string>
+    <string name="dont_open_this_again">Ya estamos aquí</string>
     <string name="fetching_cast_crew_info">Obteniendo el reparto y el equipo de la película&#8230;</string>
     <string name="fetching_info">Obteniendo información&#8230;</string>
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>

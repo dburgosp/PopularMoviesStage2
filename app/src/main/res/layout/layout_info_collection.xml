@@ -23,4 +23,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/small_padding" />
+
+    <TextView
+        android:id="@+id/info_collection_overview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingEnd="@dimen/regular_padding"
+        android:paddingStart="@dimen/regular_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim." />
 </LinearLayout>

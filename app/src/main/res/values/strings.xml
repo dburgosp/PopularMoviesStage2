@@ -14,6 +14,7 @@
     <string name="content_description_poster">Poster</string>
     <string name="department_production">Production</string>
     <string name="department_writing">Writing</string>
+    <string name="dont_open_this_again">You are already here</string>
     <string name="fetching_cast_crew_info">Fetching cast &#038; crew information&#8230;</string>
     <string name="fetching_info">Fetching information&#8230;</string>
     <string name="fetching_movie_info">Fetching movie information&#8230;</string>

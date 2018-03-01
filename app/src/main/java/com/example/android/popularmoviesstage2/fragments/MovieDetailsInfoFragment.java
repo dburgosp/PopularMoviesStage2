@@ -52,11 +52,16 @@ import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 /**
  * {@link Fragment} that displays the main information about the current movieDetails.
@@ -129,6 +134,8 @@ public class MovieDetailsInfoFragment extends Fragment
     TextView collectionNameTextView;
     @BindView(R.id.info_collection_recyclerview)
     RecyclerView collectionRecyclerView;
+    @BindView(R.id.info_collection_overview)
+    TextView collectionOverviewTextView;
 
     @BindView(R.id.info_keywords_layout)
     LinearLayout keywordsLayout;
@@ -373,6 +380,8 @@ public class MovieDetailsInfoFragment extends Fragment
         recommendedMoviesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         recommendedMoviesRecyclerView.setHasFixedSize(true);
+        recommendedMoviesRecyclerView.addItemDecoration(new SpaceItemDecoration(horizontalSeparation,
+                SpaceItemDecoration.HORIZONTAL_SEPARATION));
 
         collectionRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
@@ -383,13 +392,21 @@ public class MovieDetailsInfoFragment extends Fragment
         // Set the listeners for click events in the adapters.
         MoviesShortListAdapter.OnItemClickListener recommendedMovieListener = new MoviesShortListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(TmdbMovie movie, View clickedView) {
-                // Start MovieDetailsActivity to show movie details when the current element is
-                // clicked. We need to know when the other activity finishes, so we use
-                // startActivityForResult. No need a requestCode, we don't care for any result.
-                Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
-                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                startActivity(intent);
+            public void onItemClick(TmdbMovie clickedMovie, View clickedView) {
+                if (movieId != clickedMovie.getId()) {
+                    // Start MovieDetailsActivity to show movie details when the current element is
+                    // clicked. We need to know when the other activity finishes, so we use
+                    // startActivityForResult. No need a requestCode, we don't care for any result.
+                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, clickedMovie);
+                    startActivity(intent);
+                } else {
+                    // If we are clicking on the current movie (it may be shown again as part of the
+                    // collection or in the recommended movies list), we don't need to move from
+                    // here.
+                    Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         };
 
@@ -480,17 +497,20 @@ public class MovieDetailsInfoFragment extends Fragment
             infoSectionSet = true;
 
             // Set section title.
-            String genresTitle = getResources().getQuantityString(R.plurals.genres, movieGenres.size());
+            String genresTitle =
+                    getResources().getQuantityString(R.plurals.genres, movieGenres.size());
             genresTextView.setText(genresTitle);
 
             // Manage genres array.
             genresFlowLayout.removeAllViews();
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater =
+                    (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             for (int n = 0; n < movieGenres.size(); n++) {
                 // Create the genre element into the FlowLayout.
                 try {
                     View view = inflater.inflate(R.layout.list_item_flowlayout, null);
-                    final TextView genreTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
+                    final TextView genreTextView =
+                            (TextView) view.findViewById(R.id.flowlayout_textview);
                     genreTextView.setText(movieGenres.get(n).getName());
                     genresFlowLayout.addView(view);
 
@@ -503,7 +523,8 @@ public class MovieDetailsInfoFragment extends Fragment
                         }
                     });
                 } catch (java.lang.NullPointerException e) {
-                    Log.e(TAG, "(setMainInfoSection) Error inflating view for " + movieGenres.get(n).getName());
+                    Log.e(TAG, "(setMainInfoSection) Error inflating view for " +
+                            movieGenres.get(n).getName());
                 }
             }
         } else {
@@ -534,8 +555,8 @@ public class MovieDetailsInfoFragment extends Fragment
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movieDetails.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + runtime + "</font>";
+            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() + "</strong>"
+                    + "<br><font color=\"#" + color + "\">" + runtime + "</font>";
             TextViewUtils.setHtmlText(runtimeTextView, htmlText);
             runtimeTextView.setVisibility(View.VISIBLE);
         } else {
@@ -810,17 +831,6 @@ public class MovieDetailsInfoFragment extends Fragment
      */
     private boolean setCollectionSection() {
         if (movieDetails.getBelongs_to_collection() != null) {
-            // Set collection title.
-            String color = String.format("%X",
-                    getResources().getColor(R.color.colorDarkWhite)).substring(2);
-            String name = movieDetails.getBelongs_to_collection().getName();
-            if (name == null || name.equals("") || name.isEmpty())
-                name = getResources().getString(R.string.no_title);
-            String htmlText = "<strong>" +
-                    getString(R.string.belongs_to_collection).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + name + "</font>";
-            TextViewUtils.setHtmlText(collectionNameTextView, htmlText);
-
             // Retrieve the list of movies that belong to the collection, and return.
             new CollectionMoviesList(movieDetails.getBelongs_to_collection().getId());
             return true;
@@ -982,6 +992,7 @@ public class MovieDetailsInfoFragment extends Fragment
 
             // Create an AsyncTaskLoader for retrieving the list of movies.
             getLoaderManager().initLoader(NetworkUtils.TMDB_COLLECTION_LOADER_ID, null, this);
+
         }
 
         /* ------ */
@@ -1056,18 +1067,40 @@ public class MovieDetailsInfoFragment extends Fragment
                 if (data != null) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                    // Set adapter.
+                    // Set collection title.
+                    String color = String.format("%X",
+                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                    String name = data.getName();
+                    if (name == null || name.equals("") || name.isEmpty())
+                        name = getResources().getString(R.string.no_title);
+                    String htmlText = "<strong>" +
+                            getString(R.string.belongs_to_collection).toUpperCase() +
+                            "</strong><br><font color=\"#" + color + "\">" + name + "</font>";
+                    TextViewUtils.setHtmlText(collectionNameTextView, htmlText);
+
+                    // Order the movies list by release date and set adapter to show it.
                     ArrayList<TmdbMovie> movieCollection = data.getParts();
+                    Collections.sort(movieCollection, new Comparator<TmdbMovie>() {
+                        @Override
+                        public int compare(TmdbMovie tmdbMovie2, TmdbMovie tmdbMovie1) {
+                            return tmdbMovie2.getRelease_date().compareTo(tmdbMovie1.getRelease_date());
+                        }
+                    });
                     if (movieCollection != null && movieCollection.size() > 0) {
                         collectionAdapter.setMoviesArrayList(movieCollection);
                         collectionAdapter.notifyDataSetChanged();
                     }
+
+                    // Set overview, if it exists.
+                    String overview = data.getOverview();
+                    if (overview != null && !overview.equals("") && !overview.isEmpty())
+                        collectionOverviewTextView.setText(overview);
+                    else
+                        collectionOverviewTextView.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                 }
-            } else
-
-            {
+            } else {
                 // There is no connection. Show error message.
                 Log.i(TAG, "(onLoadFinished) No connection to internet.");
             }
