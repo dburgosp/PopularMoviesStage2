@@ -15,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView nowPlayingMoviesRecyclerview;
     @BindView(R.id.now_playing_movies_view_all_action)
     TextView nowPlayingMoviesViewAllAction;
+    @BindView(R.id.now_playing_movies_view_all_cardview)
+    CardView nowPlayingMoviesViewAllCardView;
 
     @BindView(R.id.released_this_week_movies_layout)
     LinearLayout thisWeekReleasesMoviesLayout;
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView thisWeekReleasesMoviesRecyclerview;
     @BindView(R.id.released_this_week_movies_view_all_action)
     TextView thisWeekReleasesMoviesViewAllAction;
+    @BindView(R.id.released_this_week_movies_view_all_cardview)
+    CardView thisWeekReleasesMoviesViewAllCardView;
 
     @BindView(R.id.upcoming_movies_layout)
     LinearLayout upcomingMoviesLayout;
@@ -96,6 +101,8 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView upcomingMoviesRecyclerview;
     @BindView(R.id.upcoming_movies_view_all_action)
     TextView upcomingMoviesViewAllAction;
+    @BindView(R.id.upcoming_movies_view_all_cardview)
+    CardView upcomingMoviesViewAllCardView;
 
     @BindView(R.id.connection_status_layout)
     LinearLayout connectionStatusLayout;
@@ -121,11 +128,13 @@ public class MainActivity extends AppCompatActivity implements
             // on MainActivity.
             int sort;
             switch (view.getId()) {
-                case R.id.now_playing_movies_view_all_action: {
+                case R.id.now_playing_movies_view_all:
+                case R.id.now_playing_movies_view_all_cardview: {
                     sort = 0;
                     break;
                 }
-                case R.id.released_this_week_movies_view_all_action: {
+                case R.id.released_this_week_movies_view_all:
+                case R.id.released_this_week_movies_view_all_cardview: {
                     sort = 1;
                     break;
                 }
@@ -339,14 +348,14 @@ public class MainActivity extends AppCompatActivity implements
                 String viewAllText = getString(R.string.view_all_now_playing_movies, totalResults,
                         LocaleUtils.getCurrentCountryName());
                 nowPlayingMoviesViewAllAction.setText(viewAllText);
-                nowPlayingMoviesViewAllAction.setVisibility(View.VISIBLE);
+                nowPlayingMoviesViewAllCardView.setVisibility(View.VISIBLE);
                 nowPlayingMoviesViewAll.setVisibility(View.VISIBLE);
 
                 // Set the onClickMoviesListener for click events in the "view all" elements.
                 nowPlayingMoviesViewAll.setOnClickListener(onClickMoviesListener);
-                nowPlayingMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
+                nowPlayingMoviesViewAllCardView.setOnClickListener(onClickMoviesListener);
             } else {
-                nowPlayingMoviesViewAllAction.setVisibility(View.GONE);
+                nowPlayingMoviesViewAllCardView.setVisibility(View.GONE);
                 nowPlayingMoviesViewAll.setVisibility(View.GONE);
             }
 
@@ -373,14 +382,14 @@ public class MainActivity extends AppCompatActivity implements
                 String viewAllText = getString(R.string.view_all_this_week_released_movies,
                         totalResults, LocaleUtils.getCurrentCountryName());
                 thisWeekReleasesMoviesViewAllAction.setText(viewAllText);
-                thisWeekReleasesMoviesViewAllAction.setVisibility(View.VISIBLE);
+                thisWeekReleasesMoviesViewAllCardView.setVisibility(View.VISIBLE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.VISIBLE);
 
                 // Set the onClickMoviesListener for click events in the "view all" elements.
-                thisWeekReleasesMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
+                thisWeekReleasesMoviesViewAllCardView.setOnClickListener(onClickMoviesListener);
                 thisWeekReleasesMoviesViewAll.setOnClickListener(onClickMoviesListener);
             } else {
-                thisWeekReleasesMoviesViewAllAction.setVisibility(View.GONE);
+                thisWeekReleasesMoviesViewAllCardView.setVisibility(View.GONE);
                 thisWeekReleasesMoviesViewAll.setVisibility(View.GONE);
             }
 
@@ -407,14 +416,14 @@ public class MainActivity extends AppCompatActivity implements
                 String viewAllText = getString(R.string.view_all_upcoming_movies, totalResults,
                         LocaleUtils.getCurrentCountryName());
                 upcomingMoviesViewAllAction.setText(viewAllText);
-                upcomingMoviesViewAllAction.setVisibility(View.VISIBLE);
+                upcomingMoviesViewAllCardView.setVisibility(View.VISIBLE);
                 upcomingMoviesViewAll.setVisibility(View.VISIBLE);
 
                 // Set the onClickMoviesListener for click events in the "view all" elements.
                 upcomingMoviesViewAll.setOnClickListener(onClickMoviesListener);
-                upcomingMoviesViewAllAction.setOnClickListener(onClickMoviesListener);
+                upcomingMoviesViewAllCardView.setOnClickListener(onClickMoviesListener);
             } else {
-                upcomingMoviesViewAllAction.setVisibility(View.GONE);
+                upcomingMoviesViewAllCardView.setVisibility(View.GONE);
                 upcomingMoviesViewAll.setVisibility(View.GONE);
             }
 

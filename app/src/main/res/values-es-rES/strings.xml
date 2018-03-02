@@ -74,7 +74,7 @@
     <string name="release_type_tv">TV en %s</string>
     <string name="movies_sort_by_released_this_week">Estrenos esta semana</string>
     <string name="view_all_cast">Ver la lista completa con los %d miembros del reparto de esta película</string>
-    <string name="view_all_now_playing_movies">Ver la lista completa con las %d películas en cartelera actualmente en %s</string>
+    <string name="view_all_now_playing_movies">Ver la lista completa con las %d películas actualmente en cartelera en %s</string>
     <string name="view_all_recommended_movies">Ver la lista completa con las %d recomendaciones, basada en valoraciones de usuarios</string>
     <string name="view_all_this_week_released_movies">Ver la lista completa con los %d estrenos de esta semana en cines en %s</string>
     <string name="view_all_upcoming_movies">Ver la lista completa con los próximos %d estrenos de cine en %s</string>

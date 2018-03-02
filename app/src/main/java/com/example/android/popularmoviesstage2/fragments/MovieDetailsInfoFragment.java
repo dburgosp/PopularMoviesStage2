@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -130,17 +131,10 @@ public class MovieDetailsInfoFragment extends Fragment
     LinearLayout collectionLayout;
     @BindView(R.id.info_collection_name)
     TextView collectionNameTextView;
-    @BindView(R.id.info_collection_recyclerview)
-    RecyclerView collectionRecyclerView;
     @BindView(R.id.info_collection_overview)
     TextView collectionOverviewTextView;
-
-    @BindView(R.id.info_keywords_layout)
-    LinearLayout keywordsLayout;
-    @BindView(R.id.info_keywords_title)
-    TextView keywordsTitleTextView;
-    @BindView(R.id.info_keywords_flowlayout)
-    FlowLayout keywordsFlowLayout;
+    @BindView(R.id.info_collection_recyclerview)
+    RecyclerView collectionRecyclerView;
 
     @BindView(R.id.info_links_layout)
     LinearLayout linksLayout;
@@ -163,6 +157,18 @@ public class MovieDetailsInfoFragment extends Fragment
     RecyclerView recommendedMoviesRecyclerView;
     @BindView(R.id.recommended_movies_view_all_action)
     TextView recommendedMoviesViewAllActionTextView;
+    @BindView(R.id.recommended_movies_view_all_cardview)
+    CardView recommendedMoviesViewAllCardView;
+
+    @BindView(R.id.info_keywords_layout)
+    LinearLayout keywordsLayout;
+    @BindView(R.id.info_keywords_title)
+    TextView keywordsTitleTextView;
+    @BindView(R.id.info_keywords_flowlayout)
+    FlowLayout keywordsFlowLayout;
+
+    @BindView(R.id.recommended_movies_keywords_layout)
+    LinearLayout recommendedMoviesKeywordsLayout;
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
@@ -367,6 +373,7 @@ public class MovieDetailsInfoFragment extends Fragment
         linksLayout.setVisibility(View.GONE);
         recommendedMoviesLayout.setVisibility(View.GONE);
         keywordsLayout.setVisibility(View.GONE);
+        recommendedMoviesKeywordsLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -426,6 +433,11 @@ public class MovieDetailsInfoFragment extends Fragment
      * Helper method to display all the movieDetails information in this fragment.
      */
     void setMovieInfo() {
+        // Set collection section. This must be at the beginning of this method to save some time,
+        // because it opens another thread to retrieve info.
+        if (setCollectionSection())
+            collectionLayout.setVisibility(View.VISIBLE);
+
         // Set overview section.
         if (setOverviewSection())
             overviewLinearLayout.setVisibility(View.VISIBLE);
@@ -434,26 +446,29 @@ public class MovieDetailsInfoFragment extends Fragment
         if (setMainInfoSection())
             mainLinearLayout.setVisibility(View.VISIBLE);
 
-        // Set collection section.
-        if (setCollectionSection())
-            collectionLayout.setVisibility(View.VISIBLE);
-
-        // Set links section.
+        // Set external links section.
         if (setLinksSection())
             linksLayout.setVisibility(View.VISIBLE);
 
+        // Main info and external links section are into the same layout. Make it visible if any
+        // of the inner sections has data.
         if (mainLinearLayout.getVisibility() == View.VISIBLE ||
-                collectionLayout.getVisibility() == View.VISIBLE ||
                 linksLayout.getVisibility() == View.VISIBLE)
             dataLayout.setVisibility(View.VISIBLE);
+
+        // Recommended movies section.
+        if (setRecommendedMoviesSection())
+            recommendedMoviesLayout.setVisibility(View.VISIBLE);
 
         // Set keywords section.
         if (setKeywordsSection())
             keywordsLayout.setVisibility(View.VISIBLE);
 
-        // Recommended movies section.
-        if (setRecommendedMoviesSection())
-            recommendedMoviesLayout.setVisibility(View.VISIBLE);
+        // Recommended movies and keywords section are into the same layout. Make it visible if any
+        // of the inner sections has data.
+        if (recommendedMoviesLayout.getVisibility() == View.VISIBLE ||
+                keywordsLayout.getVisibility() == View.VISIBLE)
+            recommendedMoviesKeywordsLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -917,7 +932,7 @@ public class MovieDetailsInfoFragment extends Fragment
             if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
                 String viewAllText = getString(R.string.view_all_recommended_movies, totalResults);
                 recommendedMoviesViewAllActionTextView.setText(viewAllText);
-                recommendedMoviesViewAllActionTextView.setVisibility(View.VISIBLE);
+                recommendedMoviesViewAllCardView.setVisibility(View.VISIBLE);
                 recommendedMoviesViewAllTextView.setVisibility(View.VISIBLE);
 
                 // Set the onClickMoviesListener for click events in the "view all" elements.
@@ -927,10 +942,10 @@ public class MovieDetailsInfoFragment extends Fragment
                         Toast.makeText(getContext(), "View all clicked", Toast.LENGTH_SHORT).show();
                     }
                 };
-                recommendedMoviesViewAllActionTextView.setOnClickListener(onClickMoviesListener);
+                recommendedMoviesViewAllCardView.setOnClickListener(onClickMoviesListener);
                 recommendedMoviesViewAllTextView.setOnClickListener(onClickMoviesListener);
             } else {
-                recommendedMoviesViewAllActionTextView.setVisibility(View.GONE);
+                recommendedMoviesViewAllCardView.setVisibility(View.GONE);
                 recommendedMoviesViewAllTextView.setVisibility(View.GONE);
             }
         }
@@ -1090,16 +1105,18 @@ public class MovieDetailsInfoFragment extends Fragment
                 if (data != null) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                    // Set collection title.
-                    String color = String.format("%X",
-                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                    // Set collection name.
                     String name = data.getName();
                     if (name == null || name.equals("") || name.isEmpty())
                         name = getResources().getString(R.string.no_title);
-                    String htmlText = "<strong>" +
-                            getString(R.string.belongs_to_collection).toUpperCase() +
-                            "</strong><br><font color=\"#" + color + "\">" + name + "</font>";
-                    TextViewUtils.setHtmlText(collectionNameTextView, htmlText);
+                    collectionNameTextView.setText(name);
+
+                    // Set collection overview.
+                    String overview = data.getOverview();
+                    if (overview != null && !overview.equals("") && !overview.isEmpty())
+                        collectionOverviewTextView.setText(overview);
+                    else
+                        collectionOverviewTextView.setVisibility(View.GONE);
 
                     // Order the movies list by release date and set adapter to show it.
                     ArrayList<TmdbMovie> movieCollection = data.getParts();
@@ -1115,11 +1132,6 @@ public class MovieDetailsInfoFragment extends Fragment
                     }
 
                     // Set overview, if it exists.
-                    String overview = data.getOverview();
-                    if (overview != null && !overview.equals("") && !overview.isEmpty())
-                        collectionOverviewTextView.setText(overview);
-                    else
-                        collectionOverviewTextView.setVisibility(View.GONE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                 }

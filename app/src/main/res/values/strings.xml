@@ -10,6 +10,7 @@
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_backdrop">Backdrop</string>
     <string name="content_description_gradient">Gradient background</string>
+    <string name="content_description_icon">Icon</string>
     <string name="content_description_person_image">Person</string>
     <string name="content_description_poster">Poster</string>
     <string name="department_production">Production</string>

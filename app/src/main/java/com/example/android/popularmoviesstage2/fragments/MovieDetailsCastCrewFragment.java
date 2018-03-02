@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -57,6 +58,8 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView viewAllCastTextView;
     @BindView(R.id.cast_view_all_action)
     TextView viewAllActionCastTextView;
+    @BindView(R.id.cast_view_all_cardview)
+    CardView viewAllActionCastCardView;
     @BindView(R.id.cast_recyclerview)
     RecyclerView castRecyclerView;
     @BindView(R.id.cast_title_layout)
@@ -260,10 +263,10 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                     if (totalResults > CAST_CREW_MAX_ELEMENTS) {
                         String viewAllText = getString(R.string.view_all_cast, totalResults);
                         viewAllActionCastTextView.setText(viewAllText);
-                        viewAllActionCastTextView.setVisibility(View.VISIBLE);
-                        viewAllActionCastTextView.setOnClickListener(onClickMoviesListener);
+                        viewAllActionCastCardView.setVisibility(View.VISIBLE);
+                        viewAllActionCastCardView.setOnClickListener(onClickMoviesListener);
                     } else {
-                        viewAllActionCastTextView.setVisibility(View.GONE);
+                        viewAllActionCastCardView.setVisibility(View.GONE);
                     }
                 } else {
                     // Hide section if there is no cast information for this movie.

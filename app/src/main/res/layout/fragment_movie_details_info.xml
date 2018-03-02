@@ -36,12 +36,12 @@
                 <!-- Main info section -->
                 <include layout="@layout/layout_info_movie" />
 
-                <!-- Collection section -->
-                <include layout="@layout/layout_info_collection" />
-
                 <!-- External links section -->
                 <include layout="@layout/layout_info_links" />
             </LinearLayout>
+
+            <!-- Collection section -->
+            <include layout="@layout/layout_info_collection" />
 
             <!-- Recommended movies section -->
             <include layout="@layout/layout_info_recommended" />

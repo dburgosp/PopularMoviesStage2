@@ -4,34 +4,41 @@
     android:id="@+id/info_collection_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/info_collection_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/regular_padding"
-        android:paddingEnd="@dimen/regular_padding"
-        android:paddingStart="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/normal_plus_text_size"
-        tools:text="BELONGS TO\nCollection Name in more than one line" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/info_collection_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/tiny_padding" />
+        android:background="@color/colorPrimary"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingEnd="@dimen/regular_padding"
+        android:paddingStart="@dimen/regular_padding"
+        android:paddingTop="@dimen/big_padding"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        android:textStyle="bold"
+        tools:text="Collection name" />
 
     <TextView
         android:id="@+id/info_collection_overview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
         android:paddingBottom="@dimen/small_padding"
         android:paddingEnd="@dimen/regular_padding"
         android:paddingStart="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorDarkWhite"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim." />
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/info_collection_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_home"
+        android:paddingBottom="@dimen/big_padding"
+        android:paddingTop="@dimen/tiny_padding" />
 </LinearLayout>
