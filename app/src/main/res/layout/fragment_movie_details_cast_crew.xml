@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +24,7 @@
                 android:id="@+id/cast_title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/tiny_padding"
+                android:layout_marginBottom="@dimen/regular_padding"
                 android:layout_marginEnd="@dimen/regular_padding"
                 android:layout_marginStart="@dimen/regular_padding"
                 android:orientation="horizontal">
@@ -50,11 +51,59 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/cast_recycler_view"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/cast_recyclerview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/small_padding"
+                        android:background="?android:attr/selectableItemBackground"
+                        app:cardCornerRadius="@dimen/tiny_padding"
+                        app:cardElevation="@dimen/separator">
+
+                        <RelativeLayout
+                            android:layout_width="@dimen/photo_thumbnail_width"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorAccent">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/photo_thumbnail_height"
+                                android:layout_centerInParent="true"
+                                android:background="@color/colorWhite" />
+
+                            <TextView
+                                android:id="@+id/cast_view_all_action"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:alpha="0.8"
+                                android:background="@color/colorAccent"
+                                android:drawableBottom="@drawable/ic_pageview_white_36dp"
+                                android:gravity="center"
+                                android:minHeight="@dimen/photo_thumbnail_height"
+                                android:padding="@dimen/small_padding"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="@dimen/normal_text_size"
+                                android:textStyle="bold"
+                                tools:text="View the full list with the 100 cast members of this movie" />
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+            </HorizontalScrollView>
         </LinearLayout>
 
         <View

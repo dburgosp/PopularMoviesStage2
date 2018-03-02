@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +35,6 @@ import com.example.android.popularmoviesstage2.adapters.MoviesShortListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
-import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesListFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
@@ -69,10 +66,6 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView nowPlayingMoviesRecyclerview;
     @BindView(R.id.now_playing_movies_view_all_action)
     TextView nowPlayingMoviesViewAllAction;
-    @BindView(R.id.now_playing_movies_tab_layout)
-    TabLayout nowPlayingTabLayout;
-    @BindView(R.id.now_playing_movies_viewpager)
-    ViewPager nowPlayingMoviesViewPager;
 
     @BindView(R.id.released_this_week_movies_layout)
     LinearLayout thisWeekReleasesMoviesLayout;
@@ -340,7 +333,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     void setNowPlayingMovies() {
         if (nowPlayingMovies != null && nowPlayingMovies.size() > 0) {
-
             // Show/hide "view all" texts.
             int totalResults = nowPlayingMovies.get(0).getTotal_results();
             if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
@@ -357,15 +349,6 @@ public class MainActivity extends AppCompatActivity implements
                 nowPlayingMoviesViewAllAction.setVisibility(View.GONE);
                 nowPlayingMoviesViewAll.setVisibility(View.GONE);
             }
-
-            // Set TabLayout and ViewPager to manage the fragments for showing the list of movies
-            // and the link section.
-            nowPlayingTabLayout.setupWithViewPager(nowPlayingMoviesViewPager);
-            MoviesListFragmentPagerAdapter adapter =
-                    new MoviesListFragmentPagerAdapter(getSupportFragmentManager(),
-                            MainActivity.this, NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
-            nowPlayingMoviesViewPager.setAdapter(adapter);
-            nowPlayingMoviesViewPager.setCurrentItem(0);
 
             // Set the now playing movies list.
             if (nowPlayingMovies.size() > 0) {

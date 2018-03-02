@@ -33,6 +33,7 @@ import com.example.android.popularmoviesstage2.classes.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbKeyword;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
@@ -59,9 +60,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 /**
  * {@link Fragment} that displays the main information about the current movieDetails.
@@ -163,6 +161,8 @@ public class MovieDetailsInfoFragment extends Fragment
     TextView recommendedMoviesViewAllTextView;
     @BindView(R.id.recommended_movies_recyclerview)
     RecyclerView recommendedMoviesRecyclerView;
+    @BindView(R.id.recommended_movies_view_all_action)
+    TextView recommendedMoviesViewAllActionTextView;
 
     private static TmdbMovieDetails movieDetails;
     private int movieId;
@@ -907,9 +907,32 @@ public class MovieDetailsInfoFragment extends Fragment
 
         ArrayList<TmdbMovie> recommendedMovies = movieDetails.getRecommendedMovies();
         if (recommendedMovies != null && recommendedMovies.size() > 0) {
+            // Set adapter to show the first page of results.
             infoSectionSet = true;
             recommendedMoviesAdapter.setMoviesArrayList(recommendedMovies);
             recommendedMoviesAdapter.notifyDataSetChanged();
+
+            // Show/hide "view all" texts.
+            int totalResults = recommendedMovies.get(0).getTotal_results();
+            if (totalResults > Tmdb.TMDB_RESULTS_PER_PAGE) {
+                String viewAllText = getString(R.string.view_all_recommended_movies, totalResults);
+                recommendedMoviesViewAllActionTextView.setText(viewAllText);
+                recommendedMoviesViewAllActionTextView.setVisibility(View.VISIBLE);
+                recommendedMoviesViewAllTextView.setVisibility(View.VISIBLE);
+
+                // Set the onClickMoviesListener for click events in the "view all" elements.
+                View.OnClickListener onClickMoviesListener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(getContext(), "View all clicked", Toast.LENGTH_SHORT).show();
+                    }
+                };
+                recommendedMoviesViewAllActionTextView.setOnClickListener(onClickMoviesListener);
+                recommendedMoviesViewAllTextView.setOnClickListener(onClickMoviesListener);
+            } else {
+                recommendedMoviesViewAllActionTextView.setVisibility(View.GONE);
+                recommendedMoviesViewAllTextView.setVisibility(View.GONE);
+            }
         }
 
         return infoSectionSet;

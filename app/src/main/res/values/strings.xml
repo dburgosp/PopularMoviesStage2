@@ -85,9 +85,11 @@
     <string name="transition_review">review_transition</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
-    <string name="view_all_now_playing_movies">View the %d movies that are now playing in theaters in %s</string>
-    <string name="view_all_this_week_released_movies">View the %d movies to be released this week in %s</string>
-    <string name="view_all_upcoming_movies">View the %d upcoming movies to be released in %s</string>
+    <string name="view_all_cast">View the full list with the %d cast members of this movie</string>
+    <string name="view_all_now_playing_movies">View the full list of %d movies that are now playing in theaters in %s</string>
+    <string name="view_all_recommended_movies">View the full list of %d recommendations, based on other users\' ratings</string>
+    <string name="view_all_this_week_released_movies">View the full list of %d movies to be released this week in %s</string>
+    <string name="view_all_upcoming_movies">View the full list of %d upcoming movies to be released in %s</string>
 
     <!-- MPAA movie age ratings from OMDB API -->
 

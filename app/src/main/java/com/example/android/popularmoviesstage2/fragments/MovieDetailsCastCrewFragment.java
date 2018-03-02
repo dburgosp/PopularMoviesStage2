@@ -19,6 +19,7 @@ import android.widget.CursorAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.PersonDetailsActivity;
@@ -54,7 +55,9 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     TextView castTitleTextView;
     @BindView(R.id.cast_view_all)
     TextView viewAllCastTextView;
-    @BindView(R.id.cast_recycler_view)
+    @BindView(R.id.cast_view_all_action)
+    TextView viewAllActionCastTextView;
+    @BindView(R.id.cast_recyclerview)
     RecyclerView castRecyclerView;
     @BindView(R.id.cast_title_layout)
     LinearLayout castLayout;
@@ -245,9 +248,23 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                     castAdapter.setCastArray(castArrayListAux);
                     castAdapter.notifyDataSetChanged();
 
-                    // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" + castArrayList.size() + ")";
-                    viewAllCastTextView.setText(viewAllText);
+                    // Set "view all" sections.
+                    View.OnClickListener onClickMoviesListener = new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getContext(), "View all clicked", Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    viewAllCastTextView.setOnClickListener(onClickMoviesListener);
+                    int totalResults = castArrayList.size();
+                    if (totalResults > CAST_CREW_MAX_ELEMENTS) {
+                        String viewAllText = getString(R.string.view_all_cast, totalResults);
+                        viewAllActionCastTextView.setText(viewAllText);
+                        viewAllActionCastTextView.setVisibility(View.VISIBLE);
+                        viewAllActionCastTextView.setOnClickListener(onClickMoviesListener);
+                    } else {
+                        viewAllActionCastTextView.setVisibility(View.GONE);
+                    }
                 } else {
                     // Hide section if there is no cast information for this movie.
                     castLinearLayout.setVisibility(View.GONE);
@@ -261,11 +278,6 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                 if (crewArrayList != null && crewArrayList.size() > 0) {
                     // Make this section visible.
                     crewLinearLayout.setVisibility(View.VISIBLE);
-
-                    // Set "view all" button.
-                    String viewAllText = getResources().getString(R.string.view_all) + " (" +
-                            crewArrayList.size() + ")";
-                    viewAllCrewTextView.setText(viewAllText);
 
                     /* -------------------- */
                     /* Directing department */

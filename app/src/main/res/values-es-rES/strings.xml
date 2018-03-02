@@ -5,7 +5,7 @@
     <string name="add_to_favorites">Añadir a mis favoritos</string>
     <string name="all_languages">Cualquier idioma</string>
     <string name="backdrops_title">Fondos</string>
-    <string name="belongs_to_collection">Es parte de</string>
+    <string name="belongs_to_collection">Parte de</string>
     <string name="budget_title">Presupuesto</string>
     <string name="cast_of_characters">Reparto principal</string>
     <string name="a_review_by">La opinión de</string>
@@ -73,9 +73,11 @@
     <string name="release_type_physical">Formato físico en %s</string>
     <string name="release_type_tv">TV en %s</string>
     <string name="movies_sort_by_released_this_week">Estrenos esta semana</string>
-    <string name="view_all_now_playing_movies">Ver las %d películas en cartelera actualmente en %s</string>
-    <string name="view_all_this_week_released_movies">Ver los %d estrenos de esta semana en cines en %s</string>
-    <string name="view_all_upcoming_movies">Ver los próximos %d estrenos de cine en %s</string>
+    <string name="view_all_cast">Ver la lista completa con los %d miembros del reparto de esta película</string>
+    <string name="view_all_now_playing_movies">Ver la lista completa con las %d películas en cartelera actualmente en %s</string>
+    <string name="view_all_recommended_movies">Ver la lista completa con las %d recomendaciones, basada en valoraciones de usuarios</string>
+    <string name="view_all_this_week_released_movies">Ver la lista completa con los %d estrenos de esta semana en cines en %s</string>
+    <string name="view_all_upcoming_movies">Ver la lista completa con los próximos %d estrenos de cine en %s</string>
 
     <!-- Plurals -->
 

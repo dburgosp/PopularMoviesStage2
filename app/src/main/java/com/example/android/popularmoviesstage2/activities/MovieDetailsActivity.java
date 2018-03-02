@@ -125,6 +125,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         };
         appBarLayout.addOnOffsetChangedListener(listener);
+        collapsingToolbarLayout.setElevation(0);
+        appBarLayout.setElevation(0);
+        toolbar.setElevation(0);
 
         // Write the basic movie info on activity_movie_details.xml header.
         setMovieInfo();

@@ -22,7 +22,7 @@
         android:id="@+id/info_collection_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/small_padding" />
+        android:paddingBottom="@dimen/tiny_padding" />
 
     <TextView
         android:id="@+id/info_collection_overview"
