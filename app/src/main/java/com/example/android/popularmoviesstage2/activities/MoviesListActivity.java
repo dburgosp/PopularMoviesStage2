@@ -47,7 +47,7 @@ public class MoviesListActivity extends AppCompatActivity
     @BindView(R.id.movies_list_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private ArrayList<Integer> genres = new ArrayList<>();
+    private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
     private int loaderId = -1, currentPage = 1;
@@ -76,6 +76,14 @@ public class MoviesListActivity extends AppCompatActivity
                     ": " + getIntent().getStringExtra("genreName");
             setTitle(title);
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
+        } else if (getIntent().hasExtra("keywordId") && getIntent().hasExtra("keywordName")) {
+            // Sorting movies by keyword. Create the keywords array with only one element, set the
+            // title for the activity using the keyword name and select the appropriate loader id.
+            keywords.add(getIntent().getIntExtra("keywordId", 0));
+            String title = getResources().getQuantityString(R.plurals.keywords, keywords.size()) +
+                    ": " + getIntent().getStringExtra("keywordName");
+            setTitle(title);
+            loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
         }
 
         if (loaderId >= 0) {
@@ -230,7 +238,6 @@ public class MoviesListActivity extends AppCompatActivity
      */
     @Override
     public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-        connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
         connectionStatusText.setVisibility(View.VISIBLE);
 
         if (NetworkUtils.isConnected(MoviesListActivity.this)) {
@@ -241,9 +248,16 @@ public class MoviesListActivity extends AppCompatActivity
             switch (id) {
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_SORT_BY_GENRE, currentPage,
+                            Tmdb.TMDB_SORT_BY_GENRES, currentPage,
                             Locale.getDefault().getLanguage(),
                             Locale.getDefault().getCountry(), genres);
+                    break;
+                }
+                case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
+                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
+                            Tmdb.TMDB_SORT_BY_KEYWORDS, currentPage,
+                            Locale.getDefault().getLanguage(),
+                            Locale.getDefault().getCountry(), keywords);
                     break;
                 }
                 default:
@@ -297,14 +311,12 @@ public class MoviesListActivity extends AppCompatActivity
                 moviesListAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
-                connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
                 connectionStatusText.setText(getResources().getString(R.string.no_results));
                 connectionStatusText.setVisibility(View.VISIBLE);
             }
         } else {
             // There is no connection. Show error message.
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
-            connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
             connectionStatusText.setText(getResources().getString(R.string.no_connection));
             connectionStatusText.setVisibility(View.VISIBLE);
         }

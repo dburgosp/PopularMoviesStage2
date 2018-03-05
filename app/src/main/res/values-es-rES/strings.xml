@@ -20,7 +20,6 @@
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>
     <string name="film_crew">Equipo destacado</string>
     <string name="full_size_image_description">Imagen a tamaño completo</string>
-    <string name="keywords_title">Etiquetas</string>
     <string name="most_popular">La más popular</string>
     <string name="movie_details_info">Información</string>
     <string name="movie_details_cast_crew">Reparto y equipo</string>
@@ -84,6 +83,11 @@
     <plurals name="genres">
         <item quantity="one">Género</item>
         <item quantity="other">Géneros</item>
+    </plurals>
+
+    <plurals name="keywords">
+        <item quantity="one">Palabra clave</item>
+        <item quantity="other">Palabras clave</item>
     </plurals>
 
     <plurals name="production_companies">

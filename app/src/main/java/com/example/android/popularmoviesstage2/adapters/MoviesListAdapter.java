@@ -20,11 +20,10 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -244,7 +243,7 @@ public class MoviesListAdapter
         TextView scoreTextView;
         @BindView(R.id.movie_list_popularity)
         TextView popularityTextView;
-        @BindView(R.id.movie_list_genres)
+        @BindView(R.id.movie_list_overview)
         TextView genresTextView;
 
         private Context context;
@@ -284,7 +283,7 @@ public class MoviesListAdapter
             writeMovieReleaseDate(currentTmdbMovie);
             writeMovieUsersRating(currentTmdbMovie);
             writeMoviePopularity(currentTmdbMovie);
-            writeMovieGenres(currentTmdbMovie);
+            writeMovieOverview(currentTmdbMovie);
 
             // Set the listener for click events.
             viewHolder.setOnClickListener(new View.OnClickListener() {
@@ -306,8 +305,8 @@ public class MoviesListAdapter
             if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
                 Picasso.with(context)
                         .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
+                        /*.memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .networkPolicy(NetworkPolicy.NO_CACHE)*/
                         .into(posterImageView);
             } else
                 posterImageView.setImageDrawable(context.getDrawable(R.drawable.default_poster));
@@ -418,8 +417,9 @@ public class MoviesListAdapter
             switch (resource) {
                 case R.layout.list_item_poster_vertical_layout_1:
                 case R.layout.list_item_poster_vertical_layout_2:
-                    // Popularity only for the specified layouts.
-                    String popularity = currentTmdbMovie.getPopularity().toString();
+                    // Popularity only for the specified layouts (two decimals).
+                    String popularity = String.format(Locale.getDefault(), "%.2f",
+                            currentTmdbMovie.getPopularity());
                     if (popularity != null && !popularity.equals("0.0") && !popularity.isEmpty()) {
                         // Set text.
                         popularityTextView.setText(popularity);
@@ -450,13 +450,33 @@ public class MoviesListAdapter
                         // Build the string with the genres list.
                         StringBuilder genresStringBuilder = new StringBuilder();
                         for (int i = 0; i < movieGenres.size(); i++) {
-                            genresStringBuilder.append(movieGenres.get(i));
+                            genresStringBuilder.append(movieGenres.get(i).getName());
                             if ((i + 1) < movieGenres.size())
                                 genresStringBuilder.append(",");
                         }
 
                         // Write the string.
                         genresTextView.setText(genresStringBuilder);
+                    } else
+                        genresTextView.setVisibility(View.GONE);
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * Helper method to write the overview of the movie.
+         *
+         * @param currentTmdbMovie is the {@link TmdbMovie} object with the movie info.
+         */
+        void writeMovieOverview(final TmdbMovie currentTmdbMovie) {
+            switch (resource) {
+                case R.layout.list_item_poster_vertical_layout_1:
+                case R.layout.list_item_poster_vertical_layout_2:
+                    // Overview only for the specified layouts.
+                    String overview = currentTmdbMovie.getOverview();
+                    if (overview != null && !overview.isEmpty() && !overview.equals("")) {
+                        genresTextView.setText(overview);
                     } else
                         genresTextView.setVisibility(View.GONE);
                 default:

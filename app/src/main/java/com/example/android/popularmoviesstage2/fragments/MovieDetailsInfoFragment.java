@@ -504,8 +504,6 @@ public class MovieDetailsInfoFragment extends Fragment
                     final TextView genreTextView =
                             (TextView) view.findViewById(R.id.flowlayout_textview);
                     genreTextView.setText(movieGenres.get(n).getName());
-                    genreTextView.setElevation(getContext().getResources().
-                            getDimensionPixelSize(R.dimen.separator));
                     genreTextView.setId(movieGenres.get(n).getId());
                     genresFlowLayout.addView(view);
 
@@ -519,6 +517,8 @@ public class MovieDetailsInfoFragment extends Fragment
                             intent.putExtra("genreId", genreTextView.getId());
                             intent.putExtra("genreName", genreTextView.getText());
                             startActivity(intent);
+                            view.setElevation(getContext().getResources().
+                                    getDimensionPixelSize(R.dimen.separator));
                         }
                     });
                 } catch (java.lang.NullPointerException e) {
@@ -954,18 +954,31 @@ public class MovieDetailsInfoFragment extends Fragment
                     View view = inflater.inflate(R.layout.list_item_flowlayout, null);
                     final TextView keywordTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
                     keywordTextView.setText(keywordsArrayList.get(n).getName());
+                    keywordTextView.setId(keywordsArrayList.get(n).getId());
                     keywordsFlowLayout.addView(view);
 
                     // Set a listener for managing click events on keywords.
                     keywordTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(getContext(), "Keyword clicked", Toast.LENGTH_SHORT).show();
+                            view.setElevation(getContext().getResources().
+                                    getDimensionPixelSize(R.dimen.small_padding));
+                            Intent intent = new Intent(getContext(), MoviesListActivity.class);
+                            intent.putExtra("keywordId", keywordTextView.getId());
+                            intent.putExtra("keywordName", keywordTextView.getText());
+                            startActivity(intent);
+                            keywordsFlowLayout.setElevation(getContext().getResources().
+                                    getDimensionPixelSize(R.dimen.separator));
                         }
                     });
                 } catch (NullPointerException e) {
                     Log.e(TAG, "(setKeywordsSection) Error inflating view for " + keywordsArrayList.get(n).getName());
                 }
+
+                // Set section title.
+                String keywordsTitle =
+                        getResources().getQuantityString(R.plurals.keywords, keywordsArrayList.size());
+                keywordsTitleTextView.setText(keywordsTitle);
             }
             return true;
         } else

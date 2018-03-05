@@ -21,7 +21,6 @@
     <string name="fetching_movie_info">Fetching movie information&#8230;</string>
     <string name="film_crew">Main film crew</string>
     <string name="full_size_image_description">Full size image</string>
-    <string name="keywords_title">Keywords</string>
     <string name="link_facebook">Facebook</string>
     <string name="link_home">Home</string>
     <string name="link_imdb">IMDB</string>
@@ -101,6 +100,11 @@
     <plurals name="genres">
         <item quantity="one">Genre</item>
         <item quantity="other">Genres</item>
+    </plurals>
+
+    <plurals name="keywords">
+        <item quantity="one">Keyword</item>
+        <item quantity="other">Keywords</item>
     </plurals>
 
     <plurals name="production_companies">

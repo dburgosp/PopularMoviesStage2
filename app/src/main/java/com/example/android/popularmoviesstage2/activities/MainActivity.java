@@ -522,7 +522,8 @@ public class MainActivity extends AppCompatActivity implements
         // Constructor for objects of this class.
         MainActivityMoviesList(int loaderId) {
             // Create an AsyncTaskLoader for retrieving the list of movies.
-            getSupportLoaderManager().initLoader(loaderId, null, this);
+            if (loaderId >= 0)
+                getSupportLoaderManager().initLoader(loaderId, null, this);
         }
 
         /* ------ */

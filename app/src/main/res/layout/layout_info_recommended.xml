@@ -125,10 +125,10 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/regular_padding"
             android:layout_marginStart="@dimen/regular_padding"
-            android:text="@string/keywords_title"
             android:textAllCaps="true"
             android:textSize="@dimen/normal_plus_text_size"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:text="Keywords" />
 
         <com.example.android.popularmoviesstage2.classes.FlowLayout
             android:id="@+id/info_keywords_flowlayout"

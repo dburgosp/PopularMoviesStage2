@@ -318,10 +318,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
             if (year != null && !year.equals("") && !year.isEmpty()) {
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title + " </big></strong>" +
-                        "<small><font color=\"#" + сolorString + "\">(" + year + ")</font></small>");
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
+                        " </big></strong><small><font color=\"#" + сolorString + "\">(" + year +
+                        ")</font></small>");
             } else
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title + "</big></strong>");
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
+                        "</big></strong>");
         else
             titleTextView.setText(getResources().getString(R.string.no_title));
 
@@ -337,7 +339,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
             int votes = movie.getVote_count();
             if (votes > 0) {
                 NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                votesTextView.setText(getResources().getQuantityString(R.plurals.score_votes, votes, numberFormat.format(votes)));
+                votesTextView.setText(getResources().getQuantityString(R.plurals.score_votes, votes,
+                        numberFormat.format(votes)));
             } else {
                 votesTextView.setVisibility(View.GONE);
             }

@@ -77,7 +77,7 @@
                 tools:text="Title of the movie with a length of more than one line" />
 
             <TextView
-                android:id="@+id/movie_list_genres"
+                android:id="@+id/movie_list_overview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

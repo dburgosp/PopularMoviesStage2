@@ -36,7 +36,8 @@ public class Tmdb {
     public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
     public final static String TMDB_SORT_BY_THIS_WEEK_RELEASES = "this_week_releases";
     public final static String TMDB_SORT_BY_FOR_BUY_AND_RENT = "buy_and_rent";
-    public final static String TMDB_SORT_BY_GENRE = "genre";
+    public final static String TMDB_SORT_BY_GENRES = "genre";
+    public final static String TMDB_SORT_BY_KEYWORDS = "keyword";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";
@@ -60,6 +61,7 @@ public class Tmdb {
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
     private final static String TMDB_PARAM_WITH_GENRES = "with_genres";
+    private final static String TMDB_PARAM_WITH_KEYWORDS = "with_keywords";
 
     // Values.
     public final static int TMDB_MAX_PAGES = 1000;
@@ -166,8 +168,8 @@ public class Tmdb {
                         .build();
                 break;
             }
-            case TMDB_SORT_BY_GENRE: {
-                // Get movies with genre = list of comma-separated values.
+            case TMDB_SORT_BY_GENRES: {
+                // Get movies with genres = list of comma-separated values.
                 StringBuilder genresStringBuilder = new StringBuilder();
                 for (int i = 0; i < values.size(); i++) {
                     genresStringBuilder.append(Integer.toString(values.get(i)));
@@ -179,6 +181,25 @@ public class Tmdb {
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_WITH_GENRES, genresStringBuilder.toString())
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .build();
+                break;
+            }
+            case TMDB_SORT_BY_KEYWORDS: {
+                // Get movies with keywords = list of comma-separated values.
+                StringBuilder keywordsStringBuilder = new StringBuilder();
+                for (int i = 0; i < values.size(); i++) {
+                    keywordsStringBuilder.append(Integer.toString(values.get(i)));
+                    if ((i + 1) < values.size())
+                        keywordsStringBuilder.append(",");
+                }
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, keywordsStringBuilder.toString())
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
@@ -386,12 +407,9 @@ public class Tmdb {
         // represents the list of genres which the movie belongs to.
         ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
         JSONArray genresArray = null;
-        if (!baseJSONResponse.isNull("genres"))
-            genresArray = baseJSONResponse.getJSONArray("genres");
-        else if (!baseJSONResponse.isNull("genre_ids"))
-            genresArray = baseJSONResponse.getJSONArray("genre_ids");
-        if (genresArray != null) {
+        if (!baseJSONResponse.isNull("genres")) {
             // For each genre in the array, create an {@link TmdbMovieGenre} object.
+            genresArray = baseJSONResponse.getJSONArray("genres");
             JSONObject currentGenre;
             for (int i = 0; i < genresArray.length(); i++) {
                 // Get a single genre at position i within the list of genres.
@@ -403,6 +421,17 @@ public class Tmdb {
 
                 // Create a new {@link TmdbMovieGenre} object and add it to the array.
                 TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, genre_name);
+                genres.add(genre);
+            }
+        } else if (!baseJSONResponse.isNull("genre_ids")) {
+            // We have only an array of integer genre identifiers.
+            genresArray = baseJSONResponse.getJSONArray("genre_ids");
+            for (int i = 0; i < genresArray.length(); i++) {
+                // Extract the int value of the genre identifier, which has no key.
+                int genre_id = (int) genresArray.get(i);
+
+                // Create a new {@link TmdbMovieGenre} object and add it to the array.
+                TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, "");
                 genres.add(genre);
             }
         }
@@ -420,6 +449,7 @@ public class Tmdb {
      * @return the {@link TmdbPerson} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
+
     private static TmdbPerson getPerson(JSONObject baseJSONResponse) throws JSONException {
         // Extract the required values for the corresponding keys.
         boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
@@ -1254,7 +1284,8 @@ public class Tmdb {
                 sortOrder.equals(TMDB_SORT_BY_UPCOMING) ||
                 sortOrder.equals(TMDB_SORT_BY_NOW_PLAYING) ||
                 sortOrder.equals(TMDB_SORT_BY_THIS_WEEK_RELEASES) ||
-                sortOrder.equals(TMDB_SORT_BY_GENRE);
+                sortOrder.equals(TMDB_SORT_BY_GENRES) ||
+                sortOrder.equals(TMDB_SORT_BY_KEYWORDS);
     }
 
     /**
