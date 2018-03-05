@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.popularmoviesstage2.activities.MoviesListActivity">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/movies_list_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movies_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@+id/movies_list_no_result_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/regular_padding"
+        android:textSize="@dimen/alert_text_size"
+        tools:text="Message to display when there are no search results" />
+
+    <ProgressBar
+        android:id="@+id/movies_list_loading_indicator"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movies_list_no_result_text_view"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

@@ -146,7 +146,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unbinder.unbind();
+        if (unbinder != null)
+            unbinder.unbind();
     }
 
     @Override

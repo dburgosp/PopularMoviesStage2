@@ -36,6 +36,7 @@ public class Tmdb {
     public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
     public final static String TMDB_SORT_BY_THIS_WEEK_RELEASES = "this_week_releases";
     public final static String TMDB_SORT_BY_FOR_BUY_AND_RENT = "buy_and_rent";
+    public final static String TMDB_SORT_BY_GENRE = "genre";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";
@@ -58,6 +59,7 @@ public class Tmdb {
     private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "release_date.gte";
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
+    private final static String TMDB_PARAM_WITH_GENRES = "with_genres";
 
     // Values.
     public final static int TMDB_MAX_PAGES = 1000;
@@ -87,10 +89,11 @@ public class Tmdb {
      * @param currentPage is the page number to fetch.
      * @param language    is the language of the results.
      * @param region      is the region for getting results.
+     * @param values      is the list of possible values for the sortBy parameter.
      * @return an array of {@link TmdbMovie} objects.
      */
     public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language,
-                                                     String region) {
+                                                     String region, ArrayList<Integer> values) {
         Log.i(TAG, "(getTmdbMovies) Sort by: " + sortBy + ". Page number: " +
                 currentPage + ". Language: " + language + ". Region: " + region);
 
@@ -163,6 +166,25 @@ public class Tmdb {
                         .build();
                 break;
             }
+            case TMDB_SORT_BY_GENRE: {
+                // Get movies with genre = list of comma-separated values.
+                StringBuilder genresStringBuilder = new StringBuilder();
+                for (int i = 0; i < values.size(); i++) {
+                    genresStringBuilder.append(Integer.toString(values.get(i)));
+                    if ((i + 1) < values.size())
+                        genresStringBuilder.append(",");
+                }
+                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, genresStringBuilder.toString())
+                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
+                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
+                        .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .build();
+                break;
+            }
             default: {
                 // Sort by "popular" or "top_rated" means only appending the sort string as a path
                 // to the url.
@@ -206,10 +228,11 @@ public class Tmdb {
         try {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(getMovie) No \"results\" section in the JSON string.");
+                Log.i(TAG, "(getTmdbMovies) No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -359,12 +382,15 @@ public class Tmdb {
         Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
         int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
 
-        // Extract the JSONArray associated with the key called "genres", which represents
-        // the list of genres which the movie belongs to.
+        // Extract the JSONArray associated with the key called "genres" or "genre_ids", which
+        // represents the list of genres which the movie belongs to.
         ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
-        if (!baseJSONResponse.isNull("genres")) {
-            JSONArray genresArray = baseJSONResponse.getJSONArray("genres");
-
+        JSONArray genresArray = null;
+        if (!baseJSONResponse.isNull("genres"))
+            genresArray = baseJSONResponse.getJSONArray("genres");
+        else if (!baseJSONResponse.isNull("genre_ids"))
+            genresArray = baseJSONResponse.getJSONArray("genre_ids");
+        if (genresArray != null) {
             // For each genre in the array, create an {@link TmdbMovieGenre} object.
             JSONObject currentGenre;
             for (int i = 0; i < genresArray.length(); i++) {
@@ -1049,15 +1075,15 @@ public class Tmdb {
                 // Extract only current country info.
                 String iso_3166_1 = NetworkUtils.getStringFromJSON(currentResultJSONObject, "iso_3166_1");
                 if (iso_3166_1.equals(currentCountry)) {
-                    // Extract the JSONArray associated with the key called "genres", which represents
-                    // the list of genres which the tmdbMovie belongs to.
+                    // Extract the JSONArray associated with the key called "release_dates", which
+                    // represents the list of releases related to the movie.
                     if (!currentResultJSONObject.isNull("release_dates")) {
                         JSONArray releaseDatesArray = currentResultJSONObject.getJSONArray("release_dates");
 
                         // For each release date in the array, create an {@link TmdbReleaseDate} object.
                         JSONObject currentReleaseDatesJSONObject;
                         for (int i = 0; i < releaseDatesArray.length(); i++) {
-                            // Get a single release date at position i within the list of genres.
+                            // Get a single release date at position i within the list of release dates.
                             currentReleaseDatesJSONObject = releaseDatesArray.getJSONObject(i);
 
                             // Extract the required values for the corresponding keys.
@@ -1227,7 +1253,8 @@ public class Tmdb {
                 sortOrder.equals(TMDB_SORT_BY_FAVORITES) ||
                 sortOrder.equals(TMDB_SORT_BY_UPCOMING) ||
                 sortOrder.equals(TMDB_SORT_BY_NOW_PLAYING) ||
-                sortOrder.equals(TMDB_SORT_BY_THIS_WEEK_RELEASES);
+                sortOrder.equals(TMDB_SORT_BY_THIS_WEEK_RELEASES) ||
+                sortOrder.equals(TMDB_SORT_BY_GENRE);
     }
 
     /**

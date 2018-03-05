@@ -98,15 +98,25 @@ public class MoviesFragment extends Fragment
 
         // Get arguments from calling activity.
         sortOrder = getArguments().getString("sortOrder");
-        loaderId = getLoaderId();
 
-        // Initialize variables, set the RecyclerView for displaying movie posters and create the
-        // AsyncTaskLoader for getting movies lists from TMDB in a separate thread.
-        initFragmentData();
-        if (getLoaderManager().getLoader(loaderId) == null)
-            getLoaderManager().initLoader(loaderId, null, this);
-        else
-            getLoaderManager().restartLoader(loaderId, null, this);
+        // Initialize variables, set the RecyclerView for displaying movie posters and set the
+        // SwipeRefreshLayout.
+        initVariables();
+        setRecyclerView();
+        setSwipeRefreshLayout();
+
+        // Create the AsyncTaskLoader for getting movies lists from TMDB in a separate thread.
+        loaderId = getLoaderId();
+        if (loaderId >= 0) {
+            // If there is a valid loaderId, check if we have to init or restart the loader.
+            if (getLoaderManager().getLoader(loaderId) == null)
+                getLoaderManager().initLoader(loaderId, null, this);
+            else
+                getLoaderManager().restartLoader(loaderId, null, this);
+        } else {
+            // If there is no valid loaderId, remove this fragment to exit.
+            getFragmentManager().beginTransaction().remove(this).commit();
+        }
 
         Log.i(TAG, "(onCreate) Fragment created");
         return rootView;
@@ -169,7 +179,8 @@ public class MoviesFragment extends Fragment
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
-            initFragmentData();
+            initVariables();
+            setRecyclerView();
             progressBar.setVisibility(View.INVISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
@@ -265,21 +276,23 @@ public class MoviesFragment extends Fragment
     /* HELPER METHODS */
     /* -------------- */
 
-    void initFragmentData() {
+    /**
+     * Helper method to init global variables.
+     */
+    void initVariables() {
         moviesArrayList = new ArrayList<>();
         currentScrollPosition = 0;
         currentPage = 1;
         loader = null;
         isLoading = false;
         appendToEnd = true;
-        setRecyclerView();
     }
 
     /**
      * Helper method for setting the RecyclerView in order to display a list of movies with a grid
      * arrangement.
      */
-    void setRecyclerView() {
+    private void setRecyclerView() {
         // Get current display metrics, depending on device rotation.
         final DisplayUtils displayUtils = new DisplayUtils(getContext());
 
@@ -361,14 +374,18 @@ public class MoviesFragment extends Fragment
                 }
             }
         });
+    }
 
-        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
-        // are at the top of the RecyclerViews and we need to reload previous movies.
+    /**
+     * Helper method to set a listener on the SwipeRefreshLayout that contains the RecyclerViews,
+     * just in case we are at the top of the RecyclerViews and we need to reload previous movies.
+     */
+    private void setSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        initFragmentData();
+                        initVariables();
                         getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
 /*                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
                         if (!isLoading && currentShownPage > 1) {

@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAdapter.MoviesFullListViewHolder> {
+public class MoviesFullListAdapter
+        extends RecyclerView.Adapter<MoviesFullListAdapter.MoviesFullListViewHolder> {
     private static final String TAG = MoviesFullListAdapter.class.getSimpleName();
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;
@@ -36,8 +37,8 @@ public class MoviesFullListAdapter extends RecyclerView.Adapter<MoviesFullListAd
      * @param heightPixels    is the height in pixels of a movie poster.
      * @param listener        is the listener for receiving the clicks.
      */
-    public MoviesFullListAdapter(ArrayList<TmdbMovie> moviesArrayList, int widthPixels, int heightPixels,
-                                 OnItemClickListener listener) {
+    public MoviesFullListAdapter(ArrayList<TmdbMovie> moviesArrayList, int widthPixels,
+                                 int heightPixels, OnItemClickListener listener) {
         Log.i(TAG, "(MoviesFullListAdapter) Object created");
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;

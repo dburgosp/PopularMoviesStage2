@@ -16,6 +16,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
     private ArrayList<TmdbMovie> moviesArray;
     private String sortBy, language, region;
     private int currentPage;
+    private ArrayList<Integer> values = new ArrayList<>();
 
     /**
      * Constructor for this class.
@@ -29,6 +30,25 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
                                      String language, String region) {
         super(context);
         this.sortBy = sortBy;
+        this.currentPage = currentPage;
+        this.language = language;
+        this.region = region;
+    }
+
+    /**
+     * Another constructor for this class.
+     *
+     * @param context     is the context of the activity.
+     * @param sortBy      is the sort order of the movies list.
+     * @param currentPage is the current page to fetch results from TMDB.
+     * @param language    is the language for retrieving results from TMDB.
+     * @param values      is the list of possible values to assign to the sortBy parameter.
+     */
+    public TmdbMoviesAsyncTaskLoader(Context context, String sortBy, int currentPage,
+                                     String language, String region, ArrayList<Integer> values) {
+        super(context);
+        this.sortBy = sortBy;
+        this.values = values;
         this.currentPage = currentPage;
         this.language = language;
         this.region = region;
@@ -59,7 +79,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      * the UI thread.  If implementations need to process the results on the UI thread
      * they may override {@link #deliverResult} and do so there.
      * <p>
-     * To support cancellation, this method should periodically check the value of
+     * To support cancellation, this method should periodically check the values of
      * {@link #isLoadInBackgroundCanceled} and terminate when it returns true.
      * Subclasses may also override {@link #cancelLoadInBackground} to interrupt the load
      * directly instead of polling {@link #isLoadInBackgroundCanceled}.
@@ -81,7 +101,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Sort by: " + sortBy + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(sortBy, currentPage, language, region);
+            return Tmdb.getTmdbMovies(sortBy, currentPage, language, region, values);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

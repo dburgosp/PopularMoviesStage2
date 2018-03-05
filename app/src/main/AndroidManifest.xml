@@ -32,33 +32,24 @@
             android:parentActivityName=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MovieDetailsActivity" />
         </activity>
         <activity
             android:name=".activities.FullSizeImageActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.MovieDetailsActivity"
             android:theme="@style/AppTheme.NoTitle">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MovieDetailsActivity" />
         </activity>
         <activity
             android:name=".activities.PersonDetailsActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MovieDetailsActivity" />
         </activity>
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.MoviesListActivity"/>
     </application>
-
 </manifest>

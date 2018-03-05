@@ -32,7 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.adapters.MoviesShortListAdapter;
+import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private boolean allowClicks = true;
     private Unbinder unbinder;
-    private MoviesShortListAdapter nowPlayingMoviesAdapter, thisWeekReleasesMoviesAdapter,
+    private MoviesListAdapter nowPlayingMoviesAdapter, thisWeekReleasesMoviesAdapter,
             upcomingMoviesAdapter;
     private ArrayList<TmdbMovie> nowPlayingMovies = null, thisWeekReleasesMovies = null,
             upcomingMovies = null;
@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Initially clear the layout, set the RecyclerViews and instantiate classes for retrieving
-        // the data from TMDB.
+        // Initially clear the layout, set the RecyclerViews and instantiate classes for opening new
+        // threads to retrieve data from TMDB.
         clearLayout();
         setRecyclerViews();
         new MainActivityMoviesList(NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
@@ -282,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements
                 SpaceItemDecoration.HORIZONTAL_SEPARATION));
 
         // Set the onClickMoviesListener for click events in the adapters.
-        MoviesShortListAdapter.OnItemClickListener movieListener =
-                new MoviesShortListAdapter.OnItemClickListener() {
+        MoviesListAdapter.OnItemClickListener movieListener =
+                new MoviesListAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(TmdbMovie movie, View clickedView) {
                         if (allowClicks) {
@@ -312,17 +312,17 @@ public class MainActivity extends AppCompatActivity implements
                 };
 
         // Set the Adapters for the RecyclerViews.
-        nowPlayingMoviesAdapter = new MoviesShortListAdapter(
+        nowPlayingMoviesAdapter = new MoviesListAdapter(
                 R.layout.list_item_poster_horizontal_layout_3, new ArrayList<TmdbMovie>(),
                 movieListener);
         nowPlayingMoviesRecyclerview.setAdapter(nowPlayingMoviesAdapter);
 
-        thisWeekReleasesMoviesAdapter = new MoviesShortListAdapter(
+        thisWeekReleasesMoviesAdapter = new MoviesListAdapter(
                 R.layout.list_item_poster_horizontal_layout_2, new ArrayList<TmdbMovie>(),
                 movieListener);
         thisWeekReleasesMoviesRecyclerview.setAdapter(thisWeekReleasesMoviesAdapter);
 
-        upcomingMoviesAdapter = new MoviesShortListAdapter(
+        upcomingMoviesAdapter = new MoviesListAdapter(
                 R.layout.list_item_poster_horizontal_layout_2, new ArrayList<TmdbMovie>(),
                 movieListener);
         upcomingMoviesRecyclerview.setAdapter(upcomingMoviesAdapter);
@@ -361,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements
 
             // Set the now playing movies list.
             if (nowPlayingMovies.size() > 0) {
-                nowPlayingMoviesAdapter.setMoviesArrayList(nowPlayingMovies);
+                nowPlayingMoviesAdapter.updateMoviesArrayList(nowPlayingMovies, true);
                 nowPlayingMoviesAdapter.notifyDataSetChanged();
             } else
                 nowPlayingMoviesRecyclerview.setVisibility(View.GONE);
@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements
 
             // Set the movies list.
             if (thisWeekReleasesMovies.size() > 0) {
-                thisWeekReleasesMoviesAdapter.setMoviesArrayList(thisWeekReleasesMovies);
+                thisWeekReleasesMoviesAdapter.updateMoviesArrayList(thisWeekReleasesMovies, true);
                 thisWeekReleasesMoviesAdapter.notifyDataSetChanged();
             } else
                 thisWeekReleasesMoviesRecyclerview.setVisibility(View.GONE);
@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements
             ArrayList<TmdbMovie> upcomingMoviesCopy = (ArrayList<TmdbMovie>) upcomingMovies.clone();
             upcomingMoviesCopy.remove(0);
             if (upcomingMoviesCopy.size() > 0) {
-                upcomingMoviesAdapter.setMoviesArrayList(upcomingMoviesCopy);
+                upcomingMoviesAdapter.updateMoviesArrayList(upcomingMoviesCopy, true);
                 upcomingMoviesAdapter.notifyDataSetChanged();
             } else
                 upcomingMoviesRecyclerview.setVisibility(View.GONE);
