@@ -204,7 +204,7 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbReview} objects, then add them to the adapter's
             // data set.
-            if (data != null && !data.isEmpty()) {
+            if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
                 reviewsAdapter.updateReviewsArray(data, appendToEnd);
                 reviewsAdapter.notifyDataSetChanged();

@@ -68,25 +68,9 @@ public class MoviesListActivity extends AppCompatActivity
         unbinder = ButterKnife.bind(this);
 
         // Read the sort parameter passed to this activity into the intent.
-        if (getIntent().hasExtra("genreId") && getIntent().hasExtra("genreName")) {
-            // Sorting movies by genre. Create the genres array with only one element, set the
-            // title for the activity using the genre name and select the appropriate loader id.
-            genres.add(getIntent().getIntExtra("genreId", 0));
-            String title = getResources().getQuantityString(R.plurals.genres, genres.size()) +
-                    ": " + getIntent().getStringExtra("genreName");
-            setTitle(title);
-            loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
-        } else if (getIntent().hasExtra("keywordId") && getIntent().hasExtra("keywordName")) {
-            // Sorting movies by keyword. Create the keywords array with only one element, set the
-            // title for the activity using the keyword name and select the appropriate loader id.
-            keywords.add(getIntent().getIntExtra("keywordId", 0));
-            String title = getResources().getQuantityString(R.plurals.keywords, keywords.size()) +
-                    ": " + getIntent().getStringExtra("keywordName");
-            setTitle(title);
-            loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
-        }
+        boolean sort = getParameters();
 
-        if (loaderId >= 0) {
+        if (sort && loaderId >= 0) {
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
             setRecyclerView();
@@ -94,8 +78,12 @@ public class MoviesListActivity extends AppCompatActivity
                 getSupportLoaderManager().initLoader(loaderId, null, this);
             else
                 getSupportLoaderManager().restartLoader(loaderId, null, this);
-        } else
-            finish();
+        } else {
+            // Nothing to search.
+            connectionStatusText.setText(getResources().getString(R.string.no_results));
+            connectionStatusText.setVisibility(View.VISIBLE);
+            connectionStatusLoadingIndicator.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -119,6 +107,35 @@ public class MoviesListActivity extends AppCompatActivity
         isLoading = false;
         appendToEnd = true;
         setRecyclerView();
+    }
+
+    /**
+     * Helper method to get the sort parameters passed to the activity into the intent. Initialize
+     * some global variables too.
+     *
+     * @return true if there is any sort parameter, false otherwise.
+     */
+    boolean getParameters() {
+        if (getIntent().hasExtra("genreId") && getIntent().hasExtra("genreName")) {
+            // Sorting movies by genre. Create the genres array with only one element, set the
+            // title for the activity using the genre name and select the appropriate loader id.
+            genres.add(getIntent().getIntExtra("genreId", 0));
+            String title = getResources().getQuantityString(R.plurals.genres, genres.size()) +
+                    ": " + getIntent().getStringExtra("genreName");
+            setTitle(title);
+            loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
+            return true;
+        } else if (getIntent().hasExtra("keywordId") && getIntent().hasExtra("keywordName")) {
+            // Sorting movies by keyword. Create the keywords array with only one element, set the
+            // title for the activity using the keyword name and select the appropriate loader id.
+            keywords.add(getIntent().getIntExtra("keywordId", 0));
+            String title = getResources().getQuantityString(R.plurals.keywords, keywords.size()) +
+                    ": " + getIntent().getStringExtra("keywordName");
+            setTitle(title);
+            loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
+            return true;
+        } else
+            return false;
     }
 
     /**
@@ -303,7 +320,7 @@ public class MoviesListActivity extends AppCompatActivity
         if (NetworkUtils.isConnected(MoviesListActivity.this)) {
             // If there is a valid result, then update its data into the current
             // {@link TmdbMovieDetails} object.
-            if (data != null) {
+            if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Get movies list and display it.

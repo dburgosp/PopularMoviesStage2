@@ -620,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements
             if (NetworkUtils.isConnected(MainActivity.this)) {
                 // If there is a valid result, then update its data into the current {@link TmdbMovieDetails}
                 // object.
-                if (data != null) {
+                if (data != null && !data.isEmpty() && data.size() > 0) {
                     Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                     // Get movies list and display it.

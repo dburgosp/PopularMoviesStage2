@@ -244,7 +244,7 @@ public class MoviesFragment extends Fragment
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
             // set.
-            if (data != null && !data.isEmpty()) {
+            if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
                 moviesFullListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesFullListAdapter.notifyDataSetChanged();

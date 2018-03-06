@@ -477,8 +477,8 @@ public class MoviesListAdapter
                     String overview = currentTmdbMovie.getOverview();
                     if (overview != null && !overview.isEmpty() && !overview.equals("")) {
                         genresTextView.setText(overview);
-                    } else
-                        genresTextView.setVisibility(View.GONE);
+                    }
+                    //else genresTextView.setVisibility(View.GONE);
                 default:
                     break;
             }
