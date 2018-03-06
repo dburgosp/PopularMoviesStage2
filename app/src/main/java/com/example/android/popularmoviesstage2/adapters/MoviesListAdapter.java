@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
@@ -34,7 +34,7 @@ public class MoviesListAdapter
     private final OnItemClickListener listener;
     private ArrayList<TmdbMovie> moviesArrayList;
     private int currentScrollPosition, currentPage, totalPages;
-    private FrameLayout.LayoutParams layoutParams;
+    private RelativeLayout.LayoutParams layoutParams;
     private @LayoutRes
     int resource;
 
@@ -74,7 +74,7 @@ public class MoviesListAdapter
         this.currentPage = 0;
         this.currentScrollPosition = 0;
         this.totalPages = 0;
-        this.layoutParams = new FrameLayout.LayoutParams(widthPixels, heightPixels);
+        this.layoutParams = new RelativeLayout.LayoutParams(widthPixels, heightPixels);
         Log.i(TAG, "(MoviesListAdapter) Object created");
     }
 
@@ -229,8 +229,8 @@ public class MoviesListAdapter
     /* ----------- */
 
     class MoviesListViewHolder extends RecyclerView.ViewHolder {
-
         private final String TAG = MoviesListViewHolder.class.getSimpleName();
+
         // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
         // cast the corresponding views.
         @BindView(R.id.movie_list_poster)
@@ -274,7 +274,7 @@ public class MoviesListAdapter
          */
         public void bind(final TmdbMovie currentTmdbMovie,
                          final MoviesListAdapter.OnItemClickListener listener,
-                         FrameLayout.LayoutParams layoutParams) {
+                         RelativeLayout.LayoutParams layoutParams) {
             Log.i(TAG, "(bind) Binding data for the current MoviesListViewHolder.");
 
             // Set movie info: poster, title, release date, users rating, popularity and genres.
@@ -302,21 +302,29 @@ public class MoviesListAdapter
          */
         void drawMoviePoster(final TmdbMovie currentTmdbMovie) {
             String posterPath = currentTmdbMovie.getPoster_path();
+            boolean imageLoaded;
             if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
                 Picasso.with(context)
                         .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
                         /*.memoryPolicy(MemoryPolicy.NO_CACHE)
                         .networkPolicy(NetworkPolicy.NO_CACHE)*/
                         .into(posterImageView);
-            } else
-                posterImageView.setImageDrawable(context.getDrawable(R.drawable.default_poster));
-
-            if (layoutParams != null) {
-                // Resize image to fit screen size and orientation.
-                posterImageView.setLayoutParams(layoutParams);
+                imageLoaded = true;
+            } else {
+                posterImageView.setImageDrawable(context.getDrawable(R.drawable.no_poster));
+                imageLoaded = false;
             }
 
+            // Special behaviour depending on the layout resource.
             switch (resource) {
+                case R.layout.list_item_poster_grid_layout_1: {
+                    // Movie title only for the specified layouts.
+                    if (imageLoaded)
+                        titleTextView.setVisibility(View.GONE);
+                    else
+                        titleTextView.setVisibility(View.VISIBLE);
+                    break;
+                }
                 case R.layout.list_item_poster_horizontal_layout_2: {
                     // Set transition name to the current ImageView, so it can be animated if
                     // clicked.
@@ -324,6 +332,13 @@ public class MoviesListAdapter
                             context.getResources().getString(R.string.transition_list_to_details));
                     break;
                 }
+                default:
+                    break;
+            }
+
+            // Resize image to fit screen size and orientation, if needed.
+            if (layoutParams != null) {
+                posterImageView.setLayoutParams(layoutParams);
             }
         }
 
@@ -334,6 +349,7 @@ public class MoviesListAdapter
          */
         void writeMovieTitle(final TmdbMovie currentTmdbMovie) {
             switch (resource) {
+                case R.layout.list_item_poster_grid_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_2:
                 case R.layout.list_item_poster_horizontal_layout_3:
@@ -357,6 +373,7 @@ public class MoviesListAdapter
          */
         void writeMovieUsersRating(final TmdbMovie currentTmdbMovie) {
             switch (resource) {
+                case R.layout.list_item_poster_grid_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_3:
                 case R.layout.list_item_poster_vertical_layout_1:
@@ -377,6 +394,7 @@ public class MoviesListAdapter
          */
         void writeMovieReleaseDate(final TmdbMovie currentTmdbMovie) {
             switch (resource) {
+                case R.layout.list_item_poster_grid_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_1:
                 case R.layout.list_item_poster_horizontal_layout_2:
                 case R.layout.list_item_poster_horizontal_layout_3:
@@ -398,9 +416,10 @@ public class MoviesListAdapter
                         releaseDateTextView.setText(releaseDate);
 
                         // Color grey for left drawable.
-                        TextViewUtils.setTintedCompoundDrawable(context, releaseDateTextView,
-                                TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
-                                R.color.colorGrey, R.dimen.tiny_padding);
+                        if (resource != R.layout.list_item_poster_grid_layout_1)
+                            TextViewUtils.setTintedCompoundDrawable(context, releaseDateTextView,
+                                    TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
+                                    R.color.colorGrey, R.dimen.tiny_padding);
                     } else
                         releaseDateTextView.setVisibility(View.GONE);
                 default:
@@ -415,6 +434,7 @@ public class MoviesListAdapter
          */
         void writeMoviePopularity(final TmdbMovie currentTmdbMovie) {
             switch (resource) {
+                case R.layout.list_item_poster_grid_layout_1:
                 case R.layout.list_item_poster_vertical_layout_1:
                 case R.layout.list_item_poster_vertical_layout_2:
                     // Popularity only for the specified layouts (two decimals).

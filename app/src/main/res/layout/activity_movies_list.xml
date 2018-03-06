@@ -3,13 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGrey"
+    android:background="@color/colorHighScoreBackground"
     tools:context="com.example.android.popularmoviesstage2.activities.MoviesListActivity">
+
+    <TextView
+        android:id="@+id/movies_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/tiny_padding"
+        android:paddingBottom="@dimen/small_padding"
+        android:paddingEnd="@dimen/normal_padding"
+        android:paddingStart="@dimen/normal_padding"
+        android:paddingTop="@dimen/small_padding"
+        android:textColor="@color/colorDarkWhite"
+        android:textSize="@dimen/alert_text_size"
+        tools:text="Search string" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/movies_list_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/movies_list_title">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movies_list_recyclerview"
@@ -21,8 +35,10 @@
         android:id="@+id/movies_list_no_result_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@id/movies_list_loading_indicator"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 
@@ -31,6 +47,15 @@
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/movies_list_no_result_text_view"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/movies_list_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/normal_padding"
+        android:src="@drawable/ic_sort_white_24dp" />
 </RelativeLayout>

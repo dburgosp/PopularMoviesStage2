@@ -24,6 +24,7 @@ import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -44,12 +45,15 @@ public class MoviesListActivity extends AppCompatActivity
     ProgressBar connectionStatusLoadingIndicator;
     @BindView(R.id.movies_list_no_result_text_view)
     TextView connectionStatusText;
+    @BindView(R.id.movies_list_title)
+    TextView titleTextView;
     @BindView(R.id.movies_list_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
+    private String sortBy;
     private int loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
@@ -60,7 +64,7 @@ public class MoviesListActivity extends AppCompatActivity
 
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        //getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
         getWindow().setEnterTransition(new Explode().setDuration(500));
         getWindow().setExitTransition(new Explode().setDuration(500));
 
@@ -120,18 +124,24 @@ public class MoviesListActivity extends AppCompatActivity
             // Sorting movies by genre. Create the genres array with only one element, set the
             // title for the activity using the genre name and select the appropriate loader id.
             genres.add(getIntent().getIntExtra("genreId", 0));
-            String title = getResources().getQuantityString(R.plurals.genres, genres.size()) +
-                    ": " + getIntent().getStringExtra("genreName");
-            setTitle(title);
+            sortBy = getIntent().getStringExtra("genreName");
+
+            // Set title for this activity.
+            setTitle(getResources().getString(R.string.sort_by_genre));
+
+            // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
             return true;
         } else if (getIntent().hasExtra("keywordId") && getIntent().hasExtra("keywordName")) {
             // Sorting movies by keyword. Create the keywords array with only one element, set the
             // title for the activity using the keyword name and select the appropriate loader id.
             keywords.add(getIntent().getIntExtra("keywordId", 0));
-            String title = getResources().getQuantityString(R.plurals.keywords, keywords.size()) +
-                    ": " + getIntent().getStringExtra("keywordName");
-            setTitle(title);
+            sortBy = getIntent().getStringExtra("keywordName");
+
+            // Set title for this activity.
+            setTitle(getResources().getString(R.string.sort_by_keyword));
+
+            // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
             return true;
         } else
@@ -255,12 +265,9 @@ public class MoviesListActivity extends AppCompatActivity
      */
     @Override
     public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-        connectionStatusText.setVisibility(View.VISIBLE);
-
         if (NetworkUtils.isConnected(MoviesListActivity.this)) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
-            connectionStatusText.setText(getString(R.string.fetching_info));
             connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
             switch (id) {
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
@@ -322,6 +329,15 @@ public class MoviesListActivity extends AppCompatActivity
             // {@link TmdbMovieDetails} object.
             if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                // Set subtitle with the sort string and the total number of results.
+                int labelColor = getResources().getColor(R.color.colorGrey);
+                String сolorString = String.format("%X", labelColor).substring(2);
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + sortBy +
+                        " </big></strong><small><font color=\"#" + сolorString + "\">(" +
+                        data.get(0).getTotal_results() + " " +
+                        getResources().getQuantityString(R.plurals.results, data.size()) +
+                        ")</font></small>");
 
                 // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);

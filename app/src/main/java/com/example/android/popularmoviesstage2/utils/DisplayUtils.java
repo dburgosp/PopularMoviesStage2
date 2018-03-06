@@ -40,7 +40,8 @@ public class DisplayUtils {
 
         // Get current display metrics.
         DisplayMetrics metrics = new DisplayMetrics();
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager =
+                (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         try {
             windowManager.getDefaultDisplay().getMetrics(metrics);
 
@@ -97,10 +98,12 @@ public class DisplayUtils {
         // Number of columns for the movies list in the RecyclerView (spanCount) is different
         // depending on device rotation, so poster width and height for this list also depend on
         // device rotation.
-        fullListPosterWidthPixels = displayWidthPixels / spanCount;
+        fullListPosterWidthPixels = (displayWidthPixels - 4) / spanCount;
         fullListPosterHeightPixels = 3 * fullListPosterWidthPixels / 2;
-        Log.i(TAG, "Poster width for movies full list with no margins: " + fullListPosterWidthPixels);
-        Log.i(TAG, "Poster height for movies full list with no margins: " + fullListPosterHeightPixels);
+        Log.i(TAG, "Poster width for movies full list with no margins: " +
+                fullListPosterWidthPixels);
+        Log.i(TAG, "Poster height for movies full list with no margins: " +
+                fullListPosterHeightPixels);
 
         // Sizes for backdrops.
         fullDisplayBackdropWidthPixels = displayWidthPixels;

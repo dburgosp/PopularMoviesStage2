@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/small_padding"
     android:background="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="@dimen/tiny_padding"
     app:cardElevation="@dimen/separator">
 
     <LinearLayout
@@ -18,10 +17,9 @@
             android:id="@+id/movie_list_poster"
             android:layout_width="@dimen/poster_width"
             android:layout_height="@dimen/poster_height"
-            android:background="@color/colorGrey"
+            android:background="@drawable/no_poster"
             android:contentDescription="@string/content_description_poster"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_poster" />
+            android:scaleType="centerCrop" />
 
         <View
             android:layout_width="match_parent"

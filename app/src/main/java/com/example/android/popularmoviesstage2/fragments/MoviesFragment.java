@@ -22,10 +22,11 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
-import com.example.android.popularmoviesstage2.adapters.MoviesFullListAdapter;
+import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -53,7 +54,7 @@ public class MoviesFragment extends Fragment
 
     private boolean allowClicks = true;
     private String sortOrder = Tmdb.TMDB_SORT_BY_NOW_PLAYING;
-    private MoviesFullListAdapter moviesFullListAdapter;
+    private MoviesListAdapter moviesListAdapter;
     private int currentPage = 1, currentScrollPosition = 0, loaderId = 0;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
@@ -246,8 +247,8 @@ public class MoviesFragment extends Fragment
             // set.
             if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
-                moviesFullListAdapter.updateMoviesArrayList(data, appendToEnd);
-                moviesFullListAdapter.notifyDataSetChanged();
+                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
+                moviesListAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
@@ -304,9 +305,13 @@ public class MoviesFragment extends Fragment
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(
+                1,
+                SpaceItemDecoration.HORIZONTAL_VERTICAL_SEPARATION,
+                displayUtils.getSpanCount()));
 
         // Set the listener for click events in the Adapter.
-        MoviesFullListAdapter.OnItemClickListener listener = new MoviesFullListAdapter.OnItemClickListener() {
+        MoviesListAdapter.OnItemClickListener listener = new MoviesListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
                 if (allowClicks) {
@@ -332,11 +337,12 @@ public class MoviesFragment extends Fragment
 
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
-        moviesFullListAdapter = new MoviesFullListAdapter(moviesArrayList,
+        moviesListAdapter = new MoviesListAdapter(R.layout.list_item_poster_grid_layout_1,
+                moviesArrayList,
                 displayUtils.getFullListPosterWidthPixels(),
                 displayUtils.getFullListPosterHeightPixels(),
                 listener);
-        recyclerView.setAdapter(moviesFullListAdapter);
+        recyclerView.setAdapter(moviesListAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to
         // load another page of results.
@@ -358,7 +364,7 @@ public class MoviesFragment extends Fragment
                 int visibleItemCount = gridLayoutManager.getChildCount();
                 int totalItemCount = gridLayoutManager.getItemCount();
                 int firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition();
-                int totalPages = moviesFullListAdapter.getTotalPages();
+                int totalPages = moviesListAdapter.getTotalPages();
 
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
@@ -387,7 +393,7 @@ public class MoviesFragment extends Fragment
                     public void onRefresh() {
                         initVariables();
                         getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
-/*                        int currentShownPage = moviesFullListAdapter.getCurrentPage();
+/*                        int currentShownPage = moviesListAdapter.getCurrentPage();
                         if (!isLoading && currentShownPage > 1) {
                             // If we are at the top of the list and we are showing a page number
                             // bigger than 1, we need to reload the previous page of results. The

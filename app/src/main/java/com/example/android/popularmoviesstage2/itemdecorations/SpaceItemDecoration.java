@@ -10,7 +10,8 @@ import android.view.View;
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     public static final int HORIZONTAL_SEPARATION = 0;
     public static final int VERTICAL_SEPARATION = 1;
-    private final int spaceSeparation, orientation;
+    public static final int HORIZONTAL_VERTICAL_SEPARATION = 2;
+    private final int spaceSeparation, orientation, spanCount;
 
     /**
      * Constructor for elements of this class.
@@ -22,23 +23,56 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     public SpaceItemDecoration(int spaceSeparation, int orientation) {
         this.spaceSeparation = spaceSeparation;
         this.orientation = orientation;
+        this.spanCount = 0;
+    }
+
+    /**
+     * Another constructor for elements of this class.
+     *
+     * @param spaceSeparation is the vertical or horizontal separation to apply.
+     * @param orientation     indicates the orientation to apply the vertical (VERTICAL_SEPARATION)
+     *                        or horizontal (HORIZONTAL_SEPARATION) separation.
+     * @param spanCount       is the number of columns if we are using a GridLayout.
+     */
+    public SpaceItemDecoration(int spaceSeparation, int orientation, int spanCount) {
+        this.spaceSeparation = spaceSeparation;
+        this.orientation = orientation;
+        this.spanCount = spanCount;
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
-        if (orientation == VERTICAL_SEPARATION) {
-            // Add bottom margin to every element and top margin only to the first element..
-            outRect.bottom = spaceSeparation;
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.top = spaceSeparation;
+        switch (orientation) {
+            case VERTICAL_SEPARATION:
+                addBottomMargin(outRect, view, parent);
+                break;
+            case HORIZONTAL_VERTICAL_SEPARATION: {
+                addBottomMargin(outRect, view, parent);
+                addEndMargin(outRect, view, parent);
+                break;
             }
-        } else {
-            // Add end margin to every element and start margin only to the first element.
-            outRect.right = spaceSeparation;
-            if (parent.getChildAdapterPosition(view) == 0) {
-                outRect.left = spaceSeparation;
+            default: {
+                addEndMargin(outRect, view, parent);
             }
+        }
+    }
+
+    private void addBottomMargin(Rect outRect, View view, RecyclerView parent) {
+        // Add bottom margin to every element and top margin only to the first element..
+        outRect.bottom = spaceSeparation;
+        if (parent.getChildAdapterPosition(view) == 0) {
+            outRect.top = spaceSeparation;
+        }
+    }
+
+    private void addEndMargin(Rect outRect, View view, RecyclerView parent) {
+        // Add end margin to every element and start margin only to the first element (or to every
+        // first element of every row, if we are using a GridLayout).
+        outRect.right = spaceSeparation;
+        if (parent.getChildAdapterPosition(view) == 0 ||
+                (spanCount > 0 && parent.getChildAdapterPosition(view) % spanCount == 0)) {
+            outRect.left = spaceSeparation;
         }
     }
 }

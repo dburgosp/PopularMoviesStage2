@@ -52,6 +52,8 @@
     <string name="runtime">Duración</string>
     <string name="score_title">Valoración TMDB</string>
     <string name="share_this">Comparte</string>
+    <string name="sort_by_genre">Filtro por género</string>
+    <string name="sort_by_keyword">Filtro por palabra clave</string>
     <string name="sort_order_changed">La clasificación se ha cambiado a %s</string>
     <string name="spoken_languages">Otros idiomas en versión original</string>
     <string name="synopsis">Sinopsis</string>
@@ -103,6 +105,11 @@
     <plurals name="release_dates">
         <item quantity="one">Fecha de lanzamiento</item>
         <item quantity="other">Fechas de lanzamiento</item>
+    </plurals>
+
+    <plurals name="results">
+        <item quantity="one">resultado</item>
+        <item quantity="other">resultados</item>
     </plurals>
 
     <plurals name="score_votes">

@@ -74,6 +74,8 @@
     <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
     <string name="score_metacritic">Metacritic</string>
     <string name="share_this">Share this</string>
+    <string name="sort_by_genre">Sort by genre</string>
+    <string name="sort_by_keyword">Sort by keyword</string>
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="spoken_languages">Also spoken</string>
     <string name="string_hours">h</string>
@@ -120,6 +122,11 @@
     <plurals name="release_dates">
         <item quantity="one">Release date</item>
         <item quantity="other">Release dates</item>
+    </plurals>
+
+    <plurals name="results">
+        <item quantity="one">result</item>
+        <item quantity="other">results</item>
     </plurals>
 
     <plurals name="score_votes">
