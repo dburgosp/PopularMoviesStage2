@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -160,8 +161,9 @@ public class MainActivity extends AppCompatActivity implements
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());
+        Transition transition = new Explode().setDuration(250);
+        getWindow().setEnterTransition(transition);
+        getWindow().setExitTransition(transition);
 
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);

@@ -14,8 +14,6 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.TmdbVideo;
 import com.example.android.popularmoviesstage2.classes.YouTube;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,8 +21,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.support.v4.content.ContextCompat.getDrawable;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosViewHolder> {
     private static final String TAG = VideosAdapter.class.getSimpleName();
@@ -168,23 +164,22 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
          * Helper method for setting TmdbVideo information for the current VideosViewHolder from the
          * {@link VideosAdapter#onBindViewHolder(VideosViewHolder, int)} method.
          *
-         * @param currentTmdbVideo is the TmdbVideo object attached to the current VideosViewHolder element.
+         * @param currentTmdbVideo is the TmdbVideo object attached to the current VideosViewHolder
+         *                         element.
          * @param listener         is the listener for click events.
          */
-        public void bind(final TmdbVideo currentTmdbVideo, final VideosAdapter.OnItemClickListener listener) {
+        public void bind(final TmdbVideo currentTmdbVideo,
+                         final VideosAdapter.OnItemClickListener listener) {
             Log.i(TAG, "(bind) Binding data for the current VideosViewHolder.");
 
             // Draw backdrop image for current video.
             String videoImagePath = currentTmdbVideo.getKey();
-            if (videoImagePath != null && !videoImagePath.equals("") && !videoImagePath.isEmpty()) {
-                String posterPath = YouTube.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath + YouTube.YOUTUBE_VIDEO_MQDEFAULT_IMAGE;
-                Picasso.with(context)
-                        .load(posterPath)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(videoImageView);
-            } else
-                videoImageView.setImageDrawable(getDrawable(context, R.drawable.no_movie));
+            Picasso.with(context)
+                    .load(YouTube.YOUTUBE_VIDEO_PREVIEW_URL + videoImagePath +
+                            YouTube.YOUTUBE_VIDEO_MQDEFAULT_IMAGE)
+                    .placeholder(R.drawable.no_movie)
+                    .error(R.drawable.no_movie)
+                    .into(videoImageView);
 
             // Set video name.
             nameTextView.setText(currentTmdbVideo.getName());
@@ -193,7 +188,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
             String language = currentTmdbVideo.getIso_639_1();
             if (language != null && !language.equals("")) {
                 Locale locale = new Locale(language);
-                language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() + locale.getDisplayLanguage().substring(1);
+                language = locale.getDisplayLanguage().substring(0, 1).toUpperCase() +
+                        locale.getDisplayLanguage().substring(1);
             } else
                 language = context.getResources().getString(R.string.no_language);
             TextViewUtils.setHtmlText(languageTextView, language);

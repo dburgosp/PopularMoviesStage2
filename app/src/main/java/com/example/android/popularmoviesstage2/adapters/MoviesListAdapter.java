@@ -301,21 +301,13 @@ public class MoviesListAdapter
          * @param currentTmdbMovie is the {@link TmdbMovie} object with the movie info.
          */
         void drawMoviePoster(final TmdbMovie currentTmdbMovie) {
-            if (currentTmdbMovie.getId() == 463272)
-                Log.i(TAG, "Johnny English 5");
             String posterPath = currentTmdbMovie.getPoster_path();
-            boolean imageLoaded;
-            if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
-                Picasso.with(context)
-                        .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
-                        /*.memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)*/
-                        .into(posterImageView);
-                imageLoaded = true;
-            } else {
-                posterImageView.setImageDrawable(context.getDrawable(R.drawable.no_poster));
-                imageLoaded = false;
-            }
+            Picasso.with(context)
+                    .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
+                    .placeholder(R.drawable.no_movie_poster)
+                    .error(R.drawable.no_movie_poster)
+                    .into(posterImageView);
+            boolean imageLoaded = (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty());
 
             // Special behaviour depending on the layout resource.
             switch (resource) {
@@ -493,8 +485,6 @@ public class MoviesListAdapter
          * @param currentTmdbMovie is the {@link TmdbMovie} object with the movie info.
          */
         void writeMovieOverview(final TmdbMovie currentTmdbMovie) {
-            if (currentTmdbMovie.getId() == 335977)
-                Log.i(TAG, "Indiana Jones 5");
             switch (resource) {
                 case R.layout.list_item_poster_vertical_layout_1:
                 case R.layout.list_item_poster_vertical_layout_2:

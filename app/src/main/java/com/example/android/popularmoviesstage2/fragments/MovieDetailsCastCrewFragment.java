@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,10 +47,13 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     private static final String TAG = MovieDetailsCastCrewFragment.class.getSimpleName();
     private static final int CAST_CREW_MAX_ELEMENTS = 10;
 
+    @BindView(R.id.cast_crew_no_result_image_view)
+    ImageView noResultsImageView;
     @BindView(R.id.cast_crew_no_result_text_view)
     TextView noResultsTextView;
     @BindView(R.id.cast_crew_loading_indicator)
     ProgressBar progressBar;
+
     @BindView(R.id.cast_layout)
     LinearLayout castLinearLayout;
     @BindView(R.id.cast_title)
@@ -170,10 +174,12 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
             noResultsTextView.setText(getString(R.string.fetching_cast_crew_info));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
+            noResultsImageView.setVisibility(View.GONE);
             Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId);
             return new TmdbCastCrewAsyncTaskLoader(getContext(), movieId);
         } else {
             // There is no connection. Show error message.
+            noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
@@ -223,123 +229,31 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     @Override
     public void onLoadFinished(Loader<TmdbCastCrew> loader, TmdbCastCrew data) {
         // Hide progress bar.
-        progressBar.setVisibility(View.INVISIBLE);
-        noResultsTextView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        noResultsTextView.setVisibility(View.GONE);
+        noResultsImageView.setVisibility(View.GONE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbCastCrew} objects, then add them to the
             // adapters' data sets.
-            if (data != null) {
+            if (data != null && data.getCast().size() > 0 && data.getCrew().size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                /* ------------------ */
-                /* Cast of characters */
-                /* ------------------ */
-                ArrayList<TmdbCast> castArrayList = data.getCast();
-                if (castArrayList != null && castArrayList.size() > 0) {
-                    // Make this section visible.
-                    castLinearLayout.setVisibility(View.VISIBLE);
-
-                    // Show only the first CAST_CREW_MAX_ELEMENTS elements of this array list.
-                    ArrayList<TmdbCast> castArrayListAux = new ArrayList<>();
-                    int i = 0;
-                    while ((i < CAST_CREW_MAX_ELEMENTS) && (i < castArrayList.size())) {
-                        castArrayListAux.add(castArrayList.get(i));
-                        i++;
-                    }
-                    castAdapter.setCastArray(castArrayListAux);
-                    castAdapter.notifyDataSetChanged();
-
-                    // Set "view all" sections.
-                    View.OnClickListener onClickMoviesListener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Toast.makeText(getContext(), "View all clicked", Toast.LENGTH_SHORT).show();
-                        }
-                    };
-                    viewAllCastTextView.setOnClickListener(onClickMoviesListener);
-                    int totalResults = castArrayList.size();
-                    if (totalResults > CAST_CREW_MAX_ELEMENTS) {
-                        String viewAllText = getString(R.string.view_all_cast, totalResults);
-                        viewAllActionCastTextView.setText(viewAllText);
-                        viewAllActionCastCardView.setVisibility(View.VISIBLE);
-                        viewAllActionCastCardView.setOnClickListener(onClickMoviesListener);
-                    } else {
-                        viewAllActionCastCardView.setVisibility(View.GONE);
-                    }
-                } else {
-                    // Hide section if there is no cast information for this movie.
-                    castLinearLayout.setVisibility(View.GONE);
-                    separatorView.setVisibility(View.GONE);
-                }
-
-                /* --------- */
-                /* Film crew */
-                /* --------- */
-                ArrayList<TmdbCrew> crewArrayList = data.getCrew();
-                if (crewArrayList != null && crewArrayList.size() > 0) {
-                    // Make this section visible.
-                    crewLinearLayout.setVisibility(View.VISIBLE);
-
-                    /* -------------------- */
-                    /* Directing department */
-                    /* -------------------- */
-
-                    // Get an array list with only the crew members of the directing department.
-                    ArrayList<TmdbCrew> crewDirectingArrayList =
-                            getFilteredCrewArrayList(crewArrayList, "Directing");
-
-                    // Set the corresponding crew section if there is data.
-                    if (crewDirectingArrayList.size() > 0) {
-                        directingDepartmentAdapter.setCrewArray(crewDirectingArrayList);
-                        directingDepartmentAdapter.notifyDataSetChanged();
-                    } else {
-                        // Hide recycler view if there is no information for the current department.
-                        directingDepartmentRecyclerView.setVisibility(View.GONE);
-                    }
-
-                    /* ------------------ */
-                    /* Writing department */
-                    /* ------------------ */
-
-                    // Get an array list with only the crew members of the writing department.
-                    ArrayList<TmdbCrew> crewWritingArrayList =
-                            getFilteredCrewArrayList(crewArrayList, "Writing");
-
-                    // Set the corresponding crew section if there is data.
-                    boolean writingCrewIsSet = setCrewTextView(crewWritingArrayList,
-                            writingDepartmentTextView, getString(R.string.department_writing));
-
-                    /* --------------------- */
-                    /* Production department */
-                    /* --------------------- */
-
-                    // Get an array list with only the crew members of the production department.
-                    ArrayList<TmdbCrew> crewProductionArrayList =
-                            getFilteredCrewArrayList(crewArrayList, "Production");
-
-                    // Set the corresponding crew section if there is data.
-                    boolean productionCrewIsSet = setCrewTextView(crewProductionArrayList,
-                            productionDepartmentTextView, getString(R.string.department_production));
-
-                    // Hide writing and production CardView if there is no information to display.
-                    if (!writingCrewIsSet && !productionCrewIsSet)
-                        writingProductionLayout.setVisibility(View.GONE);
-                } else {
-                    // Hide section if there is no crew information for this movie.
-                    separatorView.setVisibility(View.GONE);
-                    crewLinearLayout.setVisibility(View.GONE);
-                }
+                // Show cast & crew info.
+                setCast(data.getCast());
+                setCrew(data.getCrew());
             } else {
                 // Loader has not returned a valid list of {@link TmdbCastCrew} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
+                noResultsImageView.setVisibility(View.VISIBLE);
+                noResultsTextView.setText(getContext().getResources().getString(R.string.no_cast_crew));
                 noResultsTextView.setVisibility(View.VISIBLE);
-                noResultsTextView.setText(getResources().getString(R.string.no_results));
             }
         } else {
             // There is no connection. Show error message.
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
 
@@ -426,6 +340,111 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     }
 
     /**
+     * Helper method to set the cast section.
+     *
+     * @param castArrayList is the list of cast members.
+     */
+    private void setCast(ArrayList<TmdbCast> castArrayList) {
+        if (castArrayList != null && castArrayList.size() > 0) {
+            // Make this section visible.
+            castLinearLayout.setVisibility(View.VISIBLE);
+
+            // Show only the first CAST_CREW_MAX_ELEMENTS elements of this array list.
+            ArrayList<TmdbCast> castArrayListAux = new ArrayList<>();
+            int i = 0;
+            while ((i < CAST_CREW_MAX_ELEMENTS) && (i < castArrayList.size())) {
+                castArrayListAux.add(castArrayList.get(i));
+                i++;
+            }
+            castAdapter.setCastArray(castArrayListAux);
+            castAdapter.notifyDataSetChanged();
+
+            // Set "view all" sections.
+            View.OnClickListener onClickMoviesListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), "View all clicked", Toast.LENGTH_SHORT).show();
+                }
+            };
+            viewAllCastTextView.setOnClickListener(onClickMoviesListener);
+            int totalResults = castArrayList.size();
+            if (totalResults > CAST_CREW_MAX_ELEMENTS) {
+                String viewAllText = getString(R.string.view_all_cast, totalResults);
+                viewAllActionCastTextView.setText(viewAllText);
+                viewAllActionCastCardView.setVisibility(View.VISIBLE);
+                viewAllActionCastCardView.setOnClickListener(onClickMoviesListener);
+            } else {
+                viewAllActionCastCardView.setVisibility(View.GONE);
+            }
+        } else {
+            // Hide section if there is no cast information for this movie.
+            castLinearLayout.setVisibility(View.GONE);
+            separatorView.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Helper method to set the crew section.
+     *
+     * @param crewArrayList is the list of crew members.
+     */
+    private void setCrew(ArrayList<TmdbCrew> crewArrayList) {
+        if (crewArrayList != null && crewArrayList.size() > 0) {
+            // Make this section visible.
+            crewLinearLayout.setVisibility(View.VISIBLE);
+
+            /* -------------------- */
+            /* Directing department */
+            /* -------------------- */
+
+            // Get an array list with only the crew members of the directing department.
+            ArrayList<TmdbCrew> crewDirectingArrayList =
+                    getFilteredCrewArrayList(crewArrayList, "Directing");
+
+            // Set the corresponding crew section if there is data.
+            if (crewDirectingArrayList.size() > 0) {
+                directingDepartmentAdapter.setCrewArray(crewDirectingArrayList);
+                directingDepartmentAdapter.notifyDataSetChanged();
+            } else {
+                // Hide recycler view if there is no information for the current department.
+                directingDepartmentRecyclerView.setVisibility(View.GONE);
+            }
+
+            /* ------------------ */
+            /* Writing department */
+            /* ------------------ */
+
+            // Get an array list with only the crew members of the writing department.
+            ArrayList<TmdbCrew> crewWritingArrayList =
+                    getFilteredCrewArrayList(crewArrayList, "Writing");
+
+            // Set the corresponding crew section if there is data.
+            boolean writingCrewIsSet = setCrewTextView(crewWritingArrayList,
+                    writingDepartmentTextView, getString(R.string.department_writing));
+
+            /* --------------------- */
+            /* Production department */
+            /* --------------------- */
+
+            // Get an array list with only the crew members of the production department.
+            ArrayList<TmdbCrew> crewProductionArrayList =
+                    getFilteredCrewArrayList(crewArrayList, "Production");
+
+            // Set the corresponding crew section if there is data.
+            boolean productionCrewIsSet = setCrewTextView(crewProductionArrayList,
+                    productionDepartmentTextView, getString(R.string.department_production));
+
+            // Hide writing and production CardView if there is no information to display.
+            if (!writingCrewIsSet && !productionCrewIsSet)
+                writingProductionLayout.setVisibility(View.GONE);
+        } else {
+            // Hide section if there is no crew information for this movie.
+            separatorView.setVisibility(View.GONE);
+            crewLinearLayout.setVisibility(View.GONE);
+        }
+    }
+
+    /**
      * Helper method to manage crew elements filtered by department.
      *
      * @param crewArrayList is the original array of crew elements.
@@ -433,7 +452,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
      * @return an ArrayList containing at most CAST_CREW_MAX_ELEMENTS crew elements filtered by the
      * given department.
      */
-    ArrayList<TmdbCrew> getFilteredCrewArrayList(ArrayList<TmdbCrew> crewArrayList, String department) {
+    private ArrayList<TmdbCrew> getFilteredCrewArrayList(ArrayList<TmdbCrew> crewArrayList, String department) {
         ArrayList<TmdbCrew> crewArrayListByDepartment = new ArrayList<>();
 
         // The output array will contain at most CAST_CREW_MAX_ELEMENTS crew elements.

@@ -7,7 +7,8 @@ public class YouTube {
     private final static String TAG = YouTube.class.getSimpleName();
 
     // URLs.
-    public final static String YOUTUBE_BASE_URL = "https://youtube.com/watch?v=";
+    public final static String YOUTUBE_SEARCH_VIDEOS_URL = "https://www.youtube.com/results?search_query=";
+    public final static String YOUTUBE_WATCH_VIDEO_URL = "https://youtube.com/watch?v=";
     public final static String YOUTUBE_VIDEO_PREVIEW_URL = "https://img.youtube.com/vi/";
     public final static String YOUTUBE_VIDEO_MQDEFAULT_IMAGE = "/mqdefault.jpg";
 

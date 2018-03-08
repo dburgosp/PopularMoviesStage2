@@ -17,7 +17,7 @@
             android:id="@+id/movie_list_poster"
             android:layout_width="@dimen/small_poster_width"
             android:layout_height="@dimen/small_poster_height"
-            android:background="@drawable/no_poster"
+            android:background="@drawable/no_movie_poster"
             android:contentDescription="@string/content_description_poster"
             android:scaleType="centerCrop" />
 

@@ -18,10 +18,9 @@
             android:id="@+id/movie_list_poster"
             android:layout_width="@dimen/poster_width"
             android:layout_height="@dimen/poster_height"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/no_movie_poster"
             android:contentDescription="@string/content_description_poster"
-            android:scaleType="centerCrop"
-            android:src="@drawable/default_poster" />
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/movie_list_title"

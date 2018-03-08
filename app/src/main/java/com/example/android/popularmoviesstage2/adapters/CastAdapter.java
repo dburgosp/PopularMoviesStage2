@@ -13,16 +13,12 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbCast;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.support.v4.content.ContextCompat.getDrawable;
 
 public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder> {
     private static final String TAG = CastAdapter.class.getSimpleName();
@@ -34,7 +30,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      * Constructor for this class.
      *
      * @param tmdbCastArrayList is the list of persons that will be represented into the adapter.
-     * @param listener      is the listener for receiving the clicks.
+     * @param listener          is the listener for receiving the clicks.
      */
     public CastAdapter(ArrayList<TmdbCast> tmdbCastArrayList, OnItemClickListener listener) {
         this.tmdbCastArrayList = tmdbCastArrayList;
@@ -187,16 +183,12 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
             Log.i(TAG, "(bind) Binding data for the current CastViewHolder.");
 
             // Draw profile image for current person and resize image to fit screen size and orientation.
-            String profilePath = currentPerson.getProfile_path();
-            if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
-                String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + profilePath;
-                Picasso.with(context)
-                        .load(posterPath)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(posterImageView);
-            } else
-                posterImageView.setImageDrawable(getDrawable(context, R.drawable.no_person));
+            String profilePath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentPerson.getProfile_path();
+            Picasso.with(context)
+                    .load(profilePath)
+                    .placeholder(R.drawable.no_person)
+                    .error(R.drawable.no_person)
+                    .into(posterImageView);
 
             // Set person name.
             nameTextView.setText(currentPerson.getName());

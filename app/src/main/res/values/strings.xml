@@ -40,10 +40,12 @@
     <string name="movies_sort_by_top_rated">Top rated Movies</string>
     <string name="movies_sort_by_upcoming">Upcoming movies</string>
     <string name="no_author">Unknown author</string>
+    <string name="no_cast_crew">We have not found cast &#038; crew members for this movie.</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
     <string name="no_content">Nothing to show&#8230;</string>
     <string name="no_date">No date</string>
     <string name="no_language">No language</string>
+    <string name="no_media">We do not have videos or images of this movie right now. Meanwhile, maybe you\'re lucky here:</string>
     <string name="no_name">No name</string>
     <string name="no_overview">Ooops! There is no available overview in %s for this movie right now.</string>
     <string name="no_results">The query has not produced any result</string>

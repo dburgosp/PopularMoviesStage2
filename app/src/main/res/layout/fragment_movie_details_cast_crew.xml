@@ -198,12 +198,24 @@
             </LinearLayout>
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/cast_crew_no_result_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/big_padding"
+            android:contentDescription="@string/content_description_icon"
+            android:src="@drawable/ic_sentiment_dissatisfied_black_48dp"
+            android:tint="@color/colorGrey" />
+
         <TextView
             android:id="@+id/cast_crew_no_result_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/cast_crew_no_result_image_view"
             android:gravity="center"
             android:padding="@dimen/regular_padding"
+            android:textColor="@color/colorGrey"
             android:textSize="@dimen/alert_text_size"
             tools:text="Message to display when there are no search results" />
 

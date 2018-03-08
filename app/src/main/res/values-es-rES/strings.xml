@@ -26,10 +26,12 @@
     <string name="movie_details_reviews">Opiniones</string>
     <string name="movie_details_media">Media</string>
     <string name="no_author">Autor desconocido</string>
+    <string name="no_cast_crew">Todavía no disponemos de información acerca de los miembros del reparto y del equipo de esta película.</string>
     <string name="no_connection">No hay conexión a Internet.</string>
     <string name="no_content">Nada que mostrar&#8230;</string>
     <string name="no_date">Sin fecha</string>
     <string name="no_language">Sin idioma</string>
+    <string name="no_media">Aún no tenemos vídeos ni imágenes de esta película. Mientras tanto, tal vez tengas suerte aquí:</string>
     <string name="no_name">Sin nombre</string>
     <string name="no_overview">No hay sinopsis en %s para esta película.</string>
     <string name="no_results">La búsqueda no ha producido ningún resultado.</string>

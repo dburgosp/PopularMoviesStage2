@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -80,8 +81,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());
+        Transition transition = new Explode().setDuration(250);
+        getWindow().setEnterTransition(transition);
+        getWindow().setExitTransition(transition);
         supportPostponeEnterTransition();
 
         setContentView(R.layout.activity_movie_details);
@@ -279,41 +281,33 @@ public class MovieDetailsActivity extends AppCompatActivity {
     void setMovieInfo() {
         Log.i(TAG, "(setPersonInfo) Display movie information on the header");
 
-        // Set poster.
-        String posterPath = movie.getPoster_path();
+        // Set poster. Also set transition between the poster in calling activity and this.
+        String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + movie.getPoster_path();
         posterImageView.setTransitionName(getString(R.string.transition_list_to_details));
-        if (movie.getId() == 463272)
-            Log.i(TAG, "Johnny English 5");
-        if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
-            // Set transition between the poster in MainActivity and this.
-            Picasso.with(this)
-                    .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
-                    .placeholder(R.drawable.no_poster)
-                    .error(R.drawable.no_poster)
-                    .noFade()
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                    .into(posterImageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            supportStartPostponedEnterTransition();
-                        }
+        Picasso.with(this)
+                .load(posterPath)
+                .placeholder(R.drawable.no_movie_poster)
+                .error(R.drawable.no_movie_poster)
+                .noFade()
+                .into(posterImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        supportStartPostponedEnterTransition();
+                    }
 
-                        @Override
-                        public void onError() {
-                            supportStartPostponedEnterTransition();
-                        }
-                    });
-        }
-        //else posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
+                    @Override
+                    public void onError() {
+                        supportStartPostponedEnterTransition();
+                    }
+                });
 
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();
         if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
             Picasso.with(this)
                     .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .memoryPolicy(MemoryPolicy.NO_STORE)
+                    .networkPolicy(NetworkPolicy.NO_STORE)
                     .into(backgroundImageView);
 
         // Set movie title and year.
