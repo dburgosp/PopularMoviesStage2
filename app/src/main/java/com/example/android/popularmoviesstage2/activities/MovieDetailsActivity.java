@@ -279,13 +279,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
     void setMovieInfo() {
         Log.i(TAG, "(setPersonInfo) Display movie information on the header");
 
-        // Set poster, if it exists.
+        // Set poster.
         String posterPath = movie.getPoster_path();
         posterImageView.setTransitionName(getString(R.string.transition_list_to_details));
+        if (movie.getId() == 463272)
+            Log.i(TAG, "Johnny English 5");
         if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
             // Set transition between the poster in MainActivity and this.
             Picasso.with(this)
                     .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
+                    .placeholder(R.drawable.no_poster)
+                    .error(R.drawable.no_poster)
                     .noFade()
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -301,6 +305,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         }
                     });
         }
+        //else posterImageView.setImageDrawable(getDrawable(R.drawable.no_poster));
 
         // Set background image, if it exists.
         String backdropPath = movie.getBackdrop_path();

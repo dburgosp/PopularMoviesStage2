@@ -333,8 +333,8 @@ public class MoviesListActivity extends AppCompatActivity
                 // Set subtitle with the sort string and the total number of results.
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + sortBy +
-                        " </big></strong><small><font color=\"#" + сolorString + "\">(" +
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>\"" + sortBy +
+                        "\" </big></strong><small><font color=\"#" + сolorString + "\">(" +
                         data.get(0).getTotal_results() + " " +
                         getResources().getQuantityString(R.plurals.results, data.size()) +
                         ")</font></small>");

@@ -244,7 +244,7 @@ public class MoviesListAdapter
         @BindView(R.id.movie_list_popularity)
         TextView popularityTextView;
         @BindView(R.id.movie_list_overview)
-        TextView genresTextView;
+        TextView overviewTextView;
 
         private Context context;
         private View viewHolder;
@@ -301,6 +301,8 @@ public class MoviesListAdapter
          * @param currentTmdbMovie is the {@link TmdbMovie} object with the movie info.
          */
         void drawMoviePoster(final TmdbMovie currentTmdbMovie) {
+            if (currentTmdbMovie.getId() == 463272)
+                Log.i(TAG, "Johnny English 5");
             String posterPath = currentTmdbMovie.getPoster_path();
             boolean imageLoaded;
             if (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty()) {
@@ -325,7 +327,8 @@ public class MoviesListAdapter
                         titleTextView.setVisibility(View.VISIBLE);
                     break;
                 }
-                case R.layout.list_item_poster_horizontal_layout_2: {
+                case R.layout.list_item_poster_horizontal_layout_2:
+                case R.layout.list_item_poster_vertical_layout_1: {
                     // Set transition name to the current ImageView, so it can be animated if
                     // clicked.
                     ViewCompat.setTransitionName(posterImageView,
@@ -476,9 +479,9 @@ public class MoviesListAdapter
                         }
 
                         // Write the string.
-                        genresTextView.setText(genresStringBuilder);
+                        overviewTextView.setText(genresStringBuilder);
                     } else
-                        genresTextView.setVisibility(View.GONE);
+                        overviewTextView.setVisibility(View.GONE);
                 default:
                     break;
             }
@@ -490,15 +493,19 @@ public class MoviesListAdapter
          * @param currentTmdbMovie is the {@link TmdbMovie} object with the movie info.
          */
         void writeMovieOverview(final TmdbMovie currentTmdbMovie) {
+            if (currentTmdbMovie.getId() == 335977)
+                Log.i(TAG, "Indiana Jones 5");
             switch (resource) {
                 case R.layout.list_item_poster_vertical_layout_1:
                 case R.layout.list_item_poster_vertical_layout_2:
                     // Overview only for the specified layouts.
                     String overview = currentTmdbMovie.getOverview();
-                    if (overview != null && !overview.isEmpty() && !overview.equals("")) {
-                        genresTextView.setText(overview);
-                    }
-                    //else genresTextView.setVisibility(View.GONE);
+                    if (overview != null && !overview.isEmpty() && !overview.equals(""))
+                        overviewTextView.setText(overview);
+                    else
+                        overviewTextView.setText(context.getResources().getString(R.string.no_overview,
+                                Locale.getDefault().getDisplayLanguage()));
+                    break;
                 default:
                     break;
             }

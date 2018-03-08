@@ -45,7 +45,7 @@
     <string name="no_date">No date</string>
     <string name="no_language">No language</string>
     <string name="no_name">No name</string>
-    <string name="no_overview">There is no available overview for this movie right now.</string>
+    <string name="no_overview">Ooops! There is no available overview in %s for this movie right now.</string>
     <string name="no_results">The query has not produced any result</string>
     <string name="no_title">No title</string>
     <string name="original_language">Original language</string>

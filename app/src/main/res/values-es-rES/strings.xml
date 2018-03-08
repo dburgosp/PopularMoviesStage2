@@ -31,7 +31,7 @@
     <string name="no_date">Sin fecha</string>
     <string name="no_language">Sin idioma</string>
     <string name="no_name">Sin nombre</string>
-    <string name="no_overview">No tenemos sinopsis para esta película.</string>
+    <string name="no_overview">No hay sinopsis en %s para esta película.</string>
     <string name="no_results">La búsqueda no ha producido ningún resultado.</string>
     <string name="no_title">Sin título</string>
     <string name="movies">Pelis</string>
