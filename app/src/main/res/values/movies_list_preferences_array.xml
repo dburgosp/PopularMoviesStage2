@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listArray">
+        <item>Popularity (ascending)</item>
+        <item>Popularity (descending)</item>
+        <item>Year (ascending)</item>
+        <item>Year (descending)</item>
+        <item>Users rating (ascending)</item>
+        <item>Users rating (descending)</item>
+    </string-array>
+
+    <string-array name="listValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+</resources>

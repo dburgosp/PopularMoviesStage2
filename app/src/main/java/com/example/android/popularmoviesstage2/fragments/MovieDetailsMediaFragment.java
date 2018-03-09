@@ -188,6 +188,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             progressBar.setVisibility(View.VISIBLE);
+            noResultsTextView.setText(getString(R.string.fetching_movie_media));
             noResultsTextView.setVisibility(View.VISIBLE);
             Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId);
             return new TmdbMediaAsyncTaskLoader(getContext(), movieId);
@@ -196,7 +197,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             progressBar.setVisibility(View.INVISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsImageView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
             Log.i(TAG, "(onCreateLoader) No internet connection.");
             return null;
         }
@@ -265,7 +266,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             } else {
                 // Loader has not returned a valid list of {@link TmdbMedia} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
-                noResultsTextView.setText(getResources().getString(R.string.no_media));
+                noResultsTextView.setText(getString(R.string.no_movie_media));
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsImageView.setVisibility(View.VISIBLE);
                 noResultsYoutubeImageView.setOnClickListener(new View.OnClickListener() {
@@ -298,7 +299,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsImageView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
 
             // Hide Videos and crew sections.
             videosLinearLayout.setVisibility(View.GONE);
@@ -335,7 +336,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             videosAdapter.notifyDataSetChanged();
 
             // Set "view all" button.
-            String viewAllText = getResources().getString(R.string.all_languages) + " (" + videosArrayList.size() + ")";
+            String viewAllText = getString(R.string.all_languages) + " (" + videosArrayList.size() + ")";
             viewAllVideosTextView.setText(viewAllText);
 
             // Show this section.
@@ -360,7 +361,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             postersAdapter.notifyDataSetChanged();
 
             // Set "view all" button.
-            String viewAllText = getResources().getString(R.string.all_languages) + " (" + postersArrayList.size() + ")";
+            String viewAllText = getString(R.string.all_languages) + " (" + postersArrayList.size() + ")";
             viewAllPostersTextView.setText(viewAllText);
 
             // Show this section.
@@ -385,7 +386,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             backdropsAdapter.notifyDataSetChanged();
 
             // Set "view all" button.
-            String viewAllText = getResources().getString(R.string.all_languages) + " (" + backdropsArrayList.size() + ")";
+            String viewAllText = getString(R.string.all_languages) + " (" + backdropsArrayList.size() + ")";
             viewAllBackdropsTextView.setText(viewAllText);
 
             // Show this section.

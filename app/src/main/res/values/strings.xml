@@ -18,9 +18,11 @@
     <string name="department_production">Production</string>
     <string name="department_writing">Writing</string>
     <string name="dont_open_this_again">You are already here</string>
-    <string name="fetching_cast_crew_info">Fetching cast &#038; crew information&#8230;</string>
     <string name="fetching_info">Fetching information&#8230;</string>
+    <string name="fetching_movie_cast_crew">Fetching cast &#038; crew information&#8230;</string>
     <string name="fetching_movie_info">Fetching movie information&#8230;</string>
+    <string name="fetching_movie_media">Fetching movie videos &#038; images&#8230;</string>
+    <string name="fetching_movie_reviews">Fetching user reviews&#8230;</string>
     <string name="film_crew">Main film crew</string>
     <string name="full_size_image_description">Full size image</string>
     <string name="link_facebook">Facebook</string>
@@ -43,14 +45,16 @@
     <string name="movies_sort_by_top_rated">Top rated Movies</string>
     <string name="movies_sort_by_upcoming">Upcoming movies</string>
     <string name="no_author">Unknown author</string>
-    <string name="no_cast_crew">We have not found cast &#038; crew members for this movie.</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
     <string name="no_content">Nothing to show&#8230;</string>
     <string name="no_date">No date</string>
     <string name="no_language">No language</string>
-    <string name="no_media">We do not have videos or images of this movie right now. Meanwhile, maybe you\'re lucky here:</string>
+    <string name="no_movie_cast_crew">We have not found cast &#038; crew members for this movie.</string>
+    <string name="no_movie_info">There is no synopsis, release dates or other information about this movie at this time.</string>
+    <string name="no_movie_media">We do not have videos or images of this movie right now. Meanwhile, maybe you\'re lucky here:</string>
+    <string name="no_movie_overview">There is no available overview in %s for this movie right now.</string>
+    <string name="no_movie_reviews">No users have yet written their opinion about this movie.</string>
     <string name="no_name">No name</string>
-    <string name="no_overview">Ooops! There is no available overview in %s for this movie right now.</string>
     <string name="no_results">The query has not produced any result</string>
     <string name="no_title">No title</string>
     <string name="original_language">Original language</string>
@@ -79,8 +83,8 @@
     <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
     <string name="score_metacritic">Metacritic</string>
     <string name="share_this">Share this</string>
-    <string name="sort_by_genre">Sort by genre</string>
-    <string name="sort_by_keyword">Sort by keyword</string>
+    <string name="sort_movies_by_genre">Movies by genre</string>
+    <string name="sort_movies_by_keyword">Movies by keyword</string>
     <string name="sort_order_changed">Sort order changed to %s</string>
     <string name="spoken_languages">Also spoken</string>
     <string name="string_hours">h</string>
@@ -143,6 +147,79 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

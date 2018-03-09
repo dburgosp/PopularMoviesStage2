@@ -81,7 +81,7 @@ public class MoviesListAdapter
     /**
      * Public helper method to clear the current movies arrayList.
      */
-    void clearMoviesArrayList() {
+    public void clearMoviesArrayList() {
         this.moviesArrayList.clear();
         this.currentScrollPosition = 0;
         this.currentPage = 1;
@@ -493,7 +493,7 @@ public class MoviesListAdapter
                     if (overview != null && !overview.isEmpty() && !overview.equals(""))
                         overviewTextView.setText(overview);
                     else
-                        overviewTextView.setText(context.getResources().getString(R.string.no_overview,
+                        overviewTextView.setText(context.getResources().getString(R.string.no_movie_overview,
                                 Locale.getDefault().getDisplayLanguage()));
                     break;
                 default:

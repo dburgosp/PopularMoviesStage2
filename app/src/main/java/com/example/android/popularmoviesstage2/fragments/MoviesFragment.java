@@ -392,22 +392,8 @@ public class MoviesFragment extends Fragment
                     @Override
                     public void onRefresh() {
                         initVariables();
+                        moviesListAdapter.clearMoviesArrayList();
                         getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
-/*                        int currentShownPage = moviesListAdapter.getCurrentPage();
-                        if (!isLoading && currentShownPage > 1) {
-                            // If we are at the top of the list and we are showing a page number
-                            // bigger than 1, we need to reload the previous page of results. The
-                            // fetched movies will be appended to the start of the RecyclerView.
-                            currentPage = currentShownPage - 1;
-                            appendToEnd = false;
-                            if (loader != null)
-                                getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
-                            else
-                                getLoaderManager().initLoader(loaderId, null, MoviesFragment.this);
-                        } else {
-                            getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }*/
                     }
                 }
         );

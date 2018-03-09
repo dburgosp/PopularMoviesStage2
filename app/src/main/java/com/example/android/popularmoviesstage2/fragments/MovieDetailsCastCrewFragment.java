@@ -171,7 +171,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
     public Loader<TmdbCastCrew> onCreateLoader(int id, Bundle args) {
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
-            noResultsTextView.setText(getString(R.string.fetching_cast_crew_info));
+            noResultsTextView.setText(getString(R.string.fetching_movie_cast_crew));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             noResultsImageView.setVisibility(View.GONE);
@@ -180,7 +180,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
         } else {
             // There is no connection. Show error message.
             noResultsImageView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -250,7 +250,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
                 // Loader has not returned a valid list of {@link TmdbCastCrew} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsImageView.setVisibility(View.VISIBLE);
-                noResultsTextView.setText(getContext().getResources().getString(R.string.no_cast_crew));
+                noResultsTextView.setText(getContext().getString(R.string.no_movie_cast_crew));
                 noResultsTextView.setVisibility(View.VISIBLE);
             }
         } else {
@@ -258,7 +258,7 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
             noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
 
             // Hide cast and crew sections.
             castLinearLayout.setVisibility(View.GONE);

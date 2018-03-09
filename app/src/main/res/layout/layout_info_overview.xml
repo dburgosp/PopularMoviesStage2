@@ -32,7 +32,7 @@
         android:layout_marginStart="@dimen/regular_padding"
         android:layout_marginTop="@dimen/small_padding"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="@string/no_overview" />
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
 
     <TextView
         android:id="@+id/info_genres_title"

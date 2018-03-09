@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -24,7 +23,6 @@ import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
-import com.example.android.popularmoviesstage2.fragments.MoviesListOrderDialogFragment;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
@@ -37,8 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class MoviesListActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>>,
-        MoviesListOrderDialogFragment.OnSimpleDialogListener {
+        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
     private static final String TAG = MoviesListActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -71,8 +68,8 @@ public class MoviesListActivity extends AppCompatActivity
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
-        getWindow().setEnterTransition(new Explode().setDuration(500));
-        getWindow().setExitTransition(new Explode().setDuration(500));
+        getWindow().setEnterTransition(new Explode().setDuration(250));
+        getWindow().setExitTransition(new Explode().setDuration(250));
 
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);
@@ -83,6 +80,7 @@ public class MoviesListActivity extends AppCompatActivity
         if (sort && loaderId >= 0) {
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
+            initVariables();
             setRecyclerView();
             if (getSupportLoaderManager().getLoader(loaderId) == null)
                 getSupportLoaderManager().initLoader(loaderId, null, this);
@@ -93,9 +91,7 @@ public class MoviesListActivity extends AppCompatActivity
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    MoviesListOrderDialogFragment sortOrderDialog = new MoviesListOrderDialogFragment();
-                    sortOrderDialog.show(fragmentManager, "MoviesListOrderDialogFragment");
+                    // TODO: define FAB behaviour on click events.
                 }
             });
         } else {
@@ -126,7 +122,6 @@ public class MoviesListActivity extends AppCompatActivity
         loader = null;
         isLoading = false;
         appendToEnd = true;
-        setRecyclerView();
     }
 
     /**
@@ -143,7 +138,7 @@ public class MoviesListActivity extends AppCompatActivity
             sortBy = getIntent().getStringExtra("genreName");
 
             // Set title for this activity.
-            setTitle(getResources().getString(R.string.sort_by_genre));
+            setTitle(getResources().getString(R.string.sort_movies_by_genre));
 
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
@@ -155,7 +150,7 @@ public class MoviesListActivity extends AppCompatActivity
             sortBy = getIntent().getStringExtra("keywordName");
 
             // Set title for this activity.
-            setTitle(getResources().getString(R.string.sort_by_keyword));
+            setTitle(getResources().getString(R.string.sort_movies_by_keyword));
 
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
@@ -261,6 +256,7 @@ public class MoviesListActivity extends AppCompatActivity
                     @Override
                     public void onRefresh() {
                         initVariables();
+                        moviesListAdapter.clearMoviesArrayList();
                         getSupportLoaderManager().restartLoader(loaderId, null,
                                 MoviesListActivity.this);
                     }
@@ -380,13 +376,5 @@ public class MoviesListActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
         isLoading = false;
-    }
-
-    @Override
-    public void onPossitiveButtonClick(DialogFragment dialog) {
-    }
-
-    @Override
-    public void onNegativeButtonClick(DialogFragment dialog) {
     }
 }

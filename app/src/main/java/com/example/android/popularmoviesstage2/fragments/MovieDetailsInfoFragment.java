@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -73,6 +74,8 @@ public class MovieDetailsInfoFragment extends Fragment
     ProgressBar progressBar;
     @BindView(R.id.info_no_result_text_view)
     TextView noResultsTextView;
+    @BindView(R.id.info_no_result_image_view)
+    ImageView noResultsImageView;
 
     @BindView(R.id.info_scores_layout)
     LinearLayout scoresLinearLayout;
@@ -261,7 +264,8 @@ public class MovieDetailsInfoFragment extends Fragment
                     Locale.getDefault().getLanguage());
         } else {
             // There is no connection. Show error message.
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsImageView.setVisibility(View.VISIBLE);
+            noResultsTextView.setText(getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -288,9 +292,9 @@ public class MovieDetailsInfoFragment extends Fragment
      */
     @Override
     public void onLoadFinished(Loader<TmdbMovieDetails> loader, TmdbMovieDetails data) {
-        // Hide progress bar.
-        progressBar.setVisibility(View.INVISIBLE);
-        noResultsTextView.setVisibility(View.INVISIBLE);
+        // Hide progress status.
+        progressBar.setVisibility(View.GONE);
+        noResultsTextView.setVisibility(View.GONE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
@@ -312,14 +316,16 @@ public class MovieDetailsInfoFragment extends Fragment
                 }
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
+                noResultsImageView.setVisibility(View.VISIBLE);
                 noResultsTextView.setVisibility(View.VISIBLE);
-                noResultsTextView.setText(getResources().getString(R.string.no_results));
+                noResultsTextView.setText(getString(R.string.no_movie_info));
             }
         } else {
             // There is no connection. Show error message.
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
         }
     }
 
@@ -351,6 +357,7 @@ public class MovieDetailsInfoFragment extends Fragment
         recommendedMoviesLayout.setVisibility(View.GONE);
         keywordsLayout.setVisibility(View.GONE);
         recommendedMoviesKeywordsLayout.setVisibility(View.GONE);
+        noResultsImageView.setVisibility(View.GONE);
     }
 
     /**
@@ -1084,7 +1091,7 @@ public class MovieDetailsInfoFragment extends Fragment
                     // Set collection name.
                     String name = data.getName();
                     if (name == null || name.equals("") || name.isEmpty())
-                        name = getResources().getString(R.string.no_title);
+                        name = getString(R.string.no_title);
                     collectionNameTextView.setText(name);
 
                     // Set collection overview.

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +27,6 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbReviewsAsync
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbReview;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
-import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -45,6 +45,8 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
     RecyclerView reviewsRecyclerView;
     @BindView(R.id.reviews_no_result_text_view)
     TextView noResultsTextView;
+    @BindView(R.id.reviews_no_result_image_view)
+    ImageView noResultsImageView;
     @BindView(R.id.reviews_loading_indicator)
     ProgressBar progressBar;
     @BindView(R.id.reviews_swipe_refresh)
@@ -52,7 +54,6 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
 
     private boolean isLoading = false, appendToEnd = true;
     private int movieId, currentPage;
-    private String movieTitle, posterPath, movieYear;
     private ReviewsAdapter reviewsAdapter;
     private Unbinder unbinder;
 
@@ -71,9 +72,6 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
     public static MovieDetailsReviewsFragment newInstance(TmdbMovie tmdbMovie) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", tmdbMovie.getId());
-        bundle.putString("title", tmdbMovie.getTitle());
-        bundle.putString("poster", tmdbMovie.getPoster_path());
-        bundle.putString("year", DateTimeUtils.getYear(tmdbMovie.getRelease_date()));
         MovieDetailsReviewsFragment fragment = new MovieDetailsReviewsFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -92,9 +90,6 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
         // Get arguments from calling activity.
         if (getArguments() != null) {
             movieId = getArguments().getInt("id");
-            movieTitle = getArguments().getString("title");
-            posterPath = getArguments().getString("poster");
-            movieYear = getArguments().getString("year");
         }
 
         // Set RecyclerViews for displaying cast & crew photos.
@@ -141,15 +136,18 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
+            noResultsImageView.setVisibility(View.GONE);
+            noResultsTextView.setText(getString(R.string.fetching_movie_reviews));
+            noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
-            noResultsTextView.setVisibility(View.INVISIBLE);
             Log.i(TAG, "(onCreateLoader) Movie ID: " + movieId + ". Current page: " + currentPage);
             return new TmdbReviewsAsyncTaskLoader(getContext(), movieId, Integer.toString(currentPage));
         } else {
             // There is no connection. Show error message.
-            progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.GONE);
+            noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
-            noResultsTextView.setText(getResources().getString(R.string.no_connection));
+            noResultsTextView.setText(getString(R.string.no_connection));
             Log.i(TAG, "(onCreateLoader) No internet connection.");
             return null;
         }
@@ -197,25 +195,28 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
     public void onLoadFinished(Loader<ArrayList<TmdbReview>> loader, ArrayList<TmdbReview> data) {
         // Hide progress bar and stop refreshing animation.
         isLoading = false;
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        noResultsTextView.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(false);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbReview} objects, then add them to the adapter's
             // data set.
-            if (data != null && !data.isEmpty() && data.size() > 0) {
+            if (data != null && data.size() > 0 && !data.isEmpty()) {
                 Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
                 reviewsAdapter.updateReviewsArray(data, appendToEnd);
                 reviewsAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
+                noResultsImageView.setVisibility(View.VISIBLE);
                 noResultsTextView.setVisibility(View.VISIBLE);
-                noResultsTextView.setText(getResources().getString(R.string.no_results));
+                noResultsTextView.setText(getString(R.string.no_movie_reviews));
             }
         } else {
             // There is no connection. Show error message.
             Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
         }
@@ -258,18 +259,6 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
         // load another page of results.
         reviewsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             /**
-             * Callback method to be invoked when RecyclerView's scroll state changes.
-             *
-             * @param recyclerView The RecyclerView whose scroll state has changed.
-             * @param newState     The updated scroll state. One of SCROLL_STATE_IDLE,
-             *                     SCROLL_STATE_DRAGGING or SCROLL_STATE_SETTLING.
-             */
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            /**
              * Callback method to be invoked when the RecyclerView has been scrolled. This will be
              * called after the scroll has completed.
              * <p>
@@ -289,12 +278,14 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
                 int totalPages = reviewsAdapter.getTotalPages();
 
                 if (!isLoading) {
-                    if (currentPage < totalPages && (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
+                    if (currentPage < totalPages &&
+                            (visibleItemCount + firstVisibleItemPosition) >= totalItemCount) {
                         // Load next page of results. The fetched reviews will be appended at the
                         // end of the RecyclerView.
                         currentPage++;
                         appendToEnd = true;
-                        getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, MovieDetailsReviewsFragment.this);
+                        getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID,
+                                null, MovieDetailsReviewsFragment.this);
                     }
                 }
             }
@@ -314,7 +305,8 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
                             // fetched reviews will be appended to the start of the RecyclerView.
                             currentPage = currentShownPage - 1;
                             appendToEnd = false;
-                            getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID, null, MovieDetailsReviewsFragment.this);
+                            getLoaderManager().restartLoader(NetworkUtils.TMDB_REVIEWS_LOADER_ID,
+                                    null, MovieDetailsReviewsFragment.this);
                         } else
                             swipeRefreshLayout.setRefreshing(false);
                     }
