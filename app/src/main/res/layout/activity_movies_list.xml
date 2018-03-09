@@ -11,10 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/tiny_padding"
-        android:paddingBottom="@dimen/small_padding"
-        android:paddingEnd="@dimen/normal_padding"
-        android:paddingStart="@dimen/normal_padding"
-        android:paddingTop="@dimen/small_padding"
+        android:padding="@dimen/normal_padding"
         android:textColor="@color/colorDarkWhite"
         android:textSize="@dimen/alert_text_size"
         tools:text="Search string" />

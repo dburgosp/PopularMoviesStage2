@@ -237,12 +237,15 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbCastCrew} objects, then add them to the
             // adapters' data sets.
-            if (data != null && data.getCast().size() > 0 && data.getCrew().size() > 0) {
+            ArrayList<TmdbCast> castArrayList = data.getCast();
+            ArrayList<TmdbCrew> crewArrayList = data.getCrew();
+            if ((castArrayList != null && castArrayList.size() > 0) ||
+                    (crewArrayList != null && crewArrayList.size() > 0)) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Show cast & crew info.
-                setCast(data.getCast());
-                setCrew(data.getCrew());
+                setCast(castArrayList);
+                setCrew(crewArrayList);
             } else {
                 // Loader has not returned a valid list of {@link TmdbCastCrew} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
@@ -262,7 +265,6 @@ public class MovieDetailsCastCrewFragment extends Fragment implements LoaderMana
             separatorView.setVisibility(View.GONE);
             crewLinearLayout.setVisibility(View.GONE);
         }
-
     }
 
     /**

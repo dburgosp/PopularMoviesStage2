@@ -2,7 +2,9 @@ package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -22,6 +24,7 @@ import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.fragments.MoviesListOrderDialogFragment;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
@@ -34,7 +37,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class MoviesListActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>>,
+        MoviesListOrderDialogFragment.OnSimpleDialogListener {
     private static final String TAG = MoviesListActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -49,6 +53,8 @@ public class MoviesListActivity extends AppCompatActivity
     TextView titleTextView;
     @BindView(R.id.movies_list_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.movies_list_fab)
+    FloatingActionButton floatingActionButton;
 
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
@@ -82,6 +88,16 @@ public class MoviesListActivity extends AppCompatActivity
                 getSupportLoaderManager().initLoader(loaderId, null, this);
             else
                 getSupportLoaderManager().restartLoader(loaderId, null, this);
+
+            // Set the floating action button.
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    MoviesListOrderDialogFragment sortOrderDialog = new MoviesListOrderDialogFragment();
+                    sortOrderDialog.show(fragmentManager, "MoviesListOrderDialogFragment");
+                }
+            });
         } else {
             // Nothing to search.
             connectionStatusText.setText(getResources().getString(R.string.no_results));
@@ -333,11 +349,10 @@ public class MoviesListActivity extends AppCompatActivity
                 // Set subtitle with the sort string and the total number of results.
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>\"" + sortBy +
-                        "\" </big></strong><small><font color=\"#" + сolorString + "\">(" +
-                        data.get(0).getTotal_results() + " " +
-                        getResources().getQuantityString(R.plurals.results, data.size()) +
-                        ")</font></small>");
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" +
+                        sortBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
+                        сolorString + "\">(" + data.get(0).getTotal_results() + " " +
+                        getResources().getQuantityString(R.plurals.results, data.size()) + ")</font></small>");
 
                 // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
@@ -365,5 +380,13 @@ public class MoviesListActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
         isLoading = false;
+    }
+
+    @Override
+    public void onPossitiveButtonClick(DialogFragment dialog) {
+    }
+
+    @Override
+    public void onNegativeButtonClick(DialogFragment dialog) {
     }
 }

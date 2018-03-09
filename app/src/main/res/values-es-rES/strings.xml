@@ -7,6 +7,8 @@
     <string name="backdrops_title">Fondos</string>
     <string name="belongs_to_collection">Parte de</string>
     <string name="budget_title">Presupuesto</string>
+    <string name="button_cancel">Cancelar</string>
+    <string name="button_ok">OK</string>
     <string name="cast_of_characters">Reparto principal</string>
     <string name="a_review_by">La opinión de</string>
     <string name="content_description_backdrop">Fondo</string>
@@ -20,6 +22,7 @@
     <string name="fetching_movie_info">Obteniendo información de la película&#8230;</string>
     <string name="film_crew">Equipo destacado</string>
     <string name="full_size_image_description">Imagen a tamaño completo</string>
+    <string name="list_order">Ordenación de la lista</string>
     <string name="most_popular">La más popular</string>
     <string name="movie_details_info">Información</string>
     <string name="movie_details_cast_crew">Reparto y equipo</string>

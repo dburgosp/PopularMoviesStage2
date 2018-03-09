@@ -7,6 +7,8 @@
     <string name="backdrops_title">Backdrops</string>
     <string name="belongs_to_collection">Belongs to</string>
     <string name="budget_title">Budget</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_ok">OK</string>
     <string name="cast_of_characters">Main cast</string>
     <string name="content_description_backdrop">Backdrop</string>
     <string name="content_description_gradient">Gradient background</string>
@@ -26,6 +28,7 @@
     <string name="link_imdb">IMDB</string>
     <string name="link_instagram">Instagram</string>
     <string name="link_twitter">Twitter</string>
+    <string name="list_order">Sort order</string>
     <string name="most_popular">Most popular</string>
     <string name="movie_details_info">Info</string>
     <string name="movie_details_cast_crew">Cast &#038; Crew</string>

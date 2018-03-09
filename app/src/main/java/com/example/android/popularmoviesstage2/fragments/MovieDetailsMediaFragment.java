@@ -34,6 +34,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMedia;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbVideo;
 import com.example.android.popularmoviesstage2.classes.YouTube;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
     RelativeLayout backdropsRelativeLayout;
 
     private int movieId;
-    private String movieTitle;
+    private String movieTitle, movieYear;
     private VideosAdapter videosAdapter;
     private ImagesAdapter postersAdapter;
     private ImagesAdapter backdropsAdapter;
@@ -118,6 +119,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         Bundle bundle = new Bundle();
         bundle.putInt("id", tmdbMovie.getId());
         bundle.putString("title", tmdbMovie.getTitle());
+        bundle.putString("year", DateTimeUtils.getYear(tmdbMovie.getRelease_date()));
         MovieDetailsMediaFragment fragment = new MovieDetailsMediaFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -129,7 +131,8 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details_media, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
@@ -137,6 +140,7 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         if (getArguments() != null) {
             movieId = getArguments().getInt("id");
             movieTitle = getArguments().getString("title");
+            movieYear = getArguments().getString("year");
         }
 
         // Clean all elements in the layout when creating this fragment.
@@ -239,20 +243,25 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
     @Override
     public void onLoadFinished(Loader<TmdbMedia> loader, final TmdbMedia data) {
         // Hide progress bar.
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
+        noResultsTextView.setVisibility(View.GONE);
 
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
-            if (data != null && data.getTmdbVideos().size() > 0 && data.getPosters().size() > 0 &&
-                    data.getBackdrops().size() > 0) {
+            ArrayList<TmdbVideo> videosArrayList = data.getTmdbVideos();
+            ArrayList<TmdbImage> postersArrayList = data.getPosters();
+            ArrayList<TmdbImage> backdropsArrayList = data.getBackdrops();
+            if ((videosArrayList != null && videosArrayList.size() > 0) ||
+                    (postersArrayList != null && postersArrayList.size() > 0) ||
+                    (backdropsArrayList != null && backdropsArrayList.size() > 0)) {
                 // If there is a valid {@link TmdbMedia} object, then add this information to the
                 // adapters' data sets.
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Show videos, posters and backdrops.
-                setVideos(data.getTmdbVideos());
-                setPosters(data.getPosters());
-                setBackdrops(data.getBackdrops());
+                setVideos(videosArrayList);
+                setPosters(postersArrayList);
+                setBackdrops(backdropsArrayList);
             } else {
                 // Loader has not returned a valid list of {@link TmdbMedia} objects.
                 Log.i(TAG, "(onLoadFinished) No search results.");
@@ -265,7 +274,8 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
                         // Implicit intent for searching videos from the title of the movie on
                         // YouTube.
                         Intent intent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(YouTube.YOUTUBE_SEARCH_VIDEOS_URL + movieTitle));
+                                Uri.parse(YouTube.YOUTUBE_SEARCH_VIDEOS_URL + movieTitle + " " +
+                                        movieYear));
                         startActivity(intent);
                     }
                 });
@@ -276,7 +286,8 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
                         // Implicit intent for searching images from the title of the movie on
                         // Google.
                         Intent intent = new Intent(Intent.ACTION_VIEW,
-                                Uri.parse(Google.GOOGLE_LOOK_FOR_IMAGES_URL + movieTitle));
+                                Uri.parse(Google.GOOGLE_LOOK_FOR_IMAGES_URL + movieTitle + " " +
+                                        movieYear));
                         startActivity(intent);
                     }
                 });
@@ -312,6 +323,11 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
     /* HELPER METHODS */
     /* -------------- */
 
+    /**
+     * Helper method for setting the videos section into the media page.
+     *
+     * @param videosArrayList is the list of videos.
+     */
     private void setVideos(ArrayList<TmdbVideo> videosArrayList) {
         if (videosArrayList != null && videosArrayList.size() > 0) {
             // Add the array of elements to the adapter.
@@ -321,6 +337,10 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             // Set "view all" button.
             String viewAllText = getResources().getString(R.string.all_languages) + " (" + videosArrayList.size() + ")";
             viewAllVideosTextView.setText(viewAllText);
+
+            // Show this section.
+            videosLinearLayout.setVisibility(View.VISIBLE);
+            separatorView1.setVisibility(View.VISIBLE);
         } else {
             // Hide section if there is no TmdbVideo information for this movie.
             videosLinearLayout.setVisibility(View.GONE);
@@ -328,6 +348,11 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         }
     }
 
+    /**
+     * Helper method for setting the posters section into the media page.
+     *
+     * @param postersArrayList is the list of posters.
+     */
     private void setPosters(ArrayList<TmdbImage> postersArrayList) {
         if (postersArrayList != null && postersArrayList.size() > 0) {
             // Add the array of elements to the adapter.
@@ -337,6 +362,10 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             // Set "view all" button.
             String viewAllText = getResources().getString(R.string.all_languages) + " (" + postersArrayList.size() + ")";
             viewAllPostersTextView.setText(viewAllText);
+
+            // Show this section.
+            separatorView1.setVisibility(View.VISIBLE);
+            postersLinearLayout.setVisibility(View.VISIBLE);
         } else {
             // Hide section if there is no crew information for this movie.
             separatorView1.setVisibility(View.GONE);
@@ -344,6 +373,11 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         }
     }
 
+    /**
+     * Helper method for setting the backdrops section into the media page.
+     *
+     * @param backdropsArrayList is the list of backdrops.
+     */
     private void setBackdrops(ArrayList<TmdbImage> backdropsArrayList) {
         if (backdropsArrayList != null && backdropsArrayList.size() > 0) {
             // Add the array of elements to the adapter.
@@ -353,6 +387,10 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             // Set "view all" button.
             String viewAllText = getResources().getString(R.string.all_languages) + " (" + backdropsArrayList.size() + ")";
             viewAllBackdropsTextView.setText(viewAllText);
+
+            // Show this section.
+            separatorView2.setVisibility(View.VISIBLE);
+            backdropsLinearLayout.setVisibility(View.VISIBLE);
         } else {
             // Hide section if there is no backdrop information for this movie.
             separatorView2.setVisibility(View.GONE);
@@ -367,6 +405,11 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         videosLinearLayout.setVisibility(View.GONE);
         postersLinearLayout.setVisibility(View.GONE);
         backdropsLinearLayout.setVisibility(View.GONE);
+        noResultsTextView.setVisibility(View.GONE);
+        noResultsImageView.setVisibility(View.GONE);
+        noResultsYoutubeImageView.setVisibility(View.GONE);
+        noResultsGoogleImageView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -375,9 +418,12 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
      */
     private void setRecyclerViews() {
         // Set the LayoutManagers for the RecyclerViews.
-        videosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        postersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        backdropsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        videosRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        postersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
+        backdropsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.HORIZONTAL, false));
         videosRecyclerView.setHasFixedSize(true);
         postersRecyclerView.setHasFixedSize(true);
         backdropsRecyclerView.setHasFixedSize(true);
@@ -387,7 +433,8 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
             @Override
             public void onItemClick(TmdbVideo item) {
                 // Implicit intent for playing the YouTube video.
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YouTube.YOUTUBE_WATCH_VIDEO_URL + item.getKey()));
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(YouTube.YOUTUBE_WATCH_VIDEO_URL + item.getKey()));
                 startActivity(intent);
             }
         };
@@ -396,11 +443,15 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         final ImagesAdapter.OnItemClickListener posterListener = new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbImage item) {
-                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                // Explicit intent to open FullSizeImageActivity and show current poster at full
+                // screen.
                 Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, postersAdapter.getImagesArrayList());
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE, item.getPosition());
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE, FullSizeImageActivity.IMAGE_TYPE_POSTER);
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST,
+                        postersAdapter.getImagesArrayList());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE,
+                        item.getPosition());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE,
+                        FullSizeImageActivity.IMAGE_TYPE_POSTER);
                 startActivity(intent);
             }
         };
@@ -409,11 +460,15 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         final ImagesAdapter.OnItemClickListener backdropListener = new ImagesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(TmdbImage item) {
-                // Explicit intent to open FullSizeImageActivity and show current poster at full screen.
+                // Explicit intent to open FullSizeImageActivity and show current poster at full
+                // screen.
                 Intent intent = new Intent(getContext(), FullSizeImageActivity.class);
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST, backdropsAdapter.getImagesArrayList());
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE, item.getPosition());
-                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE, FullSizeImageActivity.IMAGE_TYPE_BACKDROP);
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGES_ARRAYLIST,
+                        backdropsAdapter.getImagesArrayList());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_CURRENT_IMAGE,
+                        item.getPosition());
+                intent.putExtra(FullSizeImageActivity.EXTRA_PARAM_IMAGE_TYPE,
+                        FullSizeImageActivity.IMAGE_TYPE_BACKDROP);
                 startActivity(intent);
             }
         };
@@ -421,9 +476,11 @@ public class MovieDetailsMediaFragment extends Fragment implements LoaderManager
         // Set the Adapters for the RecyclerViews.
         videosAdapter = new VideosAdapter(new ArrayList<TmdbVideo>(), videoListener);
         videosRecyclerView.setAdapter(videosAdapter);
-        postersAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(), FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
+        postersAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(),
+                FullSizeImageActivity.IMAGE_TYPE_POSTER, posterListener);
         postersRecyclerView.setAdapter(postersAdapter);
-        backdropsAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(), FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
+        backdropsAdapter = new ImagesAdapter(new ArrayList<TmdbImage>(),
+                FullSizeImageActivity.IMAGE_TYPE_BACKDROP, backdropListener);
         backdropsRecyclerView.setAdapter(backdropsAdapter);
     }
 }
