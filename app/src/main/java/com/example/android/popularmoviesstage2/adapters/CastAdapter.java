@@ -112,7 +112,7 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
             // Set position in the adapter for current person.
             //currentTmdbCast.setPosition(position);
 
-            // Update CastViewHolder with the person details at current position in the adapter.
+            // Update CastViewHolder with the person movie_details_menu at current position in the adapter.
             viewHolder.bind(currentTmdbCast, listener);
 
             // Save current position.

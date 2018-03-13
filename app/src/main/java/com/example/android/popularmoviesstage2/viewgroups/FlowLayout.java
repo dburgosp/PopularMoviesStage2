@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage2.classes;
+package com.example.android.popularmoviesstage2.viewgroups;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -40,7 +40,8 @@ public class FlowLayout extends ViewGroup {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         assert (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED);
 
-        final int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
+        final int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() -
+                getPaddingRight();
         int height = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
         final int count = getChildCount();
         int line_height_space = 0;
@@ -55,14 +56,15 @@ public class FlowLayout extends ViewGroup {
             childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         }
 
-
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), childHeightMeasureSpec);
+                child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
+                        childHeightMeasureSpec);
                 final int childw = child.getMeasuredWidth();
-                line_height_space = Math.max(line_height_space, child.getMeasuredHeight() + lp.vertical_spacing);
+                line_height_space = Math.max(line_height_space, child.getMeasuredHeight() +
+                        lp.vertical_spacing);
 
                 if (xpos + childw > width) {
                     xpos = getPaddingLeft();
@@ -92,10 +94,7 @@ public class FlowLayout extends ViewGroup {
 
     @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
-        if (p instanceof LayoutParams) {
-            return true;
-        }
-        return false;
+        return p instanceof LayoutParams;
     }
 
     @Override

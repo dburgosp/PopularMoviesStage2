@@ -101,7 +101,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
         if (!videosArrayList.isEmpty()) {
             TmdbVideo currentTmdbVideo = videosArrayList.get(position);
 
-            // Update VideosViewHolder with the video details at current position in the adapter.
+            // Update VideosViewHolder with the video movie_details_menu at current position in the adapter.
             viewHolder.bind(currentTmdbVideo, listener);
         }
     }

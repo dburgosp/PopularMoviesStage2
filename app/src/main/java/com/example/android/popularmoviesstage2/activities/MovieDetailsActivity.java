@@ -267,7 +267,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.details, menu);
+        getMenuInflater().inflate(R.menu.movie_details_menu, menu);
         return true;
     }
 

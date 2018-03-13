@@ -29,7 +29,7 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTa
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesCollectionAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Facebook;
-import com.example.android.popularmoviesstage2.classes.FlowLayout;
+import com.example.android.popularmoviesstage2.viewgroups.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
@@ -385,7 +385,7 @@ public class MovieDetailsInfoFragment extends Fragment
             @Override
             public void onItemClick(TmdbMovie clickedMovie, View clickedView) {
                 if (movieId != clickedMovie.getId()) {
-                    // Start MovieDetailsActivity to show movie details when the current element is
+                    // Start MovieDetailsActivity to show movie movie_details_menu when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
                     // startActivityForResult. No need a requestCode, we don't care for any result.
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);

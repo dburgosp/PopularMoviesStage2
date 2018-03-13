@@ -129,7 +129,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
     public void onBindViewHolder(ReviewsViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!reviewsArrayList.isEmpty()) {
-            // Get current review object and update the view holder with the review details at
+            // Get current review object and update the view holder with the review movie_details_menu at
             // current position in the adapter.
             TmdbReview currentTmdbReview = reviewsArrayList.get(position);
             viewHolder.bind(currentTmdbReview);

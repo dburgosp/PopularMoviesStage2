@@ -323,7 +323,7 @@ public class MoviesFragment extends Fragment
                     // cross-Activity scene animations.
                     //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getContext(), clickedView, getString(R.string.transition_list_to_details));
 
-                    // Start MovieDetailsActivity to show movie details when the current element is
+                    // Start MovieDetailsActivity to show movie movie_details_menu when the current element is
                     // clicked. We need to know when the other activity finishes, so we use
                     // startActivityForResult. No need a requestCode, we don't care for any result.
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);

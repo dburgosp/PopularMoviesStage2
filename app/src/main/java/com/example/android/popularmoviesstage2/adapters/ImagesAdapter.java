@@ -123,7 +123,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
     public void onBindViewHolder(ImagesViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!imagesArrayList.isEmpty()) {
-            // Update ImagesViewHolder with the item details at current position in the adapter.
+            // Update ImagesViewHolder with the item movie_details_menu at current position in the adapter.
             TmdbImage currentTmdbImage = imagesArrayList.get(position);
             currentTmdbImage.setPosition(position);
             viewHolder.bind(currentTmdbImage, imageType, listener);

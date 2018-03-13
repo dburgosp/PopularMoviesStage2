@@ -179,7 +179,7 @@ public class MoviesListAdapter
     public void onBindViewHolder(MoviesListViewHolder viewHolder, int position) {
         Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
         if (!moviesArrayList.isEmpty()) {
-            // Update MoviesListViewHolder with the movie details at current position in the adapter.
+            // Update MoviesListViewHolder with the movie movie_details_menu at current position in the adapter.
             TmdbMovie currentTmdbMovie = moviesArrayList.get(position);
             viewHolder.bind(currentTmdbMovie, listener, layoutParams);
 

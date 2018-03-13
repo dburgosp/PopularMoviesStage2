@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="listArray">
-        <item>Popularity (ascending)</item>
-        <item>Popularity (descending)</item>
-        <item>Year (ascending)</item>
-        <item>Year (descending)</item>
-        <item>Users rating (ascending)</item>
-        <item>Users rating (descending)</item>
+        <item>@string/preferences_sort_by_popularity_desc_title</item>
+        <item>@string/preferences_sort_by_popularity_asc_title</item>
+        <item>@string/preferences_sort_by_year_desc_title</item>
+        <item>@string/preferences_sort_by_year_asc_title</item>
+        <item>@string/preferences_sort_by_rating_desc_title</item>
+        <item>@string/preferences_sort_by_rating_asc_title</item>
     </string-array>
 
     <string-array name="listValues">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
+        <item>@string/preferences_sort_by_popularity_desc_value</item>
+        <item>@string/preferences_sort_by_popularity_asc_value</item>
+        <item>@string/preferences_sort_by_year_desc_value</item>
+        <item>@string/preferences_sort_by_year_asc_value</item>
+        <item>@string/preferences_sort_by_rating_desc_value</item>
+        <item>@string/preferences_sort_by_rating_asc_value</item>
     </string-array>
 </resources>

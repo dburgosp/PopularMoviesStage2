@@ -45,7 +45,7 @@
         android:textStyle="bold"
         tools:text="Genres" />
 
-    <com.example.android.popularmoviesstage2.classes.FlowLayout
+    <com.example.android.popularmoviesstage2.viewgroups.FlowLayout
         android:id="@+id/info_genres_flowlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

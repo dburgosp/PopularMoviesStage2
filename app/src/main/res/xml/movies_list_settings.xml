@@ -5,5 +5,5 @@
         android:entries="@array/listArray"
         android:entryValues="@array/listValues"
         android:key="sortOrder"
-        android:title="@string/list_order" />
+        android:title="@string/preferences_sort_by_title" />
 </PreferenceScreen>

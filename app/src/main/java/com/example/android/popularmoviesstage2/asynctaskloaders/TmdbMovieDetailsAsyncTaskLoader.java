@@ -93,7 +93,7 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
         if (data == null)
             Log.i(TAG, "(deliverResult) No results to deliver.");
         else
-            Log.i(TAG, "(deliverResult) Movie details delivered.");
+            Log.i(TAG, "(deliverResult) Movie movie_details_menu delivered.");
         movieDetails = data;
         super.deliverResult(data);
     }

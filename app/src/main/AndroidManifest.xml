@@ -24,33 +24,65 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.MoviesActivity"
+            android:label="@string/movies"
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainActivity" />
+        </activity>
+        <activity
             android:name=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
         <activity
             android:name=".activities.ReviewsActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
         <activity
             android:name=".activities.FullSizeImageActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.MovieDetailsActivity"
-            android:theme="@style/AppTheme.NoTitle" />
+            android:theme="@style/AppTheme.NoTitle">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
         <activity
             android:name=".activities.PersonDetailsActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.MoviesActivity"
-            android:label="@string/movies"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
         <activity
             android:name=".activities.MoviesListActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MovieDetailsActivity" />
+        </activity>
+        <activity
+            android:name=".activities.MoviesListSettingsActivity"
+            android:parentActivityName=".activities.MoviesListActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MoviesListActivity" />
+        </activity>
     </application>
+
 </manifest>

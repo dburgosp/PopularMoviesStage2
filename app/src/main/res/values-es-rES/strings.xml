@@ -25,6 +25,11 @@
     <string name="film_crew">Equipo destacado</string>
     <string name="full_size_image_description">Imagen a tamaño completo</string>
     <string name="list_order">Ordenación de la lista</string>
+    <string name="menu_home">Inicio</string>
+    <string name="menu_language">Idioma</string>
+    <string name="menu_region">País</string>
+    <string name="menu_settings">Configuración</string>
+    <string name="menu_sort">Ordenación</string>
     <string name="most_popular">La más popular</string>
     <string name="movie_details_info">Información</string>
     <string name="movie_details_cast_crew">Reparto y equipo</string>

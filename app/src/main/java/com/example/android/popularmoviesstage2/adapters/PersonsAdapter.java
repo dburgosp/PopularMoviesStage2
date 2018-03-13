@@ -110,7 +110,7 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
             // Set position in the adapter for current movie.
             //currentTmdbPerson.setPosition(position);
 
-            // Update PersonsViewHolder with the movie details at current position in the adapter.
+            // Update PersonsViewHolder with the movie movie_details_menu at current position in the adapter.
             viewHolder.bind(currentTmdbPerson, listener, layoutParams);
 
             // Save current position.

@@ -1,6 +1,8 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -13,6 +15,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
@@ -33,6 +38,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
 
 public class MoviesListActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
@@ -56,7 +63,7 @@ public class MoviesListActivity extends AppCompatActivity
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
-    private String sortBy;
+    private String moviesBy, sortOrderBy;
     private int loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
@@ -81,6 +88,7 @@ public class MoviesListActivity extends AppCompatActivity
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
             initVariables();
+            getDefaultSettings();
             setRecyclerView();
             if (getSupportLoaderManager().getLoader(loaderId) == null)
                 getSupportLoaderManager().initLoader(loaderId, null, this);
@@ -116,6 +124,80 @@ public class MoviesListActivity extends AppCompatActivity
         return true;
     }
 
+    /**
+     * Initialize the contents of the Activity's standard options menu.  You
+     * should place your menu items in to <var>menu</var>.
+     * <p>
+     * <p>This is only called once, the first time the options menu is
+     * displayed.  To update the menu every time it is displayed, see
+     * {@link #onPrepareOptionsMenu}.
+     * <p>
+     * <p>The default implementation populates the menu with standard system
+     * menu items.  These are placed in the {@link Menu#CATEGORY_SYSTEM} group so that
+     * they will be correctly ordered with application-defined menu items.
+     * Deriving classes should always call through to the base implementation.
+     * <p>
+     * <p>You can safely hold on to <var>menu</var> (and any items created
+     * from it), making modifications to it as desired, until the next
+     * time onCreateOptionsMenu() is called.
+     * <p>
+     * <p>When you add items to the menu, you can implement the Activity's
+     * {@link #onOptionsItemSelected} method to handle them there.
+     *
+     * @param menu The options menu in which you place your items.
+     * @return You must return true for the menu to be displayed;
+     * if you return false it will not be shown.
+     * @see #onPrepareOptionsMenu
+     * @see #onOptionsItemSelected
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.movies_list_menu, menu);
+        return true;
+    }
+
+    /**
+     * This hook is called whenever an item in your options menu is selected.
+     * The default implementation simply returns false to have the normal
+     * processing happen (calling the item's Runnable or sending a message to
+     * its Handler as appropriate).  You can use this method for any items
+     * for which you would like to do processing without those other
+     * facilities.
+     * <p>
+     * <p>Derived classes should call through to the base class for it to
+     * perform the default menu handling.</p>
+     *
+     * @param item The menu item that was selected.
+     * @return boolean Return false to allow normal menu processing to
+     * proceed, true to consume it here.
+     * @see #onCreateOptionsMenu
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        Context packageContext = MoviesListActivity.this;
+        Class<?> cls;
+        int id = item.getItemId();
+        switch (id) {
+            case (R.id.movies_list_menu_home): {
+                // Set the intent for navigating from here to the main activity.
+                cls = MainActivity.class;
+                break;
+            }
+            default: {
+                // case (R.id.movies_list_menu_settings):
+                // Set the intent for navigating from here to the settings activity.
+                cls = MoviesListSettingsActivity.class;
+            }
+        }
+
+        // Navigate to the given activity.
+        intent = new Intent(packageContext, cls);
+        startActivity(intent);
+        return true;
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
@@ -131,6 +213,15 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     /**
+     * Helper method to get the default settings for this activity.
+     */
+    void getDefaultSettings() {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
+        sortOrderBy = sharedPreferences.getString(getString(R.string.preferences_sort_by_key),
+                getString(R.string.preferences_sort_by_popularity_desc_value));
+    }
+
+    /**
      * Helper method to get the sort parameters passed to the activity into the intent. Initialize
      * some global variables too.
      *
@@ -141,7 +232,7 @@ public class MoviesListActivity extends AppCompatActivity
             // Sorting movies by genre. Create the genres array with only one element, set the
             // title for the activity using the genre name and select the appropriate loader id.
             genres.add(getIntent().getIntExtra("genreId", 0));
-            sortBy = getIntent().getStringExtra("genreName");
+            moviesBy = getIntent().getStringExtra("genreName");
 
             // Set title for this activity.
             setTitle(getResources().getString(R.string.sort_movies_by_genre));
@@ -153,7 +244,7 @@ public class MoviesListActivity extends AppCompatActivity
             // Sorting movies by keyword. Create the keywords array with only one element, set the
             // title for the activity using the keyword name and select the appropriate loader id.
             keywords.add(getIntent().getIntExtra("keywordId", 0));
-            sortBy = getIntent().getStringExtra("keywordName");
+            moviesBy = getIntent().getStringExtra("keywordName");
 
             // Set title for this activity.
             setTitle(getResources().getString(R.string.sort_movies_by_keyword));
@@ -197,7 +288,7 @@ public class MoviesListActivity extends AppCompatActivity
                                             MoviesListActivity.this, clickedView,
                                             getString(R.string.transition_list_to_details));
 
-                            // Start MovieDetailsActivity to show movie details when the current
+                            // Start MovieDetailsActivity to show movie movie_details_menu when the current
                             // element is clicked. We need to know when the other activity finishes,
                             // so we use startActivityForResult. No need a requestCode, we don't
                             // care for any result.
@@ -352,7 +443,7 @@ public class MoviesListActivity extends AppCompatActivity
                 int labelColor = getResources().getColor(R.color.colorGrey);
                 String сolorString = String.format("%X", labelColor).substring(2);
                 TextViewUtils.setHtmlText(titleTextView, "<strong><big>" +
-                        sortBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
+                        moviesBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
                         сolorString + "\">(" + data.get(0).getTotal_results() + " " +
                         getResources().getQuantityString(R.plurals.results, data.size()) + ")</font></small>");
 

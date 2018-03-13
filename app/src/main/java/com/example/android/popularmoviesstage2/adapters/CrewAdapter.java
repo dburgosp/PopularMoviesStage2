@@ -107,7 +107,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
             // Set position in the adapter for current person.
             //currentTmdbCrew.setPosition(position);
 
-            // Update CrewViewHolder with the person details at current position in the adapter.
+            // Update CrewViewHolder with the person movie_details_menu at current position in the adapter.
             viewHolder.bind(currentTmdbCrew, listener);
 
             // Save current position.
