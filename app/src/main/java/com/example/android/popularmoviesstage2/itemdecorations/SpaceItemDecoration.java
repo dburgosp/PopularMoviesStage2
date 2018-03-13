@@ -44,9 +44,10 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
         switch (orientation) {
-            case VERTICAL_SEPARATION:
+            case VERTICAL_SEPARATION: {
                 addBottomMargin(outRect, view, parent);
                 break;
+            }
             case HORIZONTAL_VERTICAL_SEPARATION: {
                 addBottomMargin(outRect, view, parent);
                 addEndMargin(outRect, view, parent);
@@ -59,19 +60,20 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private void addBottomMargin(Rect outRect, View view, RecyclerView parent) {
-        // Add bottom margin to every element and top margin only to the first element..
+        // Add bottom margin to every element and top margin only to the first element, or to every
+        // element if we are using a GridLayout (spanCount is greater than 0).
         outRect.bottom = spaceSeparation;
-        if (parent.getChildAdapterPosition(view) == 0) {
+        if ((parent.getChildAdapterPosition(view) == 0) || (spanCount > 0)) {
             outRect.top = spaceSeparation;
         }
     }
 
     private void addEndMargin(Rect outRect, View view, RecyclerView parent) {
-        // Add end margin to every element and start margin only to the first element (or to every
-        // first element of every row, if we are using a GridLayout).
+        // Add right margin to every element and left margin only to the first element, or to every
+        // first element of every row if we are using a GridLayout (spanCount is greater than 0).
         outRect.right = spaceSeparation;
-        if (parent.getChildAdapterPosition(view) == 0 ||
-                (spanCount > 0 && parent.getChildAdapterPosition(view) % spanCount == 0)) {
+        if (parent.getChildAdapterPosition(view) == 0 || (spanCount > 0)) {
+                //((spanCount > 0) && (parent.getChildAdapterPosition(view) % spanCount == 0))) {
             outRect.left = spaceSeparation;
         }
     }

@@ -148,6 +148,7 @@
                 android:id="@+id/movie_details_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:elevation="0dp"
                 android:fontFamily="sans-serif-smallcaps"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />

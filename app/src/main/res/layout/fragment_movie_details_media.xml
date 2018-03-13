@@ -14,7 +14,7 @@
         <LinearLayout
             android:id="@+id/videos_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"
             android:paddingTop="@dimen/regular_padding">
@@ -130,7 +130,7 @@
         <LinearLayout
             android:id="@+id/backdrops_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/media_separator_2"
             android:background="@drawable/gradient_section_bg"
             android:orientation="vertical"

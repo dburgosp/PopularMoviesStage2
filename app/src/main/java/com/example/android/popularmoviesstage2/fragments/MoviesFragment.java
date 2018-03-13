@@ -305,10 +305,9 @@ public class MoviesFragment extends Fragment
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new SpaceItemDecoration(
-                1,
-                SpaceItemDecoration.HORIZONTAL_VERTICAL_SEPARATION,
-                displayUtils.getSpanCount()));
+        int separator = getContext().getResources().getDimensionPixelOffset(R.dimen.separator);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(separator,
+                SpaceItemDecoration.HORIZONTAL_VERTICAL_SEPARATION, displayUtils.getSpanCount()));
 
         // Set the listener for click events in the Adapter.
         MoviesListAdapter.OnItemClickListener listener = new MoviesListAdapter.OnItemClickListener() {
@@ -337,11 +336,11 @@ public class MoviesFragment extends Fragment
 
         // Set the Adapter for the RecyclerView, according to the current display size and
         // orientation.
+        int posterWidth = (displayUtils.getFullDisplayBackdropWidthPixels() -
+                (displayUtils.getSpanCount() * separator * 2)) / displayUtils.getSpanCount();
+        int posterHeight = posterWidth * 3 / 2;
         moviesListAdapter = new MoviesListAdapter(R.layout.list_item_poster_grid_layout_1,
-                moviesArrayList,
-                displayUtils.getFullListPosterWidthPixels(),
-                displayUtils.getFullListPosterHeightPixels(),
-                listener);
+                moviesArrayList, posterWidth, posterHeight, listener);
         recyclerView.setAdapter(moviesListAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to
@@ -369,13 +368,16 @@ public class MoviesFragment extends Fragment
                 if (!isLoading) {
                     // Load next page of results, if we are at the bottom of the current list and
                     // there are more pages to load.
-                    if ((currentPage < totalPages) && ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
+                    if ((currentPage < totalPages) &&
+                            ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount)) {
                         currentPage++;
                         appendToEnd = true;
                         if (loader != null)
-                            getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
+                            getLoaderManager().restartLoader(loaderId, null,
+                                    MoviesFragment.this);
                         else
-                            getLoaderManager().initLoader(loaderId, null, MoviesFragment.this);
+                            getLoaderManager().initLoader(loaderId, null,
+                                    MoviesFragment.this);
                     }
                 }
             }
@@ -393,7 +395,8 @@ public class MoviesFragment extends Fragment
                     public void onRefresh() {
                         initVariables();
                         moviesListAdapter.clearMoviesArrayList();
-                        getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
+                        getLoaderManager().restartLoader(loaderId, null,
+                                MoviesFragment.this);
                     }
                 }
         );

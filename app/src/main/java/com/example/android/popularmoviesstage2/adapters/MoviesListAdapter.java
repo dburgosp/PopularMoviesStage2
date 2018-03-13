@@ -311,14 +311,6 @@ public class MoviesListAdapter
 
             // Special behaviour depending on the layout resource.
             switch (resource) {
-                case R.layout.list_item_poster_grid_layout_1: {
-                    // Movie title only for the specified layouts.
-                    if (imageLoaded)
-                        titleTextView.setVisibility(View.GONE);
-                    else
-                        titleTextView.setVisibility(View.VISIBLE);
-                    break;
-                }
                 case R.layout.list_item_poster_horizontal_layout_2:
                 case R.layout.list_item_poster_vertical_layout_1: {
                     // Set transition name to the current ImageView, so it can be animated if

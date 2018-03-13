@@ -110,6 +110,12 @@ public class MoviesListActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        supportFinishAfterTransition();
+        return true;
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */

@@ -49,10 +49,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MoviesListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".activities.MoviesListOrderPreferencesActivity"
+            android:parentActivityName=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
     </application>

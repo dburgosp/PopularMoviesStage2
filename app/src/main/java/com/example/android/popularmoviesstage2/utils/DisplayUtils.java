@@ -98,7 +98,7 @@ public class DisplayUtils {
         // Number of columns for the movies list in the RecyclerView (spanCount) is different
         // depending on device rotation, so poster width and height for this list also depend on
         // device rotation.
-        fullListPosterWidthPixels = (displayWidthPixels - 4) / spanCount;
+        fullListPosterWidthPixels = displayWidthPixels / spanCount;
         fullListPosterHeightPixels = 3 * fullListPosterWidthPixels / 2;
         Log.i(TAG, "Poster width for movies full list with no margins: " +
                 fullListPosterWidthPixels);
