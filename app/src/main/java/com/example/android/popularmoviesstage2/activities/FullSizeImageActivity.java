@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class FullSizeImageActivity extends AppCompatActivity {
     private static final String TAG = FullSizeImageActivity.class.getSimpleName();
@@ -35,12 +36,14 @@ public class FullSizeImageActivity extends AppCompatActivity {
     public static final String EXTRA_PARAM_CURRENT_IMAGE = "currentImage";
     public static final String EXTRA_PARAM_IMAGE_TYPE = "imageType";
 
+    private Unbinder unbinder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_full_size_images);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         // Get arguments from calling intent.
         if (getIntent() != null) {
@@ -71,5 +74,11 @@ public class FullSizeImageActivity extends AppCompatActivity {
         viewPager.setCurrentItem(currentImage);
 
         Log.i(TAG, "(onCreate) Activity created");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }

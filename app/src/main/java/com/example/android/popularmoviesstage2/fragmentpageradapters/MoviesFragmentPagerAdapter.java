@@ -30,19 +30,19 @@ public class MoviesFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_NOW_PLAYING);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
             case 1:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_THIS_WEEK_RELEASES);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES);
             case 2:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_UPCOMING);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
             case 3:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_POPULAR);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_POPULAR);
             case 4:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_TOP_RATED);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_TOP_RATED);
             case 5:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_FAVORITES);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_FAVORITES);
             default:
-                return MoviesFragment.newInstance(Tmdb.TMDB_SORT_BY_FOR_BUY_AND_RENT);
+                return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT);
         }
     }
 

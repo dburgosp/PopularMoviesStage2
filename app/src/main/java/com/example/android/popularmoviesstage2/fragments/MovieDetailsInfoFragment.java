@@ -29,7 +29,6 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.OmdbMovieAsyncTa
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMovieDetailsAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesCollectionAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Facebook;
-import com.example.android.popularmoviesstage2.viewgroups.FlowLayout;
 import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
@@ -50,6 +49,7 @@ import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
+import com.example.android.popularmoviesstage2.viewgroups.FlowLayout;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 
 import java.util.ArrayList;
@@ -518,14 +518,12 @@ public class MovieDetailsInfoFragment extends Fragment
                     genreTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            view.setElevation(getContext().getResources().
-                                    getDimensionPixelSize(R.dimen.small_padding));
                             Intent intent = new Intent(getContext(), MoviesListActivity.class);
-                            intent.putExtra("genreId", genreTextView.getId());
-                            intent.putExtra("genreName", genreTextView.getText());
+                            intent.putExtra(MoviesListActivity.PARAM_GENRE_ID,
+                                    genreTextView.getId());
+                            intent.putExtra(MoviesListActivity.PARAM_GENRE_NAME,
+                                    genreTextView.getText());
                             startActivity(intent);
-                            view.setElevation(getContext().getResources().
-                                    getDimensionPixelSize(R.dimen.separator));
                         }
                     });
                 } catch (java.lang.NullPointerException e) {
@@ -968,14 +966,12 @@ public class MovieDetailsInfoFragment extends Fragment
                     keywordTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            view.setElevation(getContext().getResources().
-                                    getDimensionPixelSize(R.dimen.small_padding));
                             Intent intent = new Intent(getContext(), MoviesListActivity.class);
-                            intent.putExtra("keywordId", keywordTextView.getId());
-                            intent.putExtra("keywordName", keywordTextView.getText());
+                            intent.putExtra(MoviesListActivity.PARAM_KEYWORD_ID,
+                                    keywordTextView.getId());
+                            intent.putExtra(MoviesListActivity.PARAM_KEYWORD_NAME,
+                                    keywordTextView.getText());
                             startActivity(intent);
-                            keywordsFlowLayout.setElevation(getContext().getResources().
-                                    getDimensionPixelSize(R.dimen.separator));
                         }
                     });
                 } catch (NullPointerException e) {

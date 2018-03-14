@@ -253,6 +253,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
@@ -552,17 +558,17 @@ public class MainActivity extends AppCompatActivity implements
                 switch (id) {
                     case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_SORT_BY_NOW_PLAYING, 1,
+                                Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, 1,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
                     case NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID:
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_SORT_BY_THIS_WEEK_RELEASES, 1,
+                                Tmdb.TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES, 1,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
                     default:
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_SORT_BY_UPCOMING, 1,
+                                Tmdb.TMDB_CONTENT_TYPE_UPCOMING, 1,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
                 }

@@ -28,16 +28,16 @@ public class Tmdb {
     public final static String TMDB_POSTER_SIZE_W185_URL = "https://image.tmdb.org/t/p/w185";
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
-    // Sort movies list by...
-    public final static String TMDB_SORT_BY_POPULAR = "popular";
-    public final static String TMDB_SORT_BY_TOP_RATED = "top_rated";
-    public final static String TMDB_SORT_BY_FAVORITES = "favorites";
-    public final static String TMDB_SORT_BY_NOW_PLAYING = "now_playing";
-    public final static String TMDB_SORT_BY_UPCOMING = "upcoming";
-    public final static String TMDB_SORT_BY_THIS_WEEK_RELEASES = "this_week_releases";
-    public final static String TMDB_SORT_BY_FOR_BUY_AND_RENT = "buy_and_rent";
-    public final static String TMDB_SORT_BY_GENRES = "genre";
-    public final static String TMDB_SORT_BY_KEYWORDS = "keyword";
+    // Content type for fetching movies.
+    public final static String TMDB_CONTENT_TYPE_POPULAR = "popular";
+    public final static String TMDB_CONTENT_TYPE_TOP_RATED = "top_rated";
+    public final static String TMDB_CONTENT_TYPE_FAVORITES = "favorites";
+    public final static String TMDB_CONTENT_TYPE_NOW_PLAYING = "now_playing";
+    public final static String TMDB_CONTENT_TYPE_UPCOMING = "upcoming";
+    public final static String TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES = "this_week_releases";
+    public final static String TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT = "buy_and_rent";
+    public final static String TMDB_CONTENT_TYPE_GENRES = "genre";
+    public final static String TMDB_CONTENT_TYPE_KEYWORDS = "keyword";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";
@@ -62,6 +62,15 @@ public class Tmdb {
     private final static String TMDB_PARAM_REGION = "region";
     private final static String TMDB_PARAM_WITH_GENRES = "with_genres";
     private final static String TMDB_PARAM_WITH_KEYWORDS = "with_keywords";
+    private final static String TMDB_PARAM_SORT_BY = "sort_by";
+
+    // Values for parameters.
+    public final static String TMDB_VALUE_POPULARITY_DESC = "popularity.desc";
+    public final static String TMDB_VALUE_POPULARITY_ASC = "popularity.asc";
+    public final static String TMDB_VALUE_PRIMARY_RELEASE_DATE_DESC = "primary_release_date.desc";
+    public final static String TMDB_VALUE_PRIMARY_RELEASE_DATE_ASC = "primary_release_date.asc";
+    public final static String TMDB_VALUE_VOTE_AVERAGE_DESC = "vote_average.desc";
+    public final static String TMDB_VALUE_VOTE_AVERAGE_ASC = "vote_average.asc";
 
     // Values.
     public final static int TMDB_MAX_PAGES = 1000;
@@ -87,17 +96,20 @@ public class Tmdb {
     /**
      * Fetches TMDB for a list of movies.
      *
-     * @param sortBy      is the sort order for the movie list.
+     * @param contentType is the content type that we are looking for.
      * @param currentPage is the page number to fetch.
      * @param language    is the language of the results.
      * @param region      is the region for getting results.
-     * @param values      is the list of possible values for the sortBy parameter.
+     * @param values      is the list of possible values for the contentType parameter.
+     * @param sortOrder   is the sort order for the list of results.
      * @return an array of {@link TmdbMovie} objects.
      */
-    public static ArrayList<TmdbMovie> getTmdbMovies(String sortBy, int currentPage, String language,
-                                                     String region, ArrayList<Integer> values) {
-        Log.i(TAG, "(getTmdbMovies) Sort by: " + sortBy + ". Page number: " +
-                currentPage + ". Language: " + language + ". Region: " + region);
+    public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, int currentPage,
+                                                     String language, String region,
+                                                     ArrayList<Integer> values, String sortOrder) {
+        Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
+                currentPage + ". Language: " + language + ". Region: " + region +
+                ". Sort order: " + sortOrder);
 
         /* ------------ */
         /* Get the JSON */
@@ -105,8 +117,8 @@ public class Tmdb {
 
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
         Uri builtUri;
-        switch (sortBy) {
-            case TMDB_SORT_BY_NOW_PLAYING: {
+        switch (contentType) {
+            case TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 // Get movies with release type 2 or 3 and with release date between 45 days ago and
                 // today.
                 String initDate = DateTimeUtils.getStringAddedDaysToDate(
@@ -124,10 +136,11 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
                         .build();
                 break;
             }
-            case TMDB_SORT_BY_THIS_WEEK_RELEASES: {
+            case TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES: {
                 // Get movies with release type 2 or 3 that are going to be released this week.
                 String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
                         DateTimeUtils.WEEK_DAY_MONDAY);
@@ -145,10 +158,11 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
                         .build();
                 break;
             }
-            case TMDB_SORT_BY_UPCOMING: {
+            case TMDB_CONTENT_TYPE_UPCOMING: {
                 // Get movies with release type 2 or 3 and release date greater or equal than next
                 // monday.
                 String monday = DateTimeUtils.getStringWeekday(
@@ -165,10 +179,11 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
                         .build();
                 break;
             }
-            case TMDB_SORT_BY_GENRES: {
+            case TMDB_CONTENT_TYPE_GENRES: {
                 // Get movies with genres = list of comma-separated values.
                 StringBuilder genresStringBuilder = new StringBuilder();
                 for (int i = 0; i < values.size(); i++) {
@@ -184,10 +199,11 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
                         .build();
                 break;
             }
-            case TMDB_SORT_BY_KEYWORDS: {
+            case TMDB_CONTENT_TYPE_KEYWORDS: {
                 // Get movies with keywords = list of comma-separated values.
                 StringBuilder keywordsStringBuilder = new StringBuilder();
                 for (int i = 0; i < values.size(); i++) {
@@ -203,6 +219,7 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
                         .appendQueryParameter(TMDB_PARAM_REGION, region)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
                         .build();
                 break;
             }
@@ -211,7 +228,7 @@ public class Tmdb {
                 // to the url.
                 builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendPath(sortBy)
+                        .appendPath(contentType)
                         .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
                         .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
@@ -1278,14 +1295,14 @@ public class Tmdb {
      * @return true if the sort order is allowed, false otherwise.
      */
     public static boolean isAllowedSortOrder(String sortOrder) {
-        return sortOrder.equals(TMDB_SORT_BY_POPULAR) ||
-                sortOrder.equals(TMDB_SORT_BY_TOP_RATED) ||
-                sortOrder.equals(TMDB_SORT_BY_FAVORITES) ||
-                sortOrder.equals(TMDB_SORT_BY_UPCOMING) ||
-                sortOrder.equals(TMDB_SORT_BY_NOW_PLAYING) ||
-                sortOrder.equals(TMDB_SORT_BY_THIS_WEEK_RELEASES) ||
-                sortOrder.equals(TMDB_SORT_BY_GENRES) ||
-                sortOrder.equals(TMDB_SORT_BY_KEYWORDS);
+        return sortOrder.equals(TMDB_CONTENT_TYPE_POPULAR) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_TOP_RATED) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_FAVORITES) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_UPCOMING) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_NOW_PLAYING) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_GENRES) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS);
     }
 
     /**

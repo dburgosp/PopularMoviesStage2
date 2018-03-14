@@ -53,7 +53,7 @@ public class MoviesFragment extends Fragment
     SwipeRefreshLayout swipeRefreshLayout;
 
     private boolean allowClicks = true;
-    private String sortOrder = Tmdb.TMDB_SORT_BY_NOW_PLAYING;
+    private String sortOrder = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
     private MoviesListAdapter moviesListAdapter;
     private int currentPage = 1, currentScrollPosition = 0, loaderId = 0;
     private boolean isLoading, appendToEnd;
@@ -409,22 +409,22 @@ public class MoviesFragment extends Fragment
      */
     private int getLoaderId() {
         switch (sortOrder) {
-            case Tmdb.TMDB_SORT_BY_NOW_PLAYING:
+            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
                 return NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_SORT_BY_THIS_WEEK_RELEASES:
+            case Tmdb.TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES:
                 return NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_SORT_BY_UPCOMING:
+            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING:
                 return NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_SORT_BY_POPULAR:
+            case Tmdb.TMDB_CONTENT_TYPE_POPULAR:
                 return NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_SORT_BY_TOP_RATED:
+            case Tmdb.TMDB_CONTENT_TYPE_TOP_RATED:
                 return NetworkUtils.TMDB_TOP_RATED_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_SORT_BY_FOR_BUY_AND_RENT:
+            case Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT:
                 return NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID;
 
             default:

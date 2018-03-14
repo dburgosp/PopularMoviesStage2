@@ -2,7 +2,6 @@ package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -28,6 +27,7 @@ import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
@@ -39,10 +39,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences;
-
 public class MoviesListActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+
     private static final String TAG = MoviesListActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -63,10 +62,16 @@ public class MoviesListActivity extends AppCompatActivity
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
-    private String moviesBy, sortOrderBy;
+    private String moviesBy, sortBy;
     private int loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
+
+    // Public parameters for using to call this activity.
+    public static final String PARAM_GENRE_ID = "genreId";
+    public static final String PARAM_GENRE_NAME = "genreName";
+    public static final String PARAM_KEYWORD_ID = "keywordId";
+    public static final String PARAM_KEYWORD_NAME = "keywordName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,14 +86,16 @@ public class MoviesListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);
 
-        // Read the sort parameter passed to this activity into the intent.
-        boolean sort = getParameters();
+        // Read the sort parameter passed to this activity into the intent and get the corresponding
+        // loader id. If there's no valid parameters, then there's no valid loader id and there's
+        // nothing to search.
+        getParameters();
+        if (loaderId >= 0) {
+            initVariables();
+            sortBy = MyPreferences.getSortOrder(this);
 
-        if (sort && loaderId >= 0) {
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
-            initVariables();
-            getDefaultSettings();
             setRecyclerView();
             if (getSupportLoaderManager().getLoader(loaderId) == null)
                 getSupportLoaderManager().initLoader(loaderId, null, this);
@@ -198,6 +205,185 @@ public class MoviesListActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("sortBy", sortBy);
+        outState.putString("moviesBy", moviesBy);
+    }
+
+    /**
+     * This method is called after {@link #onStart} when the activity is
+     * being re-initialized from a previously saved state, given here in
+     * <var>savedInstanceState</var>.  Most implementations will simply use {@link #onCreate}
+     * to restore their state, but it is sometimes convenient to do it here
+     * after all of the initialization has been done or to allow subclasses to
+     * decide whether to use your default implementation.  The default
+     * implementation of this method performs a restore of any view state that
+     * had previously been frozen by {@link #onSaveInstanceState}.
+     * <p>
+     * <p>This method is called between {@link #onStart} and
+     * {@link #onPostCreate}.
+     *
+     * @param savedInstanceState the data most recently supplied in {@link #onSaveInstanceState}.
+     * @see #onCreate
+     * @see #onPostCreate
+     * @see #onResume
+     * @see #onSaveInstanceState
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        sortBy = savedInstanceState.getString("sortBy");
+        moviesBy = savedInstanceState.getString("moviesBy");
+    }
+
+    /**
+     * Dispatch onResume() to fragments.  Note that for better inter-operation
+     * with older versions of the platform, at the point of this call the
+     * fragments attached to the activity are <em>not</em> resumed.  This means
+     * that in some cases the previous state may still be saved, not allowing
+     * fragment transactions that modify the state.  To correctly interact
+     * with fragments in their proper state, you should instead override
+     * {@link #onResumeFragments()}.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Get the sort order string and check if it has be changed.
+        String currentSortBy = MyPreferences.getSortOrder(this);
+        if (currentSortBy != sortBy) {
+            sortBy = currentSortBy;
+
+            // Restart the loader for displaying the current movies list with the new sort order.
+            if (getSupportLoaderManager().getLoader(loaderId) == null)
+                getSupportLoaderManager().initLoader(loaderId, null, this);
+            else
+                getSupportLoaderManager().restartLoader(loaderId, null, this);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    /* ------ */
+    /* LOADER */
+    /* ------ */
+
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id   The ID whose loaderId is to be created.
+     * @param args Any arguments supplied by the caller.
+     * @return Return a new Loader instance that is ready to start loading.
+     */
+    @Override
+    public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
+            // There is an available connection. Fetch results from TMDB.
+            isLoading = true;
+            connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
+            switch (id) {
+                case NetworkUtils.TMDB_GENRES_LOADER_ID: {
+                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
+                            Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage,
+                            Locale.getDefault().getLanguage(),
+                            Locale.getDefault().getCountry(), genres, sortBy);
+                    break;
+                }
+                case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
+                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
+                            Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage,
+                            Locale.getDefault().getLanguage(),
+                            Locale.getDefault().getCountry(), keywords, sortBy);
+                    break;
+                }
+                default:
+                    loader = null;
+            }
+            return loader;
+        } else {
+            // There is no connection. Show error message.
+            isLoading = false;
+            connectionStatusText.setText(getResources().getString(R.string.no_connection));
+            connectionStatusLoadingIndicator.setVisibility(View.INVISIBLE);
+            Log.i(TAG, "(onCreateLoader) No internet connection.");
+            return null;
+        }
+    }
+
+    /**
+     * Called when a previously created loaderId has finished its load.  Note
+     * that normally an application is <em>not</em> allowed to commit fragment
+     * transactions while in this call, since it can happen after an
+     * activity's state is saved.  See {@link FragmentManager#beginTransaction()
+     * FragmentManager.openTransaction()} for further discussion on this.
+     * <p>
+     * <p>This function is guaranteed to be called prior to the release of
+     * the last data that was supplied for this Loader.  At this point
+     * you should remove all use of the old data (since it will be released
+     * soon), but should not do your own release of the data since its Loader
+     * owns it and will take care of that.  The Loader will take care of
+     * management of its data so you don't have to.
+     *
+     * @param loader The Loader that has finished.
+     * @param data   The data generated by the Loader.
+     */
+    @Override
+    public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
+        // Hide connection status.
+        isLoading = false;
+        swipeRefreshLayout.setRefreshing(false);
+        connectionStatusText.setVisibility(View.GONE);
+        connectionStatusLoadingIndicator.setVisibility(View.GONE);
+
+        // Check if there is an available connection.
+        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
+            // If there is a valid result, then update its data into the current
+            // {@link TmdbMovieDetails} object.
+            if (data != null && !data.isEmpty() && data.size() > 0) {
+                Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                // Set subtitle with the sort string and the total number of results.
+                int labelColor = getResources().getColor(R.color.colorGrey);
+                String сolorString = String.format("%X", labelColor).substring(2);
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" +
+                        moviesBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
+                        сolorString + "\">(" + data.get(0).getTotal_results() + " " +
+                        getResources().getQuantityString(R.plurals.results, data.size()) + ")</font></small>");
+
+                // Get movies list and display it.
+                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
+                moviesListAdapter.notifyDataSetChanged();
+            } else {
+                Log.i(TAG, "(onLoadFinished) No search results.");
+                connectionStatusText.setText(getResources().getString(R.string.no_results));
+                connectionStatusText.setVisibility(View.VISIBLE);
+            }
+        } else {
+            // There is no connection. Show error message.
+            Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            connectionStatusText.setText(getResources().getString(R.string.no_connection));
+            connectionStatusText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Called when a previously created loaderId is being reset, and thus
+     * making its data unavailable.  The application should at this point
+     * remove any references it has to the Loader's data.
+     *
+     * @param loader The Loader that is being reset.
+     */
+    @Override
+    public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
+        isLoading = false;
+    }
+
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
@@ -213,54 +399,42 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     /**
-     * Helper method to get the default settings for this activity.
-     */
-    void getDefaultSettings() {
-        SharedPreferences sharedPreferences = getDefaultSharedPreferences(this);
-        sortOrderBy = sharedPreferences.getString(getString(R.string.preferences_sort_by_key),
-                getString(R.string.preferences_sort_by_popularity_desc_value));
-    }
-
-    /**
      * Helper method to get the sort parameters passed to the activity into the intent. Initialize
      * some global variables too.
-     *
-     * @return true if there is any sort parameter, false otherwise.
      */
-    boolean getParameters() {
-        if (getIntent().hasExtra("genreId") && getIntent().hasExtra("genreName")) {
+    private void getParameters() {
+        if (getIntent().hasExtra(PARAM_GENRE_ID) && getIntent().hasExtra(PARAM_GENRE_NAME)) {
             // Sorting movies by genre. Create the genres array with only one element, set the
             // title for the activity using the genre name and select the appropriate loader id.
-            genres.add(getIntent().getIntExtra("genreId", 0));
-            moviesBy = getIntent().getStringExtra("genreName");
+            genres.add(getIntent().getIntExtra(PARAM_GENRE_ID, 0));
+            moviesBy = getIntent().getStringExtra(PARAM_GENRE_NAME);
 
             // Set title for this activity.
             setTitle(getResources().getString(R.string.sort_movies_by_genre));
 
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
-            return true;
-        } else if (getIntent().hasExtra("keywordId") && getIntent().hasExtra("keywordName")) {
+        } else if (getIntent().hasExtra(PARAM_KEYWORD_ID) &&
+                getIntent().hasExtra(PARAM_KEYWORD_NAME)) {
             // Sorting movies by keyword. Create the keywords array with only one element, set the
             // title for the activity using the keyword name and select the appropriate loader id.
-            keywords.add(getIntent().getIntExtra("keywordId", 0));
-            moviesBy = getIntent().getStringExtra("keywordName");
+            keywords.add(getIntent().getIntExtra(PARAM_KEYWORD_ID, 0));
+            moviesBy = getIntent().getStringExtra(PARAM_KEYWORD_NAME);
 
             // Set title for this activity.
             setTitle(getResources().getString(R.string.sort_movies_by_keyword));
 
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
-            return true;
         } else
-            return false;
+            loaderId = -1;
     }
 
     /**
      * Helper method for setting the RecyclerView in order to display a list of movies with a given
      * arrangement.
      */
-    void setRecyclerView() {
+    private void setRecyclerView() {
         // Set the LayoutManager for the RecyclerView.
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
@@ -359,119 +533,5 @@ public class MoviesListActivity extends AppCompatActivity
                     }
                 }
         );
-    }
-
-    /* ------ */
-    /* LOADER */
-    /* ------ */
-
-    /**
-     * Instantiate and return a new Loader for the given ID.
-     *
-     * @param id   The ID whose loaderId is to be created.
-     * @param args Any arguments supplied by the caller.
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
-            // There is an available connection. Fetch results from TMDB.
-            isLoading = true;
-            connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
-            switch (id) {
-                case NetworkUtils.TMDB_GENRES_LOADER_ID: {
-                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_SORT_BY_GENRES, currentPage,
-                            Locale.getDefault().getLanguage(),
-                            Locale.getDefault().getCountry(), genres);
-                    break;
-                }
-                case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
-                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_SORT_BY_KEYWORDS, currentPage,
-                            Locale.getDefault().getLanguage(),
-                            Locale.getDefault().getCountry(), keywords);
-                    break;
-                }
-                default:
-                    loader = null;
-            }
-            return loader;
-        } else {
-            // There is no connection. Show error message.
-            isLoading = false;
-            connectionStatusText.setText(getResources().getString(R.string.no_connection));
-            connectionStatusLoadingIndicator.setVisibility(View.INVISIBLE);
-            Log.i(TAG, "(onCreateLoader) No internet connection.");
-            return null;
-        }
-    }
-
-    /**
-     * Called when a previously created loaderId has finished its load.  Note
-     * that normally an application is <em>not</em> allowed to commit fragment
-     * transactions while in this call, since it can happen after an
-     * activity's state is saved.  See {@link FragmentManager#beginTransaction()
-     * FragmentManager.openTransaction()} for further discussion on this.
-     * <p>
-     * <p>This function is guaranteed to be called prior to the release of
-     * the last data that was supplied for this Loader.  At this point
-     * you should remove all use of the old data (since it will be released
-     * soon), but should not do your own release of the data since its Loader
-     * owns it and will take care of that.  The Loader will take care of
-     * management of its data so you don't have to.
-     *
-     * @param loader The Loader that has finished.
-     * @param data   The data generated by the Loader.
-     */
-    @Override
-    public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
-        // Hide connection status.
-        isLoading = false;
-        swipeRefreshLayout.setRefreshing(false);
-        connectionStatusText.setVisibility(View.GONE);
-        connectionStatusLoadingIndicator.setVisibility(View.GONE);
-
-        // Check if there is an available connection.
-        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
-            // If there is a valid result, then update its data into the current
-            // {@link TmdbMovieDetails} object.
-            if (data != null && !data.isEmpty() && data.size() > 0) {
-                Log.i(TAG, "(onLoadFinished) Search results not null.");
-
-                // Set subtitle with the sort string and the total number of results.
-                int labelColor = getResources().getColor(R.color.colorGrey);
-                String сolorString = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" +
-                        moviesBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
-                        сolorString + "\">(" + data.get(0).getTotal_results() + " " +
-                        getResources().getQuantityString(R.plurals.results, data.size()) + ")</font></small>");
-
-                // Get movies list and display it.
-                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
-                moviesListAdapter.notifyDataSetChanged();
-            } else {
-                Log.i(TAG, "(onLoadFinished) No search results.");
-                connectionStatusText.setText(getResources().getString(R.string.no_results));
-                connectionStatusText.setVisibility(View.VISIBLE);
-            }
-        } else {
-            // There is no connection. Show error message.
-            Log.i(TAG, "(onLoadFinished) No connection to internet.");
-            connectionStatusText.setText(getResources().getString(R.string.no_connection));
-            connectionStatusText.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * Called when a previously created loaderId is being reset, and thus
-     * making its data unavailable.  The application should at this point
-     * remove any references it has to the Loader's data.
-     *
-     * @param loader The Loader that is being reset.
-     */
-    @Override
-    public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
-        isLoading = false;
     }
 }

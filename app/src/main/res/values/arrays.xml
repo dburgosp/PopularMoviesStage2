@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="listArray">
+    <array name="sort_by_list_array">
         <item>@string/preferences_sort_by_popularity_desc_title</item>
         <item>@string/preferences_sort_by_popularity_asc_title</item>
         <item>@string/preferences_sort_by_year_desc_title</item>
         <item>@string/preferences_sort_by_year_asc_title</item>
         <item>@string/preferences_sort_by_rating_desc_title</item>
         <item>@string/preferences_sort_by_rating_asc_title</item>
-    </string-array>
+    </array>
 
-    <string-array name="listValues">
+    <array name="sort_by_list_values">
         <item>@string/preferences_sort_by_popularity_desc_value</item>
         <item>@string/preferences_sort_by_popularity_asc_value</item>
         <item>@string/preferences_sort_by_year_desc_value</item>
         <item>@string/preferences_sort_by_year_asc_value</item>
         <item>@string/preferences_sort_by_rating_desc_value</item>
         <item>@string/preferences_sort_by_rating_asc_value</item>
-    </string-array>
+    </array>
 </resources>

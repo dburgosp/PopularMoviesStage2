@@ -1,10 +1,10 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Slide;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.Window;
 
@@ -16,10 +16,10 @@ public class MoviesListSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Define transitions to exit and enter to this activity.
+        // Define transitions to enter to and exit from this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setEnterTransition(new Slide().setDuration(500));
-        getWindow().setExitTransition(new Slide().setDuration(500));
+        getWindow().setEnterTransition(new Slide(Gravity.RIGHT).setDuration(500));
+        getWindow().setExitTransition(new Slide(Gravity.LEFT).setDuration(500));
 
         setContentView(R.layout.activity_movies_list_settings);
 
@@ -49,10 +49,8 @@ public class MoviesListSettingsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == android.R.id.home) {
-            // When the home button is pressed, take the user back to the calling activity.
-            NavUtils.navigateUpFromSameTask(this);
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

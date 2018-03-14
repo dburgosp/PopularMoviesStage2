@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String sortBy, language, region;
+    private String contentType, language, region, sortBy = Tmdb.TMDB_VALUE_POPULARITY_DESC;
     private int currentPage;
     private ArrayList<Integer> values = new ArrayList<>();
 
@@ -22,14 +22,14 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      * Constructor for this class.
      *
      * @param context     is the context of the activity.
-     * @param sortBy      is the sort order of the movies list.
+     * @param contentType is the sort order of the movies list.
      * @param currentPage is the current page to fetch results from TMDB.
      * @param language    is the language for retrieving results from TMDB.
      */
-    public TmdbMoviesAsyncTaskLoader(Context context, String sortBy, int currentPage,
+    public TmdbMoviesAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language, String region) {
         super(context);
-        this.sortBy = sortBy;
+        this.contentType = contentType;
         this.currentPage = currentPage;
         this.language = language;
         this.region = region;
@@ -39,19 +39,22 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      * Another constructor for this class.
      *
      * @param context     is the context of the activity.
-     * @param sortBy      is the sort order of the movies list.
+     * @param contentType is the content type to fetch from TMDB.
      * @param currentPage is the current page to fetch results from TMDB.
      * @param language    is the language for retrieving results from TMDB.
-     * @param values      is the list of possible values to assign to the sortBy parameter.
+     * @param values      is the list of possible values to assign to the contentType parameter.
+     * @param values      is the sort order for the list of results.
      */
-    public TmdbMoviesAsyncTaskLoader(Context context, String sortBy, int currentPage,
-                                     String language, String region, ArrayList<Integer> values) {
+    public TmdbMoviesAsyncTaskLoader(Context context, String contentType, int currentPage,
+                                     String language, String region, ArrayList<Integer> values,
+                                     String sortBy) {
         super(context);
-        this.sortBy = sortBy;
+        this.contentType = contentType;
         this.values = values;
         this.currentPage = currentPage;
         this.language = language;
         this.region = region;
+        this.sortBy = sortBy;
     }
 
     /**
@@ -97,11 +100,12 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      */
     @Override
     public ArrayList<TmdbMovie> loadInBackground() {
-        if (Tmdb.isAllowedSortOrder(sortBy) && currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
+        if (Tmdb.isAllowedSortOrder(contentType) &&
+                currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Sort by: " + sortBy + ". Page number: " +
+            Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(sortBy, currentPage, language, region, values);
+            return Tmdb.getTmdbMovies(contentType, currentPage, language, region, values, sortBy);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

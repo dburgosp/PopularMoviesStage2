@@ -69,10 +69,6 @@
     <string name="person_details_tv">TV</string>
     <string name="person_details_images">Images</string>
     <string name="posters_title">Posters</string>
-    <string name="preferences_sort_by_key">sort_by</string>
-    <string name="preferences_sort_by_title">Sort order</string>
-    <string name="preferences_sort_by_popularity_asc_value">popularity.asc</string>
-    <string name="preferences_sort_by_popularity_desc_value">popularity.desc</string>
     <string name="recommended_movies">Recommended movies</string>
     <string name="release_status_rumored">Rumored</string>
     <string name="release_status_planned">Planned</string>
@@ -111,9 +107,23 @@
     <string name="view_all_this_week_released_movies">View the full list of %d movies to be released this week in %s</string>
     <string name="view_all_upcoming_movies">View the full list of %d upcoming movies to be released in %s</string>
 
-    <!-- MPAA movie age ratings from OMDB API -->
+    <!-- Texts for preferences -->
+    <string name="preferences_sort_by_key">sort_by</string>
+    <string name="preferences_sort_by_title">Sort order</string>
 
-    <!-- FCC TV age ratings from OMDB API -->
+    <string name="preferences_sort_by_popularity_asc_title">Popularity (ascending)</string>
+    <string name="preferences_sort_by_popularity_desc_title">Popularity (descending)</string>
+    <string name="preferences_sort_by_year_asc_title">Release date (ascending)</string>
+    <string name="preferences_sort_by_year_desc_title">Release date (descending)</string>
+    <string name="preferences_sort_by_rating_asc_title">Users rating (ascending)</string>
+    <string name="preferences_sort_by_rating_desc_title">Users rating (descending)</string>
+
+    <string name="preferences_sort_by_popularity_asc_value">1</string>
+    <string name="preferences_sort_by_popularity_desc_value">2</string>
+    <string name="preferences_sort_by_year_asc_value">3</string>
+    <string name="preferences_sort_by_year_desc_value">4</string>
+    <string name="preferences_sort_by_rating_asc_value">5</string>
+    <string name="preferences_sort_by_rating_desc_value">6</string>
 
     <!-- Plurals -->
 
@@ -121,32 +131,26 @@
         <item quantity="one">Genre</item>
         <item quantity="other">Genres</item>
     </plurals>
-
     <plurals name="keywords">
         <item quantity="one">Keyword</item>
         <item quantity="other">Keywords</item>
     </plurals>
-
     <plurals name="production_companies">
         <item quantity="one">Production company</item>
         <item quantity="other">Production companies</item>
     </plurals>
-
     <plurals name="production_countries">
         <item quantity="one">Production country</item>
         <item quantity="other">Production countries</item>
     </plurals>
-
     <plurals name="release_dates">
         <item quantity="one">Release date</item>
         <item quantity="other">Release dates</item>
     </plurals>
-
     <plurals name="results">
         <item quantity="one">result</item>
         <item quantity="other">results</item>
     </plurals>
-
     <plurals name="score_votes">
         <item quantity="one">(1 vote)</item>
         <item quantity="other">(%s votes)</item>
@@ -157,8 +161,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
-
-    <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
