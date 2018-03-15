@@ -3,24 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorHighScoreBackground"
     tools:context="com.example.android.popularmoviesstage2.activities.MoviesListActivity">
-
-    <TextView
-        android:id="@+id/movies_list_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/tiny_padding"
-        android:padding="@dimen/normal_padding"
-        android:textColor="@color/colorDarkWhite"
-        android:textSize="@dimen/alert_text_size"
-        tools:text="Search string" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/movies_list_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/movies_list_title">
+        android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/movies_list_recyclerview"
@@ -35,7 +23,7 @@
         android:layout_above="@id/movies_list_loading_indicator"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGrey"
         android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 

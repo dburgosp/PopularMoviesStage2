@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
@@ -29,7 +30,6 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -51,15 +51,13 @@ public class MoviesListActivity extends AppCompatActivity
     ProgressBar connectionStatusLoadingIndicator;
     @BindView(R.id.movies_list_no_result_text_view)
     TextView connectionStatusText;
-    @BindView(R.id.movies_list_title)
-    TextView titleTextView;
     @BindView(R.id.movies_list_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
 
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
-    private String moviesBy, sortBy;
+    private String moviesBy, sortBy, language;
     private int loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
@@ -90,6 +88,7 @@ public class MoviesListActivity extends AppCompatActivity
         if (loaderId >= 0) {
             initVariables();
             sortBy = MyPreferences.getSortOrder(this);
+            language = MyPreferences.getLanguage(this);
 
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
@@ -198,39 +197,6 @@ public class MoviesListActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("sortBy", sortBy);
-        outState.putString("moviesBy", moviesBy);
-    }
-
-    /**
-     * This method is called after {@link #onStart} when the activity is
-     * being re-initialized from a previously saved state, given here in
-     * <var>savedInstanceState</var>.  Most implementations will simply use {@link #onCreate}
-     * to restore their state, but it is sometimes convenient to do it here
-     * after all of the initialization has been done or to allow subclasses to
-     * decide whether to use your default implementation.  The default
-     * implementation of this method performs a restore of any view state that
-     * had previously been frozen by {@link #onSaveInstanceState}.
-     * <p>
-     * <p>This method is called between {@link #onStart} and
-     * {@link #onPostCreate}.
-     *
-     * @param savedInstanceState the data most recently supplied in {@link #onSaveInstanceState}.
-     * @see #onCreate
-     * @see #onPostCreate
-     * @see #onResume
-     * @see #onSaveInstanceState
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        sortBy = savedInstanceState.getString("sortBy");
-        moviesBy = savedInstanceState.getString("moviesBy");
-    }
-
     /**
      * Dispatch onResume() to fragments.  Note that for better inter-operation
      * with older versions of the platform, at the point of this call the
@@ -244,10 +210,12 @@ public class MoviesListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        // Get the sort order string and check if it has be changed.
+        // Get current sort order and current language and check if they have been changed.
         String currentSortBy = MyPreferences.getSortOrder(this);
-        if (!currentSortBy.equals(sortBy)) {
+        String currentLanguage = MyPreferences.getLanguage(this);
+        if (!currentSortBy.equals(sortBy) || !currentLanguage.equals(language)) {
             sortBy = currentSortBy;
+            language = currentLanguage;
 
             // Restart the loader for displaying the current movies list with the new sort order.
             initVariables();
@@ -283,14 +251,14 @@ public class MoviesListActivity extends AppCompatActivity
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
                             Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage,
-                            Locale.getDefault().getLanguage(),
+                            language,
                             Locale.getDefault().getCountry(), genres, sortBy);
                     break;
                 }
                 case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
                             Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage,
-                            Locale.getDefault().getLanguage(),
+                            language,
                             Locale.getDefault().getCountry(), keywords, sortBy);
                     break;
                 }
@@ -340,13 +308,18 @@ public class MoviesListActivity extends AppCompatActivity
             if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                // Set subtitle with the sort string and the total number of results.
-                int labelColor = getResources().getColor(R.color.colorGrey);
-                String сolorString = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" +
-                        moviesBy.toUpperCase() + "  </big></strong><small><font color=\"#" +
-                        сolorString + "\">(" + data.get(0).getTotal_results() + " " +
-                        getResources().getQuantityString(R.plurals.results, data.size()) + ")</font></small>");
+                // Show a message with search results.
+                String title;
+                if (moviesBy.equals(PARAM_GENRE_NAME))
+                    title = getResources().getString(R.string.sort_movies_by_genre);
+                else
+                    title = getResources().getString(R.string.sort_movies_by_keyword);
+                Toast.makeText(this, title + ": " + moviesBy + "\n" + "\n" +
+                                getResources().getString(R.string.preferences_sort_by_title) +
+                                ": " + MyPreferences.getSortOrderTitle(this) + "\n" +
+                                "\n" + data.get(0).getTotal_results() + " " +
+                                getResources().getQuantityString(R.plurals.results, data.size()),
+                        Toast.LENGTH_LONG).show();
 
                 // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
@@ -401,9 +374,6 @@ public class MoviesListActivity extends AppCompatActivity
             genres.add(getIntent().getIntExtra(PARAM_GENRE_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_GENRE_NAME);
 
-            // Set title for this activity.
-            setTitle(getResources().getString(R.string.sort_movies_by_genre));
-
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
         } else if (getIntent().hasExtra(PARAM_KEYWORD_ID) &&
@@ -413,13 +383,13 @@ public class MoviesListActivity extends AppCompatActivity
             keywords.add(getIntent().getIntExtra(PARAM_KEYWORD_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_KEYWORD_NAME);
 
-            // Set title for this activity.
-            setTitle(getResources().getString(R.string.sort_movies_by_keyword));
-
             // Set the loader identifier.
             loaderId = NetworkUtils.TMDB_KEYWORDS_LOADER_ID;
         } else
             loaderId = -1;
+
+        // Set title for this activity.
+        setTitle(moviesBy);
     }
 
     /**

@@ -116,7 +116,7 @@ public class Tmdb {
         /* ------------ */
 
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
-        Uri builtUri;
+        Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon();
         switch (contentType) {
             case TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 // Get movies with release type 2 or 3 and with release date between 45 days ago and
@@ -126,18 +126,12 @@ public class Tmdb {
                 String currentDate = DateTimeUtils.getStringCurrentDate();
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_DISCOVER_PATH)
+                builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, currentDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
-                        .build();
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
             case TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES: {
@@ -148,18 +142,12 @@ public class Tmdb {
                         DateTimeUtils.WEEK_DAY_SUNDAY);
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_DISCOVER_PATH)
+                builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, sunday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
-                        .build();
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
             case TMDB_CONTENT_TYPE_UPCOMING: {
@@ -170,75 +158,63 @@ public class Tmdb {
                         DateTimeUtils.WEEK_DAY_MONDAY);
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_DISCOVER_PATH)
+                builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
-                        .build();
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
             case TMDB_CONTENT_TYPE_GENRES: {
                 // Get movies with genres = list of comma-separated values.
-                StringBuilder genresStringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < values.size(); i++) {
-                    genresStringBuilder.append(Integer.toString(values.get(i)));
+                    stringBuilder.append(Integer.toString(values.get(i)));
                     if ((i + 1) < values.size())
-                        genresStringBuilder.append(",");
+                        stringBuilder.append(",");
                 }
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_DISCOVER_PATH)
+                builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, genresStringBuilder.toString())
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
-                        .build();
+                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, stringBuilder.toString())
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
             case TMDB_CONTENT_TYPE_KEYWORDS: {
                 // Get movies with keywords = list of comma-separated values.
-                StringBuilder keywordsStringBuilder = new StringBuilder();
+                StringBuilder stringBuilder = new StringBuilder();
                 for (int i = 0; i < values.size(); i++) {
-                    keywordsStringBuilder.append(Integer.toString(values.get(i)));
+                    stringBuilder.append(Integer.toString(values.get(i)));
                     if ((i + 1) < values.size())
-                        keywordsStringBuilder.append(",");
+                        stringBuilder.append(",");
                 }
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_DISCOVER_PATH)
+                builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, keywordsStringBuilder.toString())
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder)
-                        .build();
+                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, stringBuilder.toString())
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
             default: {
                 // Sort by "popular" or "top_rated" means only appending the sort string as a path
                 // to the url.
-                builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendPath(contentType)
-                        .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                        .appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage))
-                        .appendQueryParameter(TMDB_PARAM_LANGUAGE, language)
-                        .appendQueryParameter(TMDB_PARAM_REGION, region)
-                        .build();
+                builder.appendPath(TMDB_MOVIE_PATH)
+                        .appendPath(contentType);
                 break;
             }
         }
 
-        // Use the built uri to get the JSON document with the results of the query.
+        // Common parts in all cases to build the Uri.
+        builder.appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY);
+        if (!language.equals("") && !language.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, language);
+        if (!region.equals("") && !region.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_REGION, region);
+        if (currentPage > 0)
+            builder.appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage));
+
+        // Finally, build the Uri.
+        Uri builtUri = builder.build();
+
+        // Use the built Uri to get the JSON document with the results of the query.
         String JSONresponse;
         try {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);

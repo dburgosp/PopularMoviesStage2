@@ -240,8 +240,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (unbinder != null)
-            unbinder.unbind();
+/*        if (unbinder != null)
+            unbinder.unbind();*/
     }
 
     /* -------------- */

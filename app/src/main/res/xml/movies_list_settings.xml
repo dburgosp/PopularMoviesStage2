@@ -6,4 +6,10 @@
         android:entryValues="@array/sort_by_list_values"
         android:key="@string/preferences_sort_by_key"
         android:title="@string/preferences_sort_by_title" />
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/language_list_array"
+        android:entryValues="@array/language_list_values"
+        android:key="@string/preferences_language_key"
+        android:title="@string/preferences_language_title" />
 </PreferenceScreen>

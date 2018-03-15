@@ -433,7 +433,8 @@ public class MoviesListAdapter
 
                         // Color grey for left drawable.
                         TextViewUtils.setTintedCompoundDrawable(context, popularityTextView,
-                                TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_thumb_up_black_18dp,
+                                TextViewUtils.DRAWABLE_LEFT_INDEX,
+                                R.drawable.ic_thumbs_up_down_black_18dp,
                                 R.color.colorGrey, R.dimen.tiny_padding);
                     } else
                         popularityTextView.setVisibility(View.GONE);

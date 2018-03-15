@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Arrays for sort order preferences -->
     <array name="sort_by_list_array">
         <item>@string/preferences_sort_by_popularity_desc_title</item>
         <item>@string/preferences_sort_by_popularity_asc_title</item>
@@ -8,7 +9,6 @@
         <item>@string/preferences_sort_by_rating_desc_title</item>
         <item>@string/preferences_sort_by_rating_asc_title</item>
     </array>
-
     <array name="sort_by_list_values">
         <item>@string/preferences_sort_by_popularity_desc_value</item>
         <item>@string/preferences_sort_by_popularity_asc_value</item>
@@ -16,5 +16,17 @@
         <item>@string/preferences_sort_by_year_asc_value</item>
         <item>@string/preferences_sort_by_rating_desc_value</item>
         <item>@string/preferences_sort_by_rating_asc_value</item>
+    </array>
+
+    <!-- Arrays for language preferences -->
+    <array name="language_list_array">
+        <item>@string/preferences_language_locale_title</item>
+        <item>@string/preferences_language_en_title</item>
+        <item>@string/preferences_language_es_title</item>
+    </array>
+    <array name="language_list_values">
+        <item>@string/preferences_language_locale_value</item>
+        <item>@string/preferences_language_en_value</item>
+        <item>@string/preferences_language_es_value</item>
     </array>
 </resources>

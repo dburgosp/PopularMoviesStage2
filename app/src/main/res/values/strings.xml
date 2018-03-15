@@ -110,20 +110,27 @@
     <!-- Texts for preferences -->
     <string name="preferences_sort_by_key">sort_by</string>
     <string name="preferences_sort_by_title">Sort order</string>
-
     <string name="preferences_sort_by_popularity_asc_title">Popularity (ascending)</string>
     <string name="preferences_sort_by_popularity_desc_title">Popularity (descending)</string>
     <string name="preferences_sort_by_year_asc_title">Release date (ascending)</string>
     <string name="preferences_sort_by_year_desc_title">Release date (descending)</string>
     <string name="preferences_sort_by_rating_asc_title">Users rating (ascending)</string>
     <string name="preferences_sort_by_rating_desc_title">Users rating (descending)</string>
-
     <string name="preferences_sort_by_popularity_asc_value">1</string>
     <string name="preferences_sort_by_popularity_desc_value">2</string>
     <string name="preferences_sort_by_year_asc_value">3</string>
     <string name="preferences_sort_by_year_desc_value">4</string>
     <string name="preferences_sort_by_rating_asc_value">5</string>
     <string name="preferences_sort_by_rating_desc_value">6</string>
+
+    <string name="preferences_language_key">language</string>
+    <string name="preferences_language_title">Language for results</string>
+    <string name="preferences_language_locale_title">System language</string>
+    <string name="preferences_language_en_title">English</string>
+    <string name="preferences_language_es_title">Spanish</string>
+    <string name="preferences_language_locale_value">1</string>
+    <string name="preferences_language_en_value">2</string>
+    <string name="preferences_language_es_value">3</string>
 
     <!-- Plurals -->
 
