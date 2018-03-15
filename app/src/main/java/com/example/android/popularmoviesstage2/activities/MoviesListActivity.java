@@ -3,7 +3,6 @@ package com.example.android.popularmoviesstage2.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -56,8 +55,6 @@ public class MoviesListActivity extends AppCompatActivity
     TextView titleTextView;
     @BindView(R.id.movies_list_swipe_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.movies_list_fab)
-    FloatingActionButton floatingActionButton;
 
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
@@ -101,14 +98,6 @@ public class MoviesListActivity extends AppCompatActivity
                 getSupportLoaderManager().initLoader(loaderId, null, this);
             else
                 getSupportLoaderManager().restartLoader(loaderId, null, this);
-
-            // Set the floating action button.
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: define FAB behaviour on click events.
-                }
-            });
         } else {
             // Nothing to search.
             connectionStatusText.setText(getResources().getString(R.string.no_results));
@@ -188,20 +177,24 @@ public class MoviesListActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case (R.id.movies_list_menu_home): {
-                // Set the intent for navigating from here to the main activity.
+                // Navigate to the main activity.
                 cls = MainActivity.class;
+                intent = new Intent(packageContext, cls);
+                startActivity(intent);
+                break;
+            }
+            case (R.id.movies_list_menu_settings): {
+                // Navigate to the settings activity.
+                cls = MoviesListSettingsActivity.class;
+                intent = new Intent(packageContext, cls);
+                startActivity(intent);
                 break;
             }
             default: {
-                // case (R.id.movies_list_menu_settings):
-                // Set the intent for navigating from here to the settings activity.
-                cls = MoviesListSettingsActivity.class;
+                // case (android.R.id.home)
+                onBackPressed();
             }
         }
-
-        // Navigate to the given activity.
-        intent = new Intent(packageContext, cls);
-        startActivity(intent);
         return true;
     }
 
@@ -253,14 +246,13 @@ public class MoviesListActivity extends AppCompatActivity
 
         // Get the sort order string and check if it has be changed.
         String currentSortBy = MyPreferences.getSortOrder(this);
-        if (currentSortBy != sortBy) {
+        if (!currentSortBy.equals(sortBy)) {
             sortBy = currentSortBy;
 
             // Restart the loader for displaying the current movies list with the new sort order.
-            if (getSupportLoaderManager().getLoader(loaderId) == null)
-                getSupportLoaderManager().initLoader(loaderId, null, this);
-            else
-                getSupportLoaderManager().restartLoader(loaderId, null, this);
+            initVariables();
+            moviesListAdapter.clearMoviesArrayList();
+            getSupportLoaderManager().restartLoader(loaderId, null, this);
         }
     }
 

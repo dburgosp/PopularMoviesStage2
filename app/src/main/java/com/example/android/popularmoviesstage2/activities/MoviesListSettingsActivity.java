@@ -18,8 +18,8 @@ public class MoviesListSettingsActivity extends AppCompatActivity {
 
         // Define transitions to enter to and exit from this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setEnterTransition(new Slide(Gravity.RIGHT).setDuration(500));
-        getWindow().setExitTransition(new Slide(Gravity.LEFT).setDuration(500));
+        getWindow().setEnterTransition(new Slide(Gravity.END).setDuration(500));
+        getWindow().setExitTransition(new Slide(Gravity.START).setDuration(500));
 
         setContentView(R.layout.activity_movies_list_settings);
 
