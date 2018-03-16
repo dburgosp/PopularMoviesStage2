@@ -13,11 +13,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Explode;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +34,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
+import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -74,7 +79,7 @@ public class MoviesListActivity extends AppCompatActivity
 
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
+        //getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
         getWindow().setEnterTransition(new Explode().setDuration(250));
         getWindow().setExitTransition(new Explode().setDuration(250));
 
@@ -308,18 +313,44 @@ public class MoviesListActivity extends AppCompatActivity
             if (data != null && !data.isEmpty() && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
-                // Show a message with search results.
-                String title;
-                if (moviesBy.equals(PARAM_GENRE_NAME))
-                    title = getResources().getString(R.string.sort_movies_by_genre);
-                else
-                    title = getResources().getString(R.string.sort_movies_by_keyword);
-                Toast.makeText(this, title + ": " + moviesBy + "\n" + "\n" +
-                                getResources().getString(R.string.preferences_sort_by_title) +
-                                ": " + MyPreferences.getSortOrderTitle(this) + "\n" +
-                                "\n" + data.get(0).getTotal_results() + " " +
-                                getResources().getQuantityString(R.plurals.results, data.size()),
-                        Toast.LENGTH_LONG).show();
+                // Show a message with search results, only when displaying the first page.
+                if (data.get(0).getPage() == 1) {
+                    // Set text.
+                    String htmlText;
+                    if (loaderId == NetworkUtils.TMDB_GENRES_LOADER_ID)
+                        htmlText = getResources().getString(R.string.sort_movies_by_genre);
+                    else
+                        htmlText = getResources().getString(R.string.sort_movies_by_keyword);
+                    String color = String.format("%X",
+                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                    htmlText = "<strong>" + htmlText.toUpperCase() + "</strong><br>" +
+                            "<font color=\"#" + color + "\">" + moviesBy + "</font><br><br>" +
+                            "<strong>" + getResources().getString(
+                            R.string.preferences_sort_by_title).toUpperCase() + "</strong><br>" +
+                            "<font color=\"#" + color + "\">" + MyPreferences.getSortOrderTitle(
+                            this) + "</font><br><br> <strong>" + getResources().
+                            getQuantityString(R.plurals.results, data.size()).toUpperCase() +
+                            "</strong><br><font color=\"#" + color + "\">" +
+                            data.get(0).getTotal_results() + "</font>";
+
+                    // Use customised Toast layout.
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.layout_toast,
+                            (ViewGroup) findViewById(R.id.custom_toast_container));
+
+                    TextView text = (TextView) layout.findViewById(R.id.toast_text);
+                    TextViewUtils.setHtmlText(text, htmlText);
+                    ImageView imageView = (ImageView) layout.findViewById(R.id.toast_image);
+                    imageView.setImageDrawable(
+                            getResources().getDrawable(R.drawable.ic_local_movies_white_24dp));
+
+                    Toast toast = new Toast(getApplicationContext());
+                    toast.setGravity(Gravity.BOTTOM, 0,
+                            getResources().getDimensionPixelSize(R.dimen.regular_padding));
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
+                }
 
                 // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);

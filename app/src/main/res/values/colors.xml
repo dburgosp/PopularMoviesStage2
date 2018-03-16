@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#081c24</color>
     <color name="colorAccent">#01d277</color>
 
+    <color name="colorPrimaryLight">#798f7f</color>
+
     <color name="colorLowScoreBackground">#571435</color>
     <color name="colorLowScoreForeground">#db2360</color>
     <color name="colorMediumScoreBackground">#423d0f</color>

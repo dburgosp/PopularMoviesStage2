@@ -28,7 +28,7 @@
                 android:id="@+id/info_data_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
+                android:background="@color/colorPrimaryLight"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/regular_padding"
                 android:paddingTop="@dimen/big_padding">

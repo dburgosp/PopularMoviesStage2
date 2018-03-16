@@ -140,15 +140,15 @@ public class MovieDetailsInfoFragment extends Fragment
     @BindView(R.id.info_links_layout)
     LinearLayout linksLayout;
     @BindView(R.id.info_links_homepage)
-    TextView homepageTextView;
+    LinearLayout homepageLinkLinearLayout;
     @BindView(R.id.info_links_imdb)
-    TextView imdbTextView;
+    LinearLayout imdbLinkLinearLayout;
     @BindView(R.id.info_links_twitter)
-    TextView twitterTextView;
+    LinearLayout twitterLinkLinearLayout;
     @BindView(R.id.info_links_facebook)
-    TextView facebookTextView;
+    LinearLayout facebookLinkLinearLayout;
     @BindView(R.id.info_links_instagram)
-    TextView instagramTextView;
+    LinearLayout instagramLinkLinearLayout;
 
     @BindView(R.id.recommended_movies_layout)
     LinearLayout recommendedMoviesLayout;
@@ -852,13 +852,13 @@ public class MovieDetailsInfoFragment extends Fragment
         boolean infoSectionSet = false;
 
         // Set background color for this section.
-        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorAccent));
+        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimaryLight));
 
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();
         if (homepage != null && !homepage.equals("") && !homepage.isEmpty()) {
             // Implicit intent to open the homepage.
-            homepageTextView.setOnClickListener(new View.OnClickListener() {
+            homepageLinkLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Uri uri = Uri.parse(homepage);
@@ -868,35 +868,35 @@ public class MovieDetailsInfoFragment extends Fragment
             });
             infoSectionSet = true;
         } else
-            homepageTextView.setAlpha(LINK_ALPHA);
+            homepageLinkLinearLayout.setAlpha(LINK_ALPHA);
 
         // Set IMDB link. If there is no IMDB link, make this section transparent.
         final String imdb = movieDetails.getImdb_id();
-        if (setExternalLink(imdb, imdbTextView, Imdb.IMDB_BASE_URL))
+        if (setExternalLink(imdb, imdbLinkLinearLayout, Imdb.IMDB_BASE_URL))
             infoSectionSet = true;
         else
-            imdbTextView.setAlpha(LINK_ALPHA);
+            imdbLinkLinearLayout.setAlpha(LINK_ALPHA);
 
         // Set Facebook link. If there is no Facebook link, make this section transparent.
         final String facebook = movieDetails.getExternalIds().getFacebook_id();
-        if (setExternalLink(facebook, facebookTextView, Facebook.FACEBOOK_BASE_URL))
+        if (setExternalLink(facebook, facebookLinkLinearLayout, Facebook.FACEBOOK_BASE_URL))
             infoSectionSet = true;
         else
-            facebookTextView.setAlpha(LINK_ALPHA);
+            facebookLinkLinearLayout.setAlpha(LINK_ALPHA);
 
         // Set Instagram link. If there is no Instagram link, make this section transparent.
         final String instagram = movieDetails.getExternalIds().getInstagram_id();
-        if (setExternalLink(instagram, instagramTextView, Instagram.INSTAGRAM_BASE_URL))
+        if (setExternalLink(instagram, instagramLinkLinearLayout, Instagram.INSTAGRAM_BASE_URL))
             infoSectionSet = true;
         else
-            instagramTextView.setAlpha(LINK_ALPHA);
+            instagramLinkLinearLayout.setAlpha(LINK_ALPHA);
 
         // Set Twitter link. If there is no Twitter link, make this section transparent.
         final String twitter = movieDetails.getExternalIds().getTwitter_id();
-        if (setExternalLink(twitter, twitterTextView, Twitter.TWITTER_BASE_URL))
+        if (setExternalLink(twitter, twitterLinkLinearLayout, Twitter.TWITTER_BASE_URL))
             infoSectionSet = true;
         else
-            twitterTextView.setAlpha(LINK_ALPHA);
+            twitterLinkLinearLayout.setAlpha(LINK_ALPHA);
 
         return infoSectionSet;
     }
@@ -992,15 +992,16 @@ public class MovieDetailsInfoFragment extends Fragment
      * Helper method to set an OnClickListener on a TextView with a Drawable for opening an external
      * link.
      *
-     * @param externalId is the unique identifier to append to the url.
-     * @param textView   is the TextView that will be set with the OnClickListener.
-     * @param url        is the base url of the external link.
+     * @param externalId   is the unique identifier to append to the url.
+     * @param linearLayout is the LinearLayout that will be set with the OnClickListener.
+     * @param url          is the base url of the external link.
      * @return true if the externalId is not empty, false otherwise.
      */
-    private boolean setExternalLink(final String externalId, TextView textView, final String url) {
+    private boolean setExternalLink(final String externalId, LinearLayout linearLayout,
+                                    final String url) {
         if (externalId != null && !externalId.equals("") && !externalId.isEmpty()) {
             // Implicit intent to open the link.
-            textView.setOnClickListener(new View.OnClickListener() {
+            linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Uri builtUri = Uri.parse(url).buildUpon()

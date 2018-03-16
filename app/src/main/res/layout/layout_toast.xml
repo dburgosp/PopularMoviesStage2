@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_toast_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:alpha="0.95"
+    android:background="@drawable/rounded_button"
+    android:backgroundTint="@color/colorPrimaryLight"
+    android:orientation="horizontal"
+    android:padding="@dimen/regular_padding">
+
+    <ImageView
+        android:id="@+id/toast_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/small_padding"
+        android:contentDescription="@string/content_description_icon"
+        android:paddingTop="@dimen/big_padding"
+        android:src="@drawable/ic_info_outline_white_24dp" />
+
+    <TextView
+        android:id="@+id/toast_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/big_padding"
+        android:paddingTop="@dimen/big_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="HEADER 1\nContent for header 1\n\nHEADER 2\nContent for header 2\n\n..." />
+</LinearLayout>
