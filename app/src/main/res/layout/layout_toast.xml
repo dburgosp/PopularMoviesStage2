@@ -3,6 +3,7 @@
     android:id="@+id/custom_toast_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/regular_padding"
     android:alpha="0.95"
     android:background="@drawable/rounded_button"
     android:backgroundTint="@color/colorPrimaryLight"

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorLightGrey"
     tools:context="com.example.android.popularmoviesstage2.activities.MoviesListActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -23,7 +24,6 @@
         android:layout_above="@id/movies_list_loading_indicator"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
-        android:textColor="@color/colorGrey"
         android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 
