@@ -474,9 +474,9 @@ public class MainActivity extends AppCompatActivity implements
                 upcomingMoviesMostPopularOverview.setVisibility(View.GONE);
 
             // Set release date for the main element. Add a left drawable with grey tint color.
-            TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
+/*            TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
                     upcomingMoviesMostPopularReleaseDate, TextViewUtils.DRAWABLE_LEFT_INDEX,
-                    R.drawable.ic_date_range_black_18dp, R.color.colorGrey, R.dimen.tiny_padding);
+                    R.drawable.ic_date_range_black_18dp, R.color.colorWhite, R.dimen.tiny_padding);*/
             String releaseDate = DateTimeUtils.getStringDate(upcomingMovies.get(0).getRelease_date(),
                     DateTimeUtils.DATE_FORMAT_LONG);
             if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
@@ -487,7 +487,7 @@ public class MainActivity extends AppCompatActivity implements
             // Tint color for "Most popular" icon.
             TextViewUtils.setTintedCompoundDrawable(MainActivity.this,
                     upcomingMoviesMostPopularMostPopular, TextViewUtils.DRAWABLE_RIGHT_INDEX,
-                    R.drawable.ic_thumb_up_white_18dp, R.color.colorGrey, R.dimen.tiny_padding);
+                    R.drawable.ic_thumb_up_white_18dp, R.color.colorWhite, R.dimen.tiny_padding);
 
             // Set the onClickMoviesListener for click events in the main element.
             upcomingMoviesMostPopularLayout.setOnClickListener(new View.OnClickListener() {

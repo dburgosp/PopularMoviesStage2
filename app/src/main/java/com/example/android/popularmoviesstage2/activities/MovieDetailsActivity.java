@@ -100,7 +100,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set title for this activity, depending on the collapsing state of the toolbar.
+        // Set introTitle for this activity, depending on the collapsing state of the toolbar.
         setTitle("");
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -108,7 +108,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 if (collapsingToolbarLayout != null)
                     if (collapsingToolbarLayout.getHeight() + verticalOffset <
                             2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-                        // CollapsingToolbar is collapsed. Show title.
+                        // CollapsingToolbar is collapsed. Show introTitle.
                         String title = movie.getTitle();
                         String year = DateTimeUtils.getYear(movie.getRelease_date());
                         if (title != null && !title.equals("") && !title.isEmpty())
@@ -120,7 +120,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         else
                             collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
                     } else {
-                        // CollapsingToolbar is expanded. Hide title.
+                        // CollapsingToolbar is expanded. Hide introTitle.
                         collapsingToolbarLayout.setTitle("");
                     }
             }
@@ -283,7 +283,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     .networkPolicy(NetworkPolicy.NO_STORE)
                     .into(backgroundImageView);
 
-        // Set movie title and year.
+        // Set movie introTitle and year.
         String title = movie.getTitle();
         String year = DateTimeUtils.getYear(movie.getRelease_date());
         if (title != null && !title.equals("") && !title.isEmpty())

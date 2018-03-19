@@ -19,7 +19,6 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
-import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -403,10 +402,10 @@ public class MoviesListAdapter
                         releaseDateTextView.setText(releaseDate);
 
                         // Color grey for left drawable.
-                        if (resource != R.layout.list_item_poster_grid_layout_1)
+/*                        if (resource != R.layout.list_item_poster_grid_layout_1)
                             TextViewUtils.setTintedCompoundDrawable(context, releaseDateTextView,
                                     TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_date_range_black_18dp,
-                                    R.color.colorGrey, R.dimen.tiny_padding);
+                                    R.color.colorWhite, R.dimen.tiny_padding);*/
                     } else
                         releaseDateTextView.setVisibility(View.GONE);
                 default:
@@ -432,10 +431,10 @@ public class MoviesListAdapter
                         popularityTextView.setText(popularity);
 
                         // Color grey for left drawable.
-                        TextViewUtils.setTintedCompoundDrawable(context, popularityTextView,
+/*                        TextViewUtils.setTintedCompoundDrawable(context, popularityTextView,
                                 TextViewUtils.DRAWABLE_LEFT_INDEX,
                                 R.drawable.ic_thumbs_up_down_black_18dp,
-                                R.color.colorGrey, R.dimen.tiny_padding);
+                                R.color.colorWhite, R.dimen.tiny_padding);*/
                     } else
                         popularityTextView.setVisibility(View.GONE);
                 default:

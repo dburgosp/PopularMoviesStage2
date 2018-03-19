@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#204529</color>
-    <color name="colorPrimaryDark">#081c24</color>
-    <color name="colorAccent">#01d277</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
 
-    <color name="colorPrimaryLight">#798f7f</color>
-
+    <!-- Colors for user ratings. -->
     <color name="colorLowScoreBackground">#571435</color>
     <color name="colorLowScoreForeground">#db2360</color>
     <color name="colorMediumScoreBackground">#423d0f</color>
     <color name="colorMediumScoreForeground">#d2d531</color>
-    <color name="colorHighScoreBackground">@color/colorPrimary</color>
-    <color name="colorHighScoreForeground">@color/colorAccent</color>
+    <color name="colorHighScoreBackground">#204529</color>
+    <color name="colorHighScoreForeground">#01d277</color>
+
+    <!-- Colors for movies sections (Teal). -->
+    <color name="colorMovies50">#E0F2F1</color>
+    <color name="colorMovies100">#B2DFDB</color>
+    <color name="colorMovies200">#80CBC4</color>
+    <color name="colorMovies300">#4DB6AC</color>
+    <color name="colorMovies400">#26A69A</color>
+    <color name="colorMovies500">#009688</color>
+    <color name="colorMovies600">#00897B</color>
+    <color name="colorMovies700">#00796B</color>
+    <color name="colorMovies800">#00695C</color>
+    <color name="colorMovies900">#004D40</color>
+    <color name="colorMoviesA100">#A7FFEB</color>
+    <color name="colorMoviesA200">#64FFDA</color>
+    <color name="colorMoviesA400">#1DE9B6</color>
+    <color name="colorMoviesA700">#00BFA5</color>
 
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>

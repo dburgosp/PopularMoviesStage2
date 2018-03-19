@@ -70,6 +70,7 @@
     <string name="sort_movies_by_keyword">Pelis por palabra clave</string>
     <string name="sort_order_changed">La clasificación se ha cambiado a %s</string>
     <string name="spoken_languages">Otros idiomas en versión original</string>
+    <string name="subtitle_activity_main">y la gente que las hace</string>
     <string name="synopsis">Sinopsis</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
     <string name="title_activity_main">Pelis &#038; Series</string>

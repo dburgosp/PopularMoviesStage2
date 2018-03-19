@@ -20,7 +20,7 @@
             android:layout_height="@dimen/poster_height"
             android:background="@drawable/no_movie_poster"
             android:contentDescription="@string/content_description_poster"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/movie_list_title"
@@ -43,9 +43,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/small_padding"
+            android:alpha="0.7"
             android:drawablePadding="@dimen/separator"
             android:drawableStart="@drawable/ic_date_range_white_18dp"
-            android:textColor="@color/colorGrey"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/normal_text_size"
             tools:text="2000-01-01" />
 

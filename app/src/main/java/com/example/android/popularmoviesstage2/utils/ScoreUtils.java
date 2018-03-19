@@ -84,14 +84,16 @@ public class ScoreUtils {
             }
 
             // Formatted score text.
-            String stringColor = String.format("%X", context.getResources().getColor(colorRes)).substring(2);
-            htmlText = "<strong><font color=\"#" + stringColor + "\">" + rating + "</font></strong>";
+            String stringColor =
+                    String.format("%X", context.getResources().getColor(colorRes)).substring(2);
+            htmlText =
+                    "<strong><font color=\"#" + stringColor + "\">" + rating + "</font></strong>";
         } else
-            htmlText = "N/A";
+            htmlText = "n/a";
 
         // Color for left drawable.
-        TextViewUtils.setTintedCompoundDrawable(context, textView, TextViewUtils.DRAWABLE_LEFT_INDEX,
-                R.drawable.ic_star_black_18dp, colorRes, R.dimen.separator);
+        TextViewUtils.setTintedCompoundDrawable(context, textView,
+                TextViewUtils.DRAWABLE_LEFT_INDEX, R.drawable.ic_star_black_18dp, colorRes, R.dimen.separator);
 
         // Set the score text.
         TextViewUtils.setHtmlText(textView, htmlText);

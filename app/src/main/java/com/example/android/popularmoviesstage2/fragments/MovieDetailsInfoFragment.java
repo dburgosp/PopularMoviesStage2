@@ -848,11 +848,11 @@ public class MovieDetailsInfoFragment extends Fragment
      * @return true if any of the elements of this section has been set, false otherwise.
      */
     private boolean setLinksSection() {
-        final Float LINK_ALPHA = 0.4f;
+        final Float NO_LINK_ALPHA = 0.38f;
         boolean infoSectionSet = false;
 
         // Set background color for this section.
-        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimaryLight));
+        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
 
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();
@@ -868,35 +868,35 @@ public class MovieDetailsInfoFragment extends Fragment
             });
             infoSectionSet = true;
         } else
-            homepageLinkLinearLayout.setAlpha(LINK_ALPHA);
+            homepageLinkLinearLayout.setAlpha(NO_LINK_ALPHA);
 
         // Set IMDB link. If there is no IMDB link, make this section transparent.
         final String imdb = movieDetails.getImdb_id();
         if (setExternalLink(imdb, imdbLinkLinearLayout, Imdb.IMDB_BASE_URL))
             infoSectionSet = true;
         else
-            imdbLinkLinearLayout.setAlpha(LINK_ALPHA);
+            imdbLinkLinearLayout.setAlpha(NO_LINK_ALPHA);
 
         // Set Facebook link. If there is no Facebook link, make this section transparent.
         final String facebook = movieDetails.getExternalIds().getFacebook_id();
         if (setExternalLink(facebook, facebookLinkLinearLayout, Facebook.FACEBOOK_BASE_URL))
             infoSectionSet = true;
         else
-            facebookLinkLinearLayout.setAlpha(LINK_ALPHA);
+            facebookLinkLinearLayout.setAlpha(NO_LINK_ALPHA);
 
         // Set Instagram link. If there is no Instagram link, make this section transparent.
         final String instagram = movieDetails.getExternalIds().getInstagram_id();
         if (setExternalLink(instagram, instagramLinkLinearLayout, Instagram.INSTAGRAM_BASE_URL))
             infoSectionSet = true;
         else
-            instagramLinkLinearLayout.setAlpha(LINK_ALPHA);
+            instagramLinkLinearLayout.setAlpha(NO_LINK_ALPHA);
 
         // Set Twitter link. If there is no Twitter link, make this section transparent.
         final String twitter = movieDetails.getExternalIds().getTwitter_id();
         if (setExternalLink(twitter, twitterLinkLinearLayout, Twitter.TWITTER_BASE_URL))
             infoSectionSet = true;
         else
-            twitterLinkLinearLayout.setAlpha(LINK_ALPHA);
+            twitterLinkLinearLayout.setAlpha(NO_LINK_ALPHA);
 
         return infoSectionSet;
     }

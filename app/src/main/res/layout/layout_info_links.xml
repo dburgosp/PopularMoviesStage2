@@ -3,7 +3,7 @@
     android:id="@+id/info_links_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryLight"
+    android:background="@color/colorPrimary"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/small_padding"
     android:paddingEnd="@dimen/tiny_padding"
@@ -18,13 +18,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/circle"
             android:backgroundTint="@color/colorWhite"
             android:contentDescription="@string/link_imdb"
-            android:src="@drawable/icon_imdb_accent_48dp" />
+            android:src="@drawable/icon_imdb_accent_48dp"
+            android:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,13 +45,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/circle"
             android:backgroundTint="@color/colorWhite"
             android:contentDescription="@string/link_facebook"
-            android:src="@drawable/icon_facebook_accent_48dp" />
+            android:src="@drawable/icon_facebook_accent_48dp"
+            android:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,13 +72,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/circle"
             android:backgroundTint="@color/colorWhite"
             android:contentDescription="@string/link_twitter"
-            android:src="@drawable/icon_twitter_accent_48dp" />
+            android:src="@drawable/icon_twitter_accent_48dp"
+            android:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,7 +105,8 @@
             android:background="@drawable/circle"
             android:backgroundTint="@color/colorWhite"
             android:contentDescription="@string/link_instagram"
-            android:src="@drawable/icon_instagram_accent_48dp" />
+            android:src="@drawable/icon_instagram_accent_48dp"
+            android:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -122,13 +126,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:background="@drawable/circle"
             android:backgroundTint="@color/colorWhite"
             android:contentDescription="@string/link_home"
-            android:src="@drawable/icon_home_accent_48dp" />
+            android:src="@drawable/icon_home_accent_48dp"
+            android:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="wrap_content"

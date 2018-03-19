@@ -305,7 +305,7 @@ public class MoviesFragment extends Fragment
         // Set the LayoutManager for the RecyclerView.
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
-        int separator = getContext().getResources().getDimensionPixelOffset(R.dimen.separator);
+        int separator = getContext().getResources().getDimensionPixelOffset(R.dimen.tiny_padding);
         recyclerView.addItemDecoration(new SpaceItemDecoration(separator,
                 SpaceItemDecoration.HORIZONTAL_VERTICAL_SEPARATION, displayUtils.getSpanCount()));
 

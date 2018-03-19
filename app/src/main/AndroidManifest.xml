@@ -83,10 +83,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MoviesListActivity" />
         </activity>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

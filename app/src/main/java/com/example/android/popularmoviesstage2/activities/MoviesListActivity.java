@@ -401,7 +401,7 @@ public class MoviesListActivity extends AppCompatActivity
     private void getParameters() {
         if (getIntent().hasExtra(PARAM_GENRE_ID) && getIntent().hasExtra(PARAM_GENRE_NAME)) {
             // Sorting movies by genre. Create the genres array with only one element, set the
-            // title for the activity using the genre name and select the appropriate loader id.
+            // introTitle for the activity using the genre name and select the appropriate loader id.
             genres.add(getIntent().getIntExtra(PARAM_GENRE_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_GENRE_NAME);
 
@@ -410,7 +410,7 @@ public class MoviesListActivity extends AppCompatActivity
         } else if (getIntent().hasExtra(PARAM_KEYWORD_ID) &&
                 getIntent().hasExtra(PARAM_KEYWORD_NAME)) {
             // Sorting movies by keyword. Create the keywords array with only one element, set the
-            // title for the activity using the keyword name and select the appropriate loader id.
+            // introTitle for the activity using the keyword name and select the appropriate loader id.
             keywords.add(getIntent().getIntExtra(PARAM_KEYWORD_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_KEYWORD_NAME);
 
@@ -419,7 +419,7 @@ public class MoviesListActivity extends AppCompatActivity
         } else
             loaderId = -1;
 
-        // Set title for this activity.
+        // Set introTitle for this activity.
         setTitle(moviesBy);
     }
 
