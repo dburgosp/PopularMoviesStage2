@@ -13,8 +13,10 @@
     <string name="content_description_backdrop">Backdrop</string>
     <string name="content_description_gradient">Gradient background</string>
     <string name="content_description_icon">Icon</string>
+    <string name="content_description_omdb">The Open Movie Database</string>
     <string name="content_description_person_image">Person</string>
     <string name="content_description_poster">Poster</string>
+    <string name="content_description_tmdb">The Movie Database</string>
     <string name="department_production">Production</string>
     <string name="department_writing">Writing</string>
     <string name="dont_open_this_again">You are already here</string>
