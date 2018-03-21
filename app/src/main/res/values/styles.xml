@@ -44,6 +44,49 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
-    <!-- Styles for layout elements -->
+    <!-- General purpose XML layout styles -->
 
+    <style name="SectionHeaderWhite">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/normal_plus_text_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SectionContentWhite">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/normal_plus_text_size</item>
+    </style>
+
+    <!-- Styles for layout_movie_details_info_links.xml -->
+
+    <style name="MovieDetailsInfoLinksLinearLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="MovieDetailsInfoLinksImage">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/circle</item>
+        <item name="android:backgroundTint">@color/colorWhite</item>
+        <item name="android:tint">@color/colorAccent</item>
+    </style>
+
+    <style name="MovieDetailsInfoLinksText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/tiny_padding</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/normal_text_size</item>
+    </style>
 </resources>

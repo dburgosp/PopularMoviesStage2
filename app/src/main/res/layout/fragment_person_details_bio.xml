@@ -25,7 +25,7 @@
             <include layout="@layout/layout_info_person" />
 
             <!-- External links section -->
-            <include layout="@layout/layout_info_links" />
+            <include layout="@layout/layout_movie_details_info_links" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->

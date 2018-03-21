@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/movie_details_info_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryLighter"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/regular_padding"
+    android:paddingStart="@dimen/regular_padding">
+
+    <TextView
+        android:id="@+id/movie_details_info_main_runtime_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/runtime" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_runtime_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="1h 30m" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_release_date_header"
+        style="@style/SectionHeaderWhite"
+        tools:text="Release date" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_release_date_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="2001-01-01" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_age_rating_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/age_rating_title" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_age_rating_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="PG-13" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_original_language_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/original_language" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_original_language_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="Language" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_production_countries_header"
+        style="@style/SectionHeaderWhite"
+        tools:text="Production countries" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_production_countries_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="List of production countries\nin more than one line" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_original_title_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/original_title" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_original_title_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="Movie title in its original language" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_production_companies_header"
+        style="@style/SectionHeaderWhite"
+        tools:text="Production companies" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_production_companies_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="List of production companies\nin more than one line" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_budget_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/budget_title" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_budget_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="$ 1,000,000" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_revenue_header"
+        style="@style/SectionHeaderWhite"
+        android:text="@string/revenue_title" />
+
+    <TextView
+        android:id="@+id/movie_details_info_main_revenue_content"
+        style="@style/SectionContentWhite"
+        android:layout_marginBottom="@dimen/small_padding"
+        tools:text="$ 5,000,000" />
+</LinearLayout>

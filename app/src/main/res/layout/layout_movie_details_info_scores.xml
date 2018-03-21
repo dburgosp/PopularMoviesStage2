@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/info_scores_layout"
+    android:id="@+id/movie_details_info_scores_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorDarkWhite"
@@ -12,7 +12,7 @@
     android:paddingTop="@dimen/big_padding">
 
     <LinearLayout
-        android:id="@+id/info_imdb_layout"
+        android:id="@+id/movie_details_info_imdb_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <com.github.lzyzsd.circleprogress.DonutProgress
-            android:id="@+id/info_imdb_score"
+            android:id="@+id/movie_details_info_imdb_score"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/circle"
@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/info_rottentomatoes_layout"
+        android:id="@+id/movie_details_info_rottentomatoes_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -52,7 +52,7 @@
         android:orientation="vertical">
 
         <com.github.lzyzsd.circleprogress.DonutProgress
-            android:id="@+id/info_rottentomatoes_score"
+            android:id="@+id/movie_details_info_rottentomatoes_score"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -78,7 +78,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/info_metacritic_layout"
+        android:id="@+id/movie_details_info_metacritic_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

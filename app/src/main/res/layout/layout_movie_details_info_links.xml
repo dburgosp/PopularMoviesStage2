@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/movie_details_info_links_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryLighter"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/small_padding"
+    android:paddingEnd="@dimen/tiny_padding"
+    android:paddingStart="@dimen/tiny_padding"
+    android:paddingTop="@dimen/regular_padding">
+
+    <LinearLayout
+        android:id="@+id/movie_details_info_links_imdb"
+        style="@style/MovieDetailsInfoLinksLinearLayout">
+
+        <ImageView
+            style="@style/MovieDetailsInfoLinksImage"
+            android:contentDescription="@string/link_imdb"
+            android:src="@drawable/icon_imdb_accent_48dp" />
+
+        <TextView
+            style="@style/MovieDetailsInfoLinksText"
+            android:text="@string/link_imdb" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/movie_details_info_links_facebook"
+        style="@style/MovieDetailsInfoLinksLinearLayout">
+
+        <ImageView
+            style="@style/MovieDetailsInfoLinksImage"
+            android:contentDescription="@string/link_facebook"
+            android:src="@drawable/icon_facebook_accent_48dp" />
+
+        <TextView
+            style="@style/MovieDetailsInfoLinksText"
+            android:text="@string/link_facebook" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/movie_details_info_links_twitter"
+        style="@style/MovieDetailsInfoLinksLinearLayout">
+
+        <ImageView
+            style="@style/MovieDetailsInfoLinksImage"
+            android:contentDescription="@string/link_twitter"
+            android:src="@drawable/icon_twitter_accent_48dp" />
+
+        <TextView
+            style="@style/MovieDetailsInfoLinksText"
+            android:text="@string/link_twitter" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/movie_details_info_links_instagram"
+        style="@style/MovieDetailsInfoLinksLinearLayout">
+
+        <ImageView
+            style="@style/MovieDetailsInfoLinksImage"
+            android:contentDescription="@string/link_instagram"
+            android:src="@drawable/icon_instagram_accent_48dp" />
+
+        <TextView
+            style="@style/MovieDetailsInfoLinksText"
+            android:text="@string/link_instagram" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/movie_details_info_links_homepage"
+        style="@style/MovieDetailsInfoLinksLinearLayout">
+
+        <ImageView
+            style="@style/MovieDetailsInfoLinksImage"
+            android:contentDescription="@string/link_home"
+            android:src="@drawable/icon_home_accent_48dp" />
+
+        <TextView
+            style="@style/MovieDetailsInfoLinksText"
+            android:text="@string/link_home" />
+    </LinearLayout>
+</LinearLayout>

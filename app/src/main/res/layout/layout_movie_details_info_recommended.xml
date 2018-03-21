@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recommended_movies_keywords_layout"
+    android:id="@+id/movie_details_recommended_and_keywords_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorDarkWhite"
@@ -10,7 +10,7 @@
     android:paddingBottom="@dimen/big_padding">
 
     <LinearLayout
-        android:id="@+id/recommended_movies_layout"
+        android:id="@+id/movie_details_recommended_movies_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_section_bg"
@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/regular_padding">
 
             <TextView
-                android:id="@+id/recommended_movies_title"
+                android:id="@+id/movie_details_recommended_movies_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recommended_movies"
@@ -34,12 +34,12 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/recommended_movies_view_all"
+                android:id="@+id/movie_details_recommended_movies_view_all"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="@dimen/regular_padding"
-                android:layout_toEndOf="@id/recommended_movies_title"
+                android:layout_toEndOf="@id/movie_details_recommended_movies_title"
                 android:gravity="end"
                 android:text="@string/view_all"
                 android:textAllCaps="true"
@@ -59,12 +59,12 @@
                 android:orientation="horizontal">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recommended_movies_recyclerview"
+                    android:id="@+id/movie_details_recommended_movies_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/recommended_movies_view_all_cardview"
+                    android:id="@+id/movie_details_recommended_movies_view_all_cardview"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/small_padding"
@@ -90,7 +90,7 @@
                             android:background="@color/colorAccent" />
 
                         <TextView
-                            android:id="@+id/recommended_movies_view_all_action"
+                            android:id="@+id/movie_details_recommended_movies_view_all_action"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/tiny_padding"
@@ -112,7 +112,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/info_keywords_layout"
+        android:id="@+id/movie_details_info_keywords_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorDarkWhite"
@@ -120,7 +120,7 @@
         android:paddingTop="@dimen/regular_padding">
 
         <TextView
-            android:id="@+id/info_keywords_title"
+            android:id="@+id/movie_details_info_keywords_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/regular_padding"
@@ -131,7 +131,7 @@
             tools:text="Keywords" />
 
         <com.example.android.popularmoviesstage2.viewgroups.FlowLayout
-            android:id="@+id/info_keywords_flowlayout"
+            android:id="@+id/movie_details_info_keywords_flowlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_padding"

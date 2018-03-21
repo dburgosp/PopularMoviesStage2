@@ -1,42 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/info_collection_layout"
+    android:id="@+id/movie_details_info_collection_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimaryLight"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/info_collection_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/small_padding"
+        android:id="@+id/movie_details_info_collection_name"
+        style="@style/SectionHeaderWhite"
         android:paddingEnd="@dimen/regular_padding"
         android:paddingStart="@dimen/regular_padding"
         android:paddingTop="@dimen/big_padding"
-        android:textAllCaps="true"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/normal_plus_text_size"
-        android:textStyle="bold"
         tools:text="Collection name" />
 
     <TextView
-        android:id="@+id/info_collection_overview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.7"
-        android:paddingBottom="@dimen/small_padding"
+        android:id="@+id/movie_details_info_collection_overview"
+        style="@style/SectionContentWhite"
         android:paddingEnd="@dimen/regular_padding"
         android:paddingStart="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/normal_plus_text_size"
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/info_collection_recyclerview"
+        android:id="@+id/movie_details_info_collection_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/big_padding"
-        android:paddingTop="@dimen/tiny_padding" />
+        android:paddingTop="@dimen/regular_padding" />
 </LinearLayout>

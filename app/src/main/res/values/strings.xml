@@ -3,7 +3,7 @@
     <string name="add_to_favorites">Add to favorites</string>
     <string name="age_rating_title">Age rating</string>
     <string name="all_languages">All languages</string>
-    <string name="app_name">TMDB</string>
+    <string name="app_name">Movies &#038; Series</string>
     <string name="backdrops_title">Backdrops</string>
     <string name="belongs_to_collection">Belongs to</string>
     <string name="budget_title">Budget</string>
@@ -97,7 +97,6 @@
     <string name="subtitle_activity_main">and people who make them</string>
     <string name="synopsis">Synopsis</string>
     <string name="thumbnail_description">Thumbnail image</string>
-    <string name="title_activity_main">Movies &#038; Series</string>
     <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
     <string name="videos_title">Related videos</string>

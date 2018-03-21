@@ -77,98 +77,116 @@ public class MovieDetailsInfoFragment extends Fragment
     @BindView(R.id.info_no_result_image_view)
     ImageView noResultsImageView;
 
-    @BindView(R.id.info_scores_layout)
+    @BindView(R.id.movie_details_info_scores_layout)
     LinearLayout scoresLinearLayout;
-    @BindView(R.id.info_imdb_layout)
+    @BindView(R.id.movie_details_info_imdb_layout)
     LinearLayout imdbLinearLayout;
-    @BindView(R.id.info_imdb_score)
+    @BindView(R.id.movie_details_info_imdb_score)
     DonutProgress imdbDonutProgress;
-    @BindView(R.id.info_rottentomatoes_layout)
+    @BindView(R.id.movie_details_info_rottentomatoes_layout)
     LinearLayout rottenTomatoesLinearLayout;
-    @BindView(R.id.info_rottentomatoes_score)
+    @BindView(R.id.movie_details_info_rottentomatoes_score)
     DonutProgress rottenTomatoesDonutProgress;
-    @BindView(R.id.info_metacritic_layout)
+    @BindView(R.id.movie_details_info_metacritic_layout)
     LinearLayout metacriticLinearLayout;
     @BindView(R.id.info_metacritic_score)
     DonutProgress metacriticDonutProgress;
 
-    @BindView(R.id.info_overview_layout)
+    @BindView(R.id.movie_details_info_overview_layout)
     LinearLayout overviewLinearLayout;
-    @BindView(R.id.info_tagline)
+    @BindView(R.id.movie_details_info_tagline)
     TextView taglineTextView;
-    @BindView(R.id.info_overview)
+    @BindView(R.id.movie_details_info_overview)
     TextView overviewTextView;
 
-    @BindView(R.id.info_genres_flowlayout)
+    @BindView(R.id.movie_details_info_genres_flowlayout)
     FlowLayout genresFlowLayout;
-    @BindView(R.id.info_genres_title)
+    @BindView(R.id.movie_details_info_genres_title)
     TextView genresTextView;
 
     @BindView(R.id.info_data_layout)
     LinearLayout dataLayout;
 
-    @BindView(R.id.info_main_layout)
+    @BindView(R.id.movie_details_info_main_layout)
     LinearLayout mainLinearLayout;
-    @BindView(R.id.info_movie_runtime)
-    TextView runtimeTextView;
-    @BindView(R.id.info_movie_release_date)
-    TextView releaseDateTextView;
-    @BindView(R.id.info_movie_age_rating)
-    TextView ageRatingTextView;
-    @BindView(R.id.info_movie_original_language)
-    TextView originalLanguageTextView;
-    @BindView(R.id.info_movie_production_countries)
-    TextView productionCountriesTextView;
-    @BindView(R.id.info_movie_original_title)
-    TextView originalTitleTextView;
-    @BindView(R.id.info_movie_production_companies)
-    TextView productionCompaniesTextView;
-    @BindView(R.id.info_movie_budget)
-    TextView budgetTextView;
-    @BindView(R.id.info_movie_revenue)
-    TextView revenueTextView;
+    @BindView(R.id.movie_details_info_main_runtime_header)
+    TextView runtimeHeaderTextView;
+    @BindView(R.id.movie_details_info_main_runtime_content)
+    TextView runtimeContentTextView;
+    @BindView(R.id.movie_details_info_main_release_date_header)
+    TextView releaseDateHeaderTextView;
+    @BindView(R.id.movie_details_info_main_release_date_content)
+    TextView releaseDateContentTextView;
+    @BindView(R.id.movie_details_info_main_age_rating_header)
+    TextView ageRatingHeaderTextView;
+    @BindView(R.id.movie_details_info_main_age_rating_content)
+    TextView ageRatingContentTextView;
+    @BindView(R.id.movie_details_info_main_original_language_header)
+    TextView originalLanguageHeaderTextView;
+    @BindView(R.id.movie_details_info_main_original_language_content)
+    TextView originalLanguageContentTextView;
+    @BindView(R.id.movie_details_info_main_production_countries_header)
+    TextView productionCountriesHeaderTextView;
+    @BindView(R.id.movie_details_info_main_production_countries_content)
+    TextView productionCountriesContentTextView;
+    @BindView(R.id.movie_details_info_main_original_title_header)
+    TextView originalTitleHeaderTextView;
+    @BindView(R.id.movie_details_info_main_original_title_content)
+    TextView originalTitleContentTextView;
+    @BindView(R.id.movie_details_info_main_production_companies_header)
+    TextView productionCompaniesHeaderTextView;
+    @BindView(R.id.movie_details_info_main_production_companies_content)
+    TextView productionCompaniesContentTextView;
+    @BindView(R.id.movie_details_info_main_budget_header)
+    TextView budgetHeaderTextView;
+    @BindView(R.id.movie_details_info_main_budget_content)
+    TextView budgetContentTextView;
+    @BindView(R.id.movie_details_info_main_revenue_header)
+    TextView revenueHeaderTextView;
+    @BindView(R.id.movie_details_info_main_revenue_content)
+    TextView revenueContentTextView;
 
-    @BindView(R.id.info_collection_layout)
+    @BindView(R.id.movie_details_info_collection_layout)
     LinearLayout collectionLayout;
-    @BindView(R.id.info_collection_name)
+    @BindView(R.id.movie_details_info_collection_name)
     TextView collectionNameTextView;
-    @BindView(R.id.info_collection_overview)
+    @BindView(R.id.movie_details_info_collection_overview)
     TextView collectionOverviewTextView;
-    @BindView(R.id.info_collection_recyclerview)
+    @BindView(R.id.movie_details_info_collection_recyclerview)
     RecyclerView collectionRecyclerView;
 
-    @BindView(R.id.info_links_layout)
+    @BindView(R.id.movie_details_info_links_layout)
     LinearLayout linksLayout;
-    @BindView(R.id.info_links_homepage)
+    @BindView(R.id.movie_details_info_links_homepage)
     LinearLayout homepageLinkLinearLayout;
-    @BindView(R.id.info_links_imdb)
+    @BindView(R.id.movie_details_info_links_imdb)
     LinearLayout imdbLinkLinearLayout;
-    @BindView(R.id.info_links_twitter)
+    @BindView(R.id.movie_details_info_links_twitter)
     LinearLayout twitterLinkLinearLayout;
-    @BindView(R.id.info_links_facebook)
+    @BindView(R.id.movie_details_info_links_facebook)
     LinearLayout facebookLinkLinearLayout;
-    @BindView(R.id.info_links_instagram)
+    @BindView(R.id.movie_details_info_links_instagram)
     LinearLayout instagramLinkLinearLayout;
 
-    @BindView(R.id.recommended_movies_layout)
+    @BindView(R.id.movie_details_recommended_movies_layout)
     LinearLayout recommendedMoviesLayout;
-    @BindView(R.id.recommended_movies_view_all)
+    @BindView(R.id.movie_details_recommended_movies_view_all)
     TextView recommendedMoviesViewAllTextView;
-    @BindView(R.id.recommended_movies_recyclerview)
+    @BindView(R.id.movie_details_recommended_movies_recyclerview)
     RecyclerView recommendedMoviesRecyclerView;
-    @BindView(R.id.recommended_movies_view_all_action)
+    @BindView(R.id.movie_details_recommended_movies_view_all_action)
     TextView recommendedMoviesViewAllActionTextView;
-    @BindView(R.id.recommended_movies_view_all_cardview)
+    @BindView(R.id.movie_details_recommended_movies_view_all_cardview)
     CardView recommendedMoviesViewAllCardView;
 
-    @BindView(R.id.info_keywords_layout)
+    @BindView(R.id.movie_details_info_keywords_layout)
     LinearLayout keywordsLayout;
-    @BindView(R.id.info_keywords_title)
+    @BindView(R.id.movie_details_info_keywords_title)
     TextView keywordsTitleTextView;
-    @BindView(R.id.info_keywords_flowlayout)
+    @BindView(R.id.movie_details_info_keywords_flowlayout)
     FlowLayout keywordsFlowLayout;
 
-    @BindView(R.id.recommended_movies_keywords_layout)
+    @BindView(R.id.movie_details_recommended_and_keywords_layout)
     LinearLayout recommendedMoviesKeywordsLayout;
 
     private static TmdbMovieDetails movieDetails;
@@ -547,8 +565,6 @@ public class MovieDetailsInfoFragment extends Fragment
      */
     private boolean setMainInfoSection() {
         boolean infoSectionSet = false;
-        String color = String.format("%X",
-                getResources().getColor(R.color.colorDarkWhite)).substring(2);
         String currentCountry = LocaleUtils.getCurrentCountryName();
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -559,12 +575,12 @@ public class MovieDetailsInfoFragment extends Fragment
         String runtime = DateTimeUtils.getHoursAndMinutes(getContext(), movieDetails.getRuntime());
         if (runtime != null && !runtime.equals("") && !runtime.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = "<strong>" + getString(R.string.runtime).toUpperCase() + "</strong>"
-                    + "<br><font color=\"#" + color + "\">" + runtime + "</font>";
-            TextViewUtils.setHtmlText(runtimeTextView, htmlText);
-            runtimeTextView.setVisibility(View.VISIBLE);
+            runtimeContentTextView.setText(runtime);
+            runtimeHeaderTextView.setVisibility(View.VISIBLE);
+            runtimeContentTextView.setVisibility(View.VISIBLE);
         } else {
-            runtimeTextView.setVisibility(View.GONE);
+            runtimeHeaderTextView.setVisibility(View.GONE);
+            runtimeContentTextView.setVisibility(View.GONE);
         }
 
         /* ------------- */
@@ -650,6 +666,8 @@ public class MovieDetailsInfoFragment extends Fragment
             // Set section title.
             releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates,
                     releases.getReleaseDateArrayList().size());
+            releaseDateHeaderTextView.setText(releaseDatesTitle);
+            releaseDateHeaderTextView.setVisibility(View.VISIBLE);
 
             // Append previous status info, if exists.
             if (releaseDatesContent.isEmpty())
@@ -669,12 +687,12 @@ public class MovieDetailsInfoFragment extends Fragment
         // Show this section only if there is an information about release dates.
         if (!releaseDatesContent.equals("")) {
             infoSectionSet = true;
-            releaseDatesContent = "<strong>" + releaseDatesTitle.toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + releaseDatesContent + "</font>";
-            TextViewUtils.setHtmlText(releaseDateTextView, releaseDatesContent);
-            releaseDateTextView.setVisibility(View.VISIBLE);
-        } else
-            releaseDateTextView.setVisibility(View.GONE);
+            TextViewUtils.setHtmlText(releaseDateContentTextView, releaseDatesContent);
+            releaseDateContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            releaseDateHeaderTextView.setVisibility(View.GONE);
+            releaseDateContentTextView.setVisibility(View.GONE);
+        }
 
         /* ---------- */
         /* AGE RATING */
@@ -682,14 +700,14 @@ public class MovieDetailsInfoFragment extends Fragment
 
         // We obtained the age rating previously, if it exists, from the release dates information.
         if (!ageRating.equals("")) {
-            String ageRatingContent = getString(R.string.age_rating_title);
-            ageRatingContent = "<strong>" + ageRatingContent.toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + ageRating + " (" + currentCountry +
-                    ")</font>";
-            TextViewUtils.setHtmlText(ageRatingTextView, ageRatingContent);
-            ageRatingTextView.setVisibility(View.VISIBLE);
-        } else
-            ageRatingTextView.setVisibility(View.GONE);
+            String ageRatingContent = ageRating + " (" + currentCountry + ")";
+            ageRatingContentTextView.setText(ageRatingContent);
+            ageRatingContentTextView.setVisibility(View.VISIBLE);
+            ageRatingHeaderTextView.setVisibility(View.VISIBLE);
+        } else {
+            ageRatingHeaderTextView.setVisibility(View.GONE);
+            ageRatingContentTextView.setVisibility(View.GONE);
+        }
 
         /* --------- */
         /* LANGUAGES */
@@ -699,10 +717,8 @@ public class MovieDetailsInfoFragment extends Fragment
         if (originalLanguage != null && !originalLanguage.equals("") && !originalLanguage.isEmpty()) {
             infoSectionSet = true;
             String languageName = LocaleUtils.getLanguageName(originalLanguage);
-            String htmlText = "<strong>" + getString(R.string.original_language).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" +
-                    languageName.substring(0, 1).toUpperCase() + languageName.substring(1) +
-                    "</font>";
+            String htmlText =
+                    languageName.substring(0, 1).toUpperCase() + languageName.substring(1);
 
             // Add other spoken languages, if available.
             ArrayList<TmdbMovieLanguage> movieLanguages = movieDetails.getSpoken_languages();
@@ -722,14 +738,16 @@ public class MovieDetailsInfoFragment extends Fragment
                         stringBuilder.append(otherLanguageName);
                     }
                 }
-                htmlText = htmlText + "<br><font color=\"#" + color + "\">" +
-                        getString(R.string.spoken_languages) + ": " + stringBuilder + "</font>";
+                htmlText = htmlText + "<br>" + getString(R.string.spoken_languages) + ": " + stringBuilder;
             }
 
-            TextViewUtils.setHtmlText(originalLanguageTextView, htmlText);
-            originalLanguageTextView.setVisibility(View.VISIBLE);
-        } else
-            originalLanguageTextView.setVisibility(View.GONE);
+            TextViewUtils.setHtmlText(originalLanguageContentTextView, htmlText);
+            originalLanguageHeaderTextView.setVisibility(View.VISIBLE);
+            originalLanguageContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            originalLanguageHeaderTextView.setVisibility(View.GONE);
+            originalLanguageContentTextView.setVisibility(View.GONE);
+        }
 
         /* -------------- */
         /* ORIGINAL TITLE */
@@ -738,12 +756,13 @@ public class MovieDetailsInfoFragment extends Fragment
         String originalTitle = movieDetails.getMovie().getOriginal_title();
         if (originalTitle != null && !originalTitle.equals("") && !originalTitle.isEmpty()) {
             infoSectionSet = true;
-            String htmlText = "<strong>" + getString(R.string.original_title).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + originalTitle + "</font>";
-            TextViewUtils.setHtmlText(originalTitleTextView, htmlText);
-            originalTitleTextView.setVisibility(View.VISIBLE);
-        } else
-            originalTitleTextView.setVisibility(View.GONE);
+            originalTitleContentTextView.setText(originalTitle);
+            originalTitleHeaderTextView.setVisibility(View.VISIBLE);
+            originalTitleContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            originalTitleHeaderTextView.setVisibility(View.GONE);
+            originalTitleContentTextView.setVisibility(View.GONE);
+        }
 
         /* -------------------- */
         /* PRODUCTION COMPANIES */
@@ -752,20 +771,28 @@ public class MovieDetailsInfoFragment extends Fragment
         ArrayList<TmdbMovieCompany> movieCompanies = movieDetails.getProduction_companies();
         if (movieCompanies != null && movieCompanies.size() > 0) {
             infoSectionSet = true;
+
+            // Section title.
+            String productionCompaniesTitle =
+                    getResources().getQuantityString(R.plurals.production_companies,
+                            movieCompanies.size());
+            productionCompaniesHeaderTextView.setText(productionCompaniesTitle);
+            productionCompaniesHeaderTextView.setVisibility(View.VISIBLE);
+
+            // Section content.
             stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCompanies.size(); n++) {
                 stringBuilder.append(movieCompanies.get(n).getName());
                 if ((n + 1) < movieCompanies.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText = "<strong>" +
-                    getResources().getQuantityString(R.plurals.production_companies,
-                            movieCompanies.size()).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + stringBuilder + "</font>";
-            TextViewUtils.setHtmlText(productionCompaniesTextView, htmlText);
-            productionCompaniesTextView.setVisibility(View.VISIBLE);
-        } else
-            productionCompaniesTextView.setVisibility(View.GONE);
+            String htmlText = stringBuilder.toString();
+            TextViewUtils.setHtmlText(productionCompaniesContentTextView, htmlText);
+            productionCompaniesContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            productionCompaniesHeaderTextView.setVisibility(View.GONE);
+            productionCompaniesContentTextView.setVisibility(View.GONE);
+        }
 
         /* -------------------- */
         /* PRODUCTION COUNTRIES */
@@ -774,6 +801,15 @@ public class MovieDetailsInfoFragment extends Fragment
         ArrayList<TmdbMovieCountry> movieCountries = movieDetails.getProduction_countries();
         if (movieCountries != null && movieCountries.size() > 0) {
             infoSectionSet = true;
+
+            // Section title.
+            String productionCountriesTitle =
+                    getResources().getQuantityString(R.plurals.production_countries,
+                            movieCountries.size());
+            productionCountriesHeaderTextView.setText(productionCountriesTitle);
+            productionCountriesHeaderTextView.setVisibility(View.VISIBLE);
+
+            // Section content.
             stringBuilder = new StringBuilder();
             for (int n = 0; n < movieCountries.size(); n++) {
                 String countryName =
@@ -782,14 +818,13 @@ public class MovieDetailsInfoFragment extends Fragment
                 if ((n + 1) < movieCountries.size())
                     stringBuilder.append("<br>");
             }
-            String htmlText = "<strong>" +
-                    getResources().getQuantityString(R.plurals.production_countries,
-                            movieCountries.size()).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + stringBuilder + "</font>";
-            TextViewUtils.setHtmlText(productionCountriesTextView, htmlText);
-            productionCountriesTextView.setVisibility(View.VISIBLE);
-        } else
-            productionCountriesTextView.setVisibility(View.GONE);
+            String htmlText = stringBuilder.toString();
+            TextViewUtils.setHtmlText(productionCountriesContentTextView, htmlText);
+            productionCountriesContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            productionCountriesHeaderTextView.setVisibility(View.GONE);
+            productionCountriesContentTextView.setVisibility(View.GONE);
+        }
 
         /* ------ */
         /* BUDGET */
@@ -798,15 +833,16 @@ public class MovieDetailsInfoFragment extends Fragment
         int budget = movieDetails.getBudget();
         if (budget > 0) {
             infoSectionSet = true;
+            budgetHeaderTextView.setVisibility(View.VISIBLE);
 
             // Budget amounts in USD.
             String usdBudget = LocaleUtils.getCurrencyFormat(budget, "USD");
-            String htmlText = "<strong>" + getString(R.string.budget_title).toUpperCase() +
-                    "</strong><br><font color=\"#" + color + "\">" + usdBudget + "</font>";
-            TextViewUtils.setHtmlText(budgetTextView, htmlText);
-            budgetTextView.setVisibility(View.VISIBLE);
-        } else
-            budgetTextView.setVisibility(View.GONE);
+            budgetContentTextView.setText(usdBudget);
+            budgetContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            budgetHeaderTextView.setVisibility(View.GONE);
+            budgetContentTextView.setVisibility(View.GONE);
+        }
 
         /* ------- */
         /* REVENUE */
@@ -815,15 +851,16 @@ public class MovieDetailsInfoFragment extends Fragment
         int revenue = movieDetails.getRevenue();
         if (revenue > 0) {
             infoSectionSet = true;
+            revenueHeaderTextView.setVisibility(View.VISIBLE);
 
             // Revenue amounts in USD.
             String usdRevenue = LocaleUtils.getCurrencyFormat(revenue, "USD");
-            String htmlText = "<strong>" + getString(R.string.revenue_title).toUpperCase() + "</strong><br>" +
-                    "<font color=\"#" + color + "\">" + usdRevenue + "</font>";
-            TextViewUtils.setHtmlText(revenueTextView, htmlText);
-            revenueTextView.setVisibility(View.VISIBLE);
-        } else
-            revenueTextView.setVisibility(View.GONE);
+            revenueContentTextView.setText(usdRevenue);
+            revenueContentTextView.setVisibility(View.VISIBLE);
+        } else {
+            revenueHeaderTextView.setVisibility(View.GONE);
+            revenueContentTextView.setVisibility(View.GONE);
+        }
 
         return infoSectionSet;
     }
@@ -852,7 +889,8 @@ public class MovieDetailsInfoFragment extends Fragment
         boolean infoSectionSet = false;
 
         // Set background color for this section.
-        linksLayout.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+        linksLayout.setBackgroundColor(
+                getContext().getResources().getColor(R.color.colorPrimaryLighter));
 
         // Set homepage. If there is no homepage, make this section transparent.
         final String homepage = movieDetails.getHomepage();
@@ -1203,7 +1241,7 @@ public class MovieDetailsInfoFragment extends Fragment
 
                     // Set age rating to US rating from OMDB, if it has not been previously set.
                     if (setAgeRating())
-                        ageRatingTextView.setVisibility(View.VISIBLE);
+                        ageRatingContentTextView.setVisibility(View.VISIBLE);
                 } else {
                     Log.i(TAG, "(onLoadFinished) No search results.");
                     scoresLinearLayout.setVisibility(View.GONE);
@@ -1271,14 +1309,15 @@ public class MovieDetailsInfoFragment extends Fragment
                 String omdbAgeRating = omdbMovie.getRated();
                 if (omdbAgeRating != null && !omdbAgeRating.equals("") && !omdbAgeRating.isEmpty()) {
                     Log.i(TAG, "(setAgeRating) US age rating from OMDB:" + omdbAgeRating);
-                    String color = String.format("%X",
-                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
-                    String country = LocaleUtils.getUSCountryName();
-                    String ageRatingTitle = getString(R.string.age_rating_title);
-                    String ageRatingContent = "<strong>" + ageRatingTitle.toUpperCase() +
-                            "</strong><br><font color=\"#" + color + "\">" + omdbAgeRating + " (" +
-                            country + ")</font>";
-                    TextViewUtils.setHtmlText(ageRatingTextView, ageRatingContent);
+
+                    // Age rating title.
+                    ageRatingHeaderTextView.setVisibility(View.VISIBLE);
+
+                    // Age rating content.
+                    String ageRatingContent = omdbAgeRating +
+                            " (" + LocaleUtils.getUSCountryName() + ")";
+                    ageRatingContentTextView.setText(ageRatingContent);
+                    ageRatingContentTextView.setVisibility(View.VISIBLE);
                     return true;
                 } else
                     Log.i(TAG, "(setAgeRating) No US age rating from OMDB");

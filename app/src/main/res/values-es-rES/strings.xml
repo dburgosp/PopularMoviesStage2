@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TMDB</string>
+    <string name="app_name">Pelis &#038; Series</string>
     <string name="age_rating_title">Calificación por edades</string>
     <string name="add_to_favorites">Añadir a mis favoritos</string>
     <string name="all_languages">Cualquier idioma</string>
@@ -73,7 +73,6 @@
     <string name="subtitle_activity_main">y la gente que las hace</string>
     <string name="synopsis">Sinopsis</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
-    <string name="title_activity_main">Pelis &#038; Series</string>
     <string name="movies_sort_by_upcoming">Próximamente</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>

@@ -19,32 +19,32 @@
             android:orientation="vertical">
 
             <!-- User reviews section -->
-            <include layout="@layout/layout_info_reviews" />
+            <include layout="@layout/layout_movie_details_info_scores" />
 
             <!-- Overview section -->
-            <include layout="@layout/layout_info_overview" />
+            <include layout="@layout/layout_movie_details_info_overview" />
 
             <LinearLayout
                 android:id="@+id/info_data_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
+                android:background="@color/colorPrimaryLighter"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/regular_padding"
                 android:paddingTop="@dimen/big_padding">
 
                 <!-- Main info section -->
-                <include layout="@layout/layout_info_movie" />
+                <include layout="@layout/layout_movie_details_info_main" />
 
                 <!-- External links section -->
-                <include layout="@layout/layout_info_links" />
+                <include layout="@layout/layout_movie_details_info_links" />
             </LinearLayout>
 
             <!-- Collection section -->
-            <include layout="@layout/layout_info_collection" />
+            <include layout="@layout/layout_movie_details_info_collection" />
 
             <!-- Recommended movies section -->
-            <include layout="@layout/layout_info_recommended" />
+            <include layout="@layout/layout_movie_details_info_recommended" />
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->

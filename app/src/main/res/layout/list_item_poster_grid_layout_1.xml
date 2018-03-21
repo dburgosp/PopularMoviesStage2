@@ -38,14 +38,14 @@
             tools:text="Movie title" />
 
         <RelativeLayout
-            android:alpha="0.7"
             android:id="@+id/movie_list_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/movie_list_title"
             android:layout_marginBottom="@dimen/tiny_padding"
             android:layout_marginEnd="@dimen/small_padding"
-            android:layout_marginStart="@dimen/small_padding">
+            android:layout_marginStart="@dimen/small_padding"
+            android:alpha="0.7">
 
             <TextView
                 android:id="@+id/movie_list_year"

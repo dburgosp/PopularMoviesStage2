@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/info_overview_layout"
+    android:id="@+id/movie_details_info_overview_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/big_padding"
@@ -13,7 +13,7 @@
         android:background="@color/colorLightGrey" />
 
     <TextView
-        android:id="@+id/info_tagline"
+        android:id="@+id/movie_details_info_tagline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/regular_padding"
@@ -25,7 +25,7 @@
         tools:text="Tagline" />
 
     <TextView
-        android:id="@+id/info_overview"
+        android:id="@+id/movie_details_info_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/regular_padding"
@@ -35,7 +35,7 @@
         tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." />
 
     <TextView
-        android:id="@+id/info_genres_title"
+        android:id="@+id/movie_details_info_genres_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/regular_padding"
@@ -46,7 +46,7 @@
         tools:text="Genres" />
 
     <com.example.android.popularmoviesstage2.viewgroups.FlowLayout
-        android:id="@+id/info_genres_flowlayout"
+        android:id="@+id/movie_details_info_genres_flowlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/small_padding"
