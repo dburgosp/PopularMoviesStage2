@@ -167,7 +167,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        // Transition back to the person poster on MainActivity.
+        // Transition back to the person poster on OLD_MainActivity.
         supportFinishAfterTransition();
         return true;
     }

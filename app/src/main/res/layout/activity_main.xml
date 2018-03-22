@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:background="@color/colorPrimaryDark">
 
-    <include
-        layout="@layout/layout_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/small_padding"
+        android:paddingStart="@dimen/small_padding"
+        android:paddingTop="@dimen/small_padding">
 
-</android.support.v4.widget.DrawerLayout>
+        <!-- Main options -->
+        <include layout="@layout/layout_prueba_options" />
+
+        <!-- Upcoming movies -->
+        <include layout="@layout/layout_prueba_upcoming_movies" />
+
+        <!-- Popular people and series on the air -->
+        <include layout="@layout/layout_prueba_popular_on_the_air" />
+
+        <!-- Now playing movies -->
+        <include layout="@layout/layout_prueba_now_playing" />
+
+        <!-- Buy and rent section -->
+        <include layout="@layout/layout_prueba_buy_and_rent" />
+
+        <!-- Airing today series -->
+        <include layout="@layout/layout_prueba_airing_today" />
+
+        <!-- Layout to be shown while retrieving info -->
+        <include layout="@layout/layout_connection_status" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

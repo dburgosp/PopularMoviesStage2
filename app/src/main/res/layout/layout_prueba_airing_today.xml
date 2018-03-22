@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_airing_today_cardview"
+    style="@style/HomeCardViewStyle"
+    android:layout_width="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ViewFlipper
+            android:id="@+id/home_airing_today_viewflipper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/tv_airing_today"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_backdrop" />
+        </ViewFlipper>
+
+        <TextView
+            style="@style/HomeUpRightTextStyle"
+            android:backgroundTint="#E91E63"
+            android:drawableEnd="@drawable/ic_tv_white_18dp"
+            android:text="@string/series" />
+
+        <TextView
+            style="@style/HomeBottomTextStyle"
+            android:backgroundTint="#E91E63"
+            android:text="@string/tv_airing_today" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

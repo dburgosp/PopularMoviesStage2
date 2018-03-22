@@ -4,6 +4,7 @@
     android:id="@+id/connection_status_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/regular_padding"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -11,8 +12,8 @@
         android:id="@+id/connection_status_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/regular_padding"
         android:gravity="center"
-        android:padding="@dimen/regular_padding"
         android:textSize="@dimen/alert_text_size"
         tools:text="Message to display when there are no search results" />
 

@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.android.popularmoviesstage2.activities.MainActivity"
-    tools:showIn="@layout/layout_main">
+    tools:context="com.example.android.popularmoviesstage2.activities.OLD_MainActivity"
+    tools:showIn="@layout/OLD_layout_main">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,13 +15,13 @@
         android:orientation="vertical">
 
         <!-- Now playing movies -->
-        <include layout="@layout/layout_main_movies_now_playing" />
+        <include layout="@layout/OLD__layout_main_movies_now_playing" />
 
         <!-- Movies to be released this week -->
-        <include layout="@layout/layout_main_movies_released_this_week" />
+        <include layout="@layout/OLD_layout_main_movies_released_this_week" />
 
         <!-- Upcoming movies -->
-        <include layout="@layout/layout_main_movies_upcoming" />
+        <include layout="@layout/OLD_layout_main_movies_upcoming" />
 
         <!-- Layout to be shown while retrieving info -->
         <include layout="@layout/layout_connection_status" />

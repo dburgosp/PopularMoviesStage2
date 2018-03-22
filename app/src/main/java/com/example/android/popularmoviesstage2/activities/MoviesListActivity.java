@@ -182,7 +182,7 @@ public class MoviesListActivity extends AppCompatActivity
         switch (id) {
             case (R.id.movies_list_menu_home): {
                 // Navigate to the main activity.
-                cls = MainActivity.class;
+                cls = OLD_MainActivity.class;
                 intent = new Intent(packageContext, cls);
                 startActivity(intent);
                 break;

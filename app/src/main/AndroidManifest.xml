@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.prueba"
-            android:label="@string/app_name">
+            android:name=".activities.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,22 +27,21 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle">
-        </activity>
+            android:theme="@style/AppTheme.NoTitle"></activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.OLD_MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activities.OLD_MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
+                android:value=".activities.OLD_MainActivity" />
         </activity>
         <activity
             android:name=".activities.MovieDetailsActivity"

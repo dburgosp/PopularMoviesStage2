@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <!-- Popular people -->
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/home_popular_people_cardview"
+        style="@style/HomeCardViewStyle"
+        android:layout_width="0dp"
+        android:layout_marginEnd="@dimen/tiny_padding"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ViewFlipper
+                android:id="@+id/home_popular_people_viewflipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/popular"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/no_poster" />
+            </ViewFlipper>
+
+            <TextView
+                style="@style/HomeUpRightTextStyle"
+                android:backgroundTint="#F44336"
+                android:drawableEnd="@drawable/ic_person_white_18dp"
+                android:text="@string/people" />
+
+            <TextView
+                style="@style/HomeBottomTextStyle"
+                android:backgroundTint="#F44336"
+                android:text="@string/popular" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <!-- On the air (TV) -->
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/home_on_the_air_cardview"
+        style="@style/HomeCardViewStyle"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/tiny_padding"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ViewFlipper
+                android:id="@+id/home_on_the_air_viewflipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/tv_on_the_air"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/no_poster" />
+            </ViewFlipper>
+
+            <TextView
+                style="@style/HomeUpRightTextStyle"
+                android:backgroundTint="#E91E63"
+                android:drawableEnd="@drawable/ic_tv_white_18dp"
+                android:text="@string/series" />
+
+            <TextView
+                style="@style/HomeBottomTextStyle"
+                android:backgroundTint="#E91E63"
+                android:text="@string/tv_on_the_air" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

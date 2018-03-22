@@ -200,7 +200,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        // Transition back to the movie poster on MainActivity.
+        // Transition back to the movie poster on OLD_MainActivity.
         supportFinishAfterTransition();
         return true;
     }
