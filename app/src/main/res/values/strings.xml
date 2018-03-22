@@ -3,6 +3,9 @@
     <string name="add_to_favorites">Add to favorites</string>
     <string name="age_rating_title">Age rating</string>
     <string name="all_languages">All languages</string>
+    <string name="all_movies">All movies</string>
+    <string name="all_people">All people</string>
+    <string name="all_series">All series</string>
     <string name="app_name">Movies &#038; Series</string>
     <string name="backdrops_title">Backdrops</string>
     <string name="belongs_to_collection">Belongs to</string>
@@ -49,7 +52,7 @@
     <string name="movies_sort_by_now_playing">Now playing</string>
     <string name="movies_sort_by_popular">Popular Movies</string>
     <string name="movies_sort_by_released_this_week">This week</string>
-    <string name="movies_sort_by_top_rated">Top rated Movies</string>
+    <string name="movies_sort_by_top_rated">Top rated</string>
     <string name="movies_sort_by_upcoming">Upcoming movies</string>
     <string name="no_author">Unknown author</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
@@ -66,10 +69,12 @@
     <string name="no_title">No title</string>
     <string name="original_language">Original language</string>
     <string name="original_title">Original title</string>
+    <string name="people">People</string>
     <string name="person_details_bio">Bio</string>
     <string name="person_details_movies">Movies</string>
     <string name="person_details_tv">TV</string>
     <string name="person_details_images">Images</string>
+    <string name="popular">Popular</string>
     <string name="posters_title">Posters</string>
     <string name="recommended_movies">Recommended movies</string>
     <string name="release_status_rumored">Rumored</string>
@@ -89,6 +94,7 @@
     <string name="score_imdb">IMDB</string>
     <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
     <string name="score_metacritic">Metacritic</string>
+    <string name="series">Series</string>
     <string name="share_this">Share this</string>
     <string name="sort_movies_by_genre">Movies by genre</string>
     <string name="sort_movies_by_keyword">Movies by keyword</string>
@@ -101,6 +107,8 @@
     <string name="thumbnail_description">Thumbnail image</string>
     <string name="transition_list_to_details">poster_transition_1</string>
     <string name="transition_review">review_transition</string>
+    <string name="tv_airing_today">Airing today</string>
+    <string name="tv_on_the_air">On the air</string>
     <string name="videos_title">Related videos</string>
     <string name="view_all">View all</string>
     <string name="view_all_cast">View the full list with the %d cast members of this movie</string>
