@@ -7,18 +7,18 @@
     android:background="?android:attr/selectableItemBackground"
     app:cardElevation="@dimen/separator">
 
-    <LinearLayout
-        android:layout_width="@dimen/poster_width"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="#9C27B0"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/movie_list_image"
-            android:layout_width="@dimen/poster_width"
-            android:layout_height="@dimen/poster_height"
-            android:background="@drawable/no_movie_poster"
+            android:layout_width="@dimen/backdrop_width"
+            android:layout_height="@dimen/backdrop_height"
             android:contentDescription="@string/content_description_poster"
+            android:src="@drawable/no_backdrop"
             android:scaleType="centerCrop" />
 
         <TextView
@@ -29,8 +29,7 @@
             android:layout_marginStart="@dimen/small_padding"
             android:layout_marginTop="@dimen/small_padding"
             android:ellipsize="end"
-            android:gravity="center"
-            android:lines="2"
+            android:lines="1"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/normal_plus_text_size"
             tools:text="Movie title" />
@@ -39,7 +38,6 @@
             android:id="@+id/movie_list_year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_margin="@dimen/small_padding"
             android:alpha="0.7"
             android:drawablePadding="@dimen/separator"
@@ -66,5 +64,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone" />
-    </LinearLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -232,7 +232,7 @@ public class MoviesListAdapter
 
         // Annotate fields with @BindView and views ID for Butter Knife to find and automatically
         // cast the corresponding views.
-        @BindView(R.id.movie_list_poster)
+        @BindView(R.id.movie_list_image)
         ImageView posterImageView;
         @BindView(R.id.movie_list_title)
         TextView titleTextView;

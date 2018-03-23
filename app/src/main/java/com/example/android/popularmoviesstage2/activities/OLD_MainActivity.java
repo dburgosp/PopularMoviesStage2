@@ -165,7 +165,7 @@ public class OLD_MainActivity extends AppCompatActivity implements
         getWindow().setEnterTransition(transition);
         getWindow().setExitTransition(transition);
 
-        setContentView(R.layout.OLD_activity_main);
+        setContentView(R.layout.old_activity_main);
         unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);

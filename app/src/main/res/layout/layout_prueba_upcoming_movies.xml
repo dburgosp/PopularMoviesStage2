@@ -11,15 +11,12 @@
         <ViewFlipper
             android:id="@+id/home_upcoming_movies_viewflipper"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:autoStart="true"
+            android:background="#9C27B0"
+            android:flipInterval="5000">
 
-            <ImageView
-                android:id="@+id/home_upcoming_movies_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/movies_sort_by_upcoming"
-                android:scaleType="centerCrop"
-                android:src="@drawable/no_backdrop" />
+            <!-- Children views will be added programmatically. -->
         </ViewFlipper>
 
         <TextView

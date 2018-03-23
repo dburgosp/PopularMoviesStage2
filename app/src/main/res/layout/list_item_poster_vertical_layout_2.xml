@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/movie_list_poster"
+            android:id="@+id/movie_list_image"
             android:layout_width="@dimen/small_poster_width"
             android:layout_height="@dimen/small_poster_height"
             android:background="@drawable/no_movie_poster"

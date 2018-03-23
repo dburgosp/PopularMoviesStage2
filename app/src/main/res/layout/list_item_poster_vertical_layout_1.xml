@@ -14,7 +14,7 @@
         android:elevation="@dimen/small_padding">
 
         <ImageView
-            android:id="@+id/movie_list_poster"
+            android:id="@+id/movie_list_image"
             android:layout_width="@dimen/poster_info_width"
             android:layout_height="@dimen/poster_info_height"
             android:background="@drawable/no_movie_poster"
