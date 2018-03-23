@@ -69,13 +69,15 @@ public class TmdbPerson implements Parcelable {
      * Public constructor for new instances of objects of this class, with very limited information
      * about a person.
      *
+     * @param adult        is a boolean value that indicates whether the person is related to
+     *                     adult content or not.
      * @param id           is the unique identifier of the {@link TmdbPerson}.
      * @param name         is the complete name of the person.
      * @param profile_path is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL} and
      *                     get the main photograph of the person.
      */
-    public TmdbPerson(int id, String name, String profile_path) {
-        this.adult = false;
+    public TmdbPerson(boolean adult, int id, String name, String profile_path) {
+        this.adult = adult;
         this.also_known_as = null;
         this.biography = "";
         this.birthday = "";

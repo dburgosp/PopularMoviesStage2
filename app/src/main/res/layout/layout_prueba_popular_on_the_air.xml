@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_popular_on_the_air_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
@@ -16,19 +17,19 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#F44336">
 
             <ViewFlipper
                 android:id="@+id/home_popular_people_viewflipper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:autoStart="true"
+                android:background="@color/colorPrimaryDark"
+                android:flipInterval="5000">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/popular"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/no_poster" />
+                <!-- Children views will be added programmatically. -->
+
             </ViewFlipper>
 
             <TextView
@@ -39,6 +40,8 @@
 
             <TextView
                 style="@style/HomeBottomTextStyle"
+                android:layout_below="@+id/home_popular_people_viewflipper"
+                android:layout_marginTop="-32dp"
                 android:backgroundTint="#F44336"
                 android:text="@string/popular" />
         </RelativeLayout>
@@ -55,19 +58,19 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="#E91E63">
 
             <ViewFlipper
                 android:id="@+id/home_on_the_air_viewflipper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:autoStart="true"
+                android:background="@color/colorPrimaryDark"
+                android:flipInterval="5000">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/tv_on_the_air"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/no_poster" />
+                <!-- Children views will be added programmatically. -->
+
             </ViewFlipper>
 
             <TextView
@@ -78,6 +81,8 @@
 
             <TextView
                 style="@style/HomeBottomTextStyle"
+                android:layout_below="@+id/home_on_the_air_viewflipper"
+                android:layout_marginTop="-32dp"
                 android:backgroundTint="#E91E63"
                 android:text="@string/tv_on_the_air" />
         </RelativeLayout>

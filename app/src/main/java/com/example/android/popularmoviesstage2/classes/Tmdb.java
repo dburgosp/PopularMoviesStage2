@@ -276,6 +276,92 @@ public class Tmdb {
     }
 
     /**
+     * Fetches TMDB for a list of persons.
+     *
+     * @param currentPage is the page number to fetch.
+     * @param language    is the language of the results.
+     * @return an array of {@link TmdbPerson} objects.
+     */
+    public static ArrayList<TmdbPerson> getTmdbPeople(int currentPage, String language) {
+        Log.i(TAG, "(getTmdbPeople) Page number: " + currentPage + ". Language: " + language);
+
+        /* ------------ */
+        /* Get the JSON */
+        /* ------------ */
+
+        // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(TMDB_PERSON_PATH)
+                .appendPath(TMDB_CONTENT_TYPE_POPULAR)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY);
+        if (!language.equals("") && !language.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, language);
+        if (currentPage > 0)
+            builder.appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage));
+        Uri builtUri = builder.build();
+
+        // Use the built Uri to get the JSON document with the results of the query.
+        String JSONresponse;
+        try {
+            JSONresponse = NetworkUtils.getJSONresponse(builtUri);
+        } catch (java.io.IOException e) {
+            // If getJSONresponse has thrown an exception, exit returning null.
+            Log.e(TAG, "(getTmdbPeople) Error retrieving JSON response: ", e);
+            return null;
+        }
+
+        /* -------------- */
+        /* Parse the JSON */
+        /* -------------- */
+
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG, "(getTmdbPeople) The JSON string is empty.");
+            return null;
+        }
+
+        // Create an empty array of TmdbPerson objects to append data.
+        ArrayList<TmdbPerson> persons = new ArrayList<>();
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("results")) {
+                Log.i(TAG, "(getTmdbPeople) No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            // Get paging info.
+            int page = NetworkUtils.getIntFromJSON(resultsJSONResponse, "page");
+            int total_pages = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_pages");
+            int total_results = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_results");
+
+            // Get results array.
+            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
+            JSONObject baseJSONResponse;
+            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results, extract the person
+                // info and append it to the persons array.
+                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+                TmdbPerson person = getPerson(baseJSONResponse, n, page, total_pages, total_results);
+                persons.add(person);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
+        }
+
+        // Return the persons array.
+        return persons;
+    }
+
+    /**
      * Fetches TMDB for the list of movies of a given collection.
      *
      * @param collectionId is the unique identifier of the collection.
@@ -433,6 +519,29 @@ public class Tmdb {
         return new TmdbMovie(id, adult, backdrop_path, genres, original_language,
                 original_title, overview, popularity, poster_path, release_date, title,
                 video, vote_average, vote_count, n, page, total_pages, total_results);
+    }
+
+    /**
+     * Private helper method to extract a {@link TmdbPerson} object from a JSON.
+     *
+     * @param baseJSONResponse is the JSONObject containing the person info.
+     * @param n                is the current index of the element into the persons array.
+     * @param page             is the current page of the person element.
+     * @param total_pages      is the number of pages of the current query.
+     * @param total_results    is the number of persons of the current query.
+     * @return the {@link TmdbPerson} object parsed from the JSON.
+     * @throws JSONException from getJSONArray and getJSONObject calls.
+     */
+    private static TmdbPerson getPerson(JSONObject baseJSONResponse, int n, int page, int total_pages,
+                                        int total_results) throws JSONException {
+        // Extract the required values for the corresponding keys.
+        boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
+        String profile_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "profile_path");
+        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
+        String name = NetworkUtils.getStringFromJSON(baseJSONResponse, "name");
+
+        // Return the {@link TmdbPerson} object parsed from the JSON.
+        return new TmdbPerson(adult, id, name, profile_path);
     }
 
     /**
@@ -1278,6 +1387,7 @@ public class Tmdb {
                 sortOrder.equals(TMDB_CONTENT_TYPE_NOW_PLAYING) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_GENRES) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS);
     }
 

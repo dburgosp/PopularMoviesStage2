@@ -6,17 +6,20 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#9C27B0">
 
         <ViewFlipper
             android:id="@+id/home_now_playing_movies_viewflipper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autoStart="true"
-            android:background="#9C27B0"
-            android:flipInterval="5000">
+            android:background="@color/colorPrimaryDark"
+            android:flipInterval="5000"
+            android:interpolator="@android:anim/linear_interpolator">
 
             <!-- Children views will be added programmatically. -->
+
         </ViewFlipper>
 
         <TextView
@@ -27,6 +30,8 @@
 
         <TextView
             style="@style/HomeBottomTextStyle"
+            android:layout_below="@id/home_now_playing_movies_viewflipper"
+            android:layout_marginTop="-32dp"
             android:backgroundTint="#9C27B0"
             android:text="@string/movies_sort_by_now_playing" />
     </RelativeLayout>
