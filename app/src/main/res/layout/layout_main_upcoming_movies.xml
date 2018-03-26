@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/home_upcoming_movies_cardview"
+    style="@style/HomeCardViewStyle"
+    android:layout_width="match_parent"
+    app:cardCornerRadius="@dimen/small_padding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ViewFlipper
+            android:id="@+id/home_upcoming_movies_viewflipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autoStart="true"
+            android:background="@color/colorMoviesPrimaryDark"
+            android:flipInterval="6000">
+
+            <!-- Children views will be added programmatically. -->
+        </ViewFlipper>
+
+        <TextView
+            style="@style/HomeUpRightTextStyle"
+            android:backgroundTint="@color/colorMoviesPrimary"
+            android:drawableEnd="@drawable/ic_local_movies_white_18dp"
+            android:text="@string/movies" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/regular_padding"
+            android:layout_above="@id/home_upcoming_movies_title"
+            android:background="@drawable/gradient_vertical_bottom"
+            android:backgroundTint="@color/colorMoviesPrimary" />
+
+        <TextView
+            android:id="@+id/home_upcoming_movies_title"
+            style="@style/HomeBottomTextStyle"
+            android:layout_below="@id/home_upcoming_movies_viewflipper"
+            android:background="@color/colorMoviesPrimary"
+            android:text="@string/movies_sort_by_upcoming" />
+
+        <ProgressBar
+            android:id="@+id/home_upcoming_movies_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

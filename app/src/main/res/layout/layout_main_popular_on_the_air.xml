@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/home_popular_on_the_air_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,20 +14,20 @@
         style="@style/HomeCardViewStyle"
         android:layout_width="0dp"
         android:layout_marginEnd="@dimen/tiny_padding"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        app:cardCornerRadius="@dimen/small_padding">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#F44336">
+            android:layout_height="match_parent">
 
             <ViewFlipper
                 android:id="@+id/home_popular_people_viewflipper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:autoStart="true"
-                android:background="@color/colorPrimaryDark"
-                android:flipInterval="5000">
+                android:background="@color/colorPeoplePrimaryDark"
+                android:flipInterval="4000">
 
                 <!-- Children views will be added programmatically. -->
 
@@ -34,16 +35,30 @@
 
             <TextView
                 style="@style/HomeUpRightTextStyle"
-                android:backgroundTint="#F44336"
+                android:backgroundTint="@color/colorPeoplePrimary"
                 android:drawableEnd="@drawable/ic_person_white_18dp"
                 android:text="@string/people" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/regular_padding"
+                android:layout_above="@id/home_popular_people_title"
+                android:background="@drawable/gradient_vertical_bottom"
+                android:backgroundTint="@color/colorPeoplePrimary" />
+
             <TextView
+                android:id="@+id/home_popular_people_title"
                 style="@style/HomeBottomTextStyle"
                 android:layout_below="@+id/home_popular_people_viewflipper"
-                android:layout_marginTop="-32dp"
-                android:backgroundTint="#F44336"
+                android:background="@color/colorPeoplePrimary"
                 android:text="@string/popular" />
+
+            <ProgressBar
+                android:id="@+id/home_popular_people_loading_indicator"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
@@ -54,19 +69,19 @@
         style="@style/HomeCardViewStyle"
         android:layout_width="0dp"
         android:layout_marginStart="@dimen/tiny_padding"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        app:cardCornerRadius="@dimen/small_padding">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#E91E63">
+            android:layout_height="match_parent">
 
             <ViewFlipper
                 android:id="@+id/home_on_the_air_viewflipper"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:autoStart="true"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorSeriesPrimaryDark"
                 android:flipInterval="5000">
 
                 <!-- Children views will be added programmatically. -->
@@ -75,16 +90,31 @@
 
             <TextView
                 style="@style/HomeUpRightTextStyle"
-                android:backgroundTint="#E91E63"
+                android:backgroundTint="@color/colorSeriesPrimary"
                 android:drawableEnd="@drawable/ic_tv_white_18dp"
                 android:text="@string/series" />
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/regular_padding"
+                android:layout_above="@id/home_on_the_air_title"
+                android:background="@drawable/gradient_vertical_bottom"
+                android:backgroundTint="@color/colorSeriesPrimary"
+                android:contentDescription="@string/content_description_gradient"/>
+
             <TextView
+                android:id="@+id/home_on_the_air_title"
                 style="@style/HomeBottomTextStyle"
                 android:layout_below="@+id/home_on_the_air_viewflipper"
-                android:layout_marginTop="-32dp"
-                android:backgroundTint="#E91E63"
+                android:background="@color/colorSeriesPrimary"
                 android:text="@string/tv_on_the_air" />
+
+            <ProgressBar
+                android:id="@+id/home_on_the_air_loading_indicator"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

@@ -91,7 +91,7 @@
     </style>
 
     <style name="HomeCardViewStyle">
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
         <item name="android:elevation">@dimen/small_padding</item>
     </style>
@@ -113,7 +113,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentEnd">true</item>
         <item name="android:layout_marginEnd">-12dp</item>
-        <item name="android:layout_marginTop">@dimen/small_padding</item>
+        <item name="android:layout_marginTop">-12dp</item>
         <item name="android:alpha">0.9</item>
         <item name="android:background">@drawable/rounded_button</item>
         <item name="android:drawablePadding">@dimen/tiny_padding</item>
@@ -121,7 +121,7 @@
         <item name="android:paddingBottom">@dimen/tiny_padding</item>
         <item name="android:paddingEnd">@dimen/big_padding</item>
         <item name="android:paddingStart">@dimen/regular_padding</item>
-        <item name="android:paddingTop">@dimen/tiny_padding</item>
+        <item name="android:paddingTop">15dp</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">@dimen/normal_text_size</item>
     </style>
@@ -130,13 +130,9 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:background">@drawable/gradient_vertical_bottom</item>
         <item name="android:drawableEnd">@drawable/ic_arrow_forward_white_24dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingBottom">@dimen/small_padding</item>
-        <item name="android:paddingEnd">@dimen/small_padding</item>
-        <item name="android:paddingStart">@dimen/small_padding</item>
-        <item name="android:paddingTop">28dp</item>
+        <item name="android:padding">@dimen/small_padding</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textStyle">bold</item>

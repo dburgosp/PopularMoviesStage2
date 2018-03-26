@@ -13,22 +13,22 @@
         android:paddingTop="@dimen/small_padding">
 
         <!-- Main options -->
-        <include layout="@layout/layout_prueba_options" />
+        <include layout="@layout/layout_main_options" />
 
         <!-- Upcoming movies -->
-        <include layout="@layout/layout_prueba_upcoming_movies" />
+        <include layout="@layout/layout_main_upcoming_movies" />
 
         <!-- Popular people and series on the air -->
-        <include layout="@layout/layout_prueba_popular_on_the_air" />
+        <include layout="@layout/layout_main_popular_on_the_air" />
 
         <!-- Now playing movies -->
-        <include layout="@layout/layout_prueba_now_playing" />
+        <include layout="@layout/layout_main_now_playing" />
 
         <!-- Buy and rent section -->
-        <include layout="@layout/layout_prueba_buy_and_rent" />
+        <include layout="@layout/layout_main_buy_and_rent" />
 
         <!-- Airing today series -->
-        <include layout="@layout/layout_prueba_airing_today" />
+        <include layout="@layout/layout_main_airing_today" />
 
         <!-- Layout to be shown while retrieving info -->
         <include layout="@layout/layout_connection_status" />

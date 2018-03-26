@@ -4,9 +4,20 @@
     <translate
         android:duration="500"
         android:fromXDelta="100%"
-        android:fromYDelta="0%"
+        android:fromYDelta="-100%"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
         android:toXDelta="0%"
         android:toYDelta="0%" />
+    <scale
+        android:duration="500"
+        android:fillAfter="false"
+        android:fromXScale="0.0"
+        android:fromYScale="0.0"
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="1.0"
+        android:toYScale="1.0" />
     <alpha
         android:duration="500"
         android:fromAlpha="0.0"

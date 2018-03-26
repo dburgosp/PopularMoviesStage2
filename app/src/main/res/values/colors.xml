@@ -14,21 +14,20 @@
     <color name="colorHighScoreBackground">#204529</color>
     <color name="colorHighScoreForeground">#01d277</color>
 
-    <!-- Colors for movies sections (Teal). -->
-    <color name="colorMovies50">#E0F2F1</color>
-    <color name="colorMovies100">#B2DFDB</color>
-    <color name="colorMovies200">#80CBC4</color>
-    <color name="colorMovies300">#4DB6AC</color>
-    <color name="colorMovies400">#26A69A</color>
-    <color name="colorMovies500">#009688</color>
-    <color name="colorMovies600">#00897B</color>
-    <color name="colorMovies700">#00796B</color>
-    <color name="colorMovies800">#00695C</color>
-    <color name="colorMovies900">#004D40</color>
-    <color name="colorMoviesA100">#A7FFEB</color>
-    <color name="colorMoviesA200">#64FFDA</color>
-    <color name="colorMoviesA400">#1DE9B6</color>
-    <color name="colorMoviesA700">#00BFA5</color>
+    <!-- Colors for movies sections. -->
+    <color name="colorMoviesPrimaryDark">#7B1FA2</color>
+    <color name="colorMoviesPrimary">#9C27B0</color>
+    <color name="colorMoviesPrimaryLight">#E1BEE7</color>
+
+    <!-- Colors for series sections. -->
+    <color name="colorSeriesPrimaryDark">#303F9F</color>
+    <color name="colorSeriesPrimary">#3F51B5</color>
+    <color name="colorSeriesPrimaryLight">#C5CAE9</color>
+
+    <!-- Colors for people sections. -->
+    <color name="colorPeoplePrimaryDark">#00796B</color>
+    <color name="colorPeoplePrimary">#009688</color>
+    <color name="colorPeoplePrimaryLight">#B2DFDB</color>
 
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>

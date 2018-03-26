@@ -11,8 +11,8 @@ import com.example.android.popularmoviesstage2.classes.TmdbPerson;
 
 import java.util.ArrayList;
 
-public class TmdbPersonAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPerson>> {
-    private final String TAG = TmdbPersonAsyncTaskLoader.class.getSimpleName();
+public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPerson>> {
+    private final String TAG = TmdbPeopleAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbPerson> personArrayList;
     private String contentType, language;
     private int currentPage;
@@ -26,7 +26,7 @@ public class TmdbPersonAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
      * @param currentPage is the current page to fetch results from TMDB.
      * @param language    is the language for retrieving results from TMDB.
      */
-    public TmdbPersonAsyncTaskLoader(Context context, String contentType, int currentPage,
+    public TmdbPeopleAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language) {
         super(context);
         this.contentType = contentType;

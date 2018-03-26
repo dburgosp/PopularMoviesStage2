@@ -541,7 +541,7 @@ public class Tmdb {
         String name = NetworkUtils.getStringFromJSON(baseJSONResponse, "name");
 
         // Return the {@link TmdbPerson} object parsed from the JSON.
-        return new TmdbPerson(adult, id, name, profile_path);
+        return new TmdbPerson(id, name, profile_path);
     }
 
     /**
