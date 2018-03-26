@@ -3,6 +3,7 @@ package com.example.android.popularmoviesstage2.activities;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
@@ -35,6 +36,7 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbPeopleAsyncT
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
+import com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
@@ -64,9 +66,11 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.home_upcoming_movies_cardview)
     CardView upcomingMoviesCardView;
     @BindView(R.id.home_upcoming_movies_viewflipper)
-    ViewFlipper upcomingMoviesViewFlipper;
+    ViewFlipperIndicator upcomingMoviesViewFlipper;
     @BindView(R.id.home_upcoming_movies_loading_indicator)
     ProgressBar upcomingMoviesLoadingIndicator;
+    @BindView(R.id.home_upcoming_movies_message)
+    TextView upcomingMoviesMessage;
 
     @BindView(R.id.home_popular_on_the_air_linearlayout)
     LinearLayout popularOnTheAirLinearLayout;
@@ -76,19 +80,25 @@ public class MainActivity extends AppCompatActivity implements
     ViewFlipper popularPeopleViewFlipper;
     @BindView(R.id.home_popular_people_loading_indicator)
     ProgressBar popularPeopleLoadingIndicator;
+    @BindView(R.id.home_popular_people_message)
+    TextView popularPeopleMessage;
     @BindView(R.id.home_on_the_air_cardview)
-    CardView OnTheAirCardView;
+    CardView onTheAirCardView;
     @BindView(R.id.home_on_the_air_viewflipper)
     ViewFlipper OnTheAirViewFlipper;
     @BindView(R.id.home_on_the_air_loading_indicator)
-    ProgressBar OnTheAirLoadingIndicator;
+    ProgressBar onTheAirLoadingIndicator;
+    @BindView(R.id.home_on_the_air_message)
+    TextView onTheAirMessage;
 
     @BindView(R.id.home_now_playing_movies_cardview)
     CardView nowPlayingMoviesCardView;
     @BindView(R.id.home_now_playing_movies_viewflipper)
-    ViewFlipper nowPlayingMoviesViewFlipper;
+    ViewFlipperIndicator nowPlayingMoviesViewFlipper;
     @BindView(R.id.home_now_playing_movies_loading_indicator)
     ProgressBar nowPlayingMoviesLoadingIndicator;
+    @BindView(R.id.home_now_playing_movies_message)
+    TextView nowPlayingMoviesMessage;
 
     @BindView(R.id.home_buy_and_rent_series_linearlayout)
     LinearLayout buyAndRentLinearLayout;
@@ -98,12 +108,16 @@ public class MainActivity extends AppCompatActivity implements
     ViewFlipper buyAndRentSeriesViewFlipper;
     @BindView(R.id.home_buy_and_rent_series_loading_indicator)
     ProgressBar buyAndRentSeriesLoadingIndicator;
+    @BindView(R.id.home_buy_and_rent_series_message)
+    TextView buyAndRentSeriesMessage;
     @BindView(R.id.home_buy_and_rent_movies_cardview)
     CardView buyAndRentMoviesCardView;
     @BindView(R.id.home_buy_and_rent_movies_viewflipper)
     ViewFlipper buyAndRentMoviesViewFlipper;
     @BindView(R.id.home_buy_and_rent_movies_loading_indicator)
     ProgressBar buyAndRentMoviesLoadingIndicator;
+    @BindView(R.id.home_buy_and_rent_movies_message)
+    TextView buyAndRentMoviesMessage;
 
     @BindView(R.id.home_airing_today_cardview)
     CardView airingTodayCardView;
@@ -111,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements
     ViewFlipper airingTodayViewFlipper;
     @BindView(R.id.home_airing_today_loading_indicator)
     ProgressBar airingTodayLoadingIndicator;
+    @BindView(R.id.home_airing_today_message)
+    TextView airingTodayMessage;
 
     @BindView(R.id.connection_status_layout)
     LinearLayout connectionStatusLayout;
@@ -172,12 +188,22 @@ public class MainActivity extends AppCompatActivity implements
         allMoviesCardView.setVisibility(View.GONE);
         allSeriesCardView.setVisibility(View.GONE);
         allPeopleCardView.setVisibility(View.GONE);
+
         upcomingMoviesCardView.setVisibility(View.GONE);
         popularOnTheAirLinearLayout.setVisibility(View.GONE);
         nowPlayingMoviesCardView.setVisibility(View.GONE);
         buyAndRentLinearLayout.setVisibility(View.GONE);
         airingTodayCardView.setVisibility(View.GONE);
+
         connectionStatusLayout.setVisibility(View.GONE);
+
+        upcomingMoviesMessage.setVisibility(View.GONE);
+        popularPeopleMessage.setVisibility(View.GONE);
+        nowPlayingMoviesMessage.setVisibility(View.GONE);
+        onTheAirMessage.setVisibility(View.GONE);
+        buyAndRentMoviesMessage.setVisibility(View.GONE);
+        buyAndRentSeriesMessage.setVisibility(View.GONE);
+        airingTodayMessage.setVisibility(View.GONE);
     }
 
     /**
@@ -190,12 +216,13 @@ public class MainActivity extends AppCompatActivity implements
         // Sizes and layouts for backdrops.
         int backdropWidthPixels = displayUtils.getFullDisplayBackdropWidthPixels() -
                 (2 * getResources().getDimensionPixelSize(R.dimen.small_padding));
-        int backdropHeightPixels = backdropWidthPixels * 9 / 16;
+        int backdropHeightPixels = (backdropWidthPixels * 9 / 16);
 
         backdropLinearLayoutParams = new LinearLayout.LayoutParams(
                 backdropWidthPixels, backdropHeightPixels);
         backdropRelativeLayoutParams = new RelativeLayout.LayoutParams(
-                backdropWidthPixels, backdropHeightPixels);
+                backdropWidthPixels, backdropHeightPixels +
+                getResources().getDimensionPixelSize(R.dimen.big_padding));
 
         nowPlayingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
         upcomingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
@@ -233,9 +260,9 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set animations for ViewFlippers.
         upcomingMoviesViewFlipper.setInAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_in));
+                this, R.anim.in_from_right));
         upcomingMoviesViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_out));
+                this, R.anim.out_from_right));
         nowPlayingMoviesViewFlipper.setInAnimation(AnimationUtils.loadAnimation(
                 this, R.anim.fade_in));
         nowPlayingMoviesViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
@@ -244,6 +271,19 @@ public class MainActivity extends AppCompatActivity implements
                 this, R.anim.fade_in));
         popularPeopleViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
                 this, R.anim.fade_out));
+
+        Paint paint = new Paint();
+        paint.setColor(getResources().getColor(R.color.colorMoviesPrimaryLight));
+        upcomingMoviesViewFlipper.setPaintCurrent(paint);
+        nowPlayingMoviesViewFlipper.setPaintCurrent(paint);
+        paint = new Paint();
+        paint.setColor(getResources().getColor(R.color.colorMoviesPrimaryDark));
+        upcomingMoviesViewFlipper.setPaintNormal(paint);
+        upcomingMoviesViewFlipper.setRadius(5);
+        upcomingMoviesViewFlipper.setMargin(5);
+        nowPlayingMoviesViewFlipper.setPaintNormal(paint);
+        nowPlayingMoviesViewFlipper.setRadius(5);
+        nowPlayingMoviesViewFlipper.setMargin(5);
     }
 
     /**
@@ -312,40 +352,51 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-            connectionStatusLayout.setVisibility(View.VISIBLE);
-            connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-            connectionStatusText.setText(getString(R.string.fetching_info));
-            connectionStatusText.setVisibility(View.VISIBLE);
-            connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
-            connectionImage.setVisibility(View.GONE);
-
-            if (NetworkUtils.isConnected(MainActivity.this)) {
-                // There is an available connection. Fetch results from TMDB.
-                switch (id) {
-                    case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
+            switch (id) {
+                case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                    upcomingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // There is an available connection. Fetch results from TMDB.
+                        upcomingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_UPCOMING, 1,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
+                    } else {
+                        // There is no connection. Show error message.
+                        upcomingMoviesMessage.setText(
+                                getResources().getString(R.string.no_connection));
+                        upcomingMoviesMessage.setVisibility(View.VISIBLE);
+                        upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
+                        Log.i(TAG, "(onCreateLoader) No internet connection.");
+                        return null;
+                    }
+                }
 
-                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
+                case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                    nowPlayingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // There is an available connection. Fetch results from TMDB.
+                        nowPlayingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, 1,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
-
-                    default: {
-                        Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    } else {
+                        // There is no connection. Show error message.
+                        nowPlayingMoviesMessage.setText(
+                                getResources().getString(R.string.no_connection));
+                        nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
+                        nowPlayingMoviesLoadingIndicator.setVisibility(View.GONE);
+                        Log.i(TAG, "(onCreateLoader) No internet connection.");
                         return null;
                     }
                 }
-            } else {
-                // There is no connection. Show error message.
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionImage.setVisibility(View.VISIBLE);
-                connectionStatusLoadingIndicator.setVisibility(View.GONE);
-                Log.i(TAG, "(onCreateLoader) No internet connection.");
-                return null;
+
+                default: {
+                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    return null;
+                }
             }
         }
 
@@ -389,54 +440,70 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
-            // Hide connection layout.
-            connectionStatusLayout.setVisibility(View.GONE);
+            // Get movies list and display it, depending on the loader identifier.
+            switch (loader.getId()) {
+                case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                    nowPlayingMoviesLoadingIndicator.setVisibility(View.GONE);
 
-            // Check if there is an available connection.
-            if (NetworkUtils.isConnected(MainActivity.this)) {
-                // If there is a valid result, display it on its corresponding layout.
-                if (data != null && !data.isEmpty() && data.size() > 0) {
-                    Log.i(TAG, "(onLoadFinished) Search results not null.");
-
-                    // Get movies list and display it.
-                    switch (loader.getId()) {
-                        case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                    // Check if there is an available connection.
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // If there is a valid result, display it on its corresponding layout.
+                        if (data != null && !data.isEmpty() && data.size() > 0) {
+                            Log.i(TAG, "(onLoadFinished) Search results for now playing movies not null.");
+                            nowPlayingMoviesMessage.setVisibility(View.GONE);
                             inflateMoviesViewFlipperChildren(data, nowPlayingMoviesViewFlipper,
                                     nowPlayingMoviesCardView, backdropLinearLayoutParams,
                                     R.layout.layout_main_movies_backdrop, false,
                                     true);
-                            break;
+                        } else {
+                            Log.i(TAG, "(onLoadFinished) No search results for now playing movies.");
+                            nowPlayingMoviesMessage.setText(
+                                    getResources().getString(R.string.no_results));
+                            nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
                         }
+                    } else {
+                        // There is no connection. Show error message.
+                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        nowPlayingMoviesMessage.setText(
+                                getResources().getString(R.string.no_connection));
+                        nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
+                    }
+                    break;
+                }
 
-                        case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                    upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
+
+                    // Check if there is an available connection.
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // If there is a valid result, display it on its corresponding layout.
+                        if (data != null && !data.isEmpty() && data.size() > 0) {
+                            Log.i(TAG, "(onLoadFinished) Search results for upcoming movies not null.");
+                            upcomingMoviesMessage.setVisibility(View.GONE);
                             inflateMoviesViewFlipperChildren(data, upcomingMoviesViewFlipper,
                                     upcomingMoviesCardView, backdropLinearLayoutParams,
                                     R.layout.layout_main_movies_backdrop, true,
                                     false);
-                            break;
+                        } else {
+                            Log.i(TAG, "(onLoadFinished) No search results for upcoming movies.");
+                            upcomingMoviesMessage.setText(
+                                    getResources().getString(R.string.no_results));
+                            upcomingMoviesMessage.setVisibility(View.VISIBLE);
                         }
-
-                        default: {
-                            Log.e(TAG, "(onCreateLoader) Unexpected loader id: " +
-                                    loader.getId());
-                        }
+                    } else {
+                        // There is no connection. Show error message.
+                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        upcomingMoviesMessage.setText(
+                                getResources().getString(R.string.no_connection));
+                        upcomingMoviesMessage.setVisibility(View.VISIBLE);
                     }
-                } else {
-                    Log.i(TAG, "(onLoadFinished) No search results.");
-                    connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                    connectionStatusText.setText(getResources().getString(R.string.no_results));
-                    connectionStatusText.setVisibility(View.VISIBLE);
+                    break;
                 }
-            } else
 
-            {
-                // There is no connection. Show error message.
-                Log.i(TAG, "(onLoadFinished) No connection to internet.");
-                connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionStatusText.setVisibility(View.VISIBLE);
+                default: {
+                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + loader.getId());
+                }
             }
-
         }
 
         /**
@@ -499,12 +566,6 @@ public class MainActivity extends AppCompatActivity implements
                     } else
                         releaseDateTextView.setVisibility(View.GONE);
 
-/*                    LinearLayout dataLayout = (LinearLayout) view.findViewById(R.id.movie_list_data);
-                    Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.in_from_right);
-                    animation.setDuration(1000);
-                    dataLayout.setVisibility(View.VISIBLE);
-                    dataLayout.startAnimation(animation);*/
-
                     // Set users rating, if needed.
                     TextView usersRatingTextView =
                             (TextView) view.findViewById(R.id.movie_list_rating);
@@ -523,20 +584,12 @@ public class MainActivity extends AppCompatActivity implements
 
             // If there's nothing to show, exit before making this section visible.
             if (viewFlipper.getChildCount() > 0) {
+                //viewFlipper.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorMoviesPrimary));
+
                 // Start ViewFlipper animation.
                 if (!viewFlipper.isFlipping()) {
                     viewFlipper.startFlipping();
                 }
-
-                viewFlipper.setBackgroundColor(ContextCompat.getColor(MainActivity.this,
-                        R.color.colorPrimaryDark));
-
-                // Make CardView visible with animation.
-/*                Animation animation = AnimationUtils.loadAnimation(
-                        MainActivity.this, R.anim.in_from_left);
-                animation.setDuration(250);
-                cardView.setVisibility(View.VISIBLE);
-                cardView.startAnimation(animation);*/
             }
         }
     }
@@ -635,8 +688,6 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader, ArrayList<TmdbPerson> data) {
-            // Hide connection layout.
-            connectionStatusLayout.setVisibility(View.GONE);
 
             // Check if there is an available connection.
             if (NetworkUtils.isConnected(MainActivity.this)) {
@@ -651,6 +702,9 @@ public class MainActivity extends AppCompatActivity implements
                             isSet = inflatePeopleViewFlipperChildren(data, popularPeopleViewFlipper,
                                     popularPeopleCardView, posterLayoutParams,
                                     R.layout.layout_main_people_backdrop);
+
+                            // Hide Loading indicator.
+                            popularPeopleLoadingIndicator.setVisibility(View.GONE);
                             break;
                         }
 
