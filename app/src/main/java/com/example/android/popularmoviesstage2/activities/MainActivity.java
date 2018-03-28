@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.AnimRes;
+import android.support.annotation.ColorRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -53,6 +55,8 @@ import butterknife.Unbinder;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int MAX_MOVIES = 20;
+    private static final int MAX_PEOPLE = 8;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.home_popular_people_cardview)
     CardView popularPeopleCardView;
     @BindView(R.id.home_popular_people_viewflipper)
-    ViewFlipper popularPeopleViewFlipper;
+    ViewFlipperIndicator popularPeopleViewFlipper;
     @BindView(R.id.home_popular_people_loading_indicator)
     ProgressBar popularPeopleLoadingIndicator;
     @BindView(R.id.home_popular_people_message)
@@ -85,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.home_on_the_air_cardview)
     CardView onTheAirCardView;
     @BindView(R.id.home_on_the_air_viewflipper)
-    ViewFlipper OnTheAirViewFlipper;
+    ViewFlipperIndicator onTheAirViewFlipper;
     @BindView(R.id.home_on_the_air_loading_indicator)
     ProgressBar onTheAirLoadingIndicator;
     @BindView(R.id.home_on_the_air_message)
@@ -131,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.connection_status_layout)
     LinearLayout connectionStatusLayout;
     @BindView(R.id.connection_status_image_view)
-    ImageView connectionImage;
+    ImageView connectionStatusImage;
     @BindView(R.id.connection_status_text)
     TextView connectionStatusText;
     @BindView(R.id.connection_status_loading_indicator)
@@ -140,9 +144,10 @@ public class MainActivity extends AppCompatActivity implements
     private Unbinder unbinder;
     private int animatedViewCurrentIndex = 0;
     private ArrayList<View> animatedViews = new ArrayList<>();
-    private LinearLayout.LayoutParams backdropLinearLayoutParams;
-    private RelativeLayout.LayoutParams backdropRelativeLayoutParams;
-    private RelativeLayout.LayoutParams posterLayoutParams;
+    private LinearLayout.LayoutParams backdropLinearLayoutParams, posterLinearLayoutParams;
+    private RelativeLayout.LayoutParams backdropRelativeLayoutParams, posterRelativeLayoutParams;
+    private int nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
+            upcomingMoviesCurrentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,11 +160,13 @@ public class MainActivity extends AppCompatActivity implements
         if (NetworkUtils.isConnected(MainActivity.this)) {
             setSizes();
             setAnimations();
+            setViewFlippers();
         } else {
             // If there is no internet connection, show message.
+            connectionStatusLayout.setVisibility(View.VISIBLE);
             connectionStatusText.setText(getString(R.string.no_connection));
             connectionStatusText.setVisibility(View.VISIBLE);
-            connectionImage.setVisibility(View.VISIBLE);
+            connectionStatusImage.setVisibility(View.VISIBLE);
             connectionStatusLoadingIndicator.setVisibility(View.GONE);
         }
 
@@ -233,12 +240,14 @@ public class MainActivity extends AppCompatActivity implements
                 (3 * getResources().getDimensionPixelSize(R.dimen.small_padding))) / 2;
         int posterHeightPixels = posterWidthPixels * 3 / 2;
 
-        posterLayoutParams = new RelativeLayout.LayoutParams(posterWidthPixels, posterHeightPixels);
+        posterLinearLayoutParams = new LinearLayout.LayoutParams(posterWidthPixels, posterHeightPixels);
+        posterRelativeLayoutParams = new RelativeLayout.LayoutParams(posterWidthPixels, posterHeightPixels +
+                getResources().getDimensionPixelSize(R.dimen.big_padding));
 
-        popularPeopleViewFlipper.setLayoutParams(posterLayoutParams);
-        OnTheAirViewFlipper.setLayoutParams(posterLayoutParams);
-        buyAndRentMoviesViewFlipper.setLayoutParams(posterLayoutParams);
-        buyAndRentSeriesViewFlipper.setLayoutParams(posterLayoutParams);
+        popularPeopleViewFlipper.setLayoutParams(posterRelativeLayoutParams);
+        onTheAirViewFlipper.setLayoutParams(posterRelativeLayoutParams);
+        buyAndRentMoviesViewFlipper.setLayoutParams(posterRelativeLayoutParams);
+        buyAndRentSeriesViewFlipper.setLayoutParams(posterRelativeLayoutParams);
     }
 
     /**
@@ -257,33 +266,93 @@ public class MainActivity extends AppCompatActivity implements
         animatedViews.add(airingTodayCardView);
         processAnimationQueue(
                 AnimationUtils.loadAnimation(this, R.anim.in_from_left), 300);
+    }
 
-        // Set animations for ViewFlippers.
-        upcomingMoviesViewFlipper.setInAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.in_from_right));
-        upcomingMoviesViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.out_from_right));
-        nowPlayingMoviesViewFlipper.setInAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_in));
-        nowPlayingMoviesViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_out));
-        popularPeopleViewFlipper.setInAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_in));
-        popularPeopleViewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
-                this, R.anim.fade_out));
+    private void setViewFlippers() {
+        setViewFlipper(upcomingMoviesViewFlipper, R.anim.in_from_right, R.anim.out_from_right,
+                R.color.colorMoviesPrimaryLight, R.color.colorMoviesPrimaryDark);
+        setViewFlipper(nowPlayingMoviesViewFlipper, R.anim.in_from_right, R.anim.out_from_right,
+                R.color.colorMoviesPrimaryLight, R.color.colorMoviesPrimaryDark);
+        setViewFlipper(popularPeopleViewFlipper, R.anim.in_from_right, R.anim.out_from_right,
+                R.color.colorPeoplePrimaryLight, R.color.colorPeoplePrimaryDark);
+        setViewFlipper(onTheAirViewFlipper, R.anim.in_from_right, R.anim.out_from_right,
+                R.color.colorSeriesPrimaryLight, R.color.colorSeriesPrimaryDark);
+    }
 
+    private void setViewFlipper(final ViewFlipperIndicator viewFlipper, @AnimRes int animationIn,
+                                @AnimRes int animationOut, @ColorRes int colorCurrent,
+                                @ColorRes int colorNormal) {
+        // Set animations for autoStart behaviour.
+        viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, animationIn));
+        viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, animationOut));
+
+        // Set colors and sizes for indicators.
         Paint paint = new Paint();
-        paint.setColor(getResources().getColor(R.color.colorMoviesPrimaryLight));
-        upcomingMoviesViewFlipper.setPaintCurrent(paint);
-        nowPlayingMoviesViewFlipper.setPaintCurrent(paint);
+        paint.setColor(getResources().getColor(colorCurrent));
+        viewFlipper.setPaintCurrent(paint);
+
         paint = new Paint();
-        paint.setColor(getResources().getColor(R.color.colorMoviesPrimaryDark));
-        upcomingMoviesViewFlipper.setPaintNormal(paint);
-        upcomingMoviesViewFlipper.setRadius(5);
-        upcomingMoviesViewFlipper.setMargin(5);
-        nowPlayingMoviesViewFlipper.setPaintNormal(paint);
-        nowPlayingMoviesViewFlipper.setRadius(5);
-        nowPlayingMoviesViewFlipper.setMargin(5);
+        paint.setColor(getResources().getColor(colorNormal));
+        viewFlipper.setPaintNormal(paint);
+
+        viewFlipper.setRadius(5);
+        viewFlipper.setMargin(5);
+
+        // Define behaviour when the ViewFlipper is touched.
+        viewFlipper.setOnTouchListener(new View.OnTouchListener() {
+            private float init_x;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.performClick();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        // User touches screen. Get the X coordinate for measuring the horizontal
+                        // displacement later in the ACTION_UP event.
+                        init_x = event.getX();
+                        return true;
+                    }
+
+                    case MotionEvent.ACTION_UP: {
+                        // User releases screen. Get new X coordinate.
+                        float distance = init_x - event.getX();
+
+                        if (distance > 0) {
+                            // Right displacement.
+                            viewFlipper.setInAnimation(AnimationUtils.loadAnimation(
+                                    MainActivity.this, R.anim.in_from_right));
+                            viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
+                                    MainActivity.this, R.anim.out_from_right));
+                            viewFlipper.showNext();
+                        } else if (distance < 0) {
+                            // Left displacement.
+                            viewFlipper.setInAnimation(AnimationUtils.loadAnimation(
+                                    MainActivity.this, R.anim.in_from_left));
+                            viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
+                                    MainActivity.this, R.anim.out_from_left));
+                            viewFlipper.showPrevious();
+                        }
+
+                        // Stop flipping and schedule a new auto flipping for later.
+                        viewFlipper.stopFlipping();
+                        viewFlipper.setAutoStart(false);
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                viewFlipper.setAutoStart(true);
+                                viewFlipper.startFlipping();
+                            }
+                        }, 5000);
+                        return false;
+                    }
+
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     /**
@@ -359,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements
                         // There is an available connection. Fetch results from TMDB.
                         upcomingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_CONTENT_TYPE_UPCOMING, 1,
+                                Tmdb.TMDB_CONTENT_TYPE_UPCOMING, upcomingMoviesCurrentPage,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
                     } else {
@@ -379,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements
                         // There is an available connection. Fetch results from TMDB.
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, 1,
+                                Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, nowPlayingMoviesCurrentPage,
                                 Locale.getDefault().getLanguage(),
                                 Locale.getDefault().getCountry());
                     } else {
@@ -452,9 +521,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(TAG, "(onLoadFinished) Search results for now playing movies not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             inflateMoviesViewFlipperChildren(data, nowPlayingMoviesViewFlipper,
-                                    nowPlayingMoviesCardView, backdropLinearLayoutParams,
-                                    R.layout.layout_main_movies_backdrop, false,
-                                    true);
+                                    backdropLinearLayoutParams, loader.getId());
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for now playing movies.");
                             nowPlayingMoviesMessage.setText(
@@ -481,9 +548,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(TAG, "(onLoadFinished) Search results for upcoming movies not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             inflateMoviesViewFlipperChildren(data, upcomingMoviesViewFlipper,
-                                    upcomingMoviesCardView, backdropLinearLayoutParams,
-                                    R.layout.layout_main_movies_backdrop, true,
-                                    false);
+                                    backdropLinearLayoutParams, loader.getId());
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for upcoming movies.");
                             upcomingMoviesMessage.setText(
@@ -501,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 default: {
-                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + loader.getId());
+                    Log.e(TAG, "(onLoadFinished) Unexpected loader id: " + loader.getId());
                 }
             }
         }
@@ -517,16 +582,24 @@ public class MainActivity extends AppCompatActivity implements
         public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
         }
 
+        /**
+         * Helper method to set movie, series or people info in a wide element with a backdrop image
+         * in the main activity.
+         *
+         * @param data         is the array of elements to be shown.
+         * @param viewFlipper  is the ViewFlipper that displays the info.
+         * @param layoutParams is the size for the views into the ViewFlipper.
+         * @param loaderId     is the number that identifies the origin of the search, and therefore
+         *                     the type of information that must be shown.
+         */
         private void inflateMoviesViewFlipperChildren(ArrayList<TmdbMovie> data,
                                                       ViewFlipper viewFlipper,
-                                                      CardView cardView,
                                                       LinearLayout.LayoutParams layoutParams,
-                                                      @LayoutRes int layoutRes,
-                                                      boolean showReleaseDate,
-                                                      boolean showUsersRating) {
-            // Add children to ViewFlipper, only for those elements with a backdrop and a title to
-            // display.
-            for (int i = 0; i < data.size(); i++) {
+                                                      int loaderId) {
+            // Add children to ViewFlipper, only the first MAX_MOVIES elements and only for those
+            // elements with a image to display.
+            int i = 0;
+            while (i < data.size() && i < MAX_MOVIES) {
                 String backdropPath = data.get(i).getBackdrop_path();
                 String title = data.get(i).getTitle();
                 if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty() &&
@@ -534,61 +607,109 @@ public class MainActivity extends AppCompatActivity implements
                     // Inflate view to display info.
                     LayoutInflater inflater =
                             (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    View view = inflater.inflate(layoutRes, null);
+                    try {
+                        View view = inflater.inflate(R.layout.list_item_main, null);
 
-                    // Set image size.
-                    RelativeLayout imageLayout =
-                            (RelativeLayout) view.findViewById(R.id.movie_list_image_layout);
-                    imageLayout.setLayoutParams(layoutParams);
+                        // Set image size.
+                        RelativeLayout imageLayout =
+                                (RelativeLayout) view.findViewById(R.id.list_item_main_layout);
+                        imageLayout.setLayoutParams(layoutParams);
 
-                    // Load image file.
-                    ImageView imageView = (ImageView) view.findViewById(R.id.movie_list_image);
-                    Picasso.with(MainActivity.this)
-                            .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath)
-                            .into(imageView);
+                        // Load image file.
+                        ImageView imageView =
+                                (ImageView) view.findViewById(R.id.list_item_main_image);
+                        Picasso.with(MainActivity.this)
+                                .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath)
+                                .into(imageView);
 
-                    // Set movie title.
-                    TextView titleTextView = (TextView) view.findViewById(R.id.movie_list_title);
-                    titleTextView.setText(title);
+                        // Set movie title.
+                        TextView titleTextView =
+                                (TextView) view.findViewById(R.id.list_item_main_name);
+                        titleTextView.setText(title);
 
-                    // Set release date, if needed.
-                    TextView releaseDateTextView =
-                            (TextView) view.findViewById(R.id.movie_list_year);
-                    if (showReleaseDate) {
-                        String releaseDate = DateTimeUtils.getStringDate(
-                                data.get(i).getRelease_date(),
-                                DateTimeUtils.DATE_FORMAT_LONG);
-                        if (releaseDate != null && !releaseDate.equals("") && !releaseDate.isEmpty())
-                            releaseDateTextView.setText(releaseDate);
-                        else
-                            releaseDateTextView.setText(getResources().getString(R.string.no_date));
-                        releaseDateTextView.setVisibility(View.VISIBLE);
-                    } else
-                        releaseDateTextView.setVisibility(View.GONE);
+                        // Set release date or users score.
+                        TextView releaseDateTextView =
+                                (TextView) view.findViewById(R.id.list_item_main_date);
+                        TextView usersRatingTextView =
+                                (TextView) view.findViewById(R.id.list_item_main_score);
+                        switch (loaderId) {
+                            case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                                // Show users rating.
+                                String score = String.valueOf(data.get(i).getVote_average());
+                                ScoreUtils.setTextViewRating(
+                                        MainActivity.this, score, usersRatingTextView);
+                                usersRatingTextView.setVisibility(View.VISIBLE);
 
-                    // Set users rating, if needed.
-                    TextView usersRatingTextView =
-                            (TextView) view.findViewById(R.id.movie_list_rating);
-                    if (showUsersRating) {
-                        String score = String.valueOf(data.get(i).getVote_average());
-                        ScoreUtils.setTextViewRating(
-                                MainActivity.this, score, usersRatingTextView);
-                        usersRatingTextView.setVisibility(View.VISIBLE);
-                    } else
-                        usersRatingTextView.setVisibility(View.GONE);
+                                // Hide release date.
+                                releaseDateTextView.setVisibility(View.GONE);
+                                break;
+                            }
 
-                    // Add current child to ViewFlipper.
-                    viewFlipper.addView(view, viewFlipper.getLayoutParams());
+                            case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                                // Show release date.
+                                String releaseDate = DateTimeUtils.getStringDate(
+                                        data.get(i).getRelease_date(),
+                                        DateTimeUtils.DATE_FORMAT_LONG);
+                                if (releaseDate != null && !releaseDate.equals("") &&
+                                        !releaseDate.isEmpty())
+                                    releaseDateTextView.setText(releaseDate);
+                                else
+                                    releaseDateTextView.setText(
+                                            getResources().getString(R.string.no_date));
+                                releaseDateTextView.setVisibility(View.VISIBLE);
+
+                                // Hide users rating.
+                                usersRatingTextView.setVisibility(View.GONE);
+                                break;
+                            }
+                        }
+
+                        // Add current child to ViewFlipper.
+                        viewFlipper.addView(view, viewFlipper.getLayoutParams());
+                    } catch (java.lang.NullPointerException e) {
+                        Log.e(TAG, "(inflateMoviesViewFlipperChildren) Error inflatingview: "
+                                + e);
+                    }
                 }
+                i++;
             }
 
-            // If there's nothing to show, exit before making this section visible.
+            // Show ViewFlipper only if it has one valid child at least.
             if (viewFlipper.getChildCount() > 0) {
-                //viewFlipper.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorMoviesPrimary));
-
                 // Start ViewFlipper animation.
                 if (!viewFlipper.isFlipping()) {
                     viewFlipper.startFlipping();
+                }
+            } else {
+                // If there's no valid elements in the first page of results, try next page.
+                switch (loaderId) {
+                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                        if (nowPlayingMoviesCurrentPage < data.get(0).getTotal_pages()) {
+                            nowPlayingMoviesCurrentPage++;
+                            new MainActivity.MainActivityMoviesList(
+                                    NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
+                            new MainActivity.MainActivityMoviesList(
+                                    NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
+                        } else {
+                            // There's no more pages to try. Show alert message.
+                            nowPlayingMoviesMessage.setText(getString(R.string.no_results));
+                            nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                    }
+
+                    case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                        if (upcomingMoviesCurrentPage < data.get(0).getTotal_pages()) {
+                            upcomingMoviesCurrentPage++;
+                            new MainActivity.MainActivityMoviesList(
+                                    NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
+                        } else {
+                            // There's no more pages to try. Show alert message.
+                            nowPlayingMoviesMessage.setText(getString(R.string.no_results));
+                            nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -618,33 +739,29 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public Loader<ArrayList<TmdbPerson>> onCreateLoader(int id, Bundle args) {
-            connectionStatusLayout.setVisibility(View.VISIBLE);
-            connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-            connectionStatusText.setText(getString(R.string.fetching_info));
-            connectionStatusText.setVisibility(View.VISIBLE);
-            connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
-            connectionImage.setVisibility(View.GONE);
-
-            if (NetworkUtils.isConnected(MainActivity.this)) {
-                // There is an available connection. Fetch results from TMDB.
-                switch (id) {
-                    case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
+            switch (id) {
+                case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
+                    popularPeopleLoadingIndicator.setVisibility(View.VISIBLE);
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // There is an available connection. Fetch results from TMDB.
+                        popularPeopleMessage.setVisibility(View.GONE);
                         return new TmdbPeopleAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_POPULAR, 1,
                                 Locale.getDefault().getLanguage());
-
-                    default: {
-                        Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    } else {
+                        // There is no connection. Show error message.
+                        popularPeopleMessage.setText(getResources().getString(R.string.no_connection));
+                        popularPeopleMessage.setVisibility(View.VISIBLE);
+                        popularPeopleLoadingIndicator.setVisibility(View.GONE);
+                        Log.i(TAG, "(onCreateLoader) No internet connection.");
                         return null;
                     }
                 }
-            } else {
-                // There is no connection. Show error message.
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionStatusLoadingIndicator.setVisibility(View.GONE);
-                connectionImage.setVisibility(View.VISIBLE);
-                Log.i(TAG, "(onCreateLoader) No internet connection.");
-                return null;
+
+                default: {
+                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    return null;
+                }
             }
         }
 
@@ -688,53 +805,36 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader, ArrayList<TmdbPerson> data) {
-
-            // Check if there is an available connection.
-            if (NetworkUtils.isConnected(MainActivity.this)) {
-                // If there is a valid result, display it on its corresponding layout.
-                if (data != null && !data.isEmpty() && data.size() > 0) {
-                    Log.i(TAG, "(onLoadFinished) Search results not null.");
-
-                    // Get people list and display it.
-                    boolean isSet = false;
-                    switch (loader.getId()) {
-                        case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
-                            isSet = inflatePeopleViewFlipperChildren(data, popularPeopleViewFlipper,
-                                    popularPeopleCardView, posterLayoutParams,
-                                    R.layout.layout_main_people_backdrop);
-
-                            // Hide Loading indicator.
-                            popularPeopleLoadingIndicator.setVisibility(View.GONE);
+            // Get people list and display it.
+            switch (loader.getId()) {
+                case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
+                    popularPeopleLoadingIndicator.setVisibility(View.GONE);
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // If there is a valid result, display it on its corresponding layout.
+                        if (data != null && !data.isEmpty() && data.size() > 0) {
+                            Log.i(TAG, "(onLoadFinished) Search results not null.");
+                            inflatePeopleViewFlipperChildren(data, popularPeopleViewFlipper,
+                                    popularPeopleCardView, posterLinearLayoutParams,
+                                    R.layout.list_item_main);
                             break;
+                        } else {
+                            Log.i(TAG, "(onLoadFinished) No search results.");
+                            popularPeopleMessage.setText(getResources().getString(R.string.no_results));
+                            popularPeopleMessage.setVisibility(View.VISIBLE);
                         }
-
-                        default: {
-                            Log.e(TAG, "(onCreateLoader) Unexpected loader id: " +
-                                    loader.getId());
-                        }
+                    } else {
+                        // There is no connection. Show error message.
+                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        popularPeopleMessage.setText(getResources().getString(R.string.no_connection));
+                        popularPeopleMessage.setVisibility(View.VISIBLE);
                     }
-                    if (isSet) {
-                        // Show section if
-                        popularOnTheAirLinearLayout.setVisibility(View.VISIBLE);
-                        popularOnTheAirLinearLayout.startAnimation(AnimationUtils.loadAnimation(
-                                MainActivity.this, R.anim.in_from_left));
-                    }
-                } else {
-                    Log.i(TAG, "(onLoadFinished) No search results.");
-                    connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                    connectionStatusText.setText(getResources().getString(R.string.no_results));
-                    connectionStatusText.setVisibility(View.VISIBLE);
                 }
-            } else
 
-            {
-                // There is no connection. Show error message.
-                Log.i(TAG, "(onLoadFinished) No connection to internet.");
-                connectionStatusText.setTextColor(getResources().getColor(R.color.colorWhite));
-                connectionStatusText.setText(getResources().getString(R.string.no_connection));
-                connectionStatusText.setVisibility(View.VISIBLE);
+                default: {
+                    Log.e(TAG, "(onLoadFinished) Unexpected loader id: " +
+                            loader.getId());
+                }
             }
-
         }
 
         /**
@@ -748,13 +848,15 @@ public class MainActivity extends AppCompatActivity implements
         public void onLoaderReset(Loader<ArrayList<TmdbPerson>> loader) {
         }
 
-        private boolean inflatePeopleViewFlipperChildren(ArrayList<TmdbPerson> data,
-                                                         ViewFlipper viewFlipper,
-                                                         CardView cardView,
-                                                         RelativeLayout.LayoutParams layoutParams,
-                                                         @LayoutRes int layoutRes) {
-            // Add children to ViewFlipper, only for those elements with a backdrop to display.
-            for (int i = 0; i < data.size(); i++) {
+        private void inflatePeopleViewFlipperChildren(ArrayList<TmdbPerson> data,
+                                                      ViewFlipper viewFlipper,
+                                                      CardView cardView,
+                                                      LinearLayout.LayoutParams layoutParams,
+                                                      @LayoutRes int layoutRes) {
+            // Add children to ViewFlipper, only the first MAX_PEOPLE elements and only for those
+            // elements with a image to display.
+            int i = 0;
+            while (i < data.size() && i < MAX_PEOPLE) {
                 String profilePath = data.get(i).getProfile_path();
                 if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
                     // Inflate view to display info.
@@ -764,45 +866,44 @@ public class MainActivity extends AppCompatActivity implements
                         View view = inflater.inflate(layoutRes, null);
 
                         // Load image file and set size.
-                        ImageView imageView = (ImageView) view.findViewById(R.id.person_list_image);
+                        ImageView imageView =
+                                (ImageView) view.findViewById(R.id.list_item_main_image);
                         Picasso.with(MainActivity.this)
                                 .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + profilePath)
                                 .into(imageView);
 
+                        // Set image size.
+                        RelativeLayout imageLayout =
+                                (RelativeLayout) view.findViewById(R.id.list_item_main_layout);
+                        imageLayout.setLayoutParams(layoutParams);
+
                         // Set person name.
-                        TextView personName = (TextView) view.findViewById(R.id.person_name);
+                        TextView personName =
+                                (TextView) view.findViewById(R.id.list_item_main_name);
                         personName.setText(data.get(i).getName());
 
-                        // Add current child to ViewFlipper. The image inside takes the full size of
-                        // the ViewFlipper, so we use layoutParams to create the current view.
-                        viewFlipper.addView(view, layoutParams);
+                        // Hide unused layout elements.
+                        TextView date = (TextView) view.findViewById(R.id.list_item_main_date);
+                        TextView score = (TextView) view.findViewById(R.id.list_item_main_score);
+                        date.setVisibility(View.GONE);
+                        score.setVisibility(View.GONE);
+
+                        // Add current child to ViewFlipper.
+                        viewFlipper.addView(view, viewFlipper.getLayoutParams());
                     } catch (NullPointerException e) {
                         Log.e(TAG, "(inflatePeopleViewFlipperChildren) Error inflating view: "
                                 + e);
                     }
                 }
+                i++;
             }
 
-            // If there's nothing to show, exit before making this section visible.
-            if (viewFlipper.getChildCount() == 0)
-                return false;
-            else {
+            // Show ViewFlipper only if there's one element at least.
+            if (viewFlipper.getChildCount() > 0) {
                 // Start ViewFlipper animation.
                 if (!viewFlipper.isFlipping()) {
                     viewFlipper.startFlipping();
                 }
-
-                viewFlipper.setBackgroundColor(ContextCompat.getColor(MainActivity.this,
-                        R.color.colorPrimaryDark));
-
-                // Make CardView visible with animation.
-/*                Animation animation = AnimationUtils.loadAnimation(
-                        MainActivity.this, R.anim.in_from_left);
-                animation.setDuration(250);
-                cardView.setVisibility(View.VISIBLE);
-                cardView.startAnimation(animation);*/
-
-                return true;
             }
         }
     }

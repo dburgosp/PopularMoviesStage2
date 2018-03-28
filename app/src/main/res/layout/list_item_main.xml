@@ -2,17 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/colorMoviesPrimary"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/movie_list_image_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp">
+        android:id="@+id/list_item_main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/movie_list_image"
+            android:id="@+id/list_item_main_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/content_description_poster"
@@ -20,7 +18,7 @@
             android:src="@drawable/no_backdrop" />
 
         <LinearLayout
-            android:id="@+id/movie_list_data"
+            android:id="@+id/list_item_main_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -38,16 +36,16 @@
             android:paddingTop="@dimen/tiny_padding">
 
             <TextView
-                android:id="@+id/movie_list_title"
+                android:id="@+id/list_item_main_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/normal_plus_text_size"
-                tools:text="Movie title" />
+                tools:text="Movie title / Series title / Person name" />
 
             <TextView
-                android:id="@+id/movie_list_year"
+                android:id="@+id/list_item_main_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
@@ -58,7 +56,7 @@
                 tools:text="2000-01-01" />
 
             <TextView
-                android:id="@+id/movie_list_rating"
+                android:id="@+id/list_item_main_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.7"
