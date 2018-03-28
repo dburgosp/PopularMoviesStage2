@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Context;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -197,9 +198,11 @@ public class MainActivity extends AppCompatActivity implements
         allPeopleCardView.setVisibility(View.GONE);
 
         upcomingMoviesCardView.setVisibility(View.GONE);
-        popularOnTheAirLinearLayout.setVisibility(View.GONE);
+        onTheAirCardView.setVisibility(View.GONE);
+        popularPeopleCardView.setVisibility(View.GONE);
         nowPlayingMoviesCardView.setVisibility(View.GONE);
-        buyAndRentLinearLayout.setVisibility(View.GONE);
+        buyAndRentMoviesCardView.setVisibility(View.GONE);
+        buyAndRentSeriesCardView.setVisibility(View.GONE);
         airingTodayCardView.setVisibility(View.GONE);
 
         connectionStatusLayout.setVisibility(View.GONE);
@@ -255,14 +258,16 @@ public class MainActivity extends AppCompatActivity implements
      * ViewFlippers.
      */
     private void setAnimations() {
-        // Animate initial layouts.
+        // Animate initial layouts in this order.
         animatedViews.add(allMoviesCardView);
         animatedViews.add(allSeriesCardView);
         animatedViews.add(allPeopleCardView);
         animatedViews.add(upcomingMoviesCardView);
-        animatedViews.add(popularOnTheAirLinearLayout);
+        animatedViews.add(onTheAirCardView);
+        animatedViews.add(popularPeopleCardView);
         animatedViews.add(nowPlayingMoviesCardView);
-        animatedViews.add(buyAndRentLinearLayout);
+        animatedViews.add(buyAndRentMoviesCardView);
+        animatedViews.add(buyAndRentSeriesCardView);
         animatedViews.add(airingTodayCardView);
         processAnimationQueue(
                 AnimationUtils.loadAnimation(this, R.anim.in_from_left), 300);
@@ -282,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setViewFlipper(final ViewFlipperIndicator viewFlipper, @AnimRes int animationIn,
                                 @AnimRes int animationOut, @ColorRes int colorCurrent,
                                 @ColorRes int colorNormal) {
+
         // Set animations for autoStart behaviour.
         viewFlipper.setInAnimation(AnimationUtils.loadAnimation(this, animationIn));
         viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(this, animationOut));
@@ -304,13 +310,16 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                v.performClick();
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         // User touches screen. Get the X coordinate for measuring the horizontal
                         // displacement later in the ACTION_UP event.
                         init_x = event.getX();
-                        return true;
+
+                        // Stop flipping and schedule a new auto flipping for later.
+                        viewFlipper.setFlipInterval(30000);
+                        viewFlipper.stopFlipping();
+                        viewFlipper.setAutoStart(false);
                     }
 
                     case MotionEvent.ACTION_UP: {
@@ -331,15 +340,17 @@ public class MainActivity extends AppCompatActivity implements
                             viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(
                                     MainActivity.this, R.anim.out_from_left));
                             viewFlipper.showPrevious();
+                        } else {
+                            // No displacement. This is a click gesture, so manage the click event
+                            // on the current view.
+                            return v.performClick();
                         }
 
-                        // Stop flipping and schedule a new auto flipping for later.
-                        viewFlipper.stopFlipping();
-                        viewFlipper.setAutoStart(false);
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                viewFlipper.setFlipInterval(5000);
                                 viewFlipper.setAutoStart(true);
                                 viewFlipper.startFlipping();
                             }
@@ -347,10 +358,11 @@ public class MainActivity extends AppCompatActivity implements
                         return false;
                     }
 
-                    default:
+                    default: {
                         break;
+                    }
                 }
-                return true;
+                return false;
             }
         });
     }
@@ -592,7 +604,7 @@ public class MainActivity extends AppCompatActivity implements
          * @param loaderId     is the number that identifies the origin of the search, and therefore
          *                     the type of information that must be shown.
          */
-        private void inflateMoviesViewFlipperChildren(ArrayList<TmdbMovie> data,
+        private void inflateMoviesViewFlipperChildren(final ArrayList<TmdbMovie> data,
                                                       ViewFlipper viewFlipper,
                                                       LinearLayout.LayoutParams layoutParams,
                                                       int loaderId) {
@@ -663,6 +675,22 @@ public class MainActivity extends AppCompatActivity implements
                                 break;
                             }
                         }
+
+                        // Set the onClickMoviesListener for navigating to the movie details
+                        // activity when clicking on the view.
+                        final int currentMovie = i;
+                        view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Open a new MovieDetailsActivity to show detailed info about the
+                                // current movie.
+                                Intent intent = new Intent(MainActivity.this,
+                                        MovieDetailsActivity.class);
+                                intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE,
+                                        data.get(currentMovie));
+                                startActivity(intent);
+                            }
+                        });
 
                         // Add current child to ViewFlipper.
                         viewFlipper.addView(view, viewFlipper.getLayoutParams());
