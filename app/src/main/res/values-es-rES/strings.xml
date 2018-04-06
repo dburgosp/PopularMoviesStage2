@@ -114,6 +114,20 @@
     <string name="preferences_language_en_title">Inglés</string>
     <string name="preferences_language_es_title">Español</string>
 
+    <string name="preferences_upcoming_movies_how_title">Cómo</string>
+    <string name="preferences_upcoming_movies_how_theaters_title">En cines</string>
+    <string name="preferences_upcoming_movies_how_digital_title">En plataformas digitales</string>
+    <string name="preferences_upcoming_movies_how_physical_title">En DVD/Blu-ray</string>
+
+    <string name="preferences_upcoming_movies_when_title">Cuándo</string>
+    <string name="preferences_upcoming_movies_when_this_week_title">Esta semana</string>
+    <string name="preferences_upcoming_movies_when_next_week_title">La próxima semana</string>
+    <string name="preferences_upcoming_movies_when_any_date_title">En cualquier fecha</string>
+
+    <string name="preferences_upcoming_movies_where_title">Dónde</string>
+    <string name="preferences_upcoming_movies_where_your_country_title">En %s</string>
+    <string name="preferences_upcoming_movies_where_any_country_title">En cualquier parte del mundo</string>
+
     <!-- Plurals -->
 
     <plurals name="genres">

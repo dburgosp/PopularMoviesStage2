@@ -25,8 +25,8 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to get the sort order string value for the "sort_by" parameter in the search
-     * url for fetching results from TMDB.
+     * Helper method to fetch SharedPreferences for the current sort order string value of the
+     * "sort_by" parameter to use in the search url for retrieving results from TMDB.
      *
      * @param context is the context of the calling activity.
      * @return the corresponding sort order string value for using with the "sort_by" parameter in
@@ -38,39 +38,35 @@ public class MyPreferences {
                 context.getResources().getString(R.string.preferences_sort_by_key),
                 context.getResources().getString(R.string.preferences_sort_by_popularity_desc_value));
 
-        // Default value: descending sort order by popularity.
-        String retValue = TMDB_VALUE_POPULARITY_DESC;
-
-        // Ascending sort order by popularity.
         if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_popularity_asc_value)))
-            retValue = TMDB_VALUE_POPULARITY_ASC;
-
-        // Descending sort order by primary release date.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_year_desc_value)))
-            retValue = TMDB_VALUE_PRIMARY_RELEASE_DATE_DESC;
-
-        // Ascending sort order by primary release date.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_year_asc_value)))
-            retValue = TMDB_VALUE_PRIMARY_RELEASE_DATE_ASC;
-
-        // Descending sort order by users rating.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_rating_desc_value)))
-            retValue = TMDB_VALUE_VOTE_AVERAGE_DESC;
-
-        // Ascending sort order by users rating.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_rating_asc_value)))
-            retValue = TMDB_VALUE_VOTE_AVERAGE_ASC;
-
-        return retValue;
+                R.string.preferences_sort_by_popularity_asc_value))) {
+            // Ascending sort order by popularity.
+            return TMDB_VALUE_POPULARITY_ASC;
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_year_desc_value))) {
+            // Descending sort order by primary release date.
+            return TMDB_VALUE_PRIMARY_RELEASE_DATE_DESC;
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_year_asc_value))) {
+            // Ascending sort order by primary release date.
+            return TMDB_VALUE_PRIMARY_RELEASE_DATE_ASC;
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_rating_desc_value))) {
+            // Descending sort order by users rating.
+            return TMDB_VALUE_VOTE_AVERAGE_DESC;
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_rating_asc_value))) {
+            // Ascending sort order by users rating.
+            return TMDB_VALUE_VOTE_AVERAGE_ASC;
+        } else {
+            // Default value: descending sort order by popularity.
+            return TMDB_VALUE_POPULARITY_DESC;
+        }
     }
 
     /**
-     * Helper method to get the human-readable string value of the current sort order.
+     * Helper method to fetch SharedPreferences for the human-readable string value of the current
+     * sort order.
      *
      * @param context is the context of the calling activity.
      * @return the current sort order written in a human-readable language.
@@ -81,46 +77,41 @@ public class MyPreferences {
                 context.getResources().getString(R.string.preferences_sort_by_key),
                 context.getResources().getString(R.string.preferences_sort_by_popularity_desc_value));
 
-        // Default value: descending sort order by popularity.
-        String retValue = context.getResources().getString(
-                R.string.preferences_sort_by_popularity_desc_title);
-
-        // Ascending sort order by popularity.
         if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_popularity_asc_value)))
-            retValue = context.getResources().getString(
+                R.string.preferences_sort_by_popularity_asc_value))) {
+            // Ascending sort order by popularity.
+            return context.getResources().getString(
                     R.string.preferences_sort_by_popularity_asc_title);
-
-        // Descending sort order by primary release date.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_year_desc_value)))
-            retValue = context.getResources().getString(
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_year_desc_value))) {
+            // Descending sort order by primary release date.
+            return context.getResources().getString(
                     R.string.preferences_sort_by_year_desc_title);
-
-        // Ascending sort order by primary release date.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_year_asc_value)))
-            retValue = context.getResources().getString(
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_year_asc_value))) {
+            // Ascending sort order by primary release date.
+            return context.getResources().getString(
                     R.string.preferences_sort_by_year_asc_title);
-
-        // Descending sort order by users rating.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_rating_desc_value)))
-            retValue = context.getResources().getString(
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_rating_desc_value))) {
+            // Descending sort order by users rating.
+            return context.getResources().getString(
                     R.string.preferences_sort_by_rating_desc_title);
-
-        // Ascending sort order by users rating.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_sort_by_rating_asc_value)))
-            retValue = context.getResources().getString(
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_sort_by_rating_asc_value))) {
+            // Ascending sort order by users rating.
+            return context.getResources().getString(
                     R.string.preferences_sort_by_rating_asc_title);
-
-        return retValue;
+        } else {
+            // Default value: descending sort order by popularity.
+            return context.getResources().getString(
+                    R.string.preferences_sort_by_popularity_desc_title);
+        }
     }
 
     /**
-     * Helper method to get the language string value for the "language" parameter in the search
-     * url for fetching results from TMDB.
+     * Helper method to fetch SharedPreferences for the language string value for the "language"
+     * parameter to use in the search url for retrieving results from TMDB.
      *
      * @param context is the context of the calling activity.
      * @return the corresponding language for using with the "language" parameter in the search url
@@ -132,19 +123,46 @@ public class MyPreferences {
                 context.getResources().getString(R.string.preferences_language_key),
                 context.getResources().getString(R.string.preferences_language_locale_value));
 
-        // Default value: system language.
-        String retValue = Locale.getDefault().getLanguage();
-
-        // English.
         if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_language_en_value)))
-            retValue = "en";
+                R.string.preferences_language_en_value))) {
+            // English.
+            return "en";
+        } else if (sortByPreferences.equals(context.getResources().getString(
+                R.string.preferences_language_es_value))) {
+            // Spanish.
+            return "es";
+        } else {
+            // Default value: system language.
+            return Locale.getDefault().getLanguage();
+        }
+    }
 
-        // Spanish.
-        if (sortByPreferences.equals(context.getResources().getString(
-                R.string.preferences_language_es_value)))
-            retValue = "es";
+    /**
+     * Helper method to fetch SharedPreferences for the language string value for the "language"
+     * parameter to use in the search url for retrieving results from TMDB.
+     *
+     * @param context is the context of the calling activity.
+     * @return the corresponding language for using with the "language" parameter in the search url
+     * for fetching results from TMDB.
+     */
+    public static String getUpcomingMoviesHow(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        String upcomingMoviesHowPreferences = sharedPreferences.getString(
+                context.getResources().getString(R.string.preferences_upcoming_movies_how_key),
+                context.getResources().getString(
+                        R.string.preferences_upcoming_movies_how_theaters_value));
 
-        return retValue;
+        if (upcomingMoviesHowPreferences.equals(context.getResources().getString(
+                R.string.preferences_upcoming_movies_how_digital_value))) {
+            // Digital releases.
+            return "4";
+        } else if (upcomingMoviesHowPreferences.equals(context.getResources().getString(
+                R.string.preferences_upcoming_movies_how_theaters_value))) {
+            // DVD/Blu-ray.
+            return "5";
+        } else {
+            // Default value: in theaters.
+            return "3|2|1";
+        }
     }
 }

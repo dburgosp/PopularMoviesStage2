@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -9,7 +10,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -23,6 +25,7 @@ import butterknife.Unbinder;
 
 public class MoviesActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
+
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
     @BindView(R.id.movies_viewpager)
@@ -31,7 +34,7 @@ public class MoviesActivity extends AppCompatActivity implements
     TabLayout tabLayout;
 
     private Unbinder unbinder;
-    private int sort = 0;
+    private int sort = MoviesFragmentPagerAdapter.PAGE_ALL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,16 @@ public class MoviesActivity extends AppCompatActivity implements
 
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode().setDuration(500));
-        getWindow().setExitTransition(new Explode().setDuration(500));
+
+        Slide slideIn = new Slide();
+        slideIn.setDuration(250);
+        slideIn.setSlideEdge(Gravity.RIGHT);
+        getWindow().setEnterTransition(slideIn);
+
+        Slide slideOut = new Slide();
+        slideOut.setDuration(250);
+        slideOut.setSlideEdge(Gravity.LEFT);
+        getWindow().setExitTransition(slideOut);
 
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
@@ -61,7 +71,7 @@ public class MoviesActivity extends AppCompatActivity implements
         // If we have passed a "sort" param into the intent, take this param as the default sort
         // order to show (selected page in the ViewPager) when this activity is created.
         if (getIntent().hasExtra("sort"))
-            sort = getIntent().getIntExtra("sort", 0);
+            sort = getIntent().getIntExtra("sort", MoviesFragmentPagerAdapter.PAGE_ALL);
 
         // Set TabLayout and ViewPager to manage the fragments with the different ways of displaying
         // movies lists.
@@ -128,6 +138,12 @@ public class MoviesActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        viewPager.setCurrentItem(2);
     }
 
     @Override

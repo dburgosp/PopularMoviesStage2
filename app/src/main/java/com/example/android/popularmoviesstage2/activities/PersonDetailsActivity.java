@@ -84,16 +84,19 @@ public class PersonDetailsActivity extends AppCompatActivity {
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-                    // CollapsingToolbar is collapsed. Show person name.
-                    String name = person.getName();
-                    if (name != null && !name.equals("") && !name.isEmpty())
-                        collapsingToolbarLayout.setTitle(name);
-                    else
-                        collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_name));
-                } else {
-                    // CollapsingToolbar is expanded. Hide title.
-                    collapsingToolbarLayout.setTitle("");
+                if (collapsingToolbarLayout != null) {
+                    if (collapsingToolbarLayout.getHeight() + verticalOffset <
+                            2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+                        // CollapsingToolbar is collapsed. Show person name.
+                        String name = person.getName();
+                        if (name != null && !name.equals("") && !name.isEmpty())
+                            collapsingToolbarLayout.setTitle(name);
+                        else
+                            collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_name));
+                    } else {
+                        // CollapsingToolbar is expanded. Hide title.
+                        collapsingToolbarLayout.setTitle("");
+                    }
                 }
             }
         };
@@ -207,7 +210,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        //unbinder.unbind();
     }
 
     /* -------------- */

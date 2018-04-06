@@ -182,7 +182,7 @@ public class MoviesListActivity extends AppCompatActivity
         switch (id) {
             case (R.id.movies_list_menu_home): {
                 // Navigate to the main activity.
-                cls = OLD_MainActivity.class;
+                cls = MainActivity.class;
                 intent = new Intent(packageContext, cls);
                 startActivity(intent);
                 break;
@@ -455,10 +455,10 @@ public class MoviesListActivity extends AppCompatActivity
                                             MoviesListActivity.this, clickedView,
                                             getString(R.string.transition_list_to_details));
 
-                            // Start MovieDetailsActivity to show movie movie_details_menu when the current
-                            // element is clicked. We need to know when the other activity finishes,
-                            // so we use startActivityForResult. No need a requestCode, we don't
-                            // care for any result.
+                            // Start MovieDetailsActivity to show movie movie_details_menu when the
+                            // current element is clicked. We need to know when the other activity
+                            // finishes, so we use startActivityForResult. No need a requestCode, we
+                            // don't care for any result.
                             Intent intent = new Intent(MoviesListActivity.this,
                                     MovieDetailsActivity.class);
                             intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);

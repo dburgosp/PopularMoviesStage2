@@ -651,6 +651,10 @@ public class MovieDetailsInfoFragment extends Fragment
                             stringBuilder.append(getString(R.string.release_type_tv,
                                     currentCountry));
                     }
+                    String note = releases.getReleaseDateArrayList().get(i).getNote();
+                    if (note != null && !note.equals("") && !note.isEmpty()){
+                        stringBuilder.append(", ");
+                        stringBuilder.append(note);}
                     stringBuilder.append(")");
                 }
 
@@ -666,8 +670,6 @@ public class MovieDetailsInfoFragment extends Fragment
             // Set section title.
             releaseDatesTitle = getResources().getQuantityString(R.plurals.release_dates,
                     releases.getReleaseDateArrayList().size());
-            releaseDateHeaderTextView.setText(releaseDatesTitle);
-            releaseDateHeaderTextView.setVisibility(View.VISIBLE);
 
             // Append previous status info, if exists.
             if (releaseDatesContent.isEmpty())
@@ -684,9 +686,11 @@ public class MovieDetailsInfoFragment extends Fragment
             }
         }
 
-        // Show this section only if there is an information about release dates.
+        // Show this section only if there is information about release dates.
         if (!releaseDatesContent.equals("")) {
             infoSectionSet = true;
+            releaseDateHeaderTextView.setText(releaseDatesTitle);
+            releaseDateHeaderTextView.setVisibility(View.VISIBLE);
             TextViewUtils.setHtmlText(releaseDateContentTextView, releaseDatesContent);
             releaseDateContentTextView.setVisibility(View.VISIBLE);
         } else {

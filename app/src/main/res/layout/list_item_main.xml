@@ -39,7 +39,9 @@
                 android:id="@+id/list_item_main_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="end"
+                android:lines="1"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/normal_plus_text_size"
                 tools:text="Movie title / Series title / Person name" />

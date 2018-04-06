@@ -27,12 +27,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle"></activity>
-        <activity
-            android:name=".activities.OLD_MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
@@ -86,6 +81,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MoviesListActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ConfigUpcomingMoviesActivity"
+            android:label="@string/movies_sort_by_upcoming"
+            android:parentActivityName=".activities.MoviesActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MoviesActivity" />
         </activity>
     </application>
 

@@ -29,6 +29,7 @@ public class Tmdb {
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
     // Content type for fetching movies.
+    public final static String TMDB_CONTENT_TYPE_ALL = "all";
     public final static String TMDB_CONTENT_TYPE_POPULAR = "popular";
     public final static String TMDB_CONTENT_TYPE_TOP_RATED = "top_rated";
     public final static String TMDB_CONTENT_TYPE_FAVORITES = "favorites";
@@ -118,6 +119,13 @@ public class Tmdb {
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
         Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon();
         switch (contentType) {
+            case TMDB_CONTENT_TYPE_ALL: {
+                // Get all movies.
+                builder.appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                break;
+            }
             case TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 // Get movies with release type 2 or 3 and with release date between 45 days ago and
                 // today.
@@ -151,16 +159,13 @@ public class Tmdb {
                 break;
             }
             case TMDB_CONTENT_TYPE_UPCOMING: {
-                // Get movies with release type 2 or 3 and release date greater or equal than next
-                // monday.
-                String monday = DateTimeUtils.getStringWeekday(
-                        DateTimeUtils.getAddedDaysToDate(DateTimeUtils.getCurrentDate(), 7),
-                        DateTimeUtils.WEEK_DAY_MONDAY);
+                // Get movies with release type 2 or 3 and release date greater or equal than today.
+                String today = DateTimeUtils.getStringCurrentDate();
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, today)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
@@ -268,7 +273,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
+            Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);
         }
 
         // Return the movies array.
@@ -354,7 +359,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
+            Log.e(TAG, "(getTmdbPeople) Error parsing the JSON response: ", e);
         }
 
         // Return the persons array.
@@ -419,7 +424,7 @@ public class Tmdb {
             // If there is no "parts" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("parts")) {
-                Log.i(TAG, "(getMovie) No \"parts\" section in the JSON string.");
+                Log.i(TAG, "(TmdbMovieCollection) No \"parts\" section in the JSON string.");
                 return null;
             }
 
@@ -447,7 +452,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getMovie) Error parsing the JSON response: ", e);
+            Log.e(TAG, "(TmdbMovieCollection) Error parsing the JSON response: " + e);
         }
 
         // Return the movies array.

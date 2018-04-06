@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
- * Public class for managing the short information of a movie.
+ * Public class for managing the short information about a movie, extracted from a page of results.
  */
 public class TmdbMovie implements Parcelable {
     private String poster_path;

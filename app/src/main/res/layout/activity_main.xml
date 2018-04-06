@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark">
@@ -16,19 +17,83 @@
         <include layout="@layout/layout_main_options" />
 
         <!-- Upcoming movies -->
-        <include layout="@layout/layout_main_upcoming_movies" />
+        <android.support.v7.widget.CardView
+            android:id="@+id/home_upcoming_movies_cardview"
+            style="@style/HomeCardViewStyle"
+            android:layout_width="match_parent"
+            android:background="@color/colorMoviesPrimaryDark"
+            app:cardCornerRadius="@dimen/small_padding" />
 
         <!-- Popular people and series on the air -->
-        <include layout="@layout/layout_main_popular_on_the_air" />
+        <LinearLayout
+            android:id="@+id/home_popular_on_the_air_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <!-- Popular people -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/home_popular_people_cardview"
+                style="@style/HomeCardViewStyle"
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/tiny_padding"
+                android:layout_weight="1"
+                android:background="@color/colorPeoplePrimaryDark"
+                app:cardCornerRadius="@dimen/small_padding" />
+
+            <!-- On the air (TV) -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/home_on_the_air_cardview"
+                style="@style/HomeCardViewStyle"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/tiny_padding"
+                android:layout_weight="1"
+                android:background="@color/colorSeriesPrimaryDark"
+                app:cardCornerRadius="@dimen/small_padding" />
+        </LinearLayout>
 
         <!-- Now playing movies -->
-        <include layout="@layout/layout_main_now_playing" />
+        <android.support.v7.widget.CardView
+            android:id="@+id/home_now_playing_movies_cardview"
+            style="@style/HomeCardViewStyle"
+            android:layout_width="match_parent"
+            android:background="@color/colorMoviesPrimaryDark"
+            app:cardCornerRadius="@dimen/small_padding" />
 
         <!-- Buy and rent section -->
-        <include layout="@layout/layout_main_buy_and_rent" />
+        <LinearLayout
+            android:id="@+id/home_buy_and_rent_series_linearlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <!-- Buy and rent series -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/home_buy_and_rent_series_cardview"
+                style="@style/HomeCardViewStyle"
+                android:layout_width="0dp"
+                android:layout_marginEnd="@dimen/tiny_padding"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/small_padding" />
+
+            <!-- Buy and rent movies -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/home_buy_and_rent_movies_cardview"
+                style="@style/HomeCardViewStyle"
+                android:layout_width="0dp"
+                android:layout_marginStart="@dimen/tiny_padding"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/small_padding" />
+        </LinearLayout>
 
         <!-- Airing today series -->
-        <include layout="@layout/layout_main_airing_today" />
+        <android.support.v7.widget.CardView
+            android:id="@+id/home_airing_today_cardview"
+            style="@style/HomeCardViewStyle"
+            android:layout_width="match_parent"
+            app:cardCornerRadius="@dimen/small_padding" />
 
         <!-- Layout to be shown while retrieving info -->
         <include layout="@layout/layout_connection_status" />
