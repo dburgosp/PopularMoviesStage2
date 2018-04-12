@@ -405,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements
         animatedViews.add(buyAndRentSeriesCardView);
         animatedViews.add(airingTodayCardView);
         processAnimationQueue(
-                AnimationUtils.loadAnimation(this, R.anim.in_from_left), 300);
+                AnimationUtils.loadAnimation(this, R.anim.in_from_left), 250);
     }
 
     /**
@@ -597,26 +597,48 @@ public class MainActivity extends AppCompatActivity implements
             public void run() {
                 animation.setDuration(250);
                 animation.setInterpolator(new LinearOutSlowInInterpolator());
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation arg0) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation arg0) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation arg0) {
+                        // Instantiate classes for opening new threads to retrieve data from TMDB
+                        // after performing the animation associated to the corresponding view.
+                        View currentView = animatedViews.get(animatedViewCurrentIndex);
+                        if (currentView == upcomingMoviesCardView) {
+                            // Displaying animation for upcoming movies section: fetch upcoming
+                            // movies list from TMDB.
+                            new MainActivity.MainActivityMoviesList(
+                                    NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
+                        } else if (currentView == nowPlayingMoviesCardView) {
+                            // Displaying animation for now playing movies section: fetch now
+                            // playing movies list from TMDB.
+                            new MainActivity.MainActivityMoviesList(
+                                    NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
+                        } else if (currentView == popularPeopleCardView) {
+                            // Displaying animation for popular people section: fetch popular people
+                            // list from TMDB.
+                            new MainActivity.MainActivityPeopleList(
+                                    NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID);
+                        }
+
+                        // Order animation for next view, if there's still another one in the queue.
+                        animatedViewCurrentIndex++;
+                        if (animatedViewCurrentIndex < animatedViews.size())
+                            processAnimationQueue(animation, delayMillis);
+                    }
+                });
 
                 // Animate current view after delayMillis from start.
                 View view = animatedViews.get(animatedViewCurrentIndex);
                 view.setVisibility(View.VISIBLE);
                 view.startAnimation(animation);
-
-                // Order animation for next view, if there's still another one in the queue.
-                animatedViewCurrentIndex++;
-                if (animatedViewCurrentIndex < animatedViews.size())
-                    processAnimationQueue(animation, delayMillis);
-                else {
-                    // Instantiate classes for opening new threads to retrieve data from TMDB after
-                    // performing the last animation.
-                    new MainActivity.MainActivityMoviesList(
-                            NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
-                    new MainActivity.MainActivityMoviesList(
-                            NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
-                    new MainActivity.MainActivityPeopleList(
-                            NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID);
-                }
             }
         }, delayMillis);
     }

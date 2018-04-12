@@ -3,164 +3,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:paddingBottom="@dimen/big_padding"
-    android:paddingEnd="@dimen/regular_padding"
-    android:paddingStart="@dimen/regular_padding"
-    android:paddingTop="@dimen/regular_padding">
+    android:background="@color/colorPrimaryDark"
+    tools:context=".activities.ConfigUpcomingMoviesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/big_padding"
+        android:paddingEnd="@dimen/regular_padding"
+        android:paddingStart="@dimen/regular_padding">
 
         <TextView
+            style="@style/PreferencesOptionsTitleStyle"
+            android:text="@string/preferences_movies_how_title" />
+
+        <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/preferences_upcoming_movies_how_title"
-            android:textAllCaps="true"
-            android:textColor="@color/colorWhite" />
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_how_theaters"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_how_theaters_title" />
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_how_digital"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_how_digital_title" />
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_how_physical"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_how_physical_title" />
+        </RadioGroup>
 
         <TextView
-            android:id="@+id/config_upcoming_movies_how_theaters"
+            style="@style/PreferencesOptionsTitleStyle"
+            android:text="@string/preferences_movies_when_title" />
+
+        <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_how_theaters_title"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold" />
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_when_this_week"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_when_this_week_title" />
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_when_next_week"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_when_next_week_title" />
+
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_when_any_date"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_when_any_date_title" />
+        </RadioGroup>
 
         <TextView
-            android:id="@+id/config_upcoming_movies_how_digital"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/colorWhite"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_how_digital_title"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold" />
+            style="@style/PreferencesOptionsTitleStyle"
+            android:text="@string/preferences_movies_where_title" />
 
-        <TextView
-            android:id="@+id/config_upcoming_movies_how_physical"
+        <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_how_physical_title"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="@dimen/big_padding"
-            android:text="@string/preferences_upcoming_movies_when_title"
-            android:textAllCaps="true"
-            android:textColor="@color/colorWhite" />
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_where_here"
+                style="@style/PreferenceRadioButtonStyle"
+                tools:text="In my country" />
 
-        <TextView
-            android:id="@+id/config_upcoming_movies_when_this_week"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/colorWhite"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_when_this_week_title"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/config_upcoming_movies_when_next_week"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_when_next_week_title"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/config_upcoming_movies_when_any_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_when_any_date_title"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="@dimen/big_padding"
-            android:text="@string/preferences_upcoming_movies_where_title"
-            android:textAllCaps="true"
-            android:textColor="@color/colorWhite" />
-
-        <TextView
-            android:id="@+id/config_upcoming_movies_where_here"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/colorWhite"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            tools:text="In my country" />
-
-        <TextView
-            android:id="@+id/config_upcoming_movies_where_anywhere"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_padding"
-            android:background="@drawable/rounded_button"
-            android:gravity="center"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/regular_padding"
-            android:paddingStart="@dimen/regular_padding"
-            android:paddingTop="@dimen/tiny_padding"
-            android:text="@string/preferences_upcoming_movies_where_any_country_title"
-            android:textColor="@color/colorWhite"
-            android:textStyle="bold" />
+            <RadioButton
+                android:id="@+id/config_upcoming_movies_where_anywhere"
+                style="@style/PreferenceRadioButtonStyle"
+                android:text="@string/preferences_movies_where_any_country_title" />
+        </RadioGroup>
     </LinearLayout>
 </ScrollView>

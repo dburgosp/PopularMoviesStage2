@@ -14,36 +14,25 @@ import android.widget.RadioButton;
 
 import com.example.android.popularmoviesstage2.R;
 
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
-    private static final String TAG = ConfigUpcomingMoviesActivity.class.getSimpleName();
+public class ConfigNowPlayingMoviesActivity extends AppCompatActivity {
+    private static final String TAG = ConfigNowPlayingMoviesActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
-    @BindView(R.id.config_upcoming_movies_how_theaters)
+
+    @BindView(R.id.config_now_playing_movies_how_theaters)
     RadioButton howTheatersRadioButton;
-    @BindView(R.id.config_upcoming_movies_how_digital)
+    @BindView(R.id.config_now_playing_movies_how_digital)
     RadioButton howDigitalRadioButton;
-    @BindView(R.id.config_upcoming_movies_how_physical)
+    @BindView(R.id.config_now_playing_movies_how_physical)
     RadioButton howPhysicalRadioButton;
-    @BindView(R.id.config_upcoming_movies_when_this_week)
-    RadioButton whenThisWeekRadioButton;
-    @BindView(R.id.config_upcoming_movies_when_next_week)
-    RadioButton whenNextWeekRadioButton;
-    @BindView(R.id.config_upcoming_movies_when_any_date)
-    RadioButton whenAnyDateRadioButton;
-    @BindView(R.id.config_upcoming_movies_where_here)
-    RadioButton whereThisCountryRadioButton;
-    @BindView(R.id.config_upcoming_movies_where_anywhere)
-    RadioButton whereAnyCountryRadioButton;
 
     private Unbinder unbinder;
-    private String how, when, where, howOriginal, whenOriginal, whereOriginal;
+    private String how, howOriginal;
     private Intent intent;
 
     private View.OnClickListener howOnClickListener = new View.OnClickListener() {
@@ -66,55 +55,8 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
             editor.putString(getString(R.string.preferences_upcoming_movies_how_key), how);
             editor.apply();
 
-            // Update display.
+            // Update RadioButtons.
             setHow();
-        }
-    };
-
-    private View.OnClickListener whenOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == whenNextWeekRadioButton) {
-                // Next week selected.
-                when = getString(R.string.preferences_upcoming_movies_when_next_week_value);
-            } else if (v == whenAnyDateRadioButton) {
-                // Any date selected.
-                when = getString(R.string.preferences_upcoming_movies_when_any_date_value);
-            } else {
-                // Default value: this week.
-                when = getString(R.string.preferences_upcoming_movies_when_this_week_value);
-            }
-
-            // Update preferences.
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.preferences_upcoming_movies_when_key), when);
-            editor.apply();
-
-            // Update display.
-            setWhen();
-        }
-    };
-
-    private View.OnClickListener whereOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v == whereAnyCountryRadioButton) {
-                // Any country selected.
-                where = getString(R.string.preferences_upcoming_movies_where_any_country_value);
-            } else {
-                // Default value: this country.
-                where = getString(R.string.preferences_upcoming_movies_where_your_country_value);
-            }
-
-            // Update preferences.
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.preferences_upcoming_movies_where_key), where);
-            editor.apply();
-
-            // Update display.
-            setWhere();
         }
     };
 
@@ -124,7 +66,7 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
 
         setTransitions();
 
-        setContentView(R.layout.activity_config_upcoming_movies);
+        setContentView(R.layout.activity_config_now_playing_movies);
         unbinder = ButterKnife.bind(this);
 
         initPreferences();
@@ -136,19 +78,13 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
         howTheatersRadioButton.setOnClickListener(howOnClickListener);
         howDigitalRadioButton.setOnClickListener(howOnClickListener);
         howPhysicalRadioButton.setOnClickListener(howOnClickListener);
-
-        whenThisWeekRadioButton.setOnClickListener(whenOnClickListener);
-        whenNextWeekRadioButton.setOnClickListener(whenOnClickListener);
-        whenAnyDateRadioButton.setOnClickListener(whenOnClickListener);
-
-        whereThisCountryRadioButton.setOnClickListener(whereOnClickListener);
-        whereAnyCountryRadioButton.setOnClickListener(whereOnClickListener);
     }
+
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (whereOriginal.equals(where) && howOriginal.equals(how) && whenOriginal.equals(when)) {
+        if (howOriginal.equals(how)) {
             // No changes.
             setResult(RESULT_CANCELED, intent);
         } else {
@@ -176,6 +112,12 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
     /* HELPER METHODS */
     /* ************** */
 
+    private void finishWithResult() {
+        super.onBackPressed();
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     /**
      * Define transitions to exit/enter from/to this activity.
      */
@@ -201,29 +143,11 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
     private void initPreferences() {
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-        // How to see upcoming movies (default value: on theaters). Store original value for this
-        // preference.
+        // How to see upcoming movies. Default value: on theaters.
         how = sharedPref.getString(getString(R.string.preferences_upcoming_movies_how_key),
                 getString(R.string.preferences_upcoming_movies_how_theaters_value));
         howOriginal = how;
         setHow();
-
-        // When to see upcoming movies (default value: this week). Store original value for this
-        // preference.
-        when = sharedPref.getString(getString(R.string.preferences_upcoming_movies_when_key),
-                getString(R.string.preferences_upcoming_movies_when_this_week_value));
-        whenOriginal = when;
-        setWhen();
-
-        // Where to see upcoming movies (default value: in this country). Store original value for
-        // this preference and compose title for "Where to see upcoming movies: your country".
-        where = sharedPref.getString(getString(R.string.preferences_upcoming_movies_where_key),
-                getString(R.string.preferences_upcoming_movies_where_your_country_value));
-        setWhere();
-        whereOriginal = where;
-        whereThisCountryRadioButton.setText(getString(
-                R.string.preferences_movies_where_your_country_title,
-                Locale.getDefault().getDisplayCountry()));
     }
 
     /**
@@ -244,42 +168,6 @@ public class ConfigUpcomingMoviesActivity extends AppCompatActivity {
             setPreferenceValue(howTheatersRadioButton, true);
             setPreferenceValue(howDigitalRadioButton, false);
             setPreferenceValue(howPhysicalRadioButton, false);
-        }
-    }
-
-    /**
-     * Set "When" preferences section in the display, enabling the selected option and disabling the
-     * other options.
-     */
-    private void setWhen() {
-        if (when.equals(getString(R.string.preferences_upcoming_movies_when_next_week_value))) {
-            setPreferenceValue(whenThisWeekRadioButton, false);
-            setPreferenceValue(whenNextWeekRadioButton, true);
-            setPreferenceValue(whenAnyDateRadioButton, false);
-        } else if (when.equals(getString(R.string.preferences_upcoming_movies_when_any_date_value))) {
-            setPreferenceValue(whenThisWeekRadioButton, false);
-            setPreferenceValue(whenNextWeekRadioButton, false);
-            setPreferenceValue(whenAnyDateRadioButton, true);
-        } else {
-            // Default value.
-            setPreferenceValue(whenThisWeekRadioButton, true);
-            setPreferenceValue(whenNextWeekRadioButton, false);
-            setPreferenceValue(whenAnyDateRadioButton, false);
-        }
-    }
-
-    /**
-     * Set "Where" preferences section in the display, enabling the selected option and disabling
-     * the other options.
-     */
-    private void setWhere() {
-        if (where.equals(getString(R.string.preferences_upcoming_movies_where_any_country_value))) {
-            setPreferenceValue(whereThisCountryRadioButton, false);
-            setPreferenceValue(whereAnyCountryRadioButton, true);
-        } else {
-            // Default value.
-            setPreferenceValue(whereThisCountryRadioButton, true);
-            setPreferenceValue(whereAnyCountryRadioButton, false);
         }
     }
 

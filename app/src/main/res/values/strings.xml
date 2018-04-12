@@ -143,29 +143,34 @@
     <string name="preferences_language_es_value">3</string>
 
     <string name="preferences_upcoming_movies_how_key">upcoming_movies_how</string>
-    <string name="preferences_upcoming_movies_how_title">How</string>
-    <string name="preferences_upcoming_movies_how_theaters_title">In theaters</string>
-    <string name="preferences_upcoming_movies_how_digital_title">Digital movie releases</string>
-    <string name="preferences_upcoming_movies_how_physical_title">On DVD/Blu-ray</string>
+    <string name="preferences_movies_how_title">How</string>
+    <string name="preferences_movies_how_theaters_title">In theaters</string>
+    <string name="preferences_movies_how_digital_title">Digital movie releases</string>
+    <string name="preferences_movies_how_physical_title">On DVD/Blu-ray</string>
     <string name="preferences_upcoming_movies_how_theaters_value">1</string>
     <string name="preferences_upcoming_movies_how_digital_value">2</string>
     <string name="preferences_upcoming_movies_how_physical_value">3</string>
 
     <string name="preferences_upcoming_movies_when_key">upcoming_movies_when</string>
-    <string name="preferences_upcoming_movies_when_title">When</string>
-    <string name="preferences_upcoming_movies_when_this_week_title">This week</string>
-    <string name="preferences_upcoming_movies_when_next_week_title">Next week</string>
-    <string name="preferences_upcoming_movies_when_any_date_title">On any date</string>
+    <string name="preferences_movies_when_title">When</string>
+    <string name="preferences_movies_when_this_week_title">This week</string>
+    <string name="preferences_movies_when_next_week_title">Next week</string>
+    <string name="preferences_movies_when_any_date_title">On any date</string>
     <string name="preferences_upcoming_movies_when_this_week_value">1</string>
     <string name="preferences_upcoming_movies_when_next_week_value">2</string>
     <string name="preferences_upcoming_movies_when_any_date_value">3</string>
 
     <string name="preferences_upcoming_movies_where_key">upcoming_movies_where</string>
-    <string name="preferences_upcoming_movies_where_title">Where</string>
-    <string name="preferences_upcoming_movies_where_your_country_title">In %s</string>
-    <string name="preferences_upcoming_movies_where_any_country_title">Anywhere in the World</string>
+    <string name="preferences_movies_where_title">Where</string>
+    <string name="preferences_movies_where_your_country_title">In %s</string>
+    <string name="preferences_movies_where_any_country_title">Anywhere in the World</string>
     <string name="preferences_upcoming_movies_where_your_country_value">1</string>
     <string name="preferences_upcoming_movies_where_any_country_value">2</string>
+
+    <string name="preferences_now_playing_movies_how_key">now_playing_movies_how</string>
+    <string name="preferences_now_playing_movies_how_theaters_value">1</string>
+    <string name="preferences_now_playing_movies_how_digital_value">2</string>
+    <string name="preferences_now_playing_movies_how_physical_value">3</string>
 
     <!-- Plurals -->
 

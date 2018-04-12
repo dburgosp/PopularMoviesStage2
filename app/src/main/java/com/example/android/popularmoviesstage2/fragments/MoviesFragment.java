@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.activities.ConfigNowPlayingMoviesActivity;
 import com.example.android.popularmoviesstage2.activities.ConfigUpcomingMoviesActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
@@ -40,6 +41,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MoviesFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
@@ -64,7 +67,8 @@ public class MoviesFragment extends Fragment
     private String sortOrder = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
     private MoviesListAdapter moviesListAdapter;
     private int currentPage = 1, currentScrollPosition = 0, loaderId = 0;
-    private final int resultCodeMovieDetails = 0, resultCodeConfigUpcomingMovies = 1;
+    private final int resultCodeMovieDetails = 0, resultCodeConfigUpcomingMovies = 1,
+            resultCodeConfigNowPlayingMovies = 2;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
@@ -167,16 +171,28 @@ public class MoviesFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case resultCodeConfigUpcomingMovies: {
-                // TODO: check preferences changes.
-                sortOrder = data.getStringExtra("sortOrder");
+        switch (requestCode) {
+            case resultCodeConfigNowPlayingMovies: {
+                if (resultCode == RESULT_OK) {
+                    // TODO: preferences have changed for now playing movies section.
+                    sortOrder = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
+                    loaderId = getLoaderId();
+                    refreshMovieList();
+                }
                 break;
             }
 
-            default:
-                allowClicks = true;
+            case resultCodeConfigUpcomingMovies: {
+                if (resultCode == RESULT_OK) {
+                    // TODO: preferences have changed for upcoming movies section.
+                    sortOrder = Tmdb.TMDB_CONTENT_TYPE_UPCOMING;
+                    loaderId = getLoaderId();
+                    refreshMovieList();
+                }
+                break;
+            }
         }
+        allowClicks = true;
     }
 
     /* ------ */
@@ -274,24 +290,36 @@ public class MoviesFragment extends Fragment
 
                 // Set FAB onClick behaviour.
                 Intent intent = null;
+                int resultCode = resultCodeConfigUpcomingMovies;
                 switch (loader.getId()) {
                     case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                         // If we are showing upcoming movies info, show FAB and set its
                         // onClick behaviour for opening ConfigUpcomingMoviesActivity.
                         floatingActionButton.setVisibility(View.VISIBLE);
                         intent = new Intent(getContext(), ConfigUpcomingMoviesActivity.class);
+                        resultCode = resultCodeConfigUpcomingMovies;
+                        break;
+                    }
+                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                        // If we are showing upcoming movies info, show FAB and set its
+                        // onClick behaviour for opening ConfigUpcomingMoviesActivity.
+                        floatingActionButton.setVisibility(View.VISIBLE);
+                        intent = new Intent(getContext(), ConfigNowPlayingMoviesActivity.class);
+                        resultCode = resultCodeConfigNowPlayingMovies;
                         break;
                     }
                 }
+
                 final Intent fabIntent = intent;
+                final int resultCodeFab = resultCode;
                 floatingActionButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // Start config activity only when required.
                         if (fabIntent != null) {
-                            startActivityForResult(fabIntent, resultCodeConfigUpcomingMovies,
+                            startActivityForResult(fabIntent, resultCodeFab,
                                     ActivityOptions.makeSceneTransitionAnimation(
-                                    getActivity()).toBundle());
+                                            getActivity()).toBundle());
                         }
                     }
                 });
@@ -441,13 +469,19 @@ public class MoviesFragment extends Fragment
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        initVariables();
-                        moviesListAdapter.clearMoviesArrayList();
-                        getLoaderManager().restartLoader(loaderId, null,
-                                MoviesFragment.this);
+                        refreshMovieList();
                     }
                 }
         );
+    }
+
+    /**
+     * Get a fresh new movies list.
+     */
+    private void refreshMovieList() {
+        initVariables();
+        moviesListAdapter.clearMoviesArrayList();
+        getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
     }
 
     /**

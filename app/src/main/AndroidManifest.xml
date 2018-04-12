@@ -31,12 +31,12 @@
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
-            android:parentActivityName=".activities.OLD_MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.OLD_MainActivity" />
+                android:value=".activities.MainActivity" />
         </activity>
         <activity
             android:name=".activities.MovieDetailsActivity"
@@ -85,6 +85,15 @@
         <activity
             android:name=".activities.ConfigUpcomingMoviesActivity"
             android:label="@string/movies_sort_by_upcoming"
+            android:parentActivityName=".activities.MoviesActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MoviesActivity" />
+        </activity>
+        <activity
+            android:name=".activities.ConfigNowPlayingMoviesActivity"
+            android:label="@string/movies_sort_by_now_playing"
             android:parentActivityName=".activities.MoviesActivity"
             android:screenOrientation="portrait">
             <meta-data

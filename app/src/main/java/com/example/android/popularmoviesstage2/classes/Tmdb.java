@@ -159,13 +159,14 @@ public class Tmdb {
                 break;
             }
             case TMDB_CONTENT_TYPE_UPCOMING: {
-                // Get movies with release type 2 or 3 and release date greater or equal than today.
-                String today = DateTimeUtils.getStringCurrentDate();
+                // Get movies with release type 2 or 3 and release date greater than today.
+                String initDate = DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 1);
                 String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, today)
+                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;

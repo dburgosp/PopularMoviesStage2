@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesstage2.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -42,6 +41,7 @@ public class MoviesActivity extends AppCompatActivity implements
 
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
 
         Slide slideIn = new Slide();
         slideIn.setDuration(250);
@@ -138,12 +138,6 @@ public class MoviesActivity extends AppCompatActivity implements
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        viewPager.setCurrentItem(2);
     }
 
     @Override
