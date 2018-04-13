@@ -491,6 +491,9 @@ public class MoviesFragment extends Fragment
      */
     private int getLoaderId() {
         switch (sortOrder) {
+            case Tmdb.TMDB_CONTENT_TYPE_ALL:
+                return NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID;
+
             case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
                 return NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID;
 

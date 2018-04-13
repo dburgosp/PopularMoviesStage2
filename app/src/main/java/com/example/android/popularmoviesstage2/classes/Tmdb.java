@@ -539,7 +539,7 @@ public class Tmdb {
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
     private static TmdbPerson getPerson(JSONObject baseJSONResponse, int n, int page, int total_pages,
-                                        int total_results) throws JSONException {
+                                        int total_results) {
         // Extract the required values for the corresponding keys.
         boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
         String profile_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "profile_path");
@@ -1394,7 +1394,7 @@ public class Tmdb {
                 sortOrder.equals(TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_GENRES) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS) ||
-                sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS);
+                sortOrder.equals(TMDB_CONTENT_TYPE_ALL);
     }
 
     /**
