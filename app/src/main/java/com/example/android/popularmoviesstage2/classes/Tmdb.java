@@ -57,13 +57,15 @@ public class Tmdb {
     private final static String TMDB_PARAM_LANGUAGE = "language";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS = "primary_release_date.lte";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER = "primary_release_date.gte";
-    private final static String TMDB_PARAM_RELEASE_DATE_LESS = "release_date.lte";
-    private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "release_date.gte";
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
     private final static String TMDB_PARAM_WITH_GENRES = "with_genres";
     private final static String TMDB_PARAM_WITH_KEYWORDS = "with_keywords";
     private final static String TMDB_PARAM_SORT_BY = "sort_by";
+    private final static String TMDB_PARAM_CERTIFICATION_COUNTRY = "certification_country";
+    private final static String TMDB_PARAM_CERTIFICATION = "certification.lte";
+    private final static String TMDB_PARAM_VOTE_COUNT = "vote_count.gte";
+    private final static String TMDB_PARAM_VOTE_AVERAGE = "vote_average.gte";
 
     // Values for parameters.
     public final static String TMDB_VALUE_POPULARITY_DESC = "popularity.desc";
@@ -97,17 +99,23 @@ public class Tmdb {
     /**
      * Fetches TMDB for a list of movies.
      *
-     * @param contentType is the content type that we are looking for.
-     * @param currentPage is the page number to fetch.
-     * @param language    is the language of the results.
-     * @param region      is the region for getting results.
-     * @param values      is the list of possible values for the contentType parameter.
-     * @param sortOrder   is the sort order for the list of results.
+     * @param contentType   is the content type that we are looking for.
+     * @param currentPage   is the page number to fetch.
+     * @param language      is the language of the results.
+     * @param region        is the region for getting results.
+     * @param values        is the list of possible values for the contentType parameter.
+     * @param sortOrder     is the sort order for the list of results.
+     * @param certification is the minimum age rating of the movies in the list for the current
+     *                      country (region parameter).
+     * @param vote_count    is the minimum number of users votes of the movies in the list.
+     * @param vote_average  is the minimum users rating of the movies in the list.
      * @return an array of {@link TmdbMovie} objects.
      */
     public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, int currentPage,
                                                      String language, String region,
-                                                     ArrayList<Integer> values, String sortOrder) {
+                                                     ArrayList<Integer> values, String sortOrder,
+                                                     String certification, int vote_count,
+                                                     Double vote_average) {
         Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
                 currentPage + ". Language: " + language + ". Region: " + region +
                 ". Sort order: " + sortOrder);
@@ -117,6 +125,7 @@ public class Tmdb {
         /* ------------ */
 
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Boolean builtInQuery = false;
         Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon();
         switch (contentType) {
             case TMDB_CONTENT_TYPE_ALL: {
@@ -136,8 +145,8 @@ public class Tmdb {
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, currentDate)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, currentDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
@@ -152,8 +161,8 @@ public class Tmdb {
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, monday)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, sunday)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, monday)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
@@ -166,7 +175,7 @@ public class Tmdb {
                         TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate)
                         .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
@@ -204,8 +213,22 @@ public class Tmdb {
                 // to the url.
                 builder.appendPath(TMDB_MOVIE_PATH)
                         .appendPath(contentType);
+                builtInQuery = true;
                 break;
             }
+        }
+
+        if (!builtInQuery) {
+            // If the query is not a built-in-query (popular, top_rated...) add more parameters.
+            if (!region.equals("") && !region.isEmpty() &&
+                    !certification.equals("") && !certification.isEmpty()) {
+                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION_COUNTRY, region);
+                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION, certification);
+            }
+            if (vote_count > 0)
+                builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT, Integer.toString(vote_count));
+            if (vote_average > 0.0)
+                builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE, Double.toString(vote_average));
         }
 
         // Common parts in all cases to build the Uri.
@@ -222,9 +245,14 @@ public class Tmdb {
 
         // Use the built Uri to get the JSON document with the results of the query.
         String JSONresponse;
-        try {
+        try
+
+        {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
-        } catch (java.io.IOException e) {
+        } catch (
+                java.io.IOException e)
+
+        {
             // If getJSONresponse has thrown an exception, exit returning null.
             Log.e(TAG, "(getTmdbMovies) Error retrieving JSON response: ", e);
             return null;
@@ -235,7 +263,9 @@ public class Tmdb {
         /* -------------- */
 
         // If the JSON string is empty or null, then return null.
-        if (TextUtils.isEmpty(JSONresponse)) {
+        if (TextUtils.isEmpty(JSONresponse))
+
+        {
             Log.i(TAG, "(getTmdbMovies) The JSON string is empty.");
             return null;
         }
@@ -245,7 +275,9 @@ public class Tmdb {
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown.
-        try {
+        try
+
+        {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
 
@@ -271,7 +303,10 @@ public class Tmdb {
                 TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
                 movies.add(movie);
             }
-        } catch (JSONException e) {
+        } catch (
+                JSONException e)
+
+        {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
             Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);

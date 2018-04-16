@@ -14,8 +14,9 @@ import java.util.ArrayList;
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String contentType, language, region, sortBy = Tmdb.TMDB_VALUE_POPULARITY_DESC;
-    private int currentPage;
+    private String contentType, language, region, certification, sortBy;
+    private int vote_count, currentPage;
+    private Double vote_average;
     private ArrayList<Integer> values = new ArrayList<>();
 
     /**
@@ -33,21 +34,30 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
         this.currentPage = currentPage;
         this.language = language;
         this.region = region;
+        this.sortBy = Tmdb.TMDB_VALUE_POPULARITY_DESC;
+        this.vote_average = 0.0;
+        this.vote_count = 0;
+        this.certification = "";
     }
 
     /**
      * Another constructor for this class.
      *
-     * @param context     is the context of the activity.
-     * @param contentType is the content type to fetch from TMDB.
-     * @param currentPage is the current page to fetch results from TMDB.
-     * @param language    is the language for retrieving results from TMDB.
-     * @param values      is the list of possible values to assign to the contentType parameter.
-     * @param values      is the sort order for the list of results.
+     * @param context       is the context of the activity.
+     * @param contentType   is the content type to fetch from TMDB.
+     * @param currentPage   is the current page to fetch results from TMDB.
+     * @param language      is the language for retrieving results from TMDB.
+     * @param values        is the list of possible values to assign to the contentType parameter.
+     * @param sortBy        is the sort order for the list of results.
+     * @param certification is the minimum age rating of the movies in the list for the current
+     *                      country (region parameter).
+     * @param vote_count    is the minimum number of users votes of the movies in the list.
+     * @param vote_average  is the minimum users rating of the movies in the list.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language, String region, ArrayList<Integer> values,
-                                     String sortBy) {
+                                     String sortBy, String certification, int vote_count,
+                                     Double vote_average) {
         super(context);
         this.contentType = contentType;
         this.values = values;
@@ -55,6 +65,9 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
         this.language = language;
         this.region = region;
         this.sortBy = sortBy;
+        this.vote_average = vote_average;
+        this.vote_count = vote_count;
+        this.certification = certification;
     }
 
     /**
@@ -105,7 +118,8 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(contentType, currentPage, language, region, values, sortBy);
+            return Tmdb.getTmdbMovies(contentType, currentPage, language, region, values, sortBy,
+                    certification, vote_count, vote_average);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;
