@@ -101,21 +101,33 @@
     <string name="view_all_upcoming_movies">Ver la lista completa con los próximos %d estrenos de cine en %s</string>
 
     <!-- Texts for preferences -->
-    <string name="preferences_sort_by_title">Ordenar por</string>
-    <string name="preferences_sort_by_popularity_desc_title">Popularidad (más populares primero)</string>
-    <string name="preferences_sort_by_popularity_asc_title">Popularidad (menos populares primero)</string>
-    <string name="preferences_sort_by_year_desc_title">Fecha de estreno (más modernas primero)</string>
-    <string name="preferences_sort_by_year_asc_title">Fecha de estreno (más antiguas primero)</string>
-    <string name="preferences_sort_by_rating_desc_title">Valoración (mejor valoradas primero)</string>
-    <string name="preferences_sort_by_rating_asc_title">Valoración (peor valoradas primero)</string>
+    <string name="preferences_order_title">Ordenación</string>
+    <string name="preferences_order_descending_title">Orden descendente</string>
+    <string name="preferences_order_ascending_title">Orden ascendente</string>
 
     <string name="preferences_language_title">Idioma de los resultados</string>
     <string name="preferences_language_locale_title">Idioma del sistema</string>
-    <string name="preferences_language_en_title">Inglés</string>
-    <string name="preferences_language_es_title">Español</string>
+    <string name="preferences_language_xx_title">Idioma sin especificar</string>
 
     <string name="preferences_region_title">País para mostrar resultados</string>
     <string name="preferences_region_locale_title">País local</string>
+
+    <string name="preferences_movies_sort_by_title">Clasificar por</string>
+    <string name="preferences_movies_sort_by_popularity_title">Popularidad</string>
+    <string name="preferences_movies_sort_by_vote_average_title">Valoración de usuarios</string>
+    <string name="preferences_movies_sort_by_original_title_title">Título original</string>
+    <string name="preferences_movies_sort_by_primary_release_date_title">Fecha de estreno</string>
+    <string name="preferences_movies_sort_by_revenue_title">Beneficios</string>
+    <string name="preferences_movies_sort_by_popularity_desc_title">Popularidad (las más populares primero)</string>
+    <string name="preferences_movies_sort_by_popularity_asc_title">Popularity (las menos populares primero)</string>
+    <string name="preferences_movies_sort_by_original_title_desc_title">Título original (Z-A)</string>
+    <string name="preferences_movies_sort_by_original_title_asc_title">Título original (A-Z)</string>
+    <string name="preferences_movies_sort_by_vote_average_desc_title">Valoración de usuarios (mejor valoradas primero)</string>
+    <string name="preferences_movies_sort_by_vote_average_asc_title">Valoración de usuarios (mejor valoradas primero)</string>
+    <string name="preferences_movies_sort_by_primary_release_date_desc_title">Fecha de estreno (las más modernas primero)</string>
+    <string name="preferences_movies_sort_by_primary_release_date_asc_title">Fecha de estreno (las más antiguas primero)</string>
+    <string name="preferences_movies_sort_by_revenue_desc_title">Beneficios (las más rentables primero)</string>
+    <string name="preferences_movies_sort_by_revenue_asc_title">Beneficios (las menos rentables primero)</string>
 
     <string name="preferences_certification_title">Calificación por edades</string>
 
@@ -130,7 +142,7 @@
     <string name="preferences_movies_when_any_date_title">En cualquier fecha</string>
 
     <string name="preferences_movies_where_title">Dónde</string>
-    <string name="preferences_movies_where_your_country_title">En %s</string>
+    <string name="preferences_movies_where_your_country_title">En mi país</string>
     <string name="preferences_movies_where_any_country_title">En cualquier parte del mundo</string>
 
     <!-- Plurals -->

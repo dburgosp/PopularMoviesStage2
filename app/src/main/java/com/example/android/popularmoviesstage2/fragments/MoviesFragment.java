@@ -24,19 +24,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.ConfigNowPlayingMoviesActivity;
-import com.example.android.popularmoviesstage2.activities.ConfigUpcomingMoviesActivity;
+import com.example.android.popularmoviesstage2.activities.ConfigMoviesActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,9 +63,11 @@ public class MoviesFragment extends Fragment
     RelativeLayout mainLayout;
 
     private boolean allowClicks = true;
-    private String sortOrder = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
+    private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, language, region, sortBy,
+            certification;
     private MoviesListAdapter moviesListAdapter;
-    private int currentPage = 1, currentScrollPosition = 0, loaderId = 0;
+    private int currentPage = 1, currentScrollPosition = 0, loaderId = 0, voteCount = 0;
+    private Double voteAverage = 0.0;
     private final int resultCodeMovieDetails = 0, resultCodeConfigUpcomingMovies = 1,
             resultCodeConfigNowPlayingMovies = 2;
     private boolean isLoading, appendToEnd;
@@ -88,7 +89,7 @@ public class MoviesFragment extends Fragment
      */
     public static MoviesFragment newInstance(String sortOrder) {
         Bundle bundle = new Bundle();
-        bundle.putString("sortOrder", sortOrder);
+        bundle.putString("contentType", sortOrder);
         MoviesFragment fragment = new MoviesFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -111,11 +112,12 @@ public class MoviesFragment extends Fragment
         unbinder = ButterKnife.bind(this, rootView);
 
         // Get arguments from calling activity.
-        sortOrder = getArguments().getString("sortOrder");
+        contentType = getArguments().getString("contentType");
 
         // Initialize variables, set the RecyclerView for displaying movie posters and set the
         // SwipeRefreshLayout.
         initVariables();
+        getMyPreferences();
         setRecyclerView();
         setSwipeRefreshLayout();
 
@@ -174,20 +176,18 @@ public class MoviesFragment extends Fragment
         switch (requestCode) {
             case resultCodeConfigNowPlayingMovies: {
                 if (resultCode == RESULT_OK) {
-                    // TODO: preferences have changed for now playing movies section.
-                    sortOrder = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
-                    loaderId = getLoaderId();
-                    refreshMovieList();
+                    // Preferences have changed for now playing movies section. Read new preferences
+                    // values and refresh the current movie list.
+                    refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
                 }
                 break;
             }
 
             case resultCodeConfigUpcomingMovies: {
                 if (resultCode == RESULT_OK) {
-                    // TODO: preferences have changed for upcoming movies section.
-                    sortOrder = Tmdb.TMDB_CONTENT_TYPE_UPCOMING;
-                    loaderId = getLoaderId();
-                    refreshMovieList();
+                    // Preferences have changed for upcoming movies section. Read new preferences
+                    // values and refresh the current movie list.
+                    refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
                 }
                 break;
             }
@@ -213,8 +213,8 @@ public class MoviesFragment extends Fragment
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(getContext(), sortOrder, currentPage,
-                    Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
+            loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, currentPage,
+                    language, region, sortBy, certification, voteCount, voteAverage);
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -289,40 +289,23 @@ public class MoviesFragment extends Fragment
                 moviesListAdapter.notifyDataSetChanged();
 
                 // Set FAB onClick behaviour.
-                Intent intent = null;
-                int resultCode = resultCodeConfigUpcomingMovies;
                 switch (loader.getId()) {
-                    case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
-                        // If we are showing upcoming movies info, show FAB and set its
-                        // onClick behaviour for opening ConfigUpcomingMoviesActivity.
-                        floatingActionButton.setVisibility(View.VISIBLE);
-                        intent = new Intent(getContext(), ConfigUpcomingMoviesActivity.class);
-                        resultCode = resultCodeConfigUpcomingMovies;
+                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                        // If we are showing now playing movies info, show FAB and set its onClick
+                        // behaviour for opening ConfigMoviesActivity.
+                        setFloatingActionButton(ConfigMoviesActivity.TYPE_NOW_PLAYING,
+                                resultCodeConfigNowPlayingMovies);
                         break;
                     }
-                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
-                        // If we are showing upcoming movies info, show FAB and set its
-                        // onClick behaviour for opening ConfigUpcomingMoviesActivity.
-                        floatingActionButton.setVisibility(View.VISIBLE);
-                        intent = new Intent(getContext(), ConfigNowPlayingMoviesActivity.class);
-                        resultCode = resultCodeConfigNowPlayingMovies;
+
+                    case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                        // If we are showing upcoming movies info, show FAB and set its onClick
+                        // behaviour for opening ConfigMoviesActivity.
+                        setFloatingActionButton(ConfigMoviesActivity.TYPE_UPCOMING,
+                                resultCodeConfigUpcomingMovies);
                         break;
                     }
                 }
-
-                final Intent fabIntent = intent;
-                final int resultCodeFab = resultCode;
-                floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Start config activity only when required.
-                        if (fabIntent != null) {
-                            startActivityForResult(fabIntent, resultCodeFab,
-                                    ActivityOptions.makeSceneTransitionAnimation(
-                                            getActivity()).toBundle());
-                        }
-                    }
-                });
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 floatingActionButton.setVisibility(View.GONE);
@@ -363,6 +346,18 @@ public class MoviesFragment extends Fragment
         loader = null;
         isLoading = false;
         appendToEnd = true;
+    }
+
+    /**
+     * Helper method to get current values from preferences for query parameters.
+     */
+    private void getMyPreferences() {
+        language = MyPreferences.getIsoLanguage(getContext());
+        region = MyPreferences.getIsoRegion(getContext());
+        sortBy = MyPreferences.getMoviesSortOrder(getContext());
+        certification = MyPreferences.getMoviesCertification(getContext());
+        //voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
+        //voteCount = MyPreferences.getMoviesVoteCount(getContext());
     }
 
     /**
@@ -461,6 +456,29 @@ public class MoviesFragment extends Fragment
     }
 
     /**
+     * Helper method for showing FloatingActionButton and setting its behaviour.
+     *
+     * @param typeValue  is the value for the ConfigMoviesActivity.PARAM_TYPE parameter of the
+     *                   intent for calling ConfigMoviesActivity when the FloatingActionButton is
+     *                   clicked.
+     * @param resultCode is the request code for calling ConfigMoviesActivity for result.
+     */
+    private void setFloatingActionButton(int typeValue, final int resultCode) {
+        final Intent intent = new Intent(getContext(), ConfigMoviesActivity.class);
+        intent.putExtra(ConfigMoviesActivity.PARAM_TYPE, typeValue);
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start config activity only when required.
+                startActivityForResult(intent, resultCode,
+                        ActivityOptions.makeSceneTransitionAnimation(
+                                getActivity()).toBundle());
+            }
+        });
+    }
+
+    /**
      * Helper method to set a listener on the SwipeRefreshLayout that contains the RecyclerViews,
      * just in case we are at the top of the RecyclerViews and we need to reload previous movies.
      */
@@ -469,7 +487,7 @@ public class MoviesFragment extends Fragment
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        refreshMovieList();
+                        refreshMovieList(contentType);
                     }
                 }
         );
@@ -478,8 +496,11 @@ public class MoviesFragment extends Fragment
     /**
      * Get a fresh new movies list.
      */
-    private void refreshMovieList() {
+    private void refreshMovieList(String contentType) {
         initVariables();
+        getMyPreferences();
+        this.contentType = contentType;
+        loaderId = getLoaderId();
         moviesListAdapter.clearMoviesArrayList();
         getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
     }
@@ -490,7 +511,7 @@ public class MoviesFragment extends Fragment
      * @return a number with the loader id .
      */
     private int getLoaderId() {
-        switch (sortOrder) {
+        switch (contentType) {
             case Tmdb.TMDB_CONTENT_TYPE_ALL:
                 return NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID;
 

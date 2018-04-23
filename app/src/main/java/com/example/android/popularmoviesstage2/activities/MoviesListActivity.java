@@ -37,7 +37,6 @@ import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,8 +61,9 @@ public class MoviesListActivity extends AppCompatActivity
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
-    private String moviesBy, sortBy, language;
-    private int loaderId = -1, currentPage = 1;
+    private String moviesBy, sortOrder, language, region, certification;
+    private Double voteAverage;
+    private int voteCount, loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
 
@@ -92,8 +92,7 @@ public class MoviesListActivity extends AppCompatActivity
         getParameters();
         if (loaderId >= 0) {
             initVariables();
-            sortBy = MyPreferences.getSortOrder(this);
-            language = MyPreferences.getLanguage(this);
+            getMyPreferences();
 
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies.
@@ -216,10 +215,10 @@ public class MoviesListActivity extends AppCompatActivity
         super.onResume();
 
         // Get current sort order and current language and check if they have been changed.
-        String currentSortBy = MyPreferences.getSortOrder(this);
-        String currentLanguage = MyPreferences.getLanguage(this);
-        if (!currentSortBy.equals(sortBy) || !currentLanguage.equals(language)) {
-            sortBy = currentSortBy;
+        String currentSortBy = MyPreferences.getMoviesSortOrder(this);
+        String currentLanguage = MyPreferences.getIsoLanguage(this);
+        if (!currentSortBy.equals(sortOrder) || !currentLanguage.equals(language)) {
+            sortOrder = currentSortBy;
             language = currentLanguage;
 
             // Restart the loader for displaying the current movies list with the new sort order.
@@ -255,16 +254,14 @@ public class MoviesListActivity extends AppCompatActivity
             switch (id) {
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage,
-                            language,
-                            Locale.getDefault().getCountry(), genres, sortBy);
+                            Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage, language, region, genres,
+                            sortOrder, certification, voteCount, voteAverage);
                     break;
                 }
                 case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage,
-                            language,
-                            Locale.getDefault().getCountry(), keywords, sortBy);
+                            Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage, language, region,
+                            keywords, sortOrder, certification, voteCount, voteAverage);
                     break;
                 }
                 default:
@@ -326,8 +323,8 @@ public class MoviesListActivity extends AppCompatActivity
                     htmlText = "<strong>" + htmlText.toUpperCase() + "</strong><br>" +
                             "<font color=\"#" + color + "\">" + moviesBy + "</font><br><br>" +
                             "<strong>" + getResources().getString(
-                            R.string.preferences_sort_by_title).toUpperCase() + "</strong><br>" +
-                            "<font color=\"#" + color + "\">" + MyPreferences.getSortOrderTitle(
+                            R.string.preferences_movies_sort_by_title).toUpperCase() + "</strong><br>" +
+                            "<font color=\"#" + color + "\">" + MyPreferences.getMoviesSortOrderTitle(
                             this) + "</font><br><br> <strong>" + getResources().
                             getQuantityString(R.plurals.results, data.size()).toUpperCase() +
                             "</strong><br><font color=\"#" + color + "\">" +
@@ -392,6 +389,18 @@ public class MoviesListActivity extends AppCompatActivity
         loader = null;
         isLoading = false;
         appendToEnd = true;
+    }
+
+    /**
+     * Helper method to get current values from preferences for query parameters.
+     */
+    private void getMyPreferences() {
+        language = MyPreferences.getIsoLanguage(this);
+        region = MyPreferences.getIsoRegion(this);
+        sortOrder = MyPreferences.getMoviesSortOrder(this);
+        certification = MyPreferences.getMoviesCertification(this);
+        //voteAverage = MyPreferences.getMoviesVoteAverage(this);
+        //voteCount = MyPreferences.getMoviesVoteCount(this);
     }
 
     /**

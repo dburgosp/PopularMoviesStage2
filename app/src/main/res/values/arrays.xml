@@ -1,32 +1,510 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Movies. Arrays for sort order preferences -->
-    <array name="preferences_movies_sort_by_list_array">
-        <item>@string/preferences_movies_sort_by_popularity_title</item>
-        <item>@string/preferences_movies_sort_by_primary_release_date_title</item>
-        <item>@string/preferences_movies_sort_by_vote_average_title</item>
-        <item>@string/preferences_movies_sort_by_original_title_title</item>
-        <item>@string/preferences_movies_sort_by_revenue_title</item>
-    </array>
-    <array name="preferences_movies_sort_by_values_array">
-        <item>popularity</item>
-        <item>primary_release_date</item>
-        <item>vote_average</item>
-        <item>original_title</item>
-        <item>revenue</item>
-    </array>
 
-    <array name="preferences_movies_order_list_array">
-        <item>@string/preferences_movies_order_descending_title</item>
-        <item>@string/preferences_movies_order_ascending_title</item>
-    </array>
-    <array name="preferences_movies_order_values_array">
-        <item>.desc</item>
-        <item>.asc</item>
-    </array>
+    <!-- Arrays for region preferences -->
+    <string-array name="preferences_region_list_array">
+        <item>@string/preferences_region_locale_title</item>
+        <item>@string/preferences_region_AD_title</item>
+        <item>@string/preferences_region_AE_title</item>
+        <item>@string/preferences_region_AF_title</item>
+        <item>@string/preferences_region_AG_title</item>
+        <item>@string/preferences_region_AI_title</item>
+        <item>@string/preferences_region_AL_title</item>
+        <item>@string/preferences_region_AM_title</item>
+        <item>@string/preferences_region_AN_title</item>
+        <item>@string/preferences_region_AO_title</item>
+        <item>@string/preferences_region_AQ_title</item>
+        <item>@string/preferences_region_AR_title</item>
+        <item>@string/preferences_region_AS_title</item>
+        <item>@string/preferences_region_AT_title</item>
+        <item>@string/preferences_region_AU_title</item>
+        <item>@string/preferences_region_AW_title</item>
+        <item>@string/preferences_region_AZ_title</item>
+        <item>@string/preferences_region_BA_title</item>
+        <item>@string/preferences_region_BB_title</item>
+        <item>@string/preferences_region_BD_title</item>
+        <item>@string/preferences_region_BE_title</item>
+        <item>@string/preferences_region_BF_title</item>
+        <item>@string/preferences_region_BG_title</item>
+        <item>@string/preferences_region_BH_title</item>
+        <item>@string/preferences_region_BI_title</item>
+        <item>@string/preferences_region_BJ_title</item>
+        <item>@string/preferences_region_BM_title</item>
+        <item>@string/preferences_region_BN_title</item>
+        <item>@string/preferences_region_BO_title</item>
+        <item>@string/preferences_region_BR_title</item>
+        <item>@string/preferences_region_BS_title</item>
+        <item>@string/preferences_region_BT_title</item>
+        <item>@string/preferences_region_BV_title</item>
+        <item>@string/preferences_region_BW_title</item>
+        <item>@string/preferences_region_BZ_title</item>
+        <item>@string/preferences_region_BY_title</item>
+        <item>@string/preferences_region_CA_title</item>
+        <item>@string/preferences_region_CC_title</item>
+        <item>@string/preferences_region_CD_title</item>
+        <item>@string/preferences_region_CF_title</item>
+        <item>@string/preferences_region_CG_title</item>
+        <item>@string/preferences_region_CH_title</item>
+        <item>@string/preferences_region_CI_title</item>
+        <item>@string/preferences_region_CK_title</item>
+        <item>@string/preferences_region_CL_title</item>
+        <item>@string/preferences_region_CM_title</item>
+        <item>@string/preferences_region_CN_title</item>
+        <item>@string/preferences_region_CO_title</item>
+        <item>@string/preferences_region_CR_title</item>
+        <item>@string/preferences_region_CS_title</item>
+        <item>@string/preferences_region_CU_title</item>
+        <item>@string/preferences_region_CV_title</item>
+        <item>@string/preferences_region_CX_title</item>
+        <item>@string/preferences_region_CY_title</item>
+        <item>@string/preferences_region_CZ_title</item>
+        <item>@string/preferences_region_DE_title</item>
+        <item>@string/preferences_region_DJ_title</item>
+        <item>@string/preferences_region_DK_title</item>
+        <item>@string/preferences_region_DM_title</item>
+        <item>@string/preferences_region_DO_title</item>
+        <item>@string/preferences_region_DZ_title</item>
+        <item>@string/preferences_region_EC_title</item>
+        <item>@string/preferences_region_EE_title</item>
+        <item>@string/preferences_region_EG_title</item>
+        <item>@string/preferences_region_EH_title</item>
+        <item>@string/preferences_region_ER_title</item>
+        <item>@string/preferences_region_ES_title</item>
+        <item>@string/preferences_region_ET_title</item>
+        <item>@string/preferences_region_FI_title</item>
+        <item>@string/preferences_region_FJ_title</item>
+        <item>@string/preferences_region_FK_title</item>
+        <item>@string/preferences_region_RS_title</item>
+        <item>@string/preferences_region_FM_title</item>
+        <item>@string/preferences_region_FO_title</item>
+        <item>@string/preferences_region_FR_title</item>
+        <item>@string/preferences_region_GA_title</item>
+        <item>@string/preferences_region_GB_title</item>
+        <item>@string/preferences_region_GD_title</item>
+        <item>@string/preferences_region_GE_title</item>
+        <item>@string/preferences_region_GF_title</item>
+        <item>@string/preferences_region_GH_title</item>
+        <item>@string/preferences_region_GI_title</item>
+        <item>@string/preferences_region_GL_title</item>
+        <item>@string/preferences_region_GM_title</item>
+        <item>@string/preferences_region_GN_title</item>
+        <item>@string/preferences_region_GP_title</item>
+        <item>@string/preferences_region_GQ_title</item>
+        <item>@string/preferences_region_GR_title</item>
+        <item>@string/preferences_region_GS_title</item>
+        <item>@string/preferences_region_GT_title</item>
+        <item>@string/preferences_region_GU_title</item>
+        <item>@string/preferences_region_GW_title</item>
+        <item>@string/preferences_region_GY_title</item>
+        <item>@string/preferences_region_HK_title</item>
+        <item>@string/preferences_region_HM_title</item>
+        <item>@string/preferences_region_HN_title</item>
+        <item>@string/preferences_region_HR_title</item>
+        <item>@string/preferences_region_HT_title</item>
+        <item>@string/preferences_region_HU_title</item>
+        <item>@string/preferences_region_ID_title</item>
+        <item>@string/preferences_region_IE_title</item>
+        <item>@string/preferences_region_IL_title</item>
+        <item>@string/preferences_region_IN_title</item>
+        <item>@string/preferences_region_IO_title</item>
+        <item>@string/preferences_region_IQ_title</item>
+        <item>@string/preferences_region_IR_title</item>
+        <item>@string/preferences_region_IS_title</item>
+        <item>@string/preferences_region_IT_title</item>
+        <item>@string/preferences_region_JM_title</item>
+        <item>@string/preferences_region_JO_title</item>
+        <item>@string/preferences_region_JP_title</item>
+        <item>@string/preferences_region_KE_title</item>
+        <item>@string/preferences_region_KG_title</item>
+        <item>@string/preferences_region_KH_title</item>
+        <item>@string/preferences_region_KI_title</item>
+        <item>@string/preferences_region_KM_title</item>
+        <item>@string/preferences_region_KN_title</item>
+        <item>@string/preferences_region_KP_title</item>
+        <item>@string/preferences_region_KW_title</item>
+        <item>@string/preferences_region_KY_title</item>
+        <item>@string/preferences_region_KZ_title</item>
+        <item>@string/preferences_region_LA_title</item>
+        <item>@string/preferences_region_LB_title</item>
+        <item>@string/preferences_region_LC_title</item>
+        <item>@string/preferences_region_LI_title</item>
+        <item>@string/preferences_region_LK_title</item>
+        <item>@string/preferences_region_LR_title</item>
+        <item>@string/preferences_region_LS_title</item>
+        <item>@string/preferences_region_LT_title</item>
+        <item>@string/preferences_region_LU_title</item>
+        <item>@string/preferences_region_LV_title</item>
+        <item>@string/preferences_region_LY_title</item>
+        <item>@string/preferences_region_MA_title</item>
+        <item>@string/preferences_region_MC_title</item>
+        <item>@string/preferences_region_MD_title</item>
+        <item>@string/preferences_region_MG_title</item>
+        <item>@string/preferences_region_MH_title</item>
+        <item>@string/preferences_region_MK_title</item>
+        <item>@string/preferences_region_ML_title</item>
+        <item>@string/preferences_region_MM_title</item>
+        <item>@string/preferences_region_MN_title</item>
+        <item>@string/preferences_region_MO_title</item>
+        <item>@string/preferences_region_MP_title</item>
+        <item>@string/preferences_region_MQ_title</item>
+        <item>@string/preferences_region_MR_title</item>
+        <item>@string/preferences_region_MS_title</item>
+        <item>@string/preferences_region_MT_title</item>
+        <item>@string/preferences_region_MU_title</item>
+        <item>@string/preferences_region_MV_title</item>
+        <item>@string/preferences_region_MW_title</item>
+        <item>@string/preferences_region_MX_title</item>
+        <item>@string/preferences_region_MY_title</item>
+        <item>@string/preferences_region_MZ_title</item>
+        <item>@string/preferences_region_NA_title</item>
+        <item>@string/preferences_region_NC_title</item>
+        <item>@string/preferences_region_NE_title</item>
+        <item>@string/preferences_region_NF_title</item>
+        <item>@string/preferences_region_NG_title</item>
+        <item>@string/preferences_region_ME_title</item>
+        <item>@string/preferences_region_NI_title</item>
+        <item>@string/preferences_region_NL_title</item>
+        <item>@string/preferences_region_NO_title</item>
+        <item>@string/preferences_region_NP_title</item>
+        <item>@string/preferences_region_NR_title</item>
+        <item>@string/preferences_region_NU_title</item>
+        <item>@string/preferences_region_NZ_title</item>
+        <item>@string/preferences_region_OM_title</item>
+        <item>@string/preferences_region_PA_title</item>
+        <item>@string/preferences_region_PE_title</item>
+        <item>@string/preferences_region_PF_title</item>
+        <item>@string/preferences_region_PG_title</item>
+        <item>@string/preferences_region_PH_title</item>
+        <item>@string/preferences_region_YU_title</item>
+        <item>@string/preferences_region_XK_title</item>
+        <item>@string/preferences_region_XC_title</item>
+        <item>@string/preferences_region_PK_title</item>
+        <item>@string/preferences_region_PL_title</item>
+        <item>@string/preferences_region_PM_title</item>
+        <item>@string/preferences_region_PN_title</item>
+        <item>@string/preferences_region_PR_title</item>
+        <item>@string/preferences_region_PS_title</item>
+        <item>@string/preferences_region_PT_title</item>
+        <item>@string/preferences_region_PW_title</item>
+        <item>@string/preferences_region_PY_title</item>
+        <item>@string/preferences_region_QA_title</item>
+        <item>@string/preferences_region_RE_title</item>
+        <item>@string/preferences_region_RO_title</item>
+        <item>@string/preferences_region_RU_title</item>
+        <item>@string/preferences_region_RW_title</item>
+        <item>@string/preferences_region_SA_title</item>
+        <item>@string/preferences_region_SB_title</item>
+        <item>@string/preferences_region_SC_title</item>
+        <item>@string/preferences_region_SD_title</item>
+        <item>@string/preferences_region_SE_title</item>
+        <item>@string/preferences_region_SG_title</item>
+        <item>@string/preferences_region_SH_title</item>
+        <item>@string/preferences_region_SI_title</item>
+        <item>@string/preferences_region_SJ_title</item>
+        <item>@string/preferences_region_SK_title</item>
+        <item>@string/preferences_region_SL_title</item>
+        <item>@string/preferences_region_SM_title</item>
+        <item>@string/preferences_region_SN_title</item>
+        <item>@string/preferences_region_SO_title</item>
+        <item>@string/preferences_region_SR_title</item>
+        <item>@string/preferences_region_ST_title</item>
+        <item>@string/preferences_region_SV_title</item>
+        <item>@string/preferences_region_SY_title</item>
+        <item>@string/preferences_region_SZ_title</item>
+        <item>@string/preferences_region_TC_title</item>
+        <item>@string/preferences_region_TD_title</item>
+        <item>@string/preferences_region_TF_title</item>
+        <item>@string/preferences_region_TG_title</item>
+        <item>@string/preferences_region_TH_title</item>
+        <item>@string/preferences_region_TJ_title</item>
+        <item>@string/preferences_region_TK_title</item>
+        <item>@string/preferences_region_TL_title</item>
+        <item>@string/preferences_region_TM_title</item>
+        <item>@string/preferences_region_TN_title</item>
+        <item>@string/preferences_region_TO_title</item>
+        <item>@string/preferences_region_TR_title</item>
+        <item>@string/preferences_region_TT_title</item>
+        <item>@string/preferences_region_TV_title</item>
+        <item>@string/preferences_region_TW_title</item>
+        <item>@string/preferences_region_TZ_title</item>
+        <item>@string/preferences_region_UA_title</item>
+        <item>@string/preferences_region_UG_title</item>
+        <item>@string/preferences_region_UM_title</item>
+        <item>@string/preferences_region_US_title</item>
+        <item>@string/preferences_region_UY_title</item>
+        <item>@string/preferences_region_UZ_title</item>
+        <item>@string/preferences_region_VA_title</item>
+        <item>@string/preferences_region_VC_title</item>
+        <item>@string/preferences_region_VE_title</item>
+        <item>@string/preferences_region_VG_title</item>
+        <item>@string/preferences_region_VI_title</item>
+        <item>@string/preferences_region_VN_title</item>
+        <item>@string/preferences_region_VU_title</item>
+        <item>@string/preferences_region_WF_title</item>
+        <item>@string/preferences_region_WS_title</item>
+        <item>@string/preferences_region_YE_title</item>
+        <item>@string/preferences_region_YT_title</item>
+        <item>@string/preferences_region_ZA_title</item>
+        <item>@string/preferences_region_ZM_title</item>
+        <item>@string/preferences_region_ZW_title</item>
+        <item>@string/preferences_region_KR_title</item>
+        <item>@string/preferences_region_XG_title</item>
+        <item>@string/preferences_region_SU_title</item>
+        <item>@string/preferences_region_SS_title</item>
+    </string-array>
+    <string-array name="preferences_region_values_array">
+        <item>locale</item>
+        <item>AD</item>
+        <item>AE</item>
+        <item>AF</item>
+        <item>AG</item>
+        <item>AI</item>
+        <item>AL</item>
+        <item>AM</item>
+        <item>AN</item>
+        <item>AO</item>
+        <item>AQ</item>
+        <item>AR</item>
+        <item>AS</item>
+        <item>AT</item>
+        <item>AU</item>
+        <item>AW</item>
+        <item>AZ</item>
+        <item>BA</item>
+        <item>BB</item>
+        <item>BD</item>
+        <item>BE</item>
+        <item>BF</item>
+        <item>BG</item>
+        <item>BH</item>
+        <item>BI</item>
+        <item>BJ</item>
+        <item>BM</item>
+        <item>BN</item>
+        <item>BO</item>
+        <item>BR</item>
+        <item>BS</item>
+        <item>BT</item>
+        <item>BV</item>
+        <item>BW</item>
+        <item>BZ</item>
+        <item>BY</item>
+        <item>CA</item>
+        <item>CC</item>
+        <item>CD</item>
+        <item>CF</item>
+        <item>CG</item>
+        <item>CH</item>
+        <item>CI</item>
+        <item>CK</item>
+        <item>CL</item>
+        <item>CM</item>
+        <item>CN</item>
+        <item>CO</item>
+        <item>CR</item>
+        <item>CS</item>
+        <item>CU</item>
+        <item>CV</item>
+        <item>CX</item>
+        <item>CY</item>
+        <item>CZ</item>
+        <item>DE</item>
+        <item>DJ</item>
+        <item>DK</item>
+        <item>DM</item>
+        <item>DO</item>
+        <item>DZ</item>
+        <item>EC</item>
+        <item>EE</item>
+        <item>EG</item>
+        <item>EH</item>
+        <item>ER</item>
+        <item>ES</item>
+        <item>ET</item>
+        <item>FI</item>
+        <item>FJ</item>
+        <item>FK</item>
+        <item>RS</item>
+        <item>FM</item>
+        <item>FO</item>
+        <item>FR</item>
+        <item>GA</item>
+        <item>GB</item>
+        <item>GD</item>
+        <item>GE</item>
+        <item>GF</item>
+        <item>GH</item>
+        <item>GI</item>
+        <item>GL</item>
+        <item>GM</item>
+        <item>GN</item>
+        <item>GP</item>
+        <item>GQ</item>
+        <item>GR</item>
+        <item>GS</item>
+        <item>GT</item>
+        <item>GU</item>
+        <item>GW</item>
+        <item>GY</item>
+        <item>HK</item>
+        <item>HM</item>
+        <item>HN</item>
+        <item>HR</item>
+        <item>HT</item>
+        <item>HU</item>
+        <item>ID</item>
+        <item>IE</item>
+        <item>IL</item>
+        <item>IN</item>
+        <item>IO</item>
+        <item>IQ</item>
+        <item>IR</item>
+        <item>IS</item>
+        <item>IT</item>
+        <item>JM</item>
+        <item>JO</item>
+        <item>JP</item>
+        <item>KE</item>
+        <item>KG</item>
+        <item>KH</item>
+        <item>KI</item>
+        <item>KM</item>
+        <item>KN</item>
+        <item>KP</item>
+        <item>KW</item>
+        <item>KY</item>
+        <item>KZ</item>
+        <item>LA</item>
+        <item>LB</item>
+        <item>LC</item>
+        <item>LI</item>
+        <item>LK</item>
+        <item>LR</item>
+        <item>LS</item>
+        <item>LT</item>
+        <item>LU</item>
+        <item>LV</item>
+        <item>LY</item>
+        <item>MA</item>
+        <item>MC</item>
+        <item>MD</item>
+        <item>MG</item>
+        <item>MH</item>
+        <item>MK</item>
+        <item>ML</item>
+        <item>MM</item>
+        <item>MN</item>
+        <item>MO</item>
+        <item>MP</item>
+        <item>MQ</item>
+        <item>MR</item>
+        <item>MS</item>
+        <item>MT</item>
+        <item>MU</item>
+        <item>MV</item>
+        <item>MW</item>
+        <item>MX</item>
+        <item>MY</item>
+        <item>MZ</item>
+        <item>NA</item>
+        <item>NC</item>
+        <item>NE</item>
+        <item>NF</item>
+        <item>NG</item>
+        <item>ME</item>
+        <item>NI</item>
+        <item>NL</item>
+        <item>NO</item>
+        <item>NP</item>
+        <item>NR</item>
+        <item>NU</item>
+        <item>NZ</item>
+        <item>OM</item>
+        <item>PA</item>
+        <item>PE</item>
+        <item>PF</item>
+        <item>PG</item>
+        <item>PH</item>
+        <item>YU</item>
+        <item>XK</item>
+        <item>XC</item>
+        <item>PK</item>
+        <item>PL</item>
+        <item>PM</item>
+        <item>PN</item>
+        <item>PR</item>
+        <item>PS</item>
+        <item>PT</item>
+        <item>PW</item>
+        <item>PY</item>
+        <item>QA</item>
+        <item>RE</item>
+        <item>RO</item>
+        <item>RU</item>
+        <item>RW</item>
+        <item>SA</item>
+        <item>SB</item>
+        <item>SC</item>
+        <item>SD</item>
+        <item>SE</item>
+        <item>SG</item>
+        <item>SH</item>
+        <item>SI</item>
+        <item>SJ</item>
+        <item>SK</item>
+        <item>SL</item>
+        <item>SM</item>
+        <item>SN</item>
+        <item>SO</item>
+        <item>SR</item>
+        <item>ST</item>
+        <item>SV</item>
+        <item>SY</item>
+        <item>SZ</item>
+        <item>TC</item>
+        <item>TD</item>
+        <item>TF</item>
+        <item>TG</item>
+        <item>TH</item>
+        <item>TJ</item>
+        <item>TK</item>
+        <item>TL</item>
+        <item>TM</item>
+        <item>TN</item>
+        <item>TO</item>
+        <item>TR</item>
+        <item>TT</item>
+        <item>TV</item>
+        <item>TW</item>
+        <item>TZ</item>
+        <item>UA</item>
+        <item>UG</item>
+        <item>UM</item>
+        <item>US</item>
+        <item>UY</item>
+        <item>UZ</item>
+        <item>VA</item>
+        <item>VC</item>
+        <item>VE</item>
+        <item>VG</item>
+        <item>VI</item>
+        <item>VN</item>
+        <item>VU</item>
+        <item>WF</item>
+        <item>WS</item>
+        <item>YE</item>
+        <item>YT</item>
+        <item>ZA</item>
+        <item>ZM</item>
+        <item>ZW</item>
+        <item>KR</item>
+        <item>XG</item>
+        <item>SU</item>
+        <item>SS</item>
+    </string-array>
 
-    <!-- Movies. Arrays for language preferences -->
-    <array name="preferences_languages_list_array">
+    <!-- Arrays for language preferences -->
+    <string-array name="preferences_language_list_array">
         <item>@string/preferences_language_locale_title</item>
         <item>@string/preferences_language_xx_title</item>
         <item>@string/preferences_language_aa_title</item>
@@ -214,9 +692,8 @@
         <item>@string/preferences_language_bs_title</item>
         <item>@string/preferences_language_ch_title</item>
         <item>@string/preferences_language_be_title</item>
-    </array>
-
-    <array name="preferences_movies_language_values_array">
+    </string-array>
+    <string-array name="preferences_language_values_array">
         <item>locale</item>
         <item>xx</item>
         <item>aa</item>
@@ -404,5 +881,445 @@
         <item>bs</item>
         <item>ch</item>
         <item>be</item>
-    </array>
+    </string-array>
+
+    <!-- Arrays for order preferences -->
+    <string-array name="preferences_order_list_array">
+        <item>@string/preferences_order_descending_title</item>
+        <item>@string/preferences_order_ascending_title</item>
+    </string-array>
+    <string-array name="preferences_order_values_array">
+        <item>.desc</item>
+        <item>.asc</item>
+    </string-array>
+
+    <!-- Movies. Arrays for sort order preferences -->
+    <string-array name="preferences_movies_sort_by_list_array">
+        <item>@string/preferences_movies_sort_by_popularity_title</item>
+        <item>@string/preferences_movies_sort_by_original_title_title</item>
+        <item>@string/preferences_movies_sort_by_vote_average_title</item>
+        <item>@string/preferences_movies_sort_by_primary_release_date_title</item>
+        <item>@string/preferences_movies_sort_by_revenue_title</item>
+    </string-array>
+    <string-array name="preferences_movies_sort_by_values_array">
+        <item>popularity</item>
+        <item>original_title</item>
+        <item>voteAverage</item>
+        <item>primary_release_date</item>
+        <item>revenue</item>
+    </string-array>
+
+    <!-- Arrays for movies certification preferences -->
+    <string-array name="preferences_movies_certification_US_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_US_G_title</item>
+        <item>@string/preferences_movies_certification_US_PG_title</item>
+        <item>@string/preferences_movies_certification_US_PG_13_title</item>
+        <item>@string/preferences_movies_certification_US_R_title</item>
+        <item>@string/preferences_movies_certification_US_NC_17_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_US_values_array">
+        <item>NR</item>
+        <item>G</item>
+        <item>PG</item>
+        <item>PG-13</item>
+        <item>R</item>
+        <item>NC-17</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_CA_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_CA_G_title</item>
+        <item>@string/preferences_movies_certification_CA_PG_title</item>
+        <item>@string/preferences_movies_certification_CA_14A_title</item>
+        <item>@string/preferences_movies_certification_CA_18A_title</item>
+        <item>@string/preferences_movies_certification_CA_A_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_CA_values_array">
+        <item>NR</item>
+        <item>G</item>
+        <item>PG</item>
+        <item>14A</item>
+        <item>18A</item>
+        <item>A</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_AU_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_AU_E_title</item>
+        <item>@string/preferences_movies_certification_AU_G_title</item>
+        <item>@string/preferences_movies_certification_AU_PG_title</item>
+        <item>@string/preferences_movies_certification_AU_M_title</item>
+        <item>@string/preferences_movies_certification_AU_MA15_title</item>
+        <item>@string/preferences_movies_certification_AU_R18_title</item>
+        <item>@string/preferences_movies_certification_AU_X18_title</item>
+        <item>@string/preferences_movies_certification_AU_RC_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_AU_values_array">
+        <item>NR</item>
+        <item>E</item>
+        <item>G</item>
+        <item>PG</item>
+        <item>M</item>
+        <item>MA15+</item>
+        <item>R18+</item>
+        <item>X18+</item>
+        <item>RC</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_DE_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_DE_0_title</item>
+        <item>@string/preferences_movies_certification_DE_6_title</item>
+        <item>@string/preferences_movies_certification_DE_12_title</item>
+        <item>@string/preferences_movies_certification_DE_16_title</item>
+        <item>@string/preferences_movies_certification_DE_18_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_DE_values_array">
+        <item>NR</item>
+        <item>0</item>
+        <item>6</item>
+        <item>12</item>
+        <item>16</item>
+        <item>18</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_FR_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_FR_U_title</item>
+        <item>@string/preferences_movies_certification_FR_10_title</item>
+        <item>@string/preferences_movies_certification_FR_12_title</item>
+        <item>@string/preferences_movies_certification_FR_16_title</item>
+        <item>@string/preferences_movies_certification_FR_18_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_FR_values_array">
+        <item>NR</item>
+        <item>U</item>
+        <item>10</item>
+        <item>12</item>
+        <item>16</item>
+        <item>18</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_NZ_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_NZ_G_title</item>
+        <item>@string/preferences_movies_certification_NZ_PG_title</item>
+        <item>@string/preferences_movies_certification_NZ_M_title</item>
+        <item>@string/preferences_movies_certification_NZ_13_title</item>
+        <item>@string/preferences_movies_certification_NZ_15_title</item>
+        <item>@string/preferences_movies_certification_NZ_16_title</item>
+        <item>@string/preferences_movies_certification_NZ_18_title</item>
+        <item>@string/preferences_movies_certification_NZ_R_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_NZ_values_array">
+        <item>NR</item>
+        <item>G</item>
+        <item>PG</item>
+        <item>M</item>
+        <item>13</item>
+        <item>15</item>
+        <item>16</item>
+        <item>18</item>
+        <item>R</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_IN_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_IN_U_title</item>
+        <item>@string/preferences_movies_certification_IN_UA_title</item>
+        <item>@string/preferences_movies_certification_IN_A_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_IN_values_array">
+        <item>NR</item>
+        <item>U</item>
+        <item>UA</item>
+        <item>A</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_GB_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_GB_U_title</item>
+        <item>@string/preferences_movies_certification_GB_PG_title</item>
+        <item>@string/preferences_movies_certification_GB_12A_title</item>
+        <item>@string/preferences_movies_certification_GB_12_title</item>
+        <item>@string/preferences_movies_certification_GB_15_title</item>
+        <item>@string/preferences_movies_certification_GB_18_title</item>
+        <item>@string/preferences_movies_certification_GB_R18_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_GB_values_array">
+        <item>NR</item>
+        <item>U</item>
+        <item>PG</item>
+        <item>12A</item>
+        <item>12</item>
+        <item>15</item>
+        <item>18</item>
+        <item>R18</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_NL_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_NL_AL_title</item>
+        <item>@string/preferences_movies_certification_NL_6_title</item>
+        <item>@string/preferences_movies_certification_NL_9_title</item>
+        <item>@string/preferences_movies_certification_NL_12_title</item>
+        <item>@string/preferences_movies_certification_NL_16_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_NL_values_array">
+        <item>NR</item>
+        <item>AL</item>
+        <item>6</item>
+        <item>9</item>
+        <item>12</item>
+        <item>16</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_BR_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_BR_L_title</item>
+        <item>@string/preferences_movies_certification_BR_10_title</item>
+        <item>@string/preferences_movies_certification_BR_12_title</item>
+        <item>@string/preferences_movies_certification_BR_14_title</item>
+        <item>@string/preferences_movies_certification_BR_16_title</item>
+        <item>@string/preferences_movies_certification_BR_18_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_BR_values_array">
+        <item>NR</item>
+        <item>L</item>
+        <item>10</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_FI_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_FI_S_title</item>
+        <item>@string/preferences_movies_certification_FI_K7_title</item>
+        <item>@string/preferences_movies_certification_FI_K12_title</item>
+        <item>@string/preferences_movies_certification_FI_K16_title</item>
+        <item>@string/preferences_movies_certification_FI_K18_title</item>
+        <item>@string/preferences_movies_certification_FI_KK_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_FI_values_array">
+        <item>NR</item>
+        <item>S</item>
+        <item>K-7</item>
+        <item>K-12</item>
+        <item>K-16</item>
+        <item>K-18</item>
+        <item>KK</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_BG_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_BG_A_title</item>
+        <item>@string/preferences_movies_certification_BG_B_title</item>
+        <item>@string/preferences_movies_certification_BG_C_title</item>
+        <item>@string/preferences_movies_certification_BG_D_title</item>
+        <item>@string/preferences_movies_certification_BG_X_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_BG_values_array">
+        <item>NR</item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>X</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_ES_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_ES_APTA_title</item>
+        <item>@string/preferences_movies_certification_ES_7_title</item>
+        <item>@string/preferences_movies_certification_ES_12_title</item>
+        <item>@string/preferences_movies_certification_ES_16_title</item>
+        <item>@string/preferences_movies_certification_ES_18_title</item>
+        <item>@string/preferences_movies_certification_ES_X_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_ES_values_array">
+        <item>NR</item>
+        <item>APTA</item>
+        <item>7</item>
+        <item>12</item>
+        <item>16</item>
+        <item>18</item>
+        <item>X</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_PH_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_PH_G_title</item>
+        <item>@string/preferences_movies_certification_PH_PG_title</item>
+        <item>@string/preferences_movies_certification_PH_R13_title</item>
+        <item>@string/preferences_movies_certification_PH_R16_title</item>
+        <item>@string/preferences_movies_certification_PH_R18_title</item>
+        <item>@string/preferences_movies_certification_PH_X_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_PH_values_array">
+        <item>NR</item>
+        <item>G</item>
+        <item>PG</item>
+        <item>R-13</item>
+        <item>R-16</item>
+        <item>R-18</item>
+        <item>X</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_PT_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_PT_Publicos_title</item>
+        <item>@string/preferences_movies_certification_PT_M3_title</item>
+        <item>@string/preferences_movies_certification_PT_M6_title</item>
+        <item>@string/preferences_movies_certification_PT_M12_title</item>
+        <item>@string/preferences_movies_certification_PT_M14_title</item>
+        <item>@string/preferences_movies_certification_PT_M16_title</item>
+        <item>@string/preferences_movies_certification_PT_M18_title</item>
+        <item>@string/preferences_movies_certification_PT_P_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_PT_values_array">
+        <item>NR</item>
+        <item>Públicos</item>
+        <item>M/3</item>
+        <item>M/6</item>
+        <item>M/12</item>
+        <item>M/14</item>
+        <item>M/16</item>
+        <item>M/18</item>
+        <item>P</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_MY_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_MY_U_title</item>
+        <item>@string/preferences_movies_certification_MY_P13_title</item>
+        <item>@string/preferences_movies_certification_MY_18SG_title</item>
+        <item>@string/preferences_movies_certification_MY_18SX_title</item>
+        <item>@string/preferences_movies_certification_MY_18PA_title</item>
+        <item>@string/preferences_movies_certification_MY_18PL_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_MY_values_array">
+        <item>NR</item>
+        <item>U</item>
+        <item>P13</item>
+        <item>18SG</item>
+        <item>18SX</item>
+        <item>18PA</item>
+        <item>18PL</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_SE_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_SE_Btl_title</item>
+        <item>@string/preferences_movies_certification_SE_7_title</item>
+        <item>@string/preferences_movies_certification_SE_11_title</item>
+        <item>@string/preferences_movies_certification_SE_15_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_SE_values_array">
+        <item>NR</item>
+        <item>Btl</item>
+        <item>7</item>
+        <item>11</item>
+        <item>15</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_DK_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_DK_A_title</item>
+        <item>@string/preferences_movies_certification_DK_7_title</item>
+        <item>@string/preferences_movies_certification_DK_11_title</item>
+        <item>@string/preferences_movies_certification_DK_15_title</item>
+        <item>@string/preferences_movies_certification_DK_F_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_DK_values_array">
+        <item>NR</item>
+        <item>A</item>
+        <item>7</item>
+        <item>11</item>
+        <item>15</item>
+        <item>F</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_NO_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_NO_A_title</item>
+        <item>@string/preferences_movies_certification_NO_6_title</item>
+        <item>@string/preferences_movies_certification_NO_9_title</item>
+        <item>@string/preferences_movies_certification_NO_12_title</item>
+        <item>@string/preferences_movies_certification_NO_15_title</item>
+        <item>@string/preferences_movies_certification_NO_18_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_NO_values_array">
+        <item>NR</item>
+        <item>A</item>
+        <item>6</item>
+        <item>9</item>
+        <item>12</item>
+        <item>15</item>
+        <item>18</item>
+    </string-array>
+
+    <string-array name="preferences_movies_certification_HU_list_array">
+        <item>@string/preferences_movies_certification_NR_title</item>
+        <item>@string/preferences_movies_certification_HU_KN_title</item>
+        <item>@string/preferences_movies_certification_HU_6_title</item>
+        <item>@string/preferences_movies_certification_HU_12_title</item>
+        <item>@string/preferences_movies_certification_HU_16_title</item>
+        <item>@string/preferences_movies_certification_HU_18_title</item>
+        <item>@string/preferences_movies_certification_HU_X_title</item>
+    </string-array>
+    <string-array name="preferences_movies_certification_HU_values_array">
+        <item>NR</item>
+        <item>KN</item>
+        <item>6</item>
+        <item>12</item>
+        <item>16</item>
+        <item>18</item>
+        <item>X</item>
+    </string-array>
+
+    <!-- Arrays for sorting movies preferences -->
+    <string-array name="preferences_now_playing_movies_how_list_array">
+        <item>@string/preferences_movies_how_theaters_title</item>
+        <item>@string/preferences_movies_how_digital_title</item>
+        <item>@string/preferences_movies_how_physical_title</item>
+    </string-array>
+    <string-array name="preferences_now_playing_movies_how_values_array">
+        <item>@string/preferences_movies_how_theaters_value</item>
+        <item>@string/preferences_movies_how_digital_value</item>
+        <item>@string/preferences_movies_how_physical_value</item>
+    </string-array>
+
+    <string-array name="preferences_upcoming_movies_how_list_array">
+        <item>@string/preferences_movies_how_theaters_title</item>
+        <item>@string/preferences_movies_how_digital_title</item>
+        <item>@string/preferences_movies_how_physical_title</item>
+    </string-array>
+    <string-array name="preferences_upcoming_movies_how_values_array">
+        <item>@string/preferences_movies_how_theaters_value</item>
+        <item>@string/preferences_movies_how_digital_value</item>
+        <item>@string/preferences_movies_how_physical_value</item>
+    </string-array>
+
+    <string-array name="preferences_upcoming_movies_when_list_array">
+        <item>@string/preferences_movies_when_this_week_title</item>
+        <item>@string/preferences_movies_when_next_week_title</item>
+        <item>@string/preferences_movies_when_any_date_title</item>
+    </string-array>
+    <string-array name="preferences_upcoming_movies_when_values_array">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="preferences_upcoming_movies_where_list_array">
+        <item>@string/preferences_movies_where_your_country_title</item>
+        <item>@string/preferences_movies_where_any_country_title</item>
+    </string-array>
+    <string-array name="preferences_upcoming_movies_where_values_array">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
 </resources>

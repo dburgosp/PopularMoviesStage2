@@ -4,7 +4,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Paint;
@@ -142,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<View> animatedViews = new ArrayList<>();
     private LinearLayout.LayoutParams backdropLinearLayoutParams, posterLinearLayoutParams;
     private RelativeLayout.LayoutParams backdropRelativeLayoutParams, posterRelativeLayoutParams;
-    private int vote_count, nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
+    private int voteCount = 0, nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
             upcomingMoviesCurrentPage = 1, animatedViewCurrentIndex = 0;
-    private String language, region, certification;
-    private Double vote_average;
+    private String language, region, certification, sortOrder;
+    private Double voteAverage = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,17 +192,12 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method to get current values from preferences for query parameters.
      */
     private void getMyPreferences() {
-        // Get current language for showing results.
         language = MyPreferences.getIsoLanguage(this);
-
-        region = sharedPref.getString(getString(R.string.preferences_region_key),
-                getString(R.string.preferences_default_value));
-        certification = sharedPref.getString(getString(R.string.preferences_region_key),
-                getString(R.string.preferences_default_value));
-        vote_count = sharedPref.getString(getString(R.string.preferences_region_key),
-                getString(R.string.preferences_default_value));
-        vote_average = sharedPref.getString(getString(R.string.preferences_region_key),
-                getString(R.string.preferences_default_value));
+        region = MyPreferences.getIsoRegion(this);
+        sortOrder = MyPreferences.getMoviesSortOrder(this);
+        certification = MyPreferences.getMoviesCertification(this);
+        //voteAverage = MyPreferences.getMoviesVoteAverage(this);
+        //voteCount = MyPreferences.getMoviesVoteCount(this);
     }
 
     /**
@@ -702,8 +696,7 @@ public class MainActivity extends AppCompatActivity implements
                         upcomingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_UPCOMING, upcomingMoviesCurrentPage,
-                                Locale.getDefault().getLanguage(),
-                                Locale.getDefault().getCountry());
+                                language, region, sortOrder, certification, voteCount, voteAverage);
                     } else {
                         // There is no connection. Show error message.
                         upcomingMoviesMessage.setText(
@@ -722,8 +715,7 @@ public class MainActivity extends AppCompatActivity implements
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, nowPlayingMoviesCurrentPage,
-                                Locale.getDefault().getLanguage(),
-                                Locale.getDefault().getCountry());
+                                language, region, sortOrder, certification, voteCount, voteAverage);
                     } else {
                         // There is no connection. Show error message.
                         nowPlayingMoviesMessage.setText(

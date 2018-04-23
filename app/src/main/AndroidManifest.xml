@@ -83,17 +83,8 @@
                 android:value=".activities.MoviesListActivity" />
         </activity>
         <activity
-            android:name=".activities.ConfigUpcomingMoviesActivity"
+            android:name=".activities.ConfigMoviesActivity"
             android:label="@string/movies_sort_by_upcoming"
-            android:parentActivityName=".activities.MoviesActivity"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MoviesActivity" />
-        </activity>
-        <activity
-            android:name=".activities.ConfigNowPlayingMoviesActivity"
-            android:label="@string/movies_sort_by_now_playing"
             android:parentActivityName=".activities.MoviesActivity"
             android:screenOrientation="portrait">
             <meta-data

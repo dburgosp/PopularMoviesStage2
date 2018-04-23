@@ -118,20 +118,10 @@
     <string name="view_all_upcoming_movies">View the full list of %d upcoming movies to be released in %s</string>
 
     <!-- Texts for preferences -->
-    <string name="preferences_sort_by_key">sort_by</string>
-    <string name="preferences_sort_by_title">Sort order</string>
-    <string name="preferences_sort_by_popularity_asc_title">Popularity (ascending)</string>
-    <string name="preferences_sort_by_popularity_desc_title">Popularity (descending)</string>
-    <string name="preferences_sort_by_year_asc_title">Release date (ascending)</string>
-    <string name="preferences_sort_by_year_desc_title">Release date (descending)</string>
-    <string name="preferences_sort_by_rating_asc_title">Users rating (ascending)</string>
-    <string name="preferences_sort_by_rating_desc_title">Users rating (descending)</string>
-    <string name="preferences_sort_by_popularity_asc_value">1</string>
-    <string name="preferences_sort_by_popularity_desc_value">2</string>
-    <string name="preferences_sort_by_year_asc_value">3</string>
-    <string name="preferences_sort_by_year_desc_value">4</string>
-    <string name="preferences_sort_by_rating_asc_value">5</string>
-    <string name="preferences_sort_by_rating_desc_value">6</string>
+    <string name="preferences_order_key">order</string>
+    <string name="preferences_order_title">Order</string>
+    <string name="preferences_order_descending_title">Descending order</string>
+    <string name="preferences_order_ascending_title">Ascending order</string>
 
     <string name="preferences_language_key">language</string>
     <string name="preferences_language_title">Language for results</string>
@@ -326,70 +316,442 @@
     <string name="preferences_region_key">region</string>
     <string name="preferences_region_title">Region for results</string>
     <string name="preferences_region_locale_title">Locale region</string>
-    <string name="preferences_region_locale_value">1</string>
+    <string name="preferences_region_AD_title">Andorra</string>
+    <string name="preferences_region_AE_title">United Arab Emirates</string>
+    <string name="preferences_region_AF_title">Afghanistan</string>
+    <string name="preferences_region_AG_title">Antigua and Barbuda</string>
+    <string name="preferences_region_AI_title">Anguilla</string>
+    <string name="preferences_region_AL_title">Albania</string>
+    <string name="preferences_region_AM_title">Armenia</string>
+    <string name="preferences_region_AN_title">Netherlands Antilles</string>
+    <string name="preferences_region_AO_title">Angola</string>
+    <string name="preferences_region_AQ_title">Antarctica</string>
+    <string name="preferences_region_AR_title">Argentina</string>
+    <string name="preferences_region_AS_title">American Samoa</string>
+    <string name="preferences_region_AT_title">Austria</string>
+    <string name="preferences_region_AU_title">Australia</string>
+    <string name="preferences_region_AW_title">Aruba</string>
+    <string name="preferences_region_AZ_title">Azerbaijan</string>
+    <string name="preferences_region_BA_title">Bosnia and Herzegovina</string>
+    <string name="preferences_region_BB_title">Barbados</string>
+    <string name="preferences_region_BD_title">Bangladesh</string>
+    <string name="preferences_region_BE_title">Belgium</string>
+    <string name="preferences_region_BF_title">Burkina Faso</string>
+    <string name="preferences_region_BG_title">Bulgaria</string>
+    <string name="preferences_region_BH_title">Bahrain</string>
+    <string name="preferences_region_BI_title">Burundi</string>
+    <string name="preferences_region_BJ_title">Benin</string>
+    <string name="preferences_region_BM_title">Bermuda</string>
+    <string name="preferences_region_BN_title">Brunei Darussalam</string>
+    <string name="preferences_region_BO_title">Bolivia</string>
+    <string name="preferences_region_BR_title">Brazil</string>
+    <string name="preferences_region_BS_title">Bahamas</string>
+    <string name="preferences_region_BT_title">Bhutan</string>
+    <string name="preferences_region_BV_title">Bouvet Island</string>
+    <string name="preferences_region_BW_title">Botswana</string>
+    <string name="preferences_region_BZ_title">Belize</string>
+    <string name="preferences_region_BY_title">Belarus</string>
+    <string name="preferences_region_CA_title">Canada</string>
+    <string name="preferences_region_CC_title">Cocos  Islands</string>
+    <string name="preferences_region_CD_title">Congo</string>
+    <string name="preferences_region_CF_title">Central African Republic</string>
+    <string name="preferences_region_CG_title">Congo</string>
+    <string name="preferences_region_CH_title">Switzerland</string>
+    <string name="preferences_region_CI_title">Cote D\'Ivoire</string>
+    <string name="preferences_region_CK_title">Cook Islands</string>
+    <string name="preferences_region_CL_title">Chile</string>
+    <string name="preferences_region_CM_title">Cameroon</string>
+    <string name="preferences_region_CN_title">China</string>
+    <string name="preferences_region_CO_title">Colombia</string>
+    <string name="preferences_region_CR_title">Costa Rica</string>
+    <string name="preferences_region_CS_title">Serbia and Montenegro</string>
+    <string name="preferences_region_CU_title">Cuba</string>
+    <string name="preferences_region_CV_title">Cape Verde</string>
+    <string name="preferences_region_CX_title">Christmas Island</string>
+    <string name="preferences_region_CY_title">Cyprus</string>
+    <string name="preferences_region_CZ_title">Czech Republic</string>
+    <string name="preferences_region_DE_title">Germany</string>
+    <string name="preferences_region_DJ_title">Djibouti</string>
+    <string name="preferences_region_DK_title">Denmark</string>
+    <string name="preferences_region_DM_title">Dominica</string>
+    <string name="preferences_region_DO_title">Dominican Republic</string>
+    <string name="preferences_region_DZ_title">Algeria</string>
+    <string name="preferences_region_EC_title">Ecuador</string>
+    <string name="preferences_region_EE_title">Estonia</string>
+    <string name="preferences_region_EG_title">Egypt</string>
+    <string name="preferences_region_EH_title">Western Sahara</string>
+    <string name="preferences_region_ER_title">Eritrea</string>
+    <string name="preferences_region_ES_title">Spain</string>
+    <string name="preferences_region_ET_title">Ethiopia</string>
+    <string name="preferences_region_FI_title">Finland</string>
+    <string name="preferences_region_FJ_title">Fiji</string>
+    <string name="preferences_region_FK_title">Falkland Islands</string>
+    <string name="preferences_region_RS_title">Serbia</string>
+    <string name="preferences_region_FM_title">Micronesia</string>
+    <string name="preferences_region_FO_title">Faeroe Islands</string>
+    <string name="preferences_region_FR_title">France</string>
+    <string name="preferences_region_GA_title">Gabon</string>
+    <string name="preferences_region_GB_title">United Kingdom</string>
+    <string name="preferences_region_GD_title">Grenada</string>
+    <string name="preferences_region_GE_title">Georgia</string>
+    <string name="preferences_region_GF_title">French Guiana</string>
+    <string name="preferences_region_GH_title">Ghana</string>
+    <string name="preferences_region_GI_title">Gibraltar</string>
+    <string name="preferences_region_GL_title">Greenland</string>
+    <string name="preferences_region_GM_title">Gambia</string>
+    <string name="preferences_region_GN_title">Guinea</string>
+    <string name="preferences_region_GP_title">Guadaloupe</string>
+    <string name="preferences_region_GQ_title">Equatorial Guinea</string>
+    <string name="preferences_region_GR_title">Greece</string>
+    <string name="preferences_region_GS_title">South Georgia and the South Sandwich Islands</string>
+    <string name="preferences_region_GT_title">Guatemala</string>
+    <string name="preferences_region_GU_title">Guam</string>
+    <string name="preferences_region_GW_title">Guinea-Bissau</string>
+    <string name="preferences_region_GY_title">Guyana</string>
+    <string name="preferences_region_HK_title">Hong Kong</string>
+    <string name="preferences_region_HM_title">Heard and McDonald Islands</string>
+    <string name="preferences_region_HN_title">Honduras</string>
+    <string name="preferences_region_HR_title">Croatia</string>
+    <string name="preferences_region_HT_title">Haiti</string>
+    <string name="preferences_region_HU_title">Hungary</string>
+    <string name="preferences_region_ID_title">Indonesia</string>
+    <string name="preferences_region_IE_title">Ireland</string>
+    <string name="preferences_region_IL_title">Israel</string>
+    <string name="preferences_region_IN_title">India</string>
+    <string name="preferences_region_IO_title">British Indian Ocean Territory</string>
+    <string name="preferences_region_IQ_title">Iraq</string>
+    <string name="preferences_region_IR_title">Iran</string>
+    <string name="preferences_region_IS_title">Iceland</string>
+    <string name="preferences_region_IT_title">Italy</string>
+    <string name="preferences_region_JM_title">Jamaica</string>
+    <string name="preferences_region_JO_title">Jordan</string>
+    <string name="preferences_region_JP_title">Japan</string>
+    <string name="preferences_region_KE_title">Kenya</string>
+    <string name="preferences_region_KG_title">Kyrgyz Republic</string>
+    <string name="preferences_region_KH_title">Cambodia</string>
+    <string name="preferences_region_KI_title">Kiribati</string>
+    <string name="preferences_region_KM_title">Comoros</string>
+    <string name="preferences_region_KN_title">St. Kitts and Nevis</string>
+    <string name="preferences_region_KP_title">North Korea</string>
+    <string name="preferences_region_KW_title">Kuwait</string>
+    <string name="preferences_region_KY_title">Cayman Islands</string>
+    <string name="preferences_region_KZ_title">Kazakhstan</string>
+    <string name="preferences_region_LA_title">Lao People\'s Democratic Republic</string>
+    <string name="preferences_region_LB_title">Lebanon</string>
+    <string name="preferences_region_LC_title">St. Lucia</string>
+    <string name="preferences_region_LI_title">Liechtenstein</string>
+    <string name="preferences_region_LK_title">Sri Lanka</string>
+    <string name="preferences_region_LR_title">Liberia</string>
+    <string name="preferences_region_LS_title">Lesotho</string>
+    <string name="preferences_region_LT_title">Lithuania</string>
+    <string name="preferences_region_LU_title">Luxembourg</string>
+    <string name="preferences_region_LV_title">Latvia</string>
+    <string name="preferences_region_LY_title">Libyan Arab Jamahiriya</string>
+    <string name="preferences_region_MA_title">Morocco</string>
+    <string name="preferences_region_MC_title">Monaco</string>
+    <string name="preferences_region_MD_title">Moldova</string>
+    <string name="preferences_region_MG_title">Madagascar</string>
+    <string name="preferences_region_MH_title">Marshall Islands</string>
+    <string name="preferences_region_MK_title">Macedonia</string>
+    <string name="preferences_region_ML_title">Mali</string>
+    <string name="preferences_region_MM_title">Myanmar</string>
+    <string name="preferences_region_MN_title">Mongolia</string>
+    <string name="preferences_region_MO_title">Macao</string>
+    <string name="preferences_region_MP_title">Northern Mariana Islands</string>
+    <string name="preferences_region_MQ_title">Martinique</string>
+    <string name="preferences_region_MR_title">Mauritania</string>
+    <string name="preferences_region_MS_title">Montserrat</string>
+    <string name="preferences_region_MT_title">Malta</string>
+    <string name="preferences_region_MU_title">Mauritius</string>
+    <string name="preferences_region_MV_title">Maldives</string>
+    <string name="preferences_region_MW_title">Malawi</string>
+    <string name="preferences_region_MX_title">Mexico</string>
+    <string name="preferences_region_MY_title">Malaysia</string>
+    <string name="preferences_region_MZ_title">Mozambique</string>
+    <string name="preferences_region_NA_title">Namibia</string>
+    <string name="preferences_region_NC_title">New Caledonia</string>
+    <string name="preferences_region_NE_title">Niger</string>
+    <string name="preferences_region_NF_title">Norfolk Island</string>
+    <string name="preferences_region_NG_title">Nigeria</string>
+    <string name="preferences_region_ME_title">Montenegro</string>
+    <string name="preferences_region_NI_title">Nicaragua</string>
+    <string name="preferences_region_NL_title">Netherlands</string>
+    <string name="preferences_region_NO_title">Norway</string>
+    <string name="preferences_region_NP_title">Nepal</string>
+    <string name="preferences_region_NR_title">Nauru</string>
+    <string name="preferences_region_NU_title">Niue</string>
+    <string name="preferences_region_NZ_title">New Zealand</string>
+    <string name="preferences_region_OM_title">Oman</string>
+    <string name="preferences_region_PA_title">Panama</string>
+    <string name="preferences_region_PE_title">Peru</string>
+    <string name="preferences_region_PF_title">French Polynesia</string>
+    <string name="preferences_region_PG_title">Papua New Guinea</string>
+    <string name="preferences_region_PH_title">Philippines</string>
+    <string name="preferences_region_YU_title">Yugoslavia</string>
+    <string name="preferences_region_XK_title">Kosovo</string>
+    <string name="preferences_region_XC_title">Czechoslovakia</string>
+    <string name="preferences_region_PK_title">Pakistan</string>
+    <string name="preferences_region_PL_title">Poland</string>
+    <string name="preferences_region_PM_title">St. Pierre and Miquelon</string>
+    <string name="preferences_region_PN_title">Pitcairn Island</string>
+    <string name="preferences_region_PR_title">Puerto Rico</string>
+    <string name="preferences_region_PS_title">Palestinian Territory</string>
+    <string name="preferences_region_PT_title">Portugal</string>
+    <string name="preferences_region_PW_title">Palau</string>
+    <string name="preferences_region_PY_title">Paraguay</string>
+    <string name="preferences_region_QA_title">Qatar</string>
+    <string name="preferences_region_RE_title">Reunion</string>
+    <string name="preferences_region_RO_title">Romania</string>
+    <string name="preferences_region_RU_title">Russia</string>
+    <string name="preferences_region_RW_title">Rwanda</string>
+    <string name="preferences_region_SA_title">Saudi Arabia</string>
+    <string name="preferences_region_SB_title">Solomon Islands</string>
+    <string name="preferences_region_SC_title">Seychelles</string>
+    <string name="preferences_region_SD_title">Sudan</string>
+    <string name="preferences_region_SE_title">Sweden</string>
+    <string name="preferences_region_SG_title">Singapore</string>
+    <string name="preferences_region_SH_title">St. Helena</string>
+    <string name="preferences_region_SI_title">Slovenia</string>
+    <string name="preferences_region_SJ_title">Svalbard &amp; Jan Mayen Islands</string>
+    <string name="preferences_region_SK_title">Slovakia</string>
+    <string name="preferences_region_SL_title">Sierra Leone</string>
+    <string name="preferences_region_SM_title">San Marino</string>
+    <string name="preferences_region_SN_title">Senegal</string>
+    <string name="preferences_region_SO_title">Somalia</string>
+    <string name="preferences_region_SR_title">Suriname</string>
+    <string name="preferences_region_ST_title">Sao Tome and Principe</string>
+    <string name="preferences_region_SV_title">El Salvador</string>
+    <string name="preferences_region_SY_title">Syrian Arab Republic</string>
+    <string name="preferences_region_SZ_title">Swaziland</string>
+    <string name="preferences_region_TC_title">Turks and Caicos Islands</string>
+    <string name="preferences_region_TD_title">Chad</string>
+    <string name="preferences_region_TF_title">French Southern Territories</string>
+    <string name="preferences_region_TG_title">Togo</string>
+    <string name="preferences_region_TH_title">Thailand</string>
+    <string name="preferences_region_TJ_title">Tajikistan</string>
+    <string name="preferences_region_TK_title">Tokelau</string>
+    <string name="preferences_region_TL_title">Timor-Leste</string>
+    <string name="preferences_region_TM_title">Turkmenistan</string>
+    <string name="preferences_region_TN_title">Tunisia</string>
+    <string name="preferences_region_TO_title">Tonga</string>
+    <string name="preferences_region_TR_title">Turkey</string>
+    <string name="preferences_region_TT_title">Trinidad and Tobago</string>
+    <string name="preferences_region_TV_title">Tuvalu</string>
+    <string name="preferences_region_TW_title">Taiwan</string>
+    <string name="preferences_region_TZ_title">Tanzania</string>
+    <string name="preferences_region_UA_title">Ukraine</string>
+    <string name="preferences_region_UG_title">Uganda</string>
+    <string name="preferences_region_UM_title">United States Minor Outlying Islands</string>
+    <string name="preferences_region_US_title">United States of America</string>
+    <string name="preferences_region_UY_title">Uruguay</string>
+    <string name="preferences_region_UZ_title">Uzbekistan</string>
+    <string name="preferences_region_VA_title">Holy See</string>
+    <string name="preferences_region_VC_title">St. Vincent and the Grenadines</string>
+    <string name="preferences_region_VE_title">Venezuela</string>
+    <string name="preferences_region_VG_title">British Virgin Islands</string>
+    <string name="preferences_region_VI_title">US Virgin Islands</string>
+    <string name="preferences_region_VN_title">Vietnam</string>
+    <string name="preferences_region_VU_title">Vanuatu</string>
+    <string name="preferences_region_WF_title">Wallis and Futuna Islands</string>
+    <string name="preferences_region_WS_title">Samoa</string>
+    <string name="preferences_region_YE_title">Yemen</string>
+    <string name="preferences_region_YT_title">Mayotte</string>
+    <string name="preferences_region_ZA_title">South Africa</string>
+    <string name="preferences_region_ZM_title">Zambia</string>
+    <string name="preferences_region_ZW_title">Zimbabwe</string>
+    <string name="preferences_region_KR_title">South Korea</string>
+    <string name="preferences_region_XG_title">East Germany</string>
+    <string name="preferences_region_SU_title">Soviet Union</string>
+    <string name="preferences_region_SS_title">South Sudan</string>
 
-    <string name="preferences_certification_key">certification</string>
-    <string name="preferences_certification_title">Content rating</string>
+    <string name="preferences_movies_sort_by_key">movies_sort_by</string>
+    <string name="preferences_movies_sort_by_title">Sort movies by</string>
+    <string name="preferences_movies_sort_by_popularity_title">Popularity</string>
+    <string name="preferences_movies_sort_by_vote_average_title">Users rating</string>
+    <string name="preferences_movies_sort_by_original_title_title">Original title</string>
+    <string name="preferences_movies_sort_by_primary_release_date_title">Release date</string>
+    <string name="preferences_movies_sort_by_revenue_title">Revenue</string>
+    <string name="preferences_movies_sort_by_popularity_desc_title">Popularity (most popular movies first)</string>
+    <string name="preferences_movies_sort_by_popularity_asc_title">Popularity (less popular movies first)</string>
+    <string name="preferences_movies_sort_by_original_title_desc_title">Original title (Z-A)</string>
+    <string name="preferences_movies_sort_by_original_title_asc_title">Original title (A-Z)</string>
+    <string name="preferences_movies_sort_by_vote_average_desc_title">Users rating (best rated movies first)</string>
+    <string name="preferences_movies_sort_by_vote_average_asc_title">Users rating (worst rated movies first)</string>
+    <string name="preferences_movies_sort_by_primary_release_date_desc_title">Release date (most recent movies first)</string>
+    <string name="preferences_movies_sort_by_primary_release_date_asc_title">Release date (oldest movies first)</string>
+    <string name="preferences_movies_sort_by_revenue_desc_title">Revenue (more profitable movies first)</string>
+    <string name="preferences_movies_sort_by_revenue_asc_title">Revenue (less profitable movies first)</string>
+
+    <string name="preferences_certification_key">movies_certification</string>
+    <string name="preferences_certification_title">Content rating under or equal than</string>
+    <string name="preferences_movies_certification_NR_title">No rating information.</string>
+    <string name="preferences_movies_certification_US_G_title">All ages admitted. There is no content that would be objectionable to most parents. This is one of only two ratings dating back to 1968 that still exists today.</string>
+    <string name="preferences_movies_certification_US_PG_title">Some material may not be suitable for children under 10. These films may contain some mild language, crude/suggestive humor, scary moments and/or violence. No drug content is present. There are a few exceptions to this rule. A few racial insults may also be heard.</string>
+    <string name="preferences_movies_certification_US_PG_13_title">Some material may be inappropriate for children under 13. Films given this rating may contain sexual content, brief or partial nudity, some strong language and innuendo, humor, mature themes, political themes, terror and/or intense action violence. However, bloodshed is rarely present. This is the minimum rating at which drug content is present.</string>
+    <string name="preferences_movies_certification_US_R_title">Under 17 requires accompanying parent or adult guardian 21 or older. The parent/guardian is required to stay with the child under 17 through the entire movie, even if the parent gives the child/teenager permission to see the film alone. These films may contain strong profanity, graphic sexuality, nudity, strong violence, horror, gore, and strong drug use. A movie rated R for profanity often has more severe or frequent language than the PG-13 rating would permit. An R-rated movie may have more blood, gore, drug use, nudity, or graphic sexuality than a PG-13 movie would admit.</string>
+    <string name="preferences_movies_certification_US_NC_17_title">These films contain excessive graphic violence, intense or explicit sex, depraved, abhorrent behavior, explicit drug abuse, strong language, explicit nudity, or any other elements which, at present, most parents would consider too strong and therefore off-limits for viewing by their children and teens. NC-17 does not necessarily mean obscene or pornographic in the oft-accepted or legal meaning of those words.</string>
+    <string name="preferences_movies_certification_CA_G_title">All ages.</string>
+    <string name="preferences_movies_certification_CA_PG_title">Parental guidance advised. There is no age restriction but some material may not be suitable for all children.</string>
+    <string name="preferences_movies_certification_CA_14A_title">Persons under 14 years of age must be accompanied by an adult.</string>
+    <string name="preferences_movies_certification_CA_18A_title">Persons under 18 years of age must be accompanied by an adult. In the Maritimes &amp; Manitoba, children under the age of 14 are prohibited from viewing the film.</string>
+    <string name="preferences_movies_certification_CA_A_title">Admittance restricted to people 18 years of age or older. Sole purpose of the film is the portrayal of sexually explicit activity and/or explicit violence.</string>
+    <string name="preferences_movies_certification_AU_E_title">Exempt from classification. Films that are exempt from classification must not contain contentious material (i.e. material that would ordinarily be rated M or higher).</string>
+    <string name="preferences_movies_certification_AU_G_title">General. The content is very mild in impact.</string>
+    <string name="preferences_movies_certification_AU_PG_title">Parental guidance recommended. There are no age restrictions. The content is mild in impact.</string>
+    <string name="preferences_movies_certification_AU_M_title">Recommended for mature audiences. There are no age restrictions. The content is moderate in impact.</string>
+    <string name="preferences_movies_certification_AU_MA15_title">Mature Accompanied. Unsuitable for children younger than 15. Children younger than 15 years must be accompanied by a parent or guardian. The content is strong in impact.</string>
+    <string name="preferences_movies_certification_AU_R18_title">Restricted to 18 years and over. Adults only. The content is high in impact.</string>
+    <string name="preferences_movies_certification_AU_X18_title">Restricted to 18 years and over. Films with this rating have pornographic content. Films classified as X18+ are banned from being sold or rented in all Australian states and are only legally available in the Australian Capital Territory and the Northern Territory. However, importing X18+ material from the two territories to any of the Australian states is legal. The content is sexually explicit in impact.</string>
+    <string name="preferences_movies_certification_AU_RC_title">Refused Classification. Banned from sale or hire in Australia; also generally applies to importation (if inspected by and suspicious to Customs). Private Internet viewing is unenforced and attempts to legally censor such online material has resulted in controversy. Films are rated RC if their content exceeds the guidelines. The content is very high in impact.</string>
+    <string name="preferences_movies_certification_DE_0_title">No age restriction.</string>
+    <string name="preferences_movies_certification_DE_6_title">No children younger than 6 years admitted.</string>
+    <string name="preferences_movies_certification_DE_12_title">Children 12 or older admitted, children between 6 and 11 only when accompanied by parent or a legal guardian.</string>
+    <string name="preferences_movies_certification_DE_16_title">Children 16 or older admitted, nobody under this age admitted.</string>
+    <string name="preferences_movies_certification_DE_18_title">No youth admitted, only adults.</string>
+    <string name="preferences_movies_certification_FR_U_title">Valid for all audiences.</string>
+    <string name="preferences_movies_certification_FR_10_title">Warning: some scenes may be disturbing to young children and sensitive people.</string>
+    <string name="preferences_movies_certification_FR_12_title">Unsuitable for children younger than 12 or forbidden in cinemas for under 12.</string>
+    <string name="preferences_movies_certification_FR_16_title">Unsuitable for children younger than 16 or forbidden in cinemas for under 16.</string>
+    <string name="preferences_movies_certification_FR_18_title">Unsuitable for children younger than 18 or forbidden in cinemas for under 18.</string>
+    <string name="preferences_movies_certification_NZ_G_title">Suitable for general audiences.</string>
+    <string name="preferences_movies_certification_NZ_PG_title">Parental guidance recommended for younger viewers.</string>
+    <string name="preferences_movies_certification_NZ_M_title">Suitable for (but not restricted to) mature audiences 16 years and up.</string>
+    <string name="preferences_movies_certification_NZ_13_title">Restricted to persons 13 years of age and over.</string>
+    <string name="preferences_movies_certification_NZ_15_title">Restricted to persons 15 years of age and over.</string>
+    <string name="preferences_movies_certification_NZ_16_title">Restricted to persons 16 years of age and over.</string>
+    <string name="preferences_movies_certification_NZ_18_title">Restricted to persons 18 years of age and over.</string>
+    <string name="preferences_movies_certification_NZ_R_title">Restricted to a particular class of persons, or for particular purposes, or both.</string>
+    <string name="preferences_movies_certification_IN_U_title">Unrestricted Public Exhibition throughout India, suitable for all age groups. Films under this category should not upset children over 4. Such films may contain educational, social or family-oriented themes. Films under this category may also contain fantasy violence and/or mild bad language.</string>
+    <string name="preferences_movies_certification_IN_UA_title">All ages admitted, but it is advised that children below 12 be accompanied by a parent as the theme or content may be considered intense or inappropriate for young children. Films under this category may contain mature themes, sexual references, mild sex scenes, violence with brief gory images and/or infrequent use of crude language.</string>
+    <string name="preferences_movies_certification_IN_A_title">Restricted to adult audiences (18 years or over). Nobody below the age of 18 may buy/rent an A-rated DVD, VHS, UMD or watch a film in the cinema with this rating. Films under this category may contain adult/disturbing themes, frequent crude language, brutal violence with blood and gore, strong sex scenes and/or scenes of drug abuse which is considered unsuitable for minors.</string>
+    <string name="preferences_movies_certification_GB_U_title">All ages admitted, there is nothing unsuitable for children.</string>
+    <string name="preferences_movies_certification_GB_PG_title">All ages admitted, but certain scenes may be unsuitable for young children. May contain mild language and sex/drugs references. May contain moderate violence if justified by context (e.g. fantasy).</string>
+    <string name="preferences_movies_certification_GB_12A_title">Films under this category are considered to be unsuitable for very young people. Those aged under 12 years are only admitted if accompanied by an adult, aged at least 18 years, at all times during the motion picture. However, it is generally not recommended that children under 12 years should watch the film. Films under this category can contain mature themes, discrimination, soft drugs, moderate swear words, infrequent strong language and moderate violence, sex references and nudity. Sexual activity may be briefly and discreetly portrayed. Sexual violence may be implied or briefly indicated.</string>
+    <string name="preferences_movies_certification_GB_12_title">Home media only since 2002. 12A-rated films are usually given a 12 certificate for the VHS/DVD version unless extra material has been added that requires a higher rating. Nobody younger than 12 can rent or buy a 12-rated VHS, DVD, Blu-ray Disc, UMD or game. The content guidelines are identical to those used for the 12A certificate.</string>
+    <string name="preferences_movies_certification_GB_15_title">Only those over 15 years are admitted. Nobody younger than 15 can rent or buy a 15-rated VHS, DVD, Blu-ray Disc, UMD or game, or watch a film in the cinema with this rating. Films under this category can contain adult themes, hard drugs, frequent strong language and limited use of very strong language, strong violence and strong sex references, and nudity without graphic detail. Sexual activity may be portrayed but without any strong detail. Sexual violence may be shown if discreet and justified by context.</string>
+    <string name="preferences_movies_certification_GB_18_title">Only adults are admitted. Nobody younger than 18 can rent or buy an 18-rated VHS, DVD, Blu-ray Disc, UMD or game, or watch a film in the cinema with this rating. Films under this category do not have limitation on the bad language that is used. Hard drugs are generally allowed, and explicit sex references along with detailed sexual activity are also allowed. Scenes of strong real sex may be permitted if justified by the context. Very strong, gory, and/or sadistic violence is usually permitted. Strong sexual violence is permitted unless it is eroticised or excessively graphic.</string>
+    <string name="preferences_movies_certification_GB_R18_title">Can only be shown at licensed adult cinemas or sold at licensed sex shops, and only to adults, those aged 18 or over. Films under this category are always hard-core pornography, defined as material intended for sexual stimulation and containing clear images of real sexual activity, strong fetish material, explicit animated images, or sight of certain acts such as triple simultaneous penetration and snowballing. There remains a range of material that is often cut from the R18 rating: strong images of injury in BDSM or spanking works, urolagnia, scenes suggesting incest even if staged, references to underage sex or childhood sexual development and aggressive behaviour such as hair-pulling or spitting on a performer are not permitted. More cuts are demanded in this category than any other category.</string>
+    <string name="preferences_movies_certification_NL_AL_title">All ages.</string>
+    <string name="preferences_movies_certification_NL_6_title">Potentially harmful to children under 6 years.</string>
+    <string name="preferences_movies_certification_NL_9_title">Potentially harmful to children under 9 years.</string>
+    <string name="preferences_movies_certification_NL_12_title">Potentially harmful to children under 12 years; broadcasting is not allowed before 8:00 pm.</string>
+    <string name="preferences_movies_certification_NL_16_title">Potentially harmful to children under 16 years; broadcasting is not allowed before 10:00 pm.</string>
+    <string name="preferences_movies_certification_BR_L_title">General Audiences. Do not expose children to potentially harmful content.</string>
+    <string name="preferences_movies_certification_BR_10_title">Not recommended for minors under ten. Violent content or inappropriate language to children, even if of a less intensity.</string>
+    <string name="preferences_movies_certification_BR_12_title">Not recommended for minors under twelve. Scenes can include physical aggression, use of legal drugs and sexual innuendo.</string>
+    <string name="preferences_movies_certification_BR_14_title">Not recommended for minors under fourteen. More violent material, stronger sex references and/or nudity.</string>
+    <string name="preferences_movies_certification_BR_16_title">Not recommended for minors under sixteen. Scenes featuring production, trafficking and/or use of illegal drugs, hyper-realistic sex, sexual violence, abortion, torture, mutilation, suicide, trivialization of violence and death penalty.</string>
+    <string name="preferences_movies_certification_BR_18_title">Not recommended for minors under eighteen. Scenes featuring explicit sex, incest, pedophilia, praising of the use of illegal drugs and violence of a strong imagery impact.</string>
+    <string name="preferences_movies_certification_FI_S_title">For all ages.</string>
+    <string name="preferences_movies_certification_FI_K7_title">Over 7 years.</string>
+    <string name="preferences_movies_certification_FI_K12_title">Over 12 years.</string>
+    <string name="preferences_movies_certification_FI_K16_title">Over 16 years.</string>
+    <string name="preferences_movies_certification_FI_K18_title">Adults only.</string>
+    <string name="preferences_movies_certification_FI_KK_title">Banned from commercial distribution.</string>
+    <string name="preferences_movies_certification_BG_A_title">Recommended for children.</string>
+    <string name="preferences_movies_certification_BG_B_title">Without age restrictions.</string>
+    <string name="preferences_movies_certification_BG_C_title">Not recommended for children under 12.</string>
+    <string name="preferences_movies_certification_BG_D_title">Prohibited for persons under 16.</string>
+    <string name="preferences_movies_certification_BG_X_title">Prohibited for persons under 18.</string>
+    <string name="preferences_movies_certification_ES_APTA_title">General admission.</string>
+    <string name="preferences_movies_certification_ES_7_title">Not recommended for audiences under 7.</string>
+    <string name="preferences_movies_certification_ES_12_title">Not recommended for audiences under 12.</string>
+    <string name="preferences_movies_certification_ES_16_title">Not recommended for audiences under 16.</string>
+    <string name="preferences_movies_certification_ES_18_title">Not recommended for audiences under 18.</string>
+    <string name="preferences_movies_certification_ES_X_title">Prohibited for audiences under 18.</string>
+    <string name="preferences_movies_certification_PH_G_title">General Audiences. Viewers of all ages are admitted.</string>
+    <string name="preferences_movies_certification_PH_PG_title">Parental Guidance. Viewers below 13 years old must be accompanied by a parent or supervising adult.</string>
+    <string name="preferences_movies_certification_PH_R13_title">Restricted-13. Only viewers who are 13 years old and above can be admitted.</string>
+    <string name="preferences_movies_certification_PH_R16_title">Restricted-16. Only viewers who are 16 years old and above can be admitted.</string>
+    <string name="preferences_movies_certification_PH_R18_title">Restricted-18. Only viewers who are 18 years old and above can be admitted.</string>
+    <string name="preferences_movies_certification_PH_X_title">Not For Public Exhibition. X-rated films are not suitable for public exhibition.</string>
+    <string name="preferences_movies_certification_PT_Publicos_title">For all the public (especially designed for children under 3 years of age).</string>
+    <string name="preferences_movies_certification_PT_M3_title">Passed for viewers aged 3 and older.</string>
+    <string name="preferences_movies_certification_PT_M6_title">Passed for viewers aged 6 and older.</string>
+    <string name="preferences_movies_certification_PT_M12_title">Passed for viewers aged 12 and older.</string>
+    <string name="preferences_movies_certification_PT_M14_title">Passed for viewers aged 14 and older.</string>
+    <string name="preferences_movies_certification_PT_M16_title">Passed for viewers aged 16 and older.</string>
+    <string name="preferences_movies_certification_PT_M18_title">Passed for viewers aged 18 and older.</string>
+    <string name="preferences_movies_certification_PT_P_title">Special rating supplementary to the M/18 age rating denoting pornography.</string>
+    <string name="preferences_movies_certification_MY_U_title">For general audiences.</string>
+    <string name="preferences_movies_certification_MY_P13_title">Children under 13 not admitted unless accompanied by an adult.</string>
+    <string name="preferences_movies_certification_MY_18SG_title">Film may contain strong violence, gore or horror/terror people may find objectionable.</string>
+    <string name="preferences_movies_certification_MY_18SX_title">Film may contain sex scenes, nudity or sexual dialogue/references people may find objectionable (despite scenes of sex and nudity being strictly censored off by the LPF).</string>
+    <string name="preferences_movies_certification_MY_18PA_title">Film may contain elements which include religious, social or political aspects people may find objectionable.</string>
+    <string name="preferences_movies_certification_MY_18PL_title">Film may contain strong violence, gore, horror/terror, sex scenes, nudity, sexual dialogues/references, religious, social or political aspects people may find objectionable.</string>
+    <string name="preferences_movies_certification_SE_Btl_title">All ages.</string>
+    <string name="preferences_movies_certification_SE_7_title">Children under the age of 7, who are accompanied by an adult (a person aged 18 or over), are admitted to films that have been passed for children from the age of 7.</string>
+    <string name="preferences_movies_certification_SE_11_title">Children over the age of 7, who are accompanied by an adult, are admitted to films that have been passed for children from the age of 11.</string>
+    <string name="preferences_movies_certification_SE_15_title">Children under the age of 15 are not admitted to any film that is"not approved for viewing by children.</string>
+    <string name="preferences_movies_certification_DK_A_title">Suitable for a general audience.</string>
+    <string name="preferences_movies_certification_DK_7_title">Not recommended for children under 7.</string>
+    <string name="preferences_movies_certification_DK_11_title">For ages 11 and up.</string>
+    <string name="preferences_movies_certification_DK_15_title">For ages 15 and up.</string>
+    <string name="preferences_movies_certification_DK_F_title">Exempt from classification.</string>
+    <string name="preferences_movies_certification_NO_A_title">Suitable for all.</string>
+    <string name="preferences_movies_certification_NO_6_title">6 years (no restriction for children accompanied by an adult).</string>
+    <string name="preferences_movies_certification_NO_9_title">9 years (children down to 6 years accompanied by an adult).</string>
+    <string name="preferences_movies_certification_NO_12_title">12 years (children down to 9 years accompanied by an adult).</string>
+    <string name="preferences_movies_certification_NO_15_title">15 years (young down to 12 years accompanied by an adult).</string>
+    <string name="preferences_movies_certification_NO_18_title">18 years (absolute lower limit).</string>
+    <string name="preferences_movies_certification_HU_KN_title">Without age restriction.</string>
+    <string name="preferences_movies_certification_HU_6_title">Not recommended below age of 6.</string>
+    <string name="preferences_movies_certification_HU_12_title">Not recommended below age of 12.</string>
+    <string name="preferences_movies_certification_HU_16_title">Not recommended below age of 16.</string>
+    <string name="preferences_movies_certification_HU_18_title">Not recommended below age of 18.</string>
+    <string name="preferences_movies_certification_HU_X_title">Restricted below 18, for adults only.</string>
 
     <string name="preferences_upcoming_movies_how_key">upcoming_movies_how</string>
     <string name="preferences_movies_how_title">How</string>
     <string name="preferences_movies_how_theaters_title">In theaters</string>
     <string name="preferences_movies_how_digital_title">Digital movie releases</string>
     <string name="preferences_movies_how_physical_title">On DVD/Blu-ray</string>
-    <string name="preferences_upcoming_movies_how_theaters_value">1</string>
-    <string name="preferences_upcoming_movies_how_digital_value">2</string>
-    <string name="preferences_upcoming_movies_how_physical_value">3</string>
+    <string name="preferences_movies_how_theaters_value">3|2|1</string>
+    <string name="preferences_movies_how_digital_value">4</string>
+    <string name="preferences_movies_how_physical_value">5</string>
 
     <string name="preferences_upcoming_movies_when_key">upcoming_movies_when</string>
     <string name="preferences_movies_when_title">When</string>
     <string name="preferences_movies_when_this_week_title">This week</string>
     <string name="preferences_movies_when_next_week_title">Next week</string>
     <string name="preferences_movies_when_any_date_title">On any date</string>
-    <string name="preferences_upcoming_movies_when_this_week_value">1</string>
-    <string name="preferences_upcoming_movies_when_next_week_value">2</string>
-    <string name="preferences_upcoming_movies_when_any_date_value">3</string>
 
     <string name="preferences_upcoming_movies_where_key">upcoming_movies_where</string>
     <string name="preferences_movies_where_title">Where</string>
-    <string name="preferences_movies_where_your_country_title">In %s</string>
+    <string name="preferences_movies_where_your_country_title">In my country</string>
     <string name="preferences_movies_where_any_country_title">Anywhere in the World</string>
-    <string name="preferences_upcoming_movies_where_your_country_value">1</string>
-    <string name="preferences_upcoming_movies_where_any_country_value">2</string>
 
     <string name="preferences_now_playing_movies_how_key">now_playing_movies_how</string>
-    <string name="preferences_now_playing_movies_how_theaters_value">1</string>
-    <string name="preferences_now_playing_movies_how_digital_value">2</string>
-    <string name="preferences_now_playing_movies_how_physical_value">3</string>
 
     <!-- Plurals -->
 
     <plurals name="genres">
-        <item quantity="one">Genre</item>
-        <item quantity="other">Genres</item>
+        <item quantity="one">Genre"></item>
+        <item quantity="other">Genres"></item>
     </plurals>
     <plurals name="keywords">
-        <item quantity="one">Keyword</item>
-        <item quantity="other">Keywords</item>
+        <item quantity="one">Keyword"></item>
+        <item quantity="other">Keywords"></item>
     </plurals>
     <plurals name="production_companies">
-        <item quantity="one">Production company</item>
-        <item quantity="other">Production companies</item>
+        <item quantity="one">Production company"></item>
+        <item quantity="other">Production companies"></item>
     </plurals>
     <plurals name="production_countries">
-        <item quantity="one">Production country</item>
-        <item quantity="other">Production countries</item>
+        <item quantity="one">Production country"></item>
+        <item quantity="other">Production countries"></item>
     </plurals>
     <plurals name="release_dates">
-        <item quantity="one">Release date</item>
-        <item quantity="other">Release dates</item>
+        <item quantity="one">Release date"></item>
+        <item quantity="other">Release dates"></item>
     </plurals>
     <plurals name="results">
-        <item quantity="one">result</item>
-        <item quantity="other">results</item>
+        <item quantity="one">result"></item>
+        <item quantity="other">results"></item>
     </plurals>
     <plurals name="score_votes">
-        <item quantity="one">(1 vote)</item>
-        <item quantity="other">(%s votes)</item>
+        <item quantity="one">(1 vote)"></item>
+        <item quantity="other">(%s votes)"></item>
     </plurals>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -411,14 +773,14 @@
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+        <item>Always"></item>
+        <item>When possible"></item>
+        <item>Never"></item>
     </string-array>
     <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
+        <item>1"></item>
+        <item>0"></item>
+        <item>-1"></item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
@@ -426,32 +788,32 @@
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
+        <item>15 minutes"></item>
+        <item>30 minutes"></item>
+        <item>1 hour"></item>
+        <item>3 hours"></item>
+        <item>6 hours"></item>
+        <item>Never"></item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
+        <item>15"></item>
+        <item>30"></item>
+        <item>60"></item>
+        <item>180"></item>
+        <item>360"></item>
+        <item>-1"></item>
     </string-array>
 
     <string-array name="list_preference_entries">
-        <item>Entry 1</item>
-        <item>Entry 2</item>
-        <item>Entry 3</item>
+        <item>Entry 1"></item>
+        <item>Entry 2"></item>
+        <item>Entry 3"></item>
     </string-array>
 
     <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+        <item>1"></item>
+        <item>2"></item>
+        <item>3"></item>
     </string-array>
 
     <string-array name="multi_select_list_preference_default_value" />

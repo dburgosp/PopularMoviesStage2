@@ -208,13 +208,20 @@ public class Tmdb {
                         .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
                 break;
             }
-            default: {
+
+            case TMDB_CONTENT_TYPE_POPULAR:
+            case TMDB_CONTENT_TYPE_TOP_RATED: {
                 // Sort by "popular" or "top_rated" means only appending the sort string as a path
                 // to the url.
                 builder.appendPath(TMDB_MOVIE_PATH)
                         .appendPath(contentType);
                 builtInQuery = true;
                 break;
+            }
+
+            default: {
+                Log.e(TAG, "(getTmdbMovies) Wrong content type: " + contentType);
+                return null;
             }
         }
 
