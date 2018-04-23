@@ -154,7 +154,7 @@ public class MyPreferences {
 
         if (isoLanguage.equals(res.getStringArray(R.array.preferences_language_values_array)[0])) {
             // System language.
-            isoLanguage = Locale.getDefault().getISO3Language();
+            isoLanguage = Locale.getDefault().getLanguage();
         } else if (isoLanguage.equals(
                 res.getStringArray(R.array.preferences_language_values_array)[1])) {
             // No language.
@@ -198,6 +198,44 @@ public class MyPreferences {
                     region + ")");
         }
         return certification;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current release type filter for upcoming
+     * movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current release type filter for upcoming movies stored in the
+     * preferences file.
+     */
+    public static String getUpcomingMoviesReleaseType(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        String upcomingMoviesReleaseType = sharedPreferences.getString(
+                res.getString(R.string.preferences_upcoming_movies_how_key),
+                res.getStringArray(R.array.preferences_upcoming_movies_how_values_array)[0]);
+        Log.i(TAG, "(getUpcomingMoviesReleaseType) Release type for upcoming movies: " +
+                upcomingMoviesReleaseType);
+        return upcomingMoviesReleaseType;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current release type filter for now playing
+     * movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current release type filter for now playing movies stored in the
+     * preferences file.
+     */
+    public static String getNowPlayingMoviesReleaseType(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        String nowPlayingMoviesReleaseType = sharedPreferences.getString(
+                res.getString(R.string.preferences_now_playing_movies_how_key),
+                res.getStringArray(R.array.preferences_now_playing_movies_how_values_array)[0]);
+        Log.i(TAG, "(getNowPlayingMoviesReleaseType) Release type for now playing movies: " +
+                nowPlayingMoviesReleaseType);
+        return nowPlayingMoviesReleaseType;
     }
 
     /**
@@ -339,12 +377,12 @@ public class MyPreferences {
             }
 
             case TYPE_MOVIES_WHEN: {
-                ArrayList<String> moviesWhereArray = new ArrayList<>(Arrays.asList(res.getStringArray(
-                        R.array.preferences_upcoming_movies_where_values_array)));
+                ArrayList<String> moviesWhenArray = new ArrayList<>(Arrays.asList(res.getStringArray(
+                        R.array.preferences_upcoming_movies_when_values_array)));
                 value = sharedPreferences.getString(
-                        res.getString(R.string.preferences_upcoming_movies_where_key),
-                        res.getStringArray(R.array.preferences_upcoming_movies_where_values_array)[0]);
-                index = moviesWhereArray.indexOf(value);
+                        res.getString(R.string.preferences_upcoming_movies_when_key),
+                        res.getStringArray(R.array.preferences_upcoming_movies_when_values_array)[0]);
+                index = moviesWhenArray.indexOf(value);
                 break;
             }
 

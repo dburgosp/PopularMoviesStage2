@@ -36,6 +36,7 @@ public class Tmdb {
     public final static String TMDB_CONTENT_TYPE_NOW_PLAYING = "now_playing";
     public final static String TMDB_CONTENT_TYPE_UPCOMING = "upcoming";
     public final static String TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES = "this_week_releases";
+    public final static String TMDB_CONTENT_TYPE_NEXT_WEEK_RELEASES = "next_week_releases";
     public final static String TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT = "buy_and_rent";
     public final static String TMDB_CONTENT_TYPE_GENRES = "genre";
     public final static String TMDB_CONTENT_TYPE_KEYWORDS = "keyword";
@@ -109,16 +110,17 @@ public class Tmdb {
      *                      country (region parameter).
      * @param vote_count    is the minimum number of users votes of the movies in the list.
      * @param vote_average  is the minimum users rating of the movies in the list.
+     * @param releaseType   is the value or list of values to filter release types by.
      * @return an array of {@link TmdbMovie} objects.
      */
     public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, int currentPage,
                                                      String language, String region,
                                                      ArrayList<Integer> values, String sortOrder,
                                                      String certification, int vote_count,
-                                                     Double vote_average) {
+                                                     Double vote_average, String releaseType) {
         Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
-                currentPage + ". Language: " + language + ". Region: " + region +
-                ". Sort order: " + sortOrder);
+                currentPage + ". Language: " + language + ". Region: " + region + ". Sort order: " +
+                sortOrder + ". Release types: " + releaseType);
 
         /* ------------ */
         /* Get the JSON */
@@ -131,55 +133,59 @@ public class Tmdb {
             case TMDB_CONTENT_TYPE_ALL: {
                 // Get all movies.
                 builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendPath(TMDB_MOVIE_PATH);
                 break;
             }
+
             case TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 // Get movies with release type 2 or 3 and with release date between 45 days ago and
                 // today.
                 String initDate = DateTimeUtils.getStringAddedDaysToDate(
                         DateTimeUtils.getCurrentDate(), -45);
                 String currentDate = DateTimeUtils.getStringCurrentDate();
-                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
-                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, currentDate)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, currentDate);
                 break;
             }
+
             case TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES: {
-                // Get movies with release type 2 or 3 that are going to be released this week.
+                // Get movies that are going to be released this week.
                 String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
                         DateTimeUtils.WEEK_DAY_MONDAY);
                 String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
                         DateTimeUtils.WEEK_DAY_SUNDAY);
-                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
-                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
                         .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, monday)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday);
                 break;
             }
-            case TMDB_CONTENT_TYPE_UPCOMING: {
-                // Get movies with release type 2 or 3 and release date greater than today.
-                String initDate = DateTimeUtils.getStringAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), 1);
-                String releaseTypes = TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL + "|" +
-                        TmdbRelease.TMDB_RELEASE_TYPE_THEATRICAL_LIMITED;
+
+            case TMDB_CONTENT_TYPE_NEXT_WEEK_RELEASES: {
+                // Get movies that are going to be released next week.
+                String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_MONDAY);
+                String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_SUNDAY);
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate)
-                        .appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseTypes)
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, monday)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday);
                 break;
             }
+
+            case TMDB_CONTENT_TYPE_UPCOMING: {
+                // Get movies with release date greater than today.
+                String initDate = DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 1);
+                builder.appendPath(TMDB_DISCOVER_PATH)
+                        .appendPath(TMDB_MOVIE_PATH)
+                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate);
+                break;
+            }
+
             case TMDB_CONTENT_TYPE_GENRES: {
                 // Get movies with genres = list of comma-separated values.
                 StringBuilder stringBuilder = new StringBuilder();
@@ -190,10 +196,10 @@ public class Tmdb {
                 }
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, stringBuilder.toString())
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, stringBuilder.toString());
                 break;
             }
+
             case TMDB_CONTENT_TYPE_KEYWORDS: {
                 // Get movies with keywords = list of comma-separated values.
                 StringBuilder stringBuilder = new StringBuilder();
@@ -204,8 +210,7 @@ public class Tmdb {
                 }
                 builder.appendPath(TMDB_DISCOVER_PATH)
                         .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, stringBuilder.toString())
-                        .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, stringBuilder.toString());
                 break;
             }
 
@@ -225,8 +230,9 @@ public class Tmdb {
             }
         }
 
+        // If the query is not a built-in-query (popular, top_rated...) add more parameters.
         if (!builtInQuery) {
-            // If the query is not a built-in-query (popular, top_rated...) add more parameters.
+            builder.appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
             if (!region.equals("") && !region.isEmpty() &&
                     !certification.equals("") && !certification.isEmpty()) {
                 builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION_COUNTRY, region);
@@ -236,6 +242,8 @@ public class Tmdb {
                 builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT, Integer.toString(vote_count));
             if (vote_average > 0.0)
                 builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE, Double.toString(vote_average));
+            if (!releaseType.equals("") && !releaseType.isEmpty())
+                builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseType);
         }
 
         // Common parts in all cases to build the Uri.
@@ -252,14 +260,9 @@ public class Tmdb {
 
         // Use the built Uri to get the JSON document with the results of the query.
         String JSONresponse;
-        try
-
-        {
+        try {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
-        } catch (
-                java.io.IOException e)
-
-        {
+        } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
             Log.e(TAG, "(getTmdbMovies) Error retrieving JSON response: ", e);
             return null;
@@ -270,9 +273,7 @@ public class Tmdb {
         /* -------------- */
 
         // If the JSON string is empty or null, then return null.
-        if (TextUtils.isEmpty(JSONresponse))
-
-        {
+        if (TextUtils.isEmpty(JSONresponse)) {
             Log.i(TAG, "(getTmdbMovies) The JSON string is empty.");
             return null;
         }
@@ -282,9 +283,7 @@ public class Tmdb {
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown.
-        try
-
-        {
+        try {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
 
@@ -310,10 +309,7 @@ public class Tmdb {
                 TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
                 movies.add(movie);
             }
-        } catch (
-                JSONException e)
-
-        {
+        } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
             Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);

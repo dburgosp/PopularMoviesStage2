@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements
     private RelativeLayout.LayoutParams backdropRelativeLayoutParams, posterRelativeLayoutParams;
     private int voteCount = 0, nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
             upcomingMoviesCurrentPage = 1, animatedViewCurrentIndex = 0;
-    private String language, region, certification, sortOrder;
+    private String language, region, certification, sortOrder, releaseType = "";
     private Double voteAverage = 0.0;
 
     @Override
@@ -694,9 +694,12 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // There is an available connection. Fetch results from TMDB.
                         upcomingMoviesMessage.setVisibility(View.GONE);
+                        releaseType = MyPreferences.getUpcomingMoviesReleaseType(
+                                MainActivity.this);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_UPCOMING, upcomingMoviesCurrentPage,
-                                language, region, sortOrder, certification, voteCount, voteAverage);
+                                language, region, sortOrder, certification, voteCount, voteAverage,
+                                releaseType);
                     } else {
                         // There is no connection. Show error message.
                         upcomingMoviesMessage.setText(
@@ -713,9 +716,12 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // There is an available connection. Fetch results from TMDB.
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
+                        releaseType = MyPreferences.getNowPlayingMoviesReleaseType(
+                                MainActivity.this);
                         return new TmdbMoviesAsyncTaskLoader(MainActivity.this,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, nowPlayingMoviesCurrentPage,
-                                language, region, sortOrder, certification, voteCount, voteAverage);
+                                language, region, sortOrder, certification, voteCount, voteAverage,
+                                releaseType);
                     } else {
                         // There is no connection. Show error message.
                         nowPlayingMoviesMessage.setText(

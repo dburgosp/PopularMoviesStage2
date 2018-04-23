@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String contentType, language, region, certification, sortBy;
+    private String contentType, language, region, certification, sortBy, releaseType;
     private int voteCount, currentPage;
     private Double voteAverage;
     private ArrayList<Integer> values = new ArrayList<>();
@@ -40,6 +40,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
         this.voteAverage = 0.0;
         this.voteCount = 0;
         this.certification = "";
+        this.releaseType = "";
     }
 
     /**
@@ -55,10 +56,12 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      *                      country (region parameter).
      * @param voteCount     is the minimum number of users votes of the movies in the list.
      * @param voteAverage   is the minimum users rating of the movies in the list.
+     * @param releaseType   is the value or list of values to filter release types by.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language, String region, String sortBy,
-                                     String certification, int voteCount, Double voteAverage) {
+                                     String certification, int voteCount, Double voteAverage,
+                                     String releaseType) {
         super(context);
         this.contentType = contentType;
         this.currentPage = currentPage;
@@ -69,6 +72,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
         this.certification = certification;
+        this.releaseType = releaseType;
     }
 
     /**
@@ -85,11 +89,12 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      *                      country (region parameter).
      * @param voteCount     is the minimum number of users votes of the movies in the list.
      * @param voteAverage   is the minimum users rating of the movies in the list.
+     * @param releaseType   is the value or list of values to filter release types by.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language, String region, ArrayList<Integer> values,
                                      String sortBy, String certification, int voteCount,
-                                     Double voteAverage) {
+                                     Double voteAverage, String releaseType) {
         super(context);
         this.contentType = contentType;
         this.currentPage = currentPage;
@@ -100,6 +105,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
         this.certification = certification;
+        this.releaseType = releaseType;
     }
 
     /**
@@ -151,7 +157,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
             Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
                     currentPage);
             return Tmdb.getTmdbMovies(contentType, currentPage, language, region, values, sortBy,
-                    certification, voteCount, voteAverage);
+                    certification, voteCount, voteAverage, releaseType);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

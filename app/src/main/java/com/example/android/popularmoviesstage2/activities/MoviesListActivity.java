@@ -255,13 +255,13 @@ public class MoviesListActivity extends AppCompatActivity
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
                             Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage, language, region, genres,
-                            sortOrder, certification, voteCount, voteAverage);
+                            sortOrder, certification, voteCount, voteAverage, "");
                     break;
                 }
                 case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
                             Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage, language, region,
-                            keywords, sortOrder, certification, voteCount, voteAverage);
+                            keywords, sortOrder, certification, voteCount, voteAverage, "");
                     break;
                 }
                 default:

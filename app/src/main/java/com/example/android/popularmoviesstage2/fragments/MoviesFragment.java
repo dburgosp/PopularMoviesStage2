@@ -64,7 +64,7 @@ public class MoviesFragment extends Fragment
 
     private boolean allowClicks = true;
     private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, language, region, sortBy,
-            certification;
+            certification, releaseType;
     private MoviesListAdapter moviesListAdapter;
     private int currentPage = 1, currentScrollPosition = 0, loaderId = 0, voteCount = 0;
     private Double voteAverage = 0.0;
@@ -214,7 +214,7 @@ public class MoviesFragment extends Fragment
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
             loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, currentPage,
-                    language, region, sortBy, certification, voteCount, voteAverage);
+                    language, region, sortBy, certification, voteCount, voteAverage, releaseType);
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -287,30 +287,30 @@ public class MoviesFragment extends Fragment
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
-
-                // Set FAB onClick behaviour.
-                switch (loader.getId()) {
-                    case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
-                        // If we are showing now playing movies info, show FAB and set its onClick
-                        // behaviour for opening ConfigMoviesActivity.
-                        setFloatingActionButton(ConfigMoviesActivity.TYPE_NOW_PLAYING,
-                                resultCodeConfigNowPlayingMovies);
-                        break;
-                    }
-
-                    case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
-                        // If we are showing upcoming movies info, show FAB and set its onClick
-                        // behaviour for opening ConfigMoviesActivity.
-                        setFloatingActionButton(ConfigMoviesActivity.TYPE_UPCOMING,
-                                resultCodeConfigUpcomingMovies);
-                        break;
-                    }
-                }
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 floatingActionButton.setVisibility(View.GONE);
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
+            }
+
+            // Set FAB onClick behaviour anyway.
+            switch (loader.getId()) {
+                case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+                    // If we are showing now playing movies info, show FAB and set its onClick
+                    // behaviour for opening ConfigMoviesActivity.
+                    setFloatingActionButton(ConfigMoviesActivity.TYPE_NOW_PLAYING,
+                            resultCodeConfigNowPlayingMovies);
+                    break;
+                }
+
+                case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                    // If we are showing upcoming movies info, show FAB and set its onClick
+                    // behaviour for opening ConfigMoviesActivity.
+                    setFloatingActionButton(ConfigMoviesActivity.TYPE_UPCOMING,
+                            resultCodeConfigUpcomingMovies);
+                    break;
+                }
             }
         } else {
             // There is no connection. Show error message.
@@ -358,6 +358,20 @@ public class MoviesFragment extends Fragment
         certification = MyPreferences.getMoviesCertification(getContext());
         //voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
         //voteCount = MyPreferences.getMoviesVoteCount(getContext());
+        switch (contentType) {
+            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING: {
+                releaseType = MyPreferences.getNowPlayingMoviesReleaseType(getContext());
+                break;
+            }
+
+            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING: {
+                releaseType = MyPreferences.getUpcomingMoviesReleaseType(getContext());
+                break;
+            }
+
+            default:
+                releaseType = "";
+        }
     }
 
     /**
@@ -412,6 +426,7 @@ public class MoviesFragment extends Fragment
         int posterHeight = posterWidth * 3 / 2;
         moviesListAdapter = new MoviesListAdapter(R.layout.list_item_poster_grid_layout_1,
                 moviesArrayList, posterWidth, posterHeight, listener);
+        moviesListAdapter.clearMoviesArrayList();
         recyclerView.setAdapter(moviesListAdapter);
 
         // Listen for scroll changes on the recycler view, in order to know if it is necessary to

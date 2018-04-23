@@ -78,6 +78,7 @@ public class ConfigMoviesActivity extends AppCompatActivity {
             }
 
             case TYPE_UPCOMING: {
+                // Show all.
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_how_list_array),
                         MyPreferences.TYPE_MOVIES_HOW);
