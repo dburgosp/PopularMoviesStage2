@@ -9,8 +9,9 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.ImageView;
@@ -60,8 +61,14 @@ public class PersonDetailsActivity extends AppCompatActivity {
         // Define transitions to exit and enter to this activity.
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());
+        Slide slideIn = new Slide();
+        slideIn.setDuration(250);
+        slideIn.setSlideEdge(Gravity.RIGHT);
+        getWindow().setEnterTransition(slideIn);
+        Slide slideOut = new Slide();
+        slideOut.setDuration(250);
+        slideOut.setSlideEdge(Gravity.LEFT);
+        getWindow().setExitTransition(slideOut);
         supportPostponeEnterTransition();
 
         setContentView(R.layout.activity_person_details);

@@ -77,8 +77,7 @@ public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
      */
     @Override
     public ArrayList<TmdbPerson> loadInBackground() {
-        if (Tmdb.isAllowedSortOrder(contentType) &&
-                currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
+        if (currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
                     currentPage);

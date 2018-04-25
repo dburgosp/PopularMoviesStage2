@@ -162,10 +162,12 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<View> animatedViews = new ArrayList<>();
     private LinearLayout.LayoutParams backdropLinearLayoutParams, posterLinearLayoutParams;
     private RelativeLayout.LayoutParams backdropRelativeLayoutParams, posterRelativeLayoutParams;
-    private int voteCount = 0, nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
+    private int moviesVoteCount = 0, nowPlayingMoviesCurrentPage = 1, popularPeopleCurrentPage = 1,
             upcomingMoviesCurrentPage = 1, animatedViewCurrentIndex = 0;
-    private String language, region, certification, sortOrder, releaseType = "";
-    private Double voteAverage = 0.0;
+    private String language, region, moviesCertification, moviesSortBy, moviesUpcomingReleaseType,
+            moviesNowPlayingReleaseType, moviesUpcomingInitDate, moviesUpcomingEndDate,
+            moviesNowPlayingInitDate, moviesNowPlayingEndDate;
+    private Double moviesVoteAverage = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements
         slideOut.setDuration(250);
         slideOut.setSlideEdge(Gravity.LEFT);
         getWindow().setExitTransition(slideOut);
+        supportPostponeEnterTransition();
 
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
@@ -258,12 +261,19 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method to get current values from preferences for query parameters.
      */
     private void getMyPreferences() {
-        sortOrder = MyPreferences.getMoviesSortOrder(this);
+        moviesSortBy = MyPreferences.getMoviesSortOrder(this);
         language = MyPreferences.getIsoLanguage(this);
         region = MyPreferences.getIsoRegion(this);
-        certification = MyPreferences.getMoviesCertification(this);
-        voteAverage = MyPreferences.getMoviesVoteAverage(this);
-        voteCount = MyPreferences.getMoviesVoteCount(this);
+        moviesCertification = MyPreferences.getMoviesCertification(this);
+        moviesVoteAverage = MyPreferences.getMoviesVoteAverage(this);
+        moviesVoteCount = MyPreferences.getMoviesVoteCount(this);
+        moviesUpcomingReleaseType = MyPreferences.getUpcomingMoviesReleaseType(this);
+        moviesUpcomingInitDate = MyPreferences.getUpcomingMoviesInitDate(this);
+        moviesUpcomingEndDate = MyPreferences.getUpcomingMoviesEndDate(this);
+        moviesNowPlayingReleaseType = MyPreferences.getNowPlayingMoviesReleaseType(this);
+        moviesNowPlayingInitDate =  DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), -45);
+        moviesNowPlayingEndDate = DateTimeUtils.getStringCurrentDate();
     }
 
     /**
@@ -318,8 +328,6 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method to initially set every element in the main layout.
      */
     private void setLayoutElements() {
-        String sectionTitle;
-
         // All movies section. Click to start MoviesActivity with animation.
         allMoviesCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,10 +341,8 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         // Upcoming movies section.
-        sectionTitle = getString(R.string.movies_sort_by_upcoming) + " " +
-                MyPreferences.getUpcomingMoviesWhenTitle(this);
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, sectionTitle, 5000);
+                true, getString(R.string.movies_sort_by_upcoming), 5000);
         if (upcomingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             upcomingMoviesViewFlipper = (ViewFlipperIndicator) upcomingMoviesLayout.findViewById(
@@ -785,7 +791,6 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
             Context context = MainActivity.this;
-            String initDate, endDate;
             switch (id) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     upcomingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
@@ -793,13 +798,12 @@ public class MainActivity extends AppCompatActivity implements
                         // There is an available connection. Fetch upcoming movies from TMDB.
                         upcomingMoviesMessageHeader.setVisibility(View.GONE);
                         upcomingMoviesMessage.setVisibility(View.GONE);
-                        initDate = MyPreferences.getUpcomingMoviesInitDate(context);
-                        endDate = MyPreferences.getUpcomingMoviesEndDate(context);
                         return new TmdbMoviesAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_UPCOMING, null,
-                                upcomingMoviesCurrentPage, language, region, sortOrder,
-                                certification, voteCount, voteAverage, releaseType, initDate,
-                                endDate);
+                                upcomingMoviesCurrentPage, language, region, moviesSortBy,
+                                moviesCertification, moviesVoteCount, moviesVoteAverage,
+                                moviesUpcomingReleaseType, moviesUpcomingInitDate,
+                                moviesUpcomingEndDate);
                     } else {
                         // There is no connection. Show error message.
                         upcomingMoviesMessage.setText(
@@ -817,14 +821,12 @@ public class MainActivity extends AppCompatActivity implements
                         // There is an available connection. Fetch Fetch now playing movies from
                         // TMDB.
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
-                        initDate = DateTimeUtils.getStringAddedDaysToDate(
-                                DateTimeUtils.getCurrentDate(), -45);
-                        endDate = DateTimeUtils.getStringCurrentDate();
                         return new TmdbMoviesAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, null,
-                                nowPlayingMoviesCurrentPage, language, region, sortOrder,
-                                certification, voteCount, voteAverage, releaseType, initDate,
-                                endDate);
+                                nowPlayingMoviesCurrentPage, language, region, moviesSortBy,
+                                moviesCertification, moviesVoteCount, moviesVoteAverage,
+                                moviesNowPlayingReleaseType, moviesNowPlayingInitDate,
+                                moviesNowPlayingEndDate);
                     } else {
                         // There is no connection. Show error message.
                         nowPlayingMoviesMessage.setText(
