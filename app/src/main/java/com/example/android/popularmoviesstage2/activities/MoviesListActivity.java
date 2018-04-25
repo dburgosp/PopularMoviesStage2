@@ -251,17 +251,19 @@ public class MoviesListActivity extends AppCompatActivity
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
             connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
+            Context context = MoviesListActivity.this;
+            String releaseType = "", initDate = "", endDate = "";
             switch (id) {
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
-                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_CONTENT_TYPE_GENRES, currentPage, language, region, genres,
-                            sortOrder, certification, voteCount, voteAverage, "");
+                    loader = new TmdbMoviesAsyncTaskLoader(context, Tmdb.TMDB_CONTENT_TYPE_GENRES,
+                            genres, currentPage, language, region, sortOrder, certification,
+                            voteCount, voteAverage, releaseType, initDate, endDate);
                     break;
                 }
                 case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
-                    loader = new TmdbMoviesAsyncTaskLoader(MoviesListActivity.this,
-                            Tmdb.TMDB_CONTENT_TYPE_KEYWORDS, currentPage, language, region,
-                            keywords, sortOrder, certification, voteCount, voteAverage, "");
+                    loader = new TmdbMoviesAsyncTaskLoader(context, Tmdb.TMDB_CONTENT_TYPE_KEYWORDS,
+                            keywords, currentPage, language, region, sortOrder, certification,
+                            voteCount, voteAverage, releaseType, initDate, endDate);
                     break;
                 }
                 default:
@@ -399,8 +401,8 @@ public class MoviesListActivity extends AppCompatActivity
         region = MyPreferences.getIsoRegion(this);
         sortOrder = MyPreferences.getMoviesSortOrder(this);
         certification = MyPreferences.getMoviesCertification(this);
-        //voteAverage = MyPreferences.getMoviesVoteAverage(this);
-        //voteCount = MyPreferences.getMoviesVoteCount(this);
+        voteAverage = MyPreferences.getMoviesVoteAverage(this);
+        voteCount = MyPreferences.getMoviesVoteCount(this);
     }
 
     /**

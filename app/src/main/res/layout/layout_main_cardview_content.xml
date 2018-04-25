@@ -80,23 +80,41 @@
             android:src="@drawable/ic_keyboard_arrow_right_white_36dp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/layout_main_cardview_content_message_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_main_cardview_content_section"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/small_padding"
+        android:gravity="center"
+        android:padding="@dimen/regular_padding"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        android:textStyle="bold"
+        tools:text="@string/no_connection" />
+
+    <TextView
+        android:id="@+id/layout_main_cardview_content_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/layout_main_cardview_content_separator"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/small_padding"
+        android:alpha="0.7"
+        android:gravity="center"
+        android:padding="@dimen/regular_padding"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/normal_plus_text_size"
+        tools:text="@string/no_connection" />
+
     <ProgressBar
         android:id="@+id/layout_main_cardview_content_loading_indicator"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
-
-    <TextView
-        android:id="@+id/layout_main_cardview_content_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:alpha="0.7"
-        android:gravity="center"
-        android:padding="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
-        tools:text="@string/no_connection" />
 
     <View
         android:id="@+id/layout_main_cardview_content_separator"

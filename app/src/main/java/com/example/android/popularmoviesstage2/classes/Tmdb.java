@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.android.popularmoviesstage2.BuildConfig;
-import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -58,6 +57,8 @@ public class Tmdb {
     private final static String TMDB_PARAM_LANGUAGE = "language";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS = "primary_release_date.lte";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER = "primary_release_date.gte";
+    private final static String TMDB_PARAM_RELEASE_DATE_LESS = "release_date.lte";
+    private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "release_date.gte";
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
     private final static String TMDB_PARAM_REGION = "region";
     private final static String TMDB_PARAM_WITH_GENRES = "with_genres";
@@ -101,157 +102,90 @@ public class Tmdb {
      * Fetches TMDB for a list of movies.
      *
      * @param contentType   is the content type that we are looking for.
+     * @param values        is the list of possible values for the contentType parameter.
      * @param currentPage   is the page number to fetch.
      * @param language      is the language of the results.
      * @param region        is the region for getting results.
-     * @param values        is the list of possible values for the contentType parameter.
      * @param sortOrder     is the sort order for the list of results.
      * @param certification is the minimum age rating of the movies in the list for the current
      *                      country (region parameter).
-     * @param vote_count    is the minimum number of users votes of the movies in the list.
-     * @param vote_average  is the minimum users rating of the movies in the list.
+     * @param voteCount     is the minimum number of users votes of the movies in the list.
+     * @param voteAverage   is the minimum users rating of the movies in the list.
      * @param releaseType   is the value or list of values to filter release types by.
+     * @param initDate      is the initial date of the time range to filter movies, if needed.
+     * @param endDate       is the end date of the time range to filter movies, if needed.
      * @return an array of {@link TmdbMovie} objects.
      */
-    public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, int currentPage,
-                                                     String language, String region,
-                                                     ArrayList<Integer> values, String sortOrder,
-                                                     String certification, int vote_count,
-                                                     Double vote_average, String releaseType) {
+    public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, ArrayList<Integer> values,
+                                                     int currentPage, String language, String region,
+                                                     String sortOrder, String certification,
+                                                     int voteCount, Double voteAverage,
+                                                     String releaseType, String initDate,
+                                                     String endDate) {
+
         Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
                 currentPage + ". Language: " + language + ". Region: " + region + ". Sort order: " +
-                sortOrder + ". Release types: " + releaseType);
+                sortOrder + ". Release types: " + releaseType + ". Init date: " + initDate +
+                ". End date: " + endDate);
 
         /* ------------ */
         /* Get the JSON */
         /* ------------ */
 
         // Build the uniform resource identifier (uri) for fetching data from TMDB API.
-        Boolean builtInQuery = false;
-        Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon();
-        switch (contentType) {
-            case TMDB_CONTENT_TYPE_ALL: {
-                // Get all movies.
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH);
-                break;
-            }
+        Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(TMDB_DISCOVER_PATH)
+                .appendPath(TMDB_MOVIE_PATH)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
 
-            case TMDB_CONTENT_TYPE_NOW_PLAYING: {
-                // Get movies with release type 2 or 3 and with release date between 45 days ago and
-                // today.
-                String initDate = DateTimeUtils.getStringAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), -45);
-                String currentDate = DateTimeUtils.getStringCurrentDate();
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, currentDate);
-                break;
-            }
+        // Append dates range, if required.
+        if (!initDate.equals("") && !initDate.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate);
+        if (!endDate.equals("") && !endDate.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, endDate);
 
-            case TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES: {
-                // Get movies that are going to be released this week.
-                String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
-                        DateTimeUtils.WEEK_DAY_MONDAY);
-                String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
-                        DateTimeUtils.WEEK_DAY_SUNDAY);
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, monday)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday);
-                break;
-            }
+        // Append filters for number of votes and/or users rating, if required.
+        if (voteCount > 0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT, Integer.toString(voteCount));
+        if (voteAverage > 0.0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE, Double.toString(voteAverage));
 
-            case TMDB_CONTENT_TYPE_NEXT_WEEK_RELEASES: {
-                // Get movies that are going to be released next week.
-                String monday = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_MONDAY);
-                String sunday = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_SUNDAY);
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, monday)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, sunday);
-                break;
-            }
+        // Append filter for release type (on theaters, on DVD, etc.) if required.
+        if (!releaseType.equals("") && !releaseType.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseType);
 
-            case TMDB_CONTENT_TYPE_UPCOMING: {
-                // Get movies with release date greater than today.
-                String initDate = DateTimeUtils.getStringAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), 1);
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate);
-                break;
+        // Filter movies with genres or keywords = list of comma-separated values.
+        if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
+                contentType.equals(TMDB_CONTENT_TYPE_KEYWORDS)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < values.size(); i++) {
+                stringBuilder.append(Integer.toString(values.get(i)));
+                if ((i + 1) < values.size())
+                    stringBuilder.append(",");
             }
-
-            case TMDB_CONTENT_TYPE_GENRES: {
-                // Get movies with genres = list of comma-separated values.
-                StringBuilder stringBuilder = new StringBuilder();
-                for (int i = 0; i < values.size(); i++) {
-                    stringBuilder.append(Integer.toString(values.get(i)));
-                    if ((i + 1) < values.size())
-                        stringBuilder.append(",");
-                }
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_WITH_GENRES, stringBuilder.toString());
-                break;
-            }
-
-            case TMDB_CONTENT_TYPE_KEYWORDS: {
-                // Get movies with keywords = list of comma-separated values.
-                StringBuilder stringBuilder = new StringBuilder();
-                for (int i = 0; i < values.size(); i++) {
-                    stringBuilder.append(Integer.toString(values.get(i)));
-                    if ((i + 1) < values.size())
-                        stringBuilder.append(",");
-                }
-                builder.appendPath(TMDB_DISCOVER_PATH)
-                        .appendPath(TMDB_MOVIE_PATH)
-                        .appendQueryParameter(TMDB_PARAM_WITH_KEYWORDS, stringBuilder.toString());
-                break;
-            }
-
-            case TMDB_CONTENT_TYPE_POPULAR:
-            case TMDB_CONTENT_TYPE_TOP_RATED: {
-                // Sort by "popular" or "top_rated" means only appending the sort string as a path
-                // to the url.
-                builder.appendPath(TMDB_MOVIE_PATH)
-                        .appendPath(contentType);
-                builtInQuery = true;
-                break;
-            }
-
-            default: {
-                Log.e(TAG, "(getTmdbMovies) Wrong content type: " + contentType);
-                return null;
-            }
+            String queryParameter;
+            if (contentType.equals(TMDB_CONTENT_TYPE_GENRES))
+                queryParameter = TMDB_PARAM_WITH_GENRES;
+            else
+                queryParameter = TMDB_PARAM_WITH_KEYWORDS;
+            builder.appendQueryParameter(queryParameter, stringBuilder.toString());
         }
 
-        // If the query is not a built-in-query (popular, top_rated...) add more parameters.
-        if (!builtInQuery) {
-            builder.appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
-            if (!region.equals("") && !region.isEmpty() &&
-                    !certification.equals("") && !certification.isEmpty()) {
+        // Append language filter, if required.
+        if (!language.equals("") && !language.isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, language);
+
+        // Append region and certification filter, if required.
+        if (!region.equals("") && !region.isEmpty()) {
+            builder.appendQueryParameter(TMDB_PARAM_REGION, region);
+            if (!certification.equals("") && !certification.isEmpty()) {
                 builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION_COUNTRY, region);
                 builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION, certification);
             }
-            if (vote_count > 0)
-                builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT, Integer.toString(vote_count));
-            if (vote_average > 0.0)
-                builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE, Double.toString(vote_average));
-            if (!releaseType.equals("") && !releaseType.isEmpty())
-                builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseType);
         }
 
-        // Common parts in all cases to build the Uri.
-        builder.appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY);
-        if (!language.equals("") && !language.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, language);
-        if (!region.equals("") && !region.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_REGION, region);
+        // Paging information.
         if (currentPage > 0)
             builder.appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage));
 
@@ -509,7 +443,8 @@ public class Tmdb {
      * @return the {@link TmdbMovie} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
-    private static TmdbMovie getMovie(JSONObject baseJSONResponse, int n, int page, int total_pages,
+    private static TmdbMovie getMovie(JSONObject baseJSONResponse, int n, int page,
+                                      int total_pages,
                                       int total_results) throws JSONException {
         // Extract the required values for the corresponding keys.
         boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
@@ -576,7 +511,8 @@ public class Tmdb {
      * @return the {@link TmdbPerson} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
-    private static TmdbPerson getPerson(JSONObject baseJSONResponse, int n, int page, int total_pages,
+    private static TmdbPerson getPerson(JSONObject baseJSONResponse, int n, int page,
+                                        int total_pages,
                                         int total_results) {
         // Extract the required values for the corresponding keys.
         boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
@@ -672,7 +608,7 @@ public class Tmdb {
         }
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
-        // formatted, a JSONException exception object will be thrown. 
+        // formatted, a JSONException exception object will be thrown.
         try {
             // Create a JSONObject from the JSON response string.
             JSONObject baseJSONResponse = new JSONObject(JSONresponse);
@@ -877,7 +813,7 @@ public class Tmdb {
         TmdbCastCrew castCrew = new TmdbCastCrew(movie_id, castArrayList, crewArrayList);
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
-        // formatted, a JSONException exception object will be thrown. 
+        // formatted, a JSONException exception object will be thrown.
         try {
             // Create a JSONObject from the JSON response string.
             JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
@@ -936,7 +872,7 @@ public class Tmdb {
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
-            // catch the exception here, so the app doesn't crash. 
+            // catch the exception here, so the app doesn't crash.
             Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
         }
 
@@ -1443,7 +1379,8 @@ public class Tmdb {
      *                            "posters" and "backdrops".
      * @return an array list of TmdbImage objects.
      */
-    static private ArrayList<TmdbImage> getImagesArrayList(JSONObject resultsJSONResponse, String key) {
+    static private ArrayList<TmdbImage> getImagesArrayList(JSONObject
+                                                                   resultsJSONResponse, String key) {
         // Create an empty array of TmdbImage elements.
         ArrayList<TmdbImage> tmdbImages = new ArrayList<>();
 

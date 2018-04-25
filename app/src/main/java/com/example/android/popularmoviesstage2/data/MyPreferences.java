@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -261,6 +262,151 @@ public class MyPreferences {
     }
 
     /**
+     * Helper method to fetch SharedPreferences for the current movies vote average value.
+     *
+     * @param context is the context of the calling activity.
+     * @return a Double with the current movies vote average value stored in the preferences file.
+     */
+    public static Double getMoviesVoteAverage(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        Double voteAverage = Double.valueOf(sharedPreferences.getString(
+                res.getString(R.string.preferences_movies_vote_average_key),
+                res.getString(R.string.preferences_movies_vote_average_value)));
+        Log.i(TAG, "(getMoviesVoteAverage) Movies vote average: " + voteAverage);
+        return voteAverage;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current movies vote count value.
+     *
+     * @param context is the context of the calling activity.
+     * @return an integer with the current movies vote count value stored in the preferences file.
+     */
+    public static int getMoviesVoteCount(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        int voteCount = Integer.valueOf(sharedPreferences.getString(
+                res.getString(R.string.preferences_movies_vote_count_key),
+                res.getString(R.string.preferences_movies_vote_count_value)));
+        Log.i(TAG, "(getMoviesVoteCount) Movies vote count: " + voteCount);
+        return voteCount;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current initial value of the dates range for
+     * filtering upcoming movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current initial value of the dates range for filtering upcoming
+     * movies.
+     */
+    public static String getUpcomingMoviesInitDate(Context context) {
+        // Get current "Upcoming Movies When" value index into the corresponding values array.
+        int index = getUpcomingMoviesWhenIndex(context);
+
+        // Calculate the current date value from the selected item.
+        String initDate;
+        switch (index) {
+            case 0: // This week. Init date is this week monday.
+                initDate = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
+                        DateTimeUtils.WEEK_DAY_MONDAY);
+                break;
+
+            case 1: // Next week. Init date is next week monday.
+                initDate = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_MONDAY);
+                break;
+
+            default: // case 2: any date. Init date is tomorrow.
+                initDate = DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 1);
+        }
+
+        Log.i(TAG, "(getUpcomingMoviesInitDate) Init date: " + initDate);
+        return initDate;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current end value of the dates range for
+     * filtering upcoming movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current end value of the dates range for filtering upcoming
+     * movies.
+     */
+    public static String getUpcomingMoviesEndDate(Context context) {
+        // Get current "Upcoming Movies When" value index into the corresponding values array.
+        int index = getUpcomingMoviesWhenIndex(context);
+
+        // Calculate the current date value from the selected item.
+        String endDate;
+        switch (index) {
+            case 0: // This week. End date value is this sunday.
+                endDate = DateTimeUtils.getStringWeekday(DateTimeUtils.getCurrentDate(),
+                        DateTimeUtils.WEEK_DAY_SUNDAY);
+                break;
+
+            case 1: // Next week. End date is next week sunday.
+                endDate = DateTimeUtils.getStringWeekday(DateTimeUtils.getAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), 7), DateTimeUtils.WEEK_DAY_SUNDAY);
+                break;
+
+            default: // case 2: any date. End value for the date range is not set.
+                endDate = "";
+        }
+
+        Log.i(TAG, "(getUpcomingMoviesEndDate) End date: " + endDate);
+        return endDate;
+    }
+
+    /**
+     * Helper method to update a value in the "Upcoming Movies When" preferences array.
+     *
+     * @param context is the context of the calling activity.
+     * @param index   is the index of the element in the corresponding preferences array to be
+     *                updated.
+     */
+    public static void setUpcomingMoviesWhen(Context context, int index) {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        String upcomingMoviesWhenArray[] = res.getStringArray(
+                R.array.preferences_upcoming_movies_when_values_array);
+        editor.putString(res.getString(R.string.preferences_upcoming_movies_when_key),
+                upcomingMoviesWhenArray[index]);
+        editor.apply();
+    }
+
+    /**
+     * Helper method to update the "Movies Vote Average" preference value.
+     *
+     * @param context     is the context of the calling activity.
+     * @param voteAverage is the new value for the "Movies Vote Average" preference.
+     */
+    public static void setMoviesVoteAverage(Context context, int voteAverage) {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(res.getString(R.string.preferences_movies_vote_average_key), voteAverage);
+        editor.apply();
+    }
+
+    /**
+     * Helper method to update the "Movies Vote Count" preference value.
+     *
+     * @param context   is the context of the calling activity.
+     * @param voteCount is the new value for the "Movies Vote Count" preference.
+     */
+    public static void setMoviesVoteCount(Context context, int voteCount) {
+        SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(res.getString(R.string.preferences_movies_vote_count_key), voteCount);
+        editor.apply();
+    }
+
+    /**
      * Helper method to update a value in the "Now Playing Movies How" preferences array.
      *
      * @param context is the context of the calling activity.
@@ -335,17 +481,170 @@ public class MyPreferences {
         SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
         Resources res = context.getResources();
 
-        // Get current "Now Playing Movies How" value index into the corresponding values array.
+        // Store current preferences into an array, so we will be able to get easily the index of
+        // a given value into the array.
         ArrayList<String> moviesHowArray = new ArrayList<>(Arrays.asList(res.getStringArray(
                 R.array.preferences_now_playing_movies_how_values_array)));
+
+        // Get current value.
         String moviesHowValue = sharedPreferences.getString(
                 res.getString(R.string.preferences_now_playing_movies_how_key),
                 res.getStringArray(R.array.preferences_now_playing_movies_how_values_array)[0]);
         Log.i(TAG, "(getNowPlayingMoviesHowIndex) Current value: " + moviesHowValue);
-        int moviesHowIndex = moviesHowArray.indexOf(moviesHowValue);
 
+        // Get and return current value index into the preferences array.
+        int moviesHowIndex = moviesHowArray.indexOf(moviesHowValue);
         Log.i(TAG, "(getNowPlayingMoviesHowIndex) Index for current value: " + moviesHowIndex);
         return moviesHowIndex;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Upcoming
+     * Movies How" value.
+     *
+     * @param context is the context of the calling activity.
+     * @return an integer with the corresponding array index.
+     */
+    public static int getUpcomingMoviesHowIndex(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+
+        // Store current preferences into an array, so we will be able to get easily the index of
+        // a given value into the array.
+        ArrayList<String> moviesHowArray = new ArrayList<>(Arrays.asList(res.getStringArray(
+                R.array.preferences_upcoming_movies_how_values_array)));
+
+        // Get current value.
+        String moviesHowValue = sharedPreferences.getString(
+                res.getString(R.string.preferences_upcoming_movies_how_key),
+                res.getStringArray(R.array.preferences_upcoming_movies_how_values_array)[0]);
+        Log.i(TAG, "(getUpcomingMoviesHowIndex) Current value: " + moviesHowValue);
+
+        // Get and return current value index into the preferences array.
+        int moviesHowIndex = moviesHowArray.indexOf(moviesHowValue);
+        Log.i(TAG, "(getUpcomingMoviesHowIndex) Index for current value: " + moviesHowIndex);
+        return moviesHowIndex;
+    }
+
+    /**
+     * Private helper method for getting current "Upcoming Movies When" value index into the
+     * corresponding values array.
+     *
+     * @param context is the context of the calling activity.
+     * @return an integer with the corresponding array index.
+     */
+    private static int getUpcomingMoviesWhenIndex(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+
+        // Store current preferences into an array, so we will be able to get easily the index of
+        // a given value into the array.
+        ArrayList<String> moviesWhenArray = new ArrayList<>(Arrays.asList(res.getStringArray(
+                R.array.preferences_upcoming_movies_when_values_array)));
+
+        // Get current value.
+        String value = sharedPreferences.getString(
+                res.getString(R.string.preferences_upcoming_movies_when_key),
+                res.getStringArray(R.array.preferences_upcoming_movies_when_values_array)[0]);
+        Log.i(TAG, "(getUpcomingMoviesWhenIndex) Current value:" + value);
+
+        // Get and return current value index into the preferences array.
+        int index = moviesWhenArray.indexOf(value);
+        Log.i(TAG, "(getUpcomingMoviesWhenIndex) Index for current value:" + index);
+        return index;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Upcoming
+     * Movies Where" value.
+     *
+     * @param context is the context of the calling activity.
+     * @return an integer with the corresponding array index.
+     */
+    public static int getUpcomingMoviesWhereIndex(Context context) {
+        SharedPreferences sharedPreferences = getDefaultSharedPreferences(context);
+        Resources res = context.getResources();
+
+        // Store current preferences into an array, so we will be able to get easily the index of
+        // a given value into the array.
+        ArrayList<String> moviesWhereArray = new ArrayList<>(Arrays.asList(res.getStringArray(
+                R.array.preferences_upcoming_movies_where_values_array)));
+
+        // Get current value.
+        String moviesWhereValue = sharedPreferences.getString(
+                res.getString(R.string.preferences_upcoming_movies_where_key),
+                res.getStringArray(R.array.preferences_upcoming_movies_where_values_array)[0]);
+        Log.i(TAG, "(getNowPlayingMoviesWhereIndex) Current value: " + moviesWhereValue);
+
+        // Get and return current value index into the preferences array.
+        int moviesWhereIndex = moviesWhereArray.indexOf(moviesWhereValue);
+        Log.i(TAG, "(getUpcomingMoviesWhereIndex) Index for current value: " +
+                moviesWhereIndex);
+        return moviesWhereIndex;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Now Playing
+     * Movies How" title.
+     *
+     * @param context is the context of the calling activity.
+     * @return a String with the corresponding array content.
+     */
+    public static String getNowPlayingMoviesHowTitle(Context context) {
+        Resources res = context.getResources();
+        int index = getNowPlayingMoviesHowIndex(context);
+        String title =
+                res.getStringArray(R.array.preferences_now_playing_movies_how_list_array)[index];
+        Log.i(TAG, "(getNowPlayingMoviesHowTitle) Title for current value: " + title);
+        return title;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Upcoming
+     * Movies How" title.
+     *
+     * @param context is the context of the calling activity.
+     * @return a String with the corresponding array content.
+     */
+    public static String getUpcomingMoviesHowTitle(Context context) {
+        Resources res = context.getResources();
+        int index = getUpcomingMoviesHowIndex(context);
+        String title =
+                res.getStringArray(R.array.preferences_upcoming_movies_how_list_array)[index];
+        Log.i(TAG, "(getUpcomingMoviesHowTitle) Title for current value: " + title);
+        return title;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Upcoming
+     * Movies When" title.
+     *
+     * @param context is the context of the calling activity.
+     * @return a String with the corresponding array content.
+     */
+    public static String getUpcomingMoviesWhenTitle(Context context) {
+        Resources res = context.getResources();
+        int index = getUpcomingMoviesWhenIndex(context);
+        String title =
+                res.getStringArray(R.array.preferences_upcoming_movies_when_list_array)[index];
+        Log.i(TAG, "(getUpcomingMoviesWhenTitle) Title for current value: " + title);
+        return title;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current array index of the "Upcoming
+     * Movies Where" title.
+     *
+     * @param context is the context of the calling activity.
+     * @return a String with the corresponding array content.
+     */
+    public static String getUpcomingMoviesWhereTitle(Context context) {
+        Resources res = context.getResources();
+        int index = getUpcomingMoviesWhereIndex(context);
+        String title =
+                res.getStringArray(R.array.preferences_upcoming_movies_where_list_array)[index];
+        Log.i(TAG, "(getUpcomingMoviesWhereTitle) Title for current value: " + title);
+        return title;
     }
 
     /**

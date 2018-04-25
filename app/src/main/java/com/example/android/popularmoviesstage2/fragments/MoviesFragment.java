@@ -32,6 +32,7 @@ import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
+import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -46,6 +47,9 @@ import static android.app.Activity.RESULT_OK;
 public class MoviesFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
     private static final String TAG = MoviesFragment.class.getSimpleName();
+    private static final int RESULT_CODE_MOVIE_DETAILS = 0;
+    private static final int RESULT_CODE_CONFIG_UPCOMING_MOVIES = 1;
+    private static final int RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES = 2;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -64,12 +68,10 @@ public class MoviesFragment extends Fragment
 
     private boolean allowClicks = true;
     private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, language, region, sortBy,
-            certification, releaseType;
+            certification, releaseType, initDate, endDate;
     private MoviesListAdapter moviesListAdapter;
     private int currentPage = 1, currentScrollPosition = 0, loaderId = 0, voteCount = 0;
     private Double voteAverage = 0.0;
-    private final int resultCodeMovieDetails = 0, resultCodeConfigUpcomingMovies = 1,
-            resultCodeConfigNowPlayingMovies = 2;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
@@ -174,7 +176,7 @@ public class MoviesFragment extends Fragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case resultCodeConfigNowPlayingMovies: {
+            case RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES: {
                 if (resultCode == RESULT_OK) {
                     // Preferences have changed for now playing movies section. Read new preferences
                     // values and refresh the current movie list.
@@ -183,7 +185,7 @@ public class MoviesFragment extends Fragment
                 break;
             }
 
-            case resultCodeConfigUpcomingMovies: {
+            case RESULT_CODE_CONFIG_UPCOMING_MOVIES: {
                 if (resultCode == RESULT_OK) {
                     // Preferences have changed for upcoming movies section. Read new preferences
                     // values and refresh the current movie list.
@@ -193,6 +195,9 @@ public class MoviesFragment extends Fragment
             }
         }
         allowClicks = true;
+
+        // Set result for calling activity.
+        getActivity().setResult(resultCode, getActivity().getIntent());
     }
 
     /* ------ */
@@ -213,8 +218,9 @@ public class MoviesFragment extends Fragment
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, currentPage,
-                    language, region, sortBy, certification, voteCount, voteAverage, releaseType);
+            loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, null,
+                    currentPage, language, region, sortBy, certification, voteCount, voteAverage,
+                    releaseType, initDate, endDate);
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -300,7 +306,7 @@ public class MoviesFragment extends Fragment
                     // If we are showing now playing movies info, show FAB and set its onClick
                     // behaviour for opening ConfigMoviesActivity.
                     setFloatingActionButton(ConfigMoviesActivity.TYPE_NOW_PLAYING,
-                            resultCodeConfigNowPlayingMovies);
+                            RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES);
                     break;
                 }
 
@@ -308,7 +314,7 @@ public class MoviesFragment extends Fragment
                     // If we are showing upcoming movies info, show FAB and set its onClick
                     // behaviour for opening ConfigMoviesActivity.
                     setFloatingActionButton(ConfigMoviesActivity.TYPE_UPCOMING,
-                            resultCodeConfigUpcomingMovies);
+                            RESULT_CODE_CONFIG_UPCOMING_MOVIES);
                     break;
                 }
             }
@@ -356,21 +362,31 @@ public class MoviesFragment extends Fragment
         region = MyPreferences.getIsoRegion(getContext());
         sortBy = MyPreferences.getMoviesSortOrder(getContext());
         certification = MyPreferences.getMoviesCertification(getContext());
-        //voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
-        //voteCount = MyPreferences.getMoviesVoteCount(getContext());
+        voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
+        voteCount = MyPreferences.getMoviesVoteCount(getContext());
         switch (contentType) {
             case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 releaseType = MyPreferences.getNowPlayingMoviesReleaseType(getContext());
+
+                // If we are showing now playing movies, initDate and endDate don't come from
+                // Preferences. We filter movies from 45 days ago until today.
+                initDate = DateTimeUtils.getStringAddedDaysToDate(
+                        DateTimeUtils.getCurrentDate(), -45);
+                endDate = DateTimeUtils.getStringCurrentDate();
                 break;
             }
 
             case Tmdb.TMDB_CONTENT_TYPE_UPCOMING: {
                 releaseType = MyPreferences.getUpcomingMoviesReleaseType(getContext());
+                initDate = MyPreferences.getUpcomingMoviesInitDate(getContext());
+                endDate = MyPreferences.getUpcomingMoviesEndDate(getContext());
                 break;
             }
 
             default:
                 releaseType = "";
+                initDate = "";
+                endDate = "";
         }
     }
 
@@ -414,7 +430,7 @@ public class MoviesFragment extends Fragment
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
                     //startActivityForResult(intent, 0, options.toBundle());
-                    startActivityForResult(intent, resultCodeMovieDetails);
+                    startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS);
                 }
             }
         };

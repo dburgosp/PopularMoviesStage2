@@ -64,10 +64,12 @@ public class ConfigMoviesActivity extends AppCompatActivity {
         // Add radio buttons to RadioGroups and set checked elements according to saved preferences.
         switch (type) {
             case TYPE_NOW_PLAYING: {
+                setTitle(getString(R.string.movies_sort_by_now_playing));
+
                 // Show only "How" elements.
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_now_playing_movies_how_list_array),
-                        MyPreferences.TYPE_MOVIES_HOW);
+                        MyPreferences.TYPE_MOVIES_HOW, type);
 
                 // Hide "When" and "Where" elements.
                 whenRadioGroup.setVisibility(View.GONE);
@@ -78,16 +80,18 @@ public class ConfigMoviesActivity extends AppCompatActivity {
             }
 
             case TYPE_UPCOMING: {
+                setTitle(getString(R.string.movies_sort_by_upcoming));
+
                 // Show all.
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_how_list_array),
-                        MyPreferences.TYPE_MOVIES_HOW);
+                        MyPreferences.TYPE_MOVIES_HOW, type);
                 setRadioButtons(whenRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_when_list_array),
-                        MyPreferences.TYPE_MOVIES_WHEN);
+                        MyPreferences.TYPE_MOVIES_WHEN, type);
                 setRadioButtons(whereRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_where_list_array),
-                        MyPreferences.TYPE_MOVIES_WHERE);
+                        MyPreferences.TYPE_MOVIES_WHERE, type);
                 break;
             }
 
@@ -147,7 +151,7 @@ public class ConfigMoviesActivity extends AppCompatActivity {
      *                        MyPreferences.TYPE_MOVIES_WHERE.
      */
     private void setRadioButtons(final RadioGroup radioGroup, String array[],
-                                 final int preferencesType) {
+                                 final int preferencesType, final int moviesType) {
         // Add elements to RadioGroup.
         int index = 0;
         for (String text : array) {
@@ -199,8 +203,17 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                             default: // case MyPreferences.TYPE_MOVIES_WHERE
                                 endWhereCheckedIndex = checkedIndex;
                         }
-                        MyPreferences.setUpcomingMovies(
-                                ConfigMoviesActivity.this, checkedIndex, preferencesType);
+                        switch (moviesType) {
+                            case TYPE_UPCOMING:
+                                MyPreferences.setUpcomingMovies(ConfigMoviesActivity.this,
+                                        checkedIndex, preferencesType);
+                                break;
+
+                            case TYPE_NOW_PLAYING:
+                                MyPreferences.setNowPlayingMoviesHow(
+                                        ConfigMoviesActivity.this, checkedIndex);
+                                break;
+                        }
                     }
                 }
             });
@@ -214,8 +227,17 @@ public class ConfigMoviesActivity extends AppCompatActivity {
         RadioButton currentRadioButton = new RadioButton(this);
         switch (preferencesType) {
             case MyPreferences.TYPE_MOVIES_HOW:
-                startHowCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
-                        MyPreferences.TYPE_MOVIES_HOW);
+                switch (moviesType) {
+                    case TYPE_UPCOMING:
+                        startHowCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
+                                MyPreferences.TYPE_MOVIES_HOW);
+                        break;
+
+                    case TYPE_NOW_PLAYING:
+                        startHowCheckedIndex =
+                                MyPreferences.getNowPlayingMoviesHowIndex(this);
+                        break;
+                }
                 endHowCheckedIndex = startHowCheckedIndex;
                 currentRadioButton = (RadioButton) radioGroup.getChildAt(startHowCheckedIndex);
                 break;
