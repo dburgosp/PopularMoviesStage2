@@ -117,7 +117,7 @@
     <string name="preferences_movies_sort_by_popularity_title">Popularidad</string>
     <string name="preferences_movies_sort_by_vote_average_title">Valoración de usuarios</string>
     <string name="preferences_movies_sort_by_original_title_title">Título original</string>
-    <string name="preferences_movies_sort_by_primary_release_date_title">Fecha de estreno</string>
+    <string name="preferences_movies_sort_by_release_date_title">Fecha de estreno</string>
     <string name="preferences_movies_sort_by_revenue_title">Beneficios</string>
     <string name="preferences_movies_sort_by_popularity_desc_title">Popularidad (las más populares primero)</string>
     <string name="preferences_movies_sort_by_popularity_asc_title">Popularity (las menos populares primero)</string>

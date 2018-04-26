@@ -898,14 +898,14 @@
         <item>@string/preferences_movies_sort_by_popularity_title</item>
         <item>@string/preferences_movies_sort_by_original_title_title</item>
         <item>@string/preferences_movies_sort_by_vote_average_title</item>
-        <item>@string/preferences_movies_sort_by_primary_release_date_title</item>
+        <item>@string/preferences_movies_sort_by_release_date_title</item>
         <item>@string/preferences_movies_sort_by_revenue_title</item>
     </string-array>
     <string-array name="preferences_movies_sort_by_values_array">
         <item>popularity</item>
         <item>original_title</item>
-        <item>voteAverage</item>
-        <item>primary_release_date</item>
+        <item>vote_average</item>
+        <item>release_date</item>
         <item>revenue</item>
     </string-array>
 

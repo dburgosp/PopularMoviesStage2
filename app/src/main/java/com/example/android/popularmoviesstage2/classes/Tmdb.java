@@ -1367,8 +1367,9 @@ public class Tmdb {
                 sortOrder.equals(TMDB_CONTENT_TYPE_NOW_PLAYING) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_GENRES) ||
-                sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS) ||
-                sortOrder.equals(TMDB_CONTENT_TYPE_ALL);
+                sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS)||
+                sortOrder.equals(TMDB_CONTENT_TYPE_ALL) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT);
     }
 
     /**

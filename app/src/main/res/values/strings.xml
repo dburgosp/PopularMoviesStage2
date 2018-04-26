@@ -570,7 +570,7 @@
     <string name="preferences_movies_sort_by_popularity_title">Popularity</string>
     <string name="preferences_movies_sort_by_vote_average_title">Users rating</string>
     <string name="preferences_movies_sort_by_original_title_title">Original title</string>
-    <string name="preferences_movies_sort_by_primary_release_date_title">Release date</string>
+    <string name="preferences_movies_sort_by_release_date_title">Release date</string>
     <string name="preferences_movies_sort_by_revenue_title">Revenue</string>
     <string name="preferences_movies_sort_by_popularity_desc_title">Popularity (most popular movies first)</string>
     <string name="preferences_movies_sort_by_popularity_asc_title">Popularity (less popular movies first)</string>

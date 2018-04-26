@@ -11,7 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
+import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -77,11 +77,7 @@ public class MoviesListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Define transitions to exit and enter to this activity.
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        //getWindow().setBackgroundDrawableResource(R.color.colorPrimary);
-        getWindow().setEnterTransition(new Explode().setDuration(250));
-        getWindow().setExitTransition(new Explode().setDuration(250));
+        setTransitions();
 
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);
@@ -382,6 +378,18 @@ public class MoviesListActivity extends AppCompatActivity
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
+
+    /**
+     * Define transitions to exit/enter from/to this activity.
+     */
+    private void setTransitions() {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        Slide slideIn = new Slide(Gravity.END);
+        getWindow().setEnterTransition(slideIn.setDuration(250));
+        Slide slideOut = new Slide(Gravity.START);
+        getWindow().setExitTransition(slideOut.setDuration(250));
+    }
 
     /**
      * Helper method to init global variables.

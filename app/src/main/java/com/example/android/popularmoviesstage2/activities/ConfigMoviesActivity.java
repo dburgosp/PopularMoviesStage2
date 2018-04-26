@@ -265,15 +265,9 @@ public class ConfigMoviesActivity extends AppCompatActivity {
     private void setTransitions() {
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-
-        Slide slideIn = new Slide();
-        slideIn.setDuration(250);
-        slideIn.setSlideEdge(Gravity.RIGHT);
-        getWindow().setEnterTransition(slideIn);
-
-        Slide slideOut = new Slide();
-        slideOut.setDuration(250);
-        slideOut.setSlideEdge(Gravity.LEFT);
-        getWindow().setExitTransition(slideOut);
+        Slide slideIn = new Slide(Gravity.END);
+        getWindow().setEnterTransition(slideIn.setDuration(250));
+        Slide slideOut = new Slide(Gravity.START);
+        getWindow().setExitTransition(slideOut.setDuration(250));
     }
 }

@@ -12,7 +12,8 @@
         android:layout_below="@id/layout_main_cardview_content_viewflipper"
         android:layout_marginTop="-20dp"
         android:background="@color/colorMoviesPrimary"
-        android:text="@string/movies_sort_by_upcoming" />
+        android:text="@string/movies_sort_by_upcoming"
+        android:textAllCaps="true" />
 
     <com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator
         android:id="@+id/layout_main_cardview_content_viewflipper"
@@ -89,7 +90,6 @@
         android:layout_marginTop="@dimen/small_padding"
         android:gravity="center"
         android:padding="@dimen/regular_padding"
-        android:textAllCaps="true"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
         android:textStyle="bold"

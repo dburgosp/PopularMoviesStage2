@@ -26,6 +26,21 @@ public class MyPreferences {
     public static final int TYPE_MOVIES_WHEN = 1;
     public static final int TYPE_MOVIES_WHERE = 2;
 
+    public static final int MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX = 0;
+    public static final int MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX = 1;
+    public static final int MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX = 2;
+
+    public static final int MOVIES_UPCOMING_HOW_THEATERS_INDEX = 0;
+    public static final int MOVIES_UPCOMING_HOW_DIGITAL_INDEX = 1;
+    public static final int MOVIES_UPCOMING_HOW_PHYSICAL_INDEX = 2;
+
+    public static final int MOVIES_UPCOMING_WHEN_THIS_WEEK_INDEX = 0;
+    public static final int MOVIES_UPCOMING_WHEN_NEXT_WEEK_INDEX = 1;
+    public static final int MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX = 2;
+
+    public static final int MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX = 0;
+    public static final int MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX = 1;
+
     /**
      * Empty constructor.
      */
@@ -361,21 +376,68 @@ public class MyPreferences {
     }
 
     /**
+     * Helper method to update a value in the "Upcoming Movies How" preferences array.
+     *
+     * @param context is the context of the calling activity.
+     * @param index   is the index of the element in the corresponding preferences array to be
+     *                updated. Available values are: MOVIES_UPCOMING_HOW_THEATERS_INDEX,
+     *                MOVIES_UPCOMING_HOW_DIGITAL_INDEX, MOVIES_UPCOMING_HOW_PHYSICAL_INDEX.
+     */
+    public static void setUpcomingMoviesHow(Context context, int index) {
+        if (index == MOVIES_UPCOMING_HOW_THEATERS_INDEX || index == MOVIES_UPCOMING_HOW_DIGITAL_INDEX ||
+                index == MOVIES_UPCOMING_HOW_PHYSICAL_INDEX) {
+            SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+            Resources res = context.getResources();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String upcomingMoviesHowArray[] = res.getStringArray(
+                    R.array.preferences_upcoming_movies_how_values_array);
+            editor.putString(res.getString(R.string.preferences_upcoming_movies_how_key),
+                    upcomingMoviesHowArray[index]);
+            editor.apply();
+        }
+    }
+
+    /**
      * Helper method to update a value in the "Upcoming Movies When" preferences array.
      *
      * @param context is the context of the calling activity.
      * @param index   is the index of the element in the corresponding preferences array to be
-     *                updated.
+     *                updated. Available values are: MOVIES_UPCOMING_WHEN_THIS_WEEK_INDEX,
+     *                MOVIES_UPCOMING_WHEN_NEXT_WEEK_INDEX, MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX.
      */
     public static void setUpcomingMoviesWhen(Context context, int index) {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(context);
-        Resources res = context.getResources();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        String upcomingMoviesWhenArray[] = res.getStringArray(
-                R.array.preferences_upcoming_movies_when_values_array);
-        editor.putString(res.getString(R.string.preferences_upcoming_movies_when_key),
-                upcomingMoviesWhenArray[index]);
-        editor.apply();
+        if (index == MOVIES_UPCOMING_WHEN_THIS_WEEK_INDEX || index == MOVIES_UPCOMING_WHEN_NEXT_WEEK_INDEX ||
+                index == MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX) {
+            SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+            Resources res = context.getResources();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String upcomingMoviesWhenArray[] = res.getStringArray(
+                    R.array.preferences_upcoming_movies_when_values_array);
+            editor.putString(res.getString(R.string.preferences_upcoming_movies_when_key),
+                    upcomingMoviesWhenArray[index]);
+            editor.apply();
+        }
+    }
+
+    /**
+     * Helper method to update a value in the "Upcoming Movies Where" preferences array.
+     *
+     * @param context is the context of the calling activity.
+     * @param index   is the index of the element in the corresponding preferences array to be
+     *                updated. Available values are: MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
+     *                MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX.
+     */
+    public static void setUpcomingMoviesWhere(Context context, int index) {
+        if (index == MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX || index == MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX) {
+            SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+            Resources res = context.getResources();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String upcomingMoviesWhereArray[] = res.getStringArray(
+                    R.array.preferences_upcoming_movies_where_values_array);
+            editor.putString(res.getString(R.string.preferences_upcoming_movies_where_key),
+                    upcomingMoviesWhereArray[index]);
+            editor.apply();
+        }
     }
 
     /**
@@ -411,17 +473,21 @@ public class MyPreferences {
      *
      * @param context is the context of the calling activity.
      * @param index   is the index of the element in the corresponding preferences array to be
-     *                updated.
+     *                updated. Available values are MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
+     *                MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX, MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX.
      */
     public static void setNowPlayingMoviesHow(Context context, int index) {
-        SharedPreferences sharedPref = getDefaultSharedPreferences(context);
-        Resources res = context.getResources();
-        SharedPreferences.Editor editor = sharedPref.edit();
-        String nowPlayingMoviesHowArray[] = res.getStringArray(
-                R.array.preferences_now_playing_movies_how_values_array);
-        editor.putString(res.getString(R.string.preferences_now_playing_movies_how_key),
-                nowPlayingMoviesHowArray[index]);
-        editor.apply();
+        if (index == MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX || index == MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX ||
+                index == MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX) {
+            SharedPreferences sharedPref = getDefaultSharedPreferences(context);
+            Resources res = context.getResources();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            String nowPlayingMoviesHowArray[] = res.getStringArray(
+                    R.array.preferences_now_playing_movies_how_values_array);
+            editor.putString(res.getString(R.string.preferences_now_playing_movies_how_key),
+                    nowPlayingMoviesHowArray[index]);
+            editor.apply();
+        }
     }
 
     /**

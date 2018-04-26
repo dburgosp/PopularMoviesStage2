@@ -10,9 +10,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Transition;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -77,13 +77,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Define transitions to exit and enter to this activity.
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Transition transition = new Explode().setDuration(250);
-        getWindow().setEnterTransition(transition);
-        getWindow().setExitTransition(transition);
-        supportPostponeEnterTransition();
+        setTransitions();
 
         setContentView(R.layout.activity_movie_details);
         unbinder = ButterKnife.bind(this);
@@ -247,6 +241,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
+
+    /**
+     * Define transitions to exit/enter from/to this activity.
+     */
+    private void setTransitions() {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        Slide slideIn = new Slide(Gravity.END);
+        getWindow().setEnterTransition(slideIn.setDuration(250));
+        Slide slideOut = new Slide(Gravity.START);
+        getWindow().setExitTransition(slideOut.setDuration(250));
+    }
 
     /**
      * Helper method to display current movie information in the header of this activity.

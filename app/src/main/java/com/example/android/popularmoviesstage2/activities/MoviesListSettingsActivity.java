@@ -16,10 +16,7 @@ public class MoviesListSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Define transitions to enter to and exit from this activity.
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setEnterTransition(new Slide(Gravity.END).setDuration(500));
-        getWindow().setExitTransition(new Slide(Gravity.START).setDuration(500));
+        setTransitions();
 
         setContentView(R.layout.activity_movies_list_settings);
 
@@ -59,5 +56,21 @@ public class MoviesListSettingsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         supportFinishAfterTransition();
         return true;
+    }
+
+    /* -------------- */
+    /* HELPER METHODS */
+    /* -------------- */
+
+    /**
+     * Define transitions to exit/enter from/to this activity.
+     */
+    private void setTransitions() {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        Slide slideIn = new Slide(Gravity.END);
+        getWindow().setEnterTransition(slideIn.setDuration(250));
+        Slide slideOut = new Slide(Gravity.START);
+        getWindow().setExitTransition(slideOut.setDuration(250));
     }
 }
