@@ -319,14 +319,13 @@ public class MainActivity extends AppCompatActivity implements
             upcomingMoviesTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Set preferences for "Upcoming Movies" to show "In Theaters", "Any date" and
-                    // "Locale region".
-                    MyPreferences.setUpcomingMoviesHow(MainActivity.this,
-                            MyPreferences.MOVIES_UPCOMING_HOW_THEATERS_INDEX);
-                    MyPreferences.setUpcomingMoviesWhen(MainActivity.this,
-                            MyPreferences.MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX);
-                    MyPreferences.setUpcomingMoviesWhere(MainActivity.this,
-                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX);
+                    // Set preferences for "Upcoming Movies" to show "In Theaters" and "Any date".
+                    MyPreferences.setUpcomingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_HOW_THEATERS_INDEX,
+                            MyPreferences.TYPE_MOVIES_HOW);
+                    MyPreferences.setUpcomingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX,
+                            MyPreferences.TYPE_MOVIES_WHEN);
 
                     // Set intent for calling MoviesActivity.
                     Intent intent = new Intent(MainActivity.this,
@@ -393,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(View v) {
                     // Set preferences for "Now Playing Movies" to show "In Theaters".
-                    MyPreferences.setNowPlayingMoviesHow(MainActivity.this,
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
                             MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX);
 
                     // Set intent for calling MoviesActivity.
@@ -446,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements
                 public void onClick(View v) {
                     // Set preferences for "Now Playing Movies" to show "Digital movie releases" and
                     // "any date".
-                    MyPreferences.setNowPlayingMoviesHow(MainActivity.this,
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
                             MyPreferences.MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX);
 
                     // Set intent for calling MoviesActivity.
@@ -1156,7 +1155,8 @@ public class MainActivity extends AppCompatActivity implements
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
-                            Log.i(TAG, "(onLoadFinished) Search results for upcoming movies not null.");
+                            Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
+                                    "movies not null.");
                             upcomingMoviesMessageHeader.setVisibility(View.GONE);
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
@@ -1165,7 +1165,8 @@ public class MainActivity extends AppCompatActivity implements
                                     upcomingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for upcoming movies.");
+                            Log.i(TAG, "(onLoadFinished) No search results for upcoming " +
+                                    "movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1174,8 +1175,7 @@ public class MainActivity extends AppCompatActivity implements
                             upcomingMoviesMessageHeader.setText(getResources().getString(
                                     R.string.no_results));
                             String filters = MyPreferences.getUpcomingMoviesHowTitle(context) + ", "
-                                    + MyPreferences.getUpcomingMoviesWhenTitle(context) + ", "
-                                    + MyPreferences.getUpcomingMoviesWhereTitle(context);
+                                    + MyPreferences.getUpcomingMoviesWhenTitle(context);
                             String htmlText = String.format(getResources().getString(
                                     R.string.no_movies_results), filters);
                             TextViewUtils.setHtmlText(upcomingMoviesMessage, htmlText);
@@ -1200,7 +1200,8 @@ public class MainActivity extends AppCompatActivity implements
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
-                            Log.i(TAG, "(onLoadFinished) Search results for now playing movies not null.");
+                            Log.i(TAG, "(onLoadFinished) Search results for now playing " +
+                                    "movies not null.");
                             nowPlayingMoviesMessageHeader.setVisibility(View.GONE);
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
@@ -1209,7 +1210,8 @@ public class MainActivity extends AppCompatActivity implements
                                     nowPlayingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for now playing movies.");
+                            Log.i(TAG, "(onLoadFinished) No search results for now playing " +
+                                    "movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1217,7 +1219,7 @@ public class MainActivity extends AppCompatActivity implements
                             // into the ViewFlipper. Show alert messages.
                             nowPlayingMoviesMessageHeader.setText(getResources().getString(
                                     R.string.no_results));
-                            String filters = MyPreferences.getNowPlayingMoviesHowTitle(context);
+                            String filters = MyPreferences.getNowPlayingMoviesTitle(context);
                             String htmlText = String.format(getResources().getString(
                                     R.string.no_movies_results), filters);
                             TextViewUtils.setHtmlText(nowPlayingMoviesMessage, htmlText);
@@ -1242,14 +1244,16 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             // If there is a valid result, display it on its corresponding layout.
-                            Log.i(TAG, "(onLoadFinished) Search results for buy and rent movies not null.");
+                            Log.i(TAG, "(onLoadFinished) Search results for buy and rent " +
+                                    "movies not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
                                     loader.getId(), null, null,
                                     false, MAX_HALF_SCREEN_ELEMENTS);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for buy and rent movies.");
+                            Log.i(TAG, "(onLoadFinished) No search results for buy and " +
+                                    "rent movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1288,7 +1292,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // Private inner class to retrieve a given list of persons.
-    private class MainActivityPeopleList implements LoaderManager.LoaderCallbacks<ArrayList<TmdbPerson>> {
+    private class MainActivityPeopleList
+            implements LoaderManager.LoaderCallbacks<ArrayList<TmdbPerson>> {
         private final String TAG = MainActivity.MainActivityPeopleList.class.getSimpleName();
 
         // Constructor for objects of this class.
@@ -1322,7 +1327,8 @@ public class MainActivity extends AppCompatActivity implements
                                 Locale.getDefault().getLanguage());
                     } else {
                         // There is no connection. Show error message.
-                        popularPeopleMessage.setText(getResources().getString(R.string.no_connection));
+                        popularPeopleMessage.setText(
+                                getResources().getString(R.string.no_connection));
                         popularPeopleMessage.setVisibility(View.VISIBLE);
                         popularPeopleLoadingIndicator.setVisibility(View.GONE);
                         Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -1376,7 +1382,8 @@ public class MainActivity extends AppCompatActivity implements
          * @param data   The data generated by the Loader.
          */
         @Override
-        public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader, ArrayList<TmdbPerson> data) {
+        public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader,
+                                   ArrayList<TmdbPerson> data) {
             // Get people list and display it.
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
@@ -1391,13 +1398,15 @@ public class MainActivity extends AppCompatActivity implements
                             break;
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results.");
-                            popularPeopleMessage.setText(getResources().getString(R.string.no_results));
+                            popularPeopleMessage.setText(
+                                    getResources().getString(R.string.no_results));
                             popularPeopleMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         // There is no connection. Show error message.
                         Log.i(TAG, "(onLoadFinished) No connection to internet.");
-                        popularPeopleMessage.setText(getResources().getString(R.string.no_connection));
+                        popularPeopleMessage.setText(
+                                getResources().getString(R.string.no_connection));
                         popularPeopleMessage.setVisibility(View.VISIBLE);
                     }
                 }

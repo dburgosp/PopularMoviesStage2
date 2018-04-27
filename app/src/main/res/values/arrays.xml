@@ -1292,6 +1292,15 @@
         <item>@string/preferences_movies_how_physical_value</item>
     </string-array>
 
+    <string-array name="preferences_now_playing_movies_when_list_array">
+        <item>@string/preferences_movies_when_45_days_title</item>
+        <item>@string/preferences_movies_when_any_date_title</item>
+    </string-array>
+    <string-array name="preferences_now_playing_movies_when_values_array">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <string-array name="preferences_upcoming_movies_how_list_array">
         <item>@string/preferences_movies_how_theaters_title</item>
         <item>@string/preferences_movies_how_digital_title</item>
@@ -1314,11 +1323,11 @@
         <item>2</item>
     </string-array>
 
-    <string-array name="preferences_upcoming_movies_where_list_array">
+    <string-array name="preferences_movies_where_list_array">
         <item>@string/preferences_movies_where_your_country_title</item>
         <item>@string/preferences_movies_where_any_country_title</item>
     </string-array>
-    <string-array name="preferences_upcoming_movies_where_values_array">
+    <string-array name="preferences_movies_where_values_array">
         <item>0</item>
         <item>1</item>
     </string-array>

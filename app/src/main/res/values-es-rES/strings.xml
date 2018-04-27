@@ -49,7 +49,7 @@
     <string name="no_movie_overview">No hay sinopsis en %s para esta película.</string>
     <string name="no_movie_reviews">Ningún usuario ha compartido todavía su opinión acerca de esta película.</string>
     <string name="no_name">Sin nombre</string>
-    <string name="no_movies_results">Toca aquí para cambiar los filtros de esta sección (&lt;i>%s&lt;/i>) y poder obtener así algún resultado.</string>
+    <string name="no_movies_results">Intenta cambiar los filtros de esta sección (&lt;i>%s&lt;/i>) para obtener algún resultado.</string>
     <string name="no_results">No hay resultados.</string>
     <string name="no_title">Sin título</string>
     <string name="movies">Pelis</string>
@@ -141,6 +141,7 @@
     <string name="preferences_movies_when_this_week_title">Esta semana</string>
     <string name="preferences_movies_when_next_week_title">La próxima semana</string>
     <string name="preferences_movies_when_any_date_title">En cualquier fecha</string>
+    <string name="preferences_movies_when_45_days_title">Hace 45 días</string>
 
     <string name="preferences_movies_where_title">Dónde</string>
     <string name="preferences_movies_where_your_country_title">En mi país</string>

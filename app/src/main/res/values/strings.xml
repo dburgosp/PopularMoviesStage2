@@ -65,7 +65,7 @@
     <string name="no_movie_overview">There is no available overview in %s for this movie right now.</string>
     <string name="no_movie_reviews">No users have yet written their opinion about this movie.</string>
     <string name="no_name">No name</string>
-    <string name="no_movies_results">Tap here to change movie filters in this section (&lt;i>%s&lt;/i>) and get some result.</string>
+    <string name="no_movies_results">Try changing the movie filters in this section (&lt;i>%s&lt;/i>) to get some results.</string>
     <string name="no_results">No results found</string>
     <string name="no_title">No title</string>
     <string name="original_language">Original language</string>
@@ -723,6 +723,8 @@
     <string name="preferences_movies_where_any_country_title">Anywhere in the World</string>
 
     <string name="preferences_now_playing_movies_how_key">now_playing_movies_how</string>
+    <string name="preferences_now_playing_movies_when_key">now_playing_movies_when</string>
+    <string name="preferences_movies_when_45_days_title">45 days ago</string>
 
     <string name="preferences_movies_vote_average_key">movies_vote_average</string>
     <string name="preferences_movies_vote_average_title">Users rating</string>
