@@ -32,7 +32,6 @@ import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
-import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
@@ -367,12 +366,8 @@ public class MoviesFragment extends Fragment
         switch (contentType) {
             case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING: {
                 releaseType = MyPreferences.getNowPlayingMoviesReleaseType(getContext());
-
-                // If we are showing now playing movies, initDate and endDate don't come from
-                // Preferences. We filter movies from 45 days ago until today.
-                initDate = DateTimeUtils.getStringAddedDaysToDate(
-                        DateTimeUtils.getCurrentDate(), -45);
-                endDate = DateTimeUtils.getStringCurrentDate();
+                initDate = MyPreferences.getNowPlayingMoviesInitDate(getContext());
+                endDate = MyPreferences.getNowPlayingMoviesEndDate(getContext());
                 break;
             }
 

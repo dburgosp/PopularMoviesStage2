@@ -26,7 +26,7 @@ public class MoviesFragmentPagerAdapter extends FragmentPagerAdapter {
         tabTitles[PAGE_ALL] = context.getString(R.string.all_movies);
         tabTitles[PAGE_NOW_PLAYING] = context.getString(R.string.movies_sort_by_now_playing);
         tabTitles[PAGE_UPCOMING] = context.getString(R.string.movies_sort_by_upcoming);
-        tabTitles[PAGE_BUY_AND_RENT] = context.getString(R.string.movies_sort_by_for_buy_and_rent);
+        tabTitles[PAGE_BUY_AND_RENT] = context.getString(R.string.movies_sort_by_online);
         tabTitles[PAGE_FAVORITES] = context.getString(R.string.movies_sort_by_favorites);
     }
 

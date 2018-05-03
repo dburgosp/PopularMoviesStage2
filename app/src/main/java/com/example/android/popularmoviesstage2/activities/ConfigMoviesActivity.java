@@ -133,7 +133,11 @@ public class ConfigMoviesActivity extends AppCompatActivity {
      * @param array           is the String array with labels for every RadioButton.
      * @param preferencesType is a value that indicates the type of preferences in order to update
      *                        the corresponding global index values. Available values are
-     *                        MyPreferences.TYPE_MOVIES_HOW, MyPreferences.TYPE_MOVIES_WHEN.
+     *                        {@link MyPreferences#TYPE_MOVIES_HOW},
+     *                        {@link MyPreferences#TYPE_MOVIES_WHEN}.
+     * @param moviesType      is a value that indicates the type of movies in order to update the
+     *                        corresponding global index values. Available values are
+     *                        {@link #TYPE_UPCOMING}, {@link #TYPE_NOW_PLAYING}.
      */
     private void setRadioButtons(final RadioGroup radioGroup, String array[],
                                  final int preferencesType, final int moviesType) {
@@ -211,8 +215,8 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                         break;
 
                     case TYPE_NOW_PLAYING:
-                        startHowCheckedIndex =
-                                MyPreferences.getNowPlayingMoviesIndex(this);
+                        startHowCheckedIndex = MyPreferences.getNowPlayingMoviesIndex(this,
+                                MyPreferences.TYPE_MOVIES_HOW);
                         break;
                 }
                 endHowCheckedIndex = startHowCheckedIndex;
@@ -225,8 +229,10 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                 endWhenCheckedIndex = startWhenCheckedIndex;
                 currentRadioButton = (RadioButton) radioGroup.getChildAt(startWhenCheckedIndex);
         }
-        currentRadioButton.setChecked(true);
-        currentRadioButton.setTextColor(getResources().getColor(R.color.colorAccent));
+        if (currentRadioButton != null) {
+            currentRadioButton.setChecked(true);
+            currentRadioButton.setTextColor(getResources().getColor(R.color.colorAccent));
+        }
     }
 
     /**

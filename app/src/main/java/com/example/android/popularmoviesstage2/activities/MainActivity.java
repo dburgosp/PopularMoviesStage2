@@ -145,15 +145,12 @@ public class MainActivity extends AppCompatActivity implements
     private TextView buyAndRentSeriesTitle = null;
     private TextView airingTodayTitle = null;
 
-    private TextView upcomingMoviesMessageHeader = null;
     private TextView upcomingMoviesMessage = null;
     private TextView popularPeopleMessage = null;
     private TextView onTheAirMessage = null;
-    private TextView nowPlayingMoviesMessageHeader = null;
     private TextView nowPlayingMoviesMessage = null;
     private TextView buyAndRentMoviesMessage = null;
     private TextView buyAndRentSeriesMessage = null;
-    private TextView airingTodayMessageHeader = null;
     private TextView airingTodayMessage = null;
 
     private Unbinder unbinder;
@@ -303,8 +300,6 @@ public class MainActivity extends AppCompatActivity implements
             // Extract all layout elements and assign them to their corresponding private variables.
             upcomingMoviesViewFlipper = (ViewFlipperIndicator) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
-            upcomingMoviesMessageHeader = (TextView) upcomingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_message_header);
             upcomingMoviesMessage = (TextView) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
             upcomingMoviesLoadingIndicator = (ProgressBar) upcomingMoviesLayout.findViewById(
@@ -375,8 +370,6 @@ public class MainActivity extends AppCompatActivity implements
             // Extract all layout elements and assign them to their corresponding private variables.
             nowPlayingMoviesViewFlipper = (ViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
-            nowPlayingMoviesMessageHeader = (TextView) nowPlayingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_message_header);
             nowPlayingMoviesMessage = (TextView) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
             nowPlayingMoviesLoadingIndicator = (ProgressBar) nowPlayingMoviesLayout.findViewById(
@@ -407,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         buyAndRentSeriesLayout = setCardView(buyAndRentSeriesCardView, CONTENT_TYPE_SERIES,
-                false, getString(R.string.movies_sort_by_for_buy_and_rent),
+                false, getString(R.string.movies_sort_by_online),
                 4000);
         if (buyAndRentSeriesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
@@ -423,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         buyAndRentMoviesLayout = setCardView(buyAndRentMoviesCardView, CONTENT_TYPE_MOVIES,
-                false, getString(R.string.movies_sort_by_for_buy_and_rent),
+                false, getString(R.string.movies_sort_by_online),
                 4000);
         if (buyAndRentMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
@@ -465,8 +458,6 @@ public class MainActivity extends AppCompatActivity implements
             // Extract all layout elements and assign them to their corresponding private variables.
             airingTodayViewFlipper = (ViewFlipperIndicator) airingTodayLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
-            airingTodayMessageHeader = (TextView) airingTodayLayout.findViewById(
-                    R.id.layout_main_cardview_content_message_header);
             airingTodayMessage = (TextView) airingTodayLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
             airingTodayLoadingIndicator = (ProgressBar) airingTodayLayout.findViewById(
@@ -1016,7 +1007,6 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // There is an available connection. Fetch upcoming movies (in theaters and
                         // released any date later than tomorrow) from TMDB.
-                        upcomingMoviesMessageHeader.setVisibility(View.GONE);
                         upcomingMoviesMessage.setVisibility(View.GONE);
                         String moviesUpcomingReleaseType = getResources().getStringArray(
                                 R.array.preferences_upcoming_movies_how_values_array)
@@ -1157,7 +1147,6 @@ public class MainActivity extends AppCompatActivity implements
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
                                     "movies not null.");
-                            upcomingMoviesMessageHeader.setVisibility(View.GONE);
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1171,15 +1160,9 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         if (!hasData || !hasValidData) {
                             // There's no search results in the movies array or there's no elements
-                            // into the ViewFlipper. Show alert messages.
-                            upcomingMoviesMessageHeader.setText(getResources().getString(
-                                    R.string.no_results));
-                            String filters = MyPreferences.getUpcomingMoviesHowTitle(context) + ", "
-                                    + MyPreferences.getUpcomingMoviesWhenTitle(context);
-                            String htmlText = String.format(getResources().getString(
-                                    R.string.no_movies_results), filters);
-                            TextViewUtils.setHtmlText(upcomingMoviesMessage, htmlText);
-                            upcomingMoviesMessageHeader.setVisibility(View.VISIBLE);
+                            // into the ViewFlipper. Show alert message.
+                            upcomingMoviesMessage.setText(getResources().getString(
+                                    R.string.no_movies_results));
                             upcomingMoviesMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
@@ -1202,7 +1185,6 @@ public class MainActivity extends AppCompatActivity implements
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for now playing " +
                                     "movies not null.");
-                            nowPlayingMoviesMessageHeader.setVisibility(View.GONE);
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1216,14 +1198,9 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         if (!hasData || !hasValidData) {
                             // There's no search results in the movies array or there's no elements
-                            // into the ViewFlipper. Show alert messages.
-                            nowPlayingMoviesMessageHeader.setText(getResources().getString(
-                                    R.string.no_results));
-                            String filters = MyPreferences.getNowPlayingMoviesTitle(context);
-                            String htmlText = String.format(getResources().getString(
-                                    R.string.no_movies_results), filters);
-                            TextViewUtils.setHtmlText(nowPlayingMoviesMessage, htmlText);
-                            nowPlayingMoviesMessageHeader.setVisibility(View.VISIBLE);
+                            // into the ViewFlipper. Show alert message.
+                            nowPlayingMoviesMessage.setText(getResources().getString(
+                                    R.string.no_movies_results));
                             nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
                         }
                     } else {

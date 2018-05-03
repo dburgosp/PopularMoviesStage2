@@ -49,11 +49,11 @@
     <string name="no_movie_overview">No hay sinopsis en %s para esta película.</string>
     <string name="no_movie_reviews">Ningún usuario ha compartido todavía su opinión acerca de esta película.</string>
     <string name="no_name">Sin nombre</string>
-    <string name="no_movies_results">Intenta cambiar los filtros de esta sección (&lt;i>%s&lt;/i>) para obtener algún resultado.</string>
+    <string name="no_movies_results">No hay resultados.\nPrueba a cambiar los filtros de películas.</string>
     <string name="no_results">No hay resultados.</string>
     <string name="no_title">Sin título</string>
     <string name="movies">Pelis</string>
-    <string name="movies_sort_by_for_buy_and_rent">Compra y alquiler</string>
+    <string name="movies_sort_by_online">Ver online</string>
     <string name="movies_sort_by_favorites">Favoritos</string>
     <string name="movies_sort_by_now_playing">En cartelera</string>
     <string name="movies_sort_by_popular">Populares</string>
