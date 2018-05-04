@@ -3,10 +3,7 @@
     android:id="@+id/custom_toast_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/regular_padding"
-    android:alpha="0.95"
-    android:background="@drawable/rounded_button"
-    android:backgroundTint="@color/colorPrimaryLight"
+    android:background="@color/colorAccent"
     android:orientation="horizontal"
     android:padding="@dimen/regular_padding">
 
@@ -16,15 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/small_padding"
         android:contentDescription="@string/content_description_icon"
-        android:paddingTop="@dimen/big_padding"
+        android:paddingTop="@dimen/normal_padding"
         android:src="@drawable/ic_info_outline_white_24dp" />
 
     <TextView
         android:id="@+id/toast_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/big_padding"
-        android:paddingTop="@dimen/big_padding"
+        android:paddingBottom="@dimen/normal_padding"
+        android:paddingTop="@dimen/normal_padding"
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/normal_plus_text_size"
         tools:text="HEADER 1\nContent for header 1\n\nHEADER 2\nContent for header 2\n\n..." />

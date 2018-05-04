@@ -19,23 +19,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ConfigMoviesActivity extends AppCompatActivity {
-    private static final String TAG = ConfigMoviesActivity.class.getSimpleName();
+public class ConfigFilteredMoviesActivity extends AppCompatActivity {
+    private static final String TAG = ConfigFilteredMoviesActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
-    @BindView(R.id.config_upcoming_movies_how_radiogroup)
-    RadioGroup howRadioGroup;
-    @BindView(R.id.config_upcoming_movies_when_radiogroup)
-    RadioGroup whenRadioGroup;
     @BindView(R.id.config_upcoming_movies_how_title)
     TextView howTextView;
+    @BindView(R.id.config_upcoming_movies_how_radiogroup)
+    RadioGroup howRadioGroup;
     @BindView(R.id.config_upcoming_movies_when_title)
     TextView whenTextView;
+    @BindView(R.id.config_upcoming_movies_when_radiogroup)
+    RadioGroup whenRadioGroup;
+    @BindView(R.id.config_upcoming_movies_where_title)
+    TextView whereTextView;
+    @BindView(R.id.config_upcoming_movies_where_radiogroup)
+    RadioGroup whereRadioGroup;
 
     private Unbinder unbinder;
     private int endHowCheckedIndex = 0, startHowCheckedIndex = 0;
     private int endWhenCheckedIndex = 0, startWhenCheckedIndex = 0;
+    private int endWhereCheckedIndex = 0, startWhereCheckedIndex = 0;
     private Intent intent;
 
     public static final String PARAM_TYPE = "type";
@@ -48,7 +53,7 @@ public class ConfigMoviesActivity extends AppCompatActivity {
 
         setTransitions();
 
-        setContentView(R.layout.activity_config_movies);
+        setContentView(R.layout.activity_config_filtered_movies);
         unbinder = ButterKnife.bind(this);
 
         // Get intent and parameters from calling activity.
@@ -60,10 +65,13 @@ public class ConfigMoviesActivity extends AppCompatActivity {
             case TYPE_NOW_PLAYING: {
                 setTitle(getString(R.string.movies_sort_by_now_playing));
 
-                // Show only "How" elements.
+                // Show only "How" and "Where" elements.
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_now_playing_movies_how_list_array),
                         MyPreferences.TYPE_MOVIES_HOW, type);
+                setRadioButtons(whereRadioGroup, getResources().getStringArray(
+                        R.array.preferences_movies_where_list_array),
+                        MyPreferences.TYPE_MOVIES_WHERE, type);
 
                 // Hide "When" elements.
                 whenRadioGroup.setVisibility(View.GONE);
@@ -81,6 +89,9 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                 setRadioButtons(whenRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_when_list_array),
                         MyPreferences.TYPE_MOVIES_WHEN, type);
+                setRadioButtons(whereRadioGroup, getResources().getStringArray(
+                        R.array.preferences_movies_where_list_array),
+                        MyPreferences.TYPE_MOVIES_WHERE, type);
                 break;
             }
 
@@ -90,6 +101,8 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                 howTextView.setVisibility(View.GONE);
                 whenRadioGroup.setVisibility(View.GONE);
                 whenTextView.setVisibility(View.GONE);
+                whereRadioGroup.setVisibility(View.GONE);
+                whereTextView.setVisibility(View.GONE);
             }
         }
     }
@@ -98,14 +111,14 @@ public class ConfigMoviesActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         if ((endHowCheckedIndex == startHowCheckedIndex) &&
-                (endWhenCheckedIndex == startWhenCheckedIndex)) {
+                (endWhenCheckedIndex == startWhenCheckedIndex) &&
+                (endWhereCheckedIndex == startWhereCheckedIndex)) {
             // No changes.
             setResult(RESULT_CANCELED, intent);
         } else {
             // Preferences have changed.
             setResult(RESULT_OK, intent);
         }
-        finish();
     }
 
     @Override
@@ -134,7 +147,8 @@ public class ConfigMoviesActivity extends AppCompatActivity {
      * @param preferencesType is a value that indicates the type of preferences in order to update
      *                        the corresponding global index values. Available values are
      *                        {@link MyPreferences#TYPE_MOVIES_HOW},
-     *                        {@link MyPreferences#TYPE_MOVIES_WHEN}.
+     *                        {@link MyPreferences#TYPE_MOVIES_WHEN},
+     *                        {@link MyPreferences#TYPE_MOVIES_WHERE}.
      * @param moviesType      is a value that indicates the type of movies in order to update the
      *                        corresponding global index values. Available values are
      *                        {@link #TYPE_UPCOMING}, {@link #TYPE_NOW_PLAYING}.
@@ -159,8 +173,12 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                             endCheckedIndex = endHowCheckedIndex;
                             break;
 
-                        default: // case MyPreferences.TYPE_MOVIES_WHEN:
+                        case MyPreferences.TYPE_MOVIES_WHEN:
                             endCheckedIndex = endWhenCheckedIndex;
+                            break;
+
+                        default: // case MyPreferences.TYPE_MOVIES_WHERE:
+                            endCheckedIndex = endWhereCheckedIndex;
                     }
 
                     // Make changes only if state has changed.
@@ -181,18 +199,23 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                                 endHowCheckedIndex = checkedIndex;
                                 break;
 
-                            default: // case MyPreferences.TYPE_MOVIES_WHEN:
+                            case MyPreferences.TYPE_MOVIES_WHEN:
                                 endWhenCheckedIndex = checkedIndex;
+                                break;
+
+                            default: // case MyPreferences.TYPE_MOVIES_WHERE:
+                                endWhereCheckedIndex = checkedIndex;
                         }
                         switch (moviesType) {
                             case TYPE_UPCOMING:
-                                MyPreferences.setUpcomingMovies(ConfigMoviesActivity.this,
+                                MyPreferences.setUpcomingMovies(ConfigFilteredMoviesActivity.this,
                                         checkedIndex, preferencesType);
                                 break;
 
                             case TYPE_NOW_PLAYING:
                                 MyPreferences.setNowPlayingMovies(
-                                        ConfigMoviesActivity.this, checkedIndex);
+                                        ConfigFilteredMoviesActivity.this, checkedIndex,
+                                        preferencesType);
                                 break;
                         }
                     }
@@ -223,11 +246,27 @@ public class ConfigMoviesActivity extends AppCompatActivity {
                 currentRadioButton = (RadioButton) radioGroup.getChildAt(startHowCheckedIndex);
                 break;
 
-            default: // case MyPreferences.TYPE_MOVIES_WHEN:
+            case MyPreferences.TYPE_MOVIES_WHEN:
                 startWhenCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
                         MyPreferences.TYPE_MOVIES_WHEN);
                 endWhenCheckedIndex = startWhenCheckedIndex;
                 currentRadioButton = (RadioButton) radioGroup.getChildAt(startWhenCheckedIndex);
+                break;
+
+            default: // case MyPreferences.TYPE_MOVIES_WHERE:
+                switch (moviesType) {
+                    case TYPE_UPCOMING:
+                        startWhereCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
+                                MyPreferences.TYPE_MOVIES_WHERE);
+                        break;
+
+                    case TYPE_NOW_PLAYING:
+                        startWhereCheckedIndex = MyPreferences.getNowPlayingMoviesIndex(this,
+                                MyPreferences.TYPE_MOVIES_WHERE);
+                        break;
+                }
+                endWhereCheckedIndex = startWhereCheckedIndex;
+                currentRadioButton = (RadioButton) radioGroup.getChildAt(startWhereCheckedIndex);
         }
         if (currentRadioButton != null) {
             currentRadioButton.setChecked(true);

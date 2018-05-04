@@ -18,6 +18,8 @@
             android:layout_width="@dimen/poster_width"
             android:layout_height="@dimen/poster_height"
             android:background="@drawable/no_movie_poster"
+            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTintMode="multiply"
             android:contentDescription="@string/content_description_poster"
             android:scaleType="centerCrop" />
 

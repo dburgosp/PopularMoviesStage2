@@ -22,12 +22,14 @@ import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.ConfigMoviesActivity;
+import com.example.android.popularmoviesstage2.activities.ConfigFilteredMoviesActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.CustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
@@ -35,6 +37,7 @@ import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecorati
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -75,6 +78,7 @@ public class MoviesFragment extends Fragment
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
+    private Toast customToast = null;
 
     /**
      * Required empty public constructor.
@@ -144,18 +148,15 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Called when the view previously created by {@link #onCreateView} has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
-     * <em>regardless</em> of whether {@link #onCreateView} returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
+     * Called when the fragment is no longer in use.  This is called
+     * after {@link #onStop()} and before {@link #onDetach()}.
      */
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         unbinder.unbind();
+        if (customToast != null)
+            customToast.cancel();
     }
 
     /**
@@ -198,6 +199,8 @@ public class MoviesFragment extends Fragment
         // Set result for calling activity.
         getActivity().setResult(resultCode, getActivity().getIntent());
     }
+
+
 
     /* ------ */
     /* LOADER */
@@ -290,6 +293,60 @@ public class MoviesFragment extends Fragment
             // set.
             if (data != null && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                // Show a message with search results, only when displaying the first page in the
+                // currently visible fragment.
+                if (getUserVisibleHint() && data.get(0).getPage() == 1) {
+                    // Set text.
+                    String htmlText;
+                    String color = String.format("%X",
+                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance();
+                    switch (loader.getId()) {
+                        case NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID:
+                            htmlText = "<strong>" + getString(R.string.all_movies).toUpperCase() +
+                                    "</strong>";
+                            break;
+
+                        case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
+                            htmlText = "<strong>" + getString(R.string.movies_sort_by_now_playing)
+                                    .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
+                                    + getString(R.string.preferences_movies_how_title) + ": " +
+                                    MyPreferences.getNowPlayingMoviesTitle(getContext(),
+                                            MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
+                                    getString(R.string.preferences_movies_where_title) + ": " +
+                                    MyPreferences.getNowPlayingMoviesTitle(getContext(),
+                                            MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
+                            break;
+
+                        default: // case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
+                            htmlText = "<strong>" + getString(R.string.movies_sort_by_upcoming)
+                                    .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
+                                    + getString(R.string.preferences_movies_how_title) + ": "
+                                    + MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                    MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
+                                    getString(R.string.preferences_movies_when_title) + ": " +
+                                    MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                            MyPreferences.TYPE_MOVIES_WHEN) + "<br>" +
+                                    getString(R.string.preferences_movies_where_title) + ": " +
+                                    MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                            MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
+                            break;
+                    }
+                    int results = data.get(0).getTotal_results();
+                    htmlText = htmlText + "<br><br><strong>" + getResources().getQuantityString(
+                            R.plurals.results, results).toUpperCase() + "</strong>" +
+                            "<br><font color=\"#" + color + "\">" + getResources().getQuantityString(
+                            R.plurals.movies_number, results, numberFormat.format(results)) +
+                            "</font>";
+
+                    // Use customised Toast layout.
+                    customToast = CustomToast.setCustomToast(getContext(), htmlText,
+                            R.drawable.ic_local_movies_white_24dp);
+                    customToast.show();
+                }
+
+                // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
             } else {
@@ -303,16 +360,16 @@ public class MoviesFragment extends Fragment
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
                     // If we are showing now playing movies info, show FAB and set its onClick
-                    // behaviour for opening ConfigMoviesActivity.
-                    setFloatingActionButton(ConfigMoviesActivity.TYPE_NOW_PLAYING,
+                    // behaviour for opening ConfigFilteredMoviesActivity.
+                    setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
                             RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES);
                     break;
                 }
 
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     // If we are showing upcoming movies info, show FAB and set its onClick
-                    // behaviour for opening ConfigMoviesActivity.
-                    setFloatingActionButton(ConfigMoviesActivity.TYPE_UPCOMING,
+                    // behaviour for opening ConfigFilteredMoviesActivity.
+                    setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_UPCOMING,
                             RESULT_CODE_CONFIG_UPCOMING_MOVIES);
                     break;
                 }
@@ -358,27 +415,27 @@ public class MoviesFragment extends Fragment
      */
     private void getMyPreferences() {
         language = MyPreferences.getIsoLanguage(getContext());
-        region = MyPreferences.getIsoRegion(getContext());
         sortBy = MyPreferences.getMoviesSortOrder(getContext());
         certification = MyPreferences.getMoviesCertification(getContext());
         voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
         voteCount = MyPreferences.getMoviesVoteCount(getContext());
         switch (contentType) {
-            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING: {
+            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
+                region = MyPreferences.getNowPlayingMoviesRegion(getContext());
                 releaseType = MyPreferences.getNowPlayingMoviesReleaseType(getContext());
                 initDate = MyPreferences.getNowPlayingMoviesInitDate(getContext());
                 endDate = MyPreferences.getNowPlayingMoviesEndDate(getContext());
                 break;
-            }
 
-            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING: {
+            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING:
+                region = MyPreferences.getUpcomingMoviesRegion(getContext());
                 releaseType = MyPreferences.getUpcomingMoviesReleaseType(getContext());
                 initDate = MyPreferences.getUpcomingMoviesInitDate(getContext());
                 endDate = MyPreferences.getUpcomingMoviesEndDate(getContext());
                 break;
-            }
 
             default:
+                region = "";
                 releaseType = "";
                 initDate = "";
                 endDate = "";
@@ -484,22 +541,22 @@ public class MoviesFragment extends Fragment
     /**
      * Helper method for showing FloatingActionButton and setting its behaviour.
      *
-     * @param typeValue  is the value for the ConfigMoviesActivity.PARAM_TYPE parameter of the
-     *                   intent for calling ConfigMoviesActivity when the FloatingActionButton is
+     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.PARAM_TYPE parameter of the
+     *                   intent for calling ConfigFilteredMoviesActivity when the FloatingActionButton is
      *                   clicked.
-     * @param resultCode is the request code for calling ConfigMoviesActivity for result.
+     * @param resultCode is the request code for calling ConfigFilteredMoviesActivity for result.
      */
     private void setFloatingActionButton(int typeValue, final int resultCode) {
-        final Intent intent = new Intent(getContext(), ConfigMoviesActivity.class);
-        intent.putExtra(ConfigMoviesActivity.PARAM_TYPE, typeValue);
+        final Intent intent = new Intent(getContext(), ConfigFilteredMoviesActivity.class);
+        intent.putExtra(ConfigFilteredMoviesActivity.PARAM_TYPE, typeValue);
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Start config activity only when required.
-                startActivityForResult(intent, resultCode,
-                        ActivityOptions.makeSceneTransitionAnimation(
-                                getActivity()).toBundle());
+                Bundle option = ActivityOptions.makeSceneTransitionAnimation(
+                        getActivity()).toBundle();
+                startActivityForResult(intent, resultCode, option);
             }
         });
     }
@@ -541,23 +598,11 @@ public class MoviesFragment extends Fragment
             case Tmdb.TMDB_CONTENT_TYPE_ALL:
                 return NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
-                return NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID;
-
-            case Tmdb.TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES:
-                return NetworkUtils.TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID;
-
             case Tmdb.TMDB_CONTENT_TYPE_UPCOMING:
                 return NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID;
 
-            case Tmdb.TMDB_CONTENT_TYPE_POPULAR:
-                return NetworkUtils.TMDB_POPULAR_MOVIES_LOADER_ID;
-
-            case Tmdb.TMDB_CONTENT_TYPE_TOP_RATED:
-                return NetworkUtils.TMDB_TOP_RATED_MOVIES_LOADER_ID;
-
-            case Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT:
-                return NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID;
+            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
+                return NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID;
 
             default:
                 return NetworkUtils.TMDB_FAVORITE_MOVIES_LOADER_ID;

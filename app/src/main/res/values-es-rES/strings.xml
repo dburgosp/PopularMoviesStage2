@@ -55,7 +55,7 @@
     <string name="movies">Pelis</string>
     <string name="movies_sort_by_online">Ver online</string>
     <string name="movies_sort_by_favorites">Favoritos</string>
-    <string name="movies_sort_by_now_playing">En cartelera</string>
+    <string name="movies_sort_by_now_playing">Ver ahora</string>
     <string name="movies_sort_by_popular">Populares</string>
     <string name="movies_sort_by_top_rated">Mejor valoradas</string>
     <string name="original_language">Idioma original</string>
@@ -78,7 +78,7 @@
     <string name="subtitle_activity_main">y la gente que las hace</string>
     <string name="synopsis">Sinopsis</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
-    <string name="movies_sort_by_upcoming">Próximos estrenos</string>
+    <string name="movies_sort_by_upcoming">Próximamente</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>
     <string name="release_status_canceled">Cancelada</string>
@@ -134,7 +134,7 @@
 
     <string name="preferences_movies_how_title">Cómo</string>
     <string name="preferences_movies_how_theaters_title">En cines</string>
-    <string name="preferences_movies_how_digital_title">En plataformas digitales</string>
+    <string name="preferences_movies_how_digital_title">Online</string>
     <string name="preferences_movies_how_physical_title">En DVD/Blu-ray</string>
 
     <string name="preferences_movies_when_title">Cuándo</string>
@@ -187,6 +187,12 @@
         <item quantity="one">(1 voto)</item>
         <item quantity="other">(%s votos)</item>
     </plurals>
+
+    <plurals name="movies_number">
+        <item quantity="one">1 peli</item>
+        <item quantity="other">%s pelis</item>
+    </plurals>
+
     <string name="people">Gente</string>
     <string name="series">Series</string>
 </resources>

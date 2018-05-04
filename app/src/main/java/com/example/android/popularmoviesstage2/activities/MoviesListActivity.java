@@ -14,14 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +26,14 @@ import android.widget.Toast;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.CustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -66,6 +64,7 @@ public class MoviesListActivity extends AppCompatActivity
     private int voteCount, loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
+    private Toast customToast = null;
 
     // Public parameters for using to call this activity.
     public static final String PARAM_GENRE_ID = "genreId";
@@ -224,6 +223,17 @@ public class MoviesListActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (customToast != null)
+            customToast.cancel();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -305,7 +315,7 @@ public class MoviesListActivity extends AppCompatActivity
         if (NetworkUtils.isConnected(MoviesListActivity.this)) {
             // If there is a valid result, then update its data into the current
             // {@link TmdbMovieDetails} object.
-            if (data != null && !data.isEmpty() && data.size() > 0) {
+            if (data != null && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Show a message with search results, only when displaying the first page.
@@ -318,33 +328,21 @@ public class MoviesListActivity extends AppCompatActivity
                         htmlText = getResources().getString(R.string.sort_movies_by_keyword);
                     String color = String.format("%X",
                             getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance();
                     htmlText = "<strong>" + htmlText.toUpperCase() + "</strong><br>" +
                             "<font color=\"#" + color + "\">" + moviesBy + "</font><br><br>" +
                             "<strong>" + getResources().getString(
-                            R.string.preferences_movies_sort_by_title).toUpperCase() + "</strong><br>" +
-                            "<font color=\"#" + color + "\">" + MyPreferences.getMoviesSortOrderTitle(
+                            R.string.preferences_movies_sort_by_title).toUpperCase() + "</strong><br><font " +
+                            "color=\"#" + color + "\">" + MyPreferences.getMoviesSortOrderTitle(
                             this) + "</font><br><br> <strong>" + getResources().
                             getQuantityString(R.plurals.results, data.size()).toUpperCase() +
                             "</strong><br><font color=\"#" + color + "\">" +
-                            data.get(0).getTotal_results() + "</font>";
+                            numberFormat.format(data.get(0).getTotal_results()) + "</font>";
 
                     // Use customised Toast layout.
-                    LayoutInflater inflater = getLayoutInflater();
-                    View layout = inflater.inflate(R.layout.layout_toast,
-                            (ViewGroup) findViewById(R.id.custom_toast_container));
-
-                    TextView text = (TextView) layout.findViewById(R.id.toast_text);
-                    TextViewUtils.setHtmlText(text, htmlText);
-                    ImageView imageView = (ImageView) layout.findViewById(R.id.toast_image);
-                    imageView.setImageDrawable(
-                            getResources().getDrawable(R.drawable.ic_local_movies_white_24dp));
-
-                    Toast toast = new Toast(getApplicationContext());
-                    toast.setGravity(Gravity.BOTTOM, 0,
-                            getResources().getDimensionPixelSize(R.dimen.regular_padding));
-                    toast.setDuration(Toast.LENGTH_LONG);
-                    toast.setView(layout);
-                    toast.show();
+                    customToast = CustomToast.setCustomToast(this, htmlText,
+                            R.drawable.ic_local_movies_white_24dp);
+                    customToast.show();
                 }
 
                 // Get movies list and display it.
@@ -538,10 +536,14 @@ public class MoviesListActivity extends AppCompatActivity
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        initVariables();
-                        moviesListAdapter.clearMoviesArrayList();
-                        getSupportLoaderManager().restartLoader(loaderId, null,
-                                MoviesListActivity.this);
+                        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
+                            initVariables();
+                            moviesListAdapter.clearMoviesArrayList();
+                            getSupportLoaderManager().restartLoader(loaderId, null,
+                                    MoviesListActivity.this);
+                        } else {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
                     }
                 }
         );

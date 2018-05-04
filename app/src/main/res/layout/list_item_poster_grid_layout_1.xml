@@ -17,6 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/no_movie_poster"
+            android:backgroundTint="@color/colorPrimary"
+            android:backgroundTintMode="multiply"
             android:contentDescription="@string/content_description_poster"
             android:scaleType="centerCrop" />
 

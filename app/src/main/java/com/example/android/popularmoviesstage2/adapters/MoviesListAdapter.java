@@ -304,8 +304,6 @@ public class MoviesListAdapter
             String posterPath = currentTmdbMovie.getPoster_path();
             Picasso.with(context)
                     .load(Tmdb.TMDB_POSTER_SIZE_W185_URL + posterPath)
-                    .placeholder(R.drawable.no_movie_poster)
-                    .error(R.drawable.no_movie_poster)
                     .into(posterImageView);
             boolean imageLoaded = (posterPath != null && !posterPath.equals("") && !posterPath.isEmpty());
 

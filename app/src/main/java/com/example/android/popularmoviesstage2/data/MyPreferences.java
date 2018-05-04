@@ -44,6 +44,9 @@ public class MyPreferences {
     public static final int MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX = 0;
     public static final int MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX = 1;
 
+    public static final int MOVIES_NOW_PLAYING_WHERE_THIS_REGION_INDEX = 0;
+    public static final int MOVIES_NOW_PLAYING_WHERE_ANY_REGION_INDEX = 1;
+
     private static SharedPreferences sharedPreferences;
     private static Resources res;
 
@@ -261,6 +264,60 @@ public class MyPreferences {
     }
 
     /**
+     * Helper method to fetch SharedPreferences for the current region filter for now playing
+     * movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current region filter for now playing movies stored in the
+     * preferences file.
+     */
+    public static String getNowPlayingMoviesRegion(Context context) {
+        res = context.getResources();
+        int index = getNowPlayingMoviesIndex(context, TYPE_MOVIES_WHERE);
+        String nowPlayingMoviesRegion;
+
+        switch (index) {
+            case 0:
+                nowPlayingMoviesRegion = Locale.getDefault().getCountry();
+                break;
+
+            default:
+                nowPlayingMoviesRegion = "";
+        }
+
+        Log.i(TAG, "(getNowPlayingMoviesRegion) Region for now playing movies: " +
+                nowPlayingMoviesRegion);
+        return nowPlayingMoviesRegion;
+    }
+
+    /**
+     * Helper method to fetch SharedPreferences for the current region filter for upcoming
+     * movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current region filter for upcoming movies stored in the
+     * preferences file.
+     */
+    public static String getUpcomingMoviesRegion(Context context) {
+        res = context.getResources();
+        int index = getUpcomingMoviesIndex(context, TYPE_MOVIES_WHERE);
+        String upcomingMoviesRegion;
+
+        switch (index) {
+            case 0:
+                upcomingMoviesRegion = Locale.getDefault().getCountry();
+                break;
+
+            default:
+                upcomingMoviesRegion = "";
+        }
+
+        Log.i(TAG, "(getUpcomingMoviesRegion) Region for upcoming movies: " +
+                upcomingMoviesRegion);
+        return upcomingMoviesRegion;
+    }
+
+    /**
      * Helper method to fetch SharedPreferences for the current region.
      *
      * @param context is the context of the calling activity.
@@ -349,6 +406,34 @@ public class MyPreferences {
     }
 
     /**
+     * Helper method to fetch SharedPreferences for the current initial value of the dates range for
+     * filtering now playing movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current initial value of the dates range for filtering now playing
+     * movies.
+     */
+    public static String getNowPlayingMoviesInitDate(Context context) {
+        // Get current "Now Playing Movies When" value index into the corresponding values array.
+        int index = getNowPlayingMoviesIndex(context, TYPE_MOVIES_WHEN);
+
+        // Calculate the current date value from the selected item.
+        String initDate;
+        switch (index) {
+            case 0: // 45 days ago.
+                initDate = DateTimeUtils.getStringAddedDaysToDate(DateTimeUtils.getCurrentDate(),
+                        -45);
+                break;
+
+            default: // case 1: any date. Init date is blank.
+                initDate = "";
+        }
+
+        Log.i(TAG, "(getNowPlayingMoviesInitDate) Init date: " + initDate);
+        return initDate;
+    }
+
+    /**
      * Helper method to fetch SharedPreferences for the current end value of the dates range for
      * filtering upcoming movies.
      *
@@ -382,17 +467,37 @@ public class MyPreferences {
     }
 
     /**
+     * Helper method to fetch SharedPreferences for the current end value of the dates range for
+     * filtering now playing movies.
+     *
+     * @param context is the context of the calling activity.
+     * @return a string with the current end value of the dates range for filtering now playing
+     * movies.
+     */
+    public static String getNowPlayingMoviesEndDate(Context context) {
+        // End date is always today for now playing movies.
+        String endDate = DateTimeUtils.getStringCurrentDate();
+        Log.i(TAG, "(getNowPlayingMoviesEndDate) End date: " + endDate);
+        return endDate;
+    }
+
+    /**
      * Helper method to update a value in the corresponding "Upcoming Movies" ("How", "When" or
      * "Where") preferences array.
      *
      * @param context is the context of the calling activity.
      * @param index   is the index of the element in the corresponding preferences array to be
-     *                updated. Admitted values are: MOVIES_UPCOMING_HOW_THEATERS_INDEX,
-     *                MOVIES_UPCOMING_HOW_DIGITAL_INDEX, MOVIES_UPCOMING_HOW_PHYSICAL_INDEX,
-     *                MOVIES_UPCOMING_WHEN_THIS_WEEK_INDEX, MOVIES_UPCOMING_WHEN_NEXT_WEEK_INDEX,
-     *                MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX.
+     *                updated. Admitted values are: {@link #MOVIES_UPCOMING_HOW_THEATERS_INDEX},
+     *                {@link #MOVIES_UPCOMING_HOW_DIGITAL_INDEX},
+     *                {@link #MOVIES_UPCOMING_HOW_PHYSICAL_INDEX},
+     *                {@link #MOVIES_UPCOMING_WHEN_THIS_WEEK_INDEX},
+     *                {@link #MOVIES_UPCOMING_WHEN_NEXT_WEEK_INDEX},
+     *                {@link #MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX},
+     *                {@link #MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX},
+     *                {@link #MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX}.
      * @param type    is the type of the preferences array to be used. Admitted values are
-     *                TYPE_MOVIES_HOW, TYPE_MOVIES_WHEN.
+     *                {@link #TYPE_MOVIES_HOW}, {@link #TYPE_MOVIES_WHEN},
+     *                {@link #TYPE_MOVIES_WHERE}.
      */
     public static void setUpcomingMovies(Context context, int index, int type) {
         sharedPreferences = getDefaultSharedPreferences(context);
@@ -425,6 +530,19 @@ public class MyPreferences {
                     Log.i(TAG, "(setUpcomingMovies) \"When\" value: " + upcomingMoviesWhenValue);
                     editor.putString(res.getString(R.string.preferences_upcoming_movies_when_key),
                             upcomingMoviesWhenValue);
+                } else
+                    admittedType = false;
+                break;
+
+            case TYPE_MOVIES_WHERE:
+                if (index == MOVIES_UPCOMING_WHERE_ANY_REGION_INDEX ||
+                        index == MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX) {
+                    String upcomingMoviesWhereArray[] = res.getStringArray(
+                            R.array.preferences_movies_where_values_array);
+                    String upcomingMoviesWhereValue = upcomingMoviesWhereArray[index];
+                    Log.i(TAG, "(setUpcomingMovies) \"Where\" value: " + upcomingMoviesWhereValue);
+                    editor.putString(res.getString(R.string.preferences_upcoming_movies_where_key),
+                            upcomingMoviesWhereValue);
                 } else
                     admittedType = false;
                 break;
@@ -466,59 +584,86 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to update a value in the "Now Playing Movies How" preferences array.
+     * Helper method to update a value in the corresponding "Now Playing Movies" ("How", "When" or
+     * "Where") preferences array.
      *
      * @param context is the context of the calling activity.
      * @param index   is the index of the element in the corresponding preferences array to be
-     *                updated. Available values are MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
-     *                MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX, MOVIES_NOW_PLAYING_WHEN_PHYSICAL_INDEX.
+     *                updated. Admitted values are: {@link #MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX},
+     *                {@link #MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX},
+     *                {@link #MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX},
+     *                {@link #MOVIES_NOW_PLAYING_WHERE_ANY_REGION_INDEX},
+     *                {@link #MOVIES_NOW_PLAYING_WHERE_THIS_REGION_INDEX}.
+     * @param type    is the type of the preferences array to be used. Admitted values are
+     *                {@link #TYPE_MOVIES_HOW}, {@link #TYPE_MOVIES_WHERE}.
      */
-    public static void setNowPlayingMovies(Context context, int index) {
-        if (index == MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX ||
-                index == MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX ||
-                index == MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX) {
-            SharedPreferences sharedPref = getDefaultSharedPreferences(context);
-            res = context.getResources();
-            SharedPreferences.Editor editor = sharedPref.edit();
+    public static void setNowPlayingMovies(Context context, int index, int type) {
+        sharedPreferences = getDefaultSharedPreferences(context);
+        res = context.getResources();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            // Set explicit "How" information.
-            String nowPlayingMoviesHowArray[] = res.getStringArray(
-                    R.array.preferences_now_playing_movies_how_values_array);
-            String nowPlayingMoviesHowValue = nowPlayingMoviesHowArray[index];
-            Log.i(TAG, "(setNowPlayingMovies) Explicit \"How\" value: " +
-                    nowPlayingMoviesHowValue);
-            editor.putString(res.getString(R.string.preferences_now_playing_movies_how_key),
-                    nowPlayingMoviesHowValue);
+        boolean admittedType = true;
+        switch (type) {
+            case TYPE_MOVIES_HOW:
+                if (index == MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX ||
+                        index == MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX ||
+                        index == MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX) {
+                    // Set explicit "How" information.
+                    String nowPlayingMoviesHowArray[] = res.getStringArray(
+                            R.array.preferences_now_playing_movies_how_values_array);
+                    String nowPlayingMoviesHowValue = nowPlayingMoviesHowArray[index];
+                    Log.i(TAG, "(setNowPlayingMovies) Explicit \"How\" value: " +
+                            nowPlayingMoviesHowValue);
+                    editor.putString(res.getString(R.string.preferences_now_playing_movies_how_key),
+                            nowPlayingMoviesHowValue);
 
-            // Depending on "How" information, set implicit "When" information.
-            String nowPlayingMoviesWhenArray[] = res.getStringArray(
-                    R.array.preferences_now_playing_movies_when_values_array);
-            String nowPlayingMoviesWhenValue = "";
-            switch (index) {
-                case MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX:
-                case MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX:
-                    // For now playing movies online and on DVD/Blu-ray, set "Any date" as "When"
-                    // value. It means that we will look for movies with release date lower or equal
-                    // than today.
-                    nowPlayingMoviesWhenValue =
-                            nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_ANY_DATE_INDEX];
-                    break;
+                    // Depending on "How" information, set implicit "When" information.
+                    String nowPlayingMoviesWhenArray[] = res.getStringArray(
+                            R.array.preferences_now_playing_movies_when_values_array);
+                    String nowPlayingMoviesWhenValue = "";
+                    switch (index) {
+                        case MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX:
+                        case MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX:
+                            // For now playing movies online and on DVD/Blu-ray, set "Any date" as "When"
+                            // value. It means that we will look for movies with release date lower or equal
+                            // than today.
+                            nowPlayingMoviesWhenValue =
+                                    nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_ANY_DATE_INDEX];
+                            break;
 
-                case MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX:
-                    // For now playing movies on theaters, set "45 days" as "When" value. It means
-                    // that we will look for movies with release date lower or equal than today and
-                    // greater than 45 days ago.
-                    nowPlayingMoviesWhenValue =
-                            nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_45_DAYS_INDEX];
-            }
-            Log.i(TAG, "(setNowPlayingMovies) Implicit \"When\" value: " +
-                    nowPlayingMoviesWhenValue);
-            editor.putString(res.getString(R.string.preferences_now_playing_movies_when_key),
-                    nowPlayingMoviesWhenValue);
+                        case MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX:
+                            // For now playing movies on theaters, set "45 days" as "When" value. It means
+                            // that we will look for movies with release date lower or equal than today and
+                            // greater than 45 days ago.
+                            nowPlayingMoviesWhenValue =
+                                    nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_45_DAYS_INDEX];
+                    }
+                    Log.i(TAG, "(setNowPlayingMovies) Implicit \"When\" value: " +
+                            nowPlayingMoviesWhenValue);
+                    editor.putString(res.getString(R.string.preferences_now_playing_movies_when_key),
+                            nowPlayingMoviesWhenValue);
+                }
+                break;
 
-            // Commit changes.
-            editor.apply();
+            case TYPE_MOVIES_WHERE:
+                if (index == MOVIES_NOW_PLAYING_WHERE_ANY_REGION_INDEX ||
+                        index == MOVIES_NOW_PLAYING_WHERE_THIS_REGION_INDEX) {
+                    String nowPlayingMoviesWhereArray[] = res.getStringArray(
+                            R.array.preferences_movies_where_values_array);
+                    String nowPlayingMoviesWhereValue = nowPlayingMoviesWhereArray[index];
+                    Log.i(TAG, "(setNowPlayingMovies) \"Where\" value: " + nowPlayingMoviesWhereValue);
+                    editor.putString(res.getString(R.string.preferences_now_playing_movies_where_key),
+                            nowPlayingMoviesWhereValue);
+                } else
+                    admittedType = false;
+                break;
+
+            default:
+                admittedType = false;
         }
+
+        if (admittedType)
+            editor.apply();
     }
 
     /**
@@ -539,17 +684,20 @@ public class MyPreferences {
         String value = "";
         int index = 0;
         switch (type) {
-            case TYPE_MOVIES_HOW: {
+            case TYPE_MOVIES_HOW:
                 index = getArrayIndex(R.array.preferences_now_playing_movies_how_values_array,
                         R.string.preferences_now_playing_movies_how_key);
                 break;
-            }
 
-            case TYPE_MOVIES_WHEN: {
+            case TYPE_MOVIES_WHEN:
                 index = getArrayIndex(R.array.preferences_now_playing_movies_when_values_array,
                         R.string.preferences_now_playing_movies_when_key);
                 break;
-            }
+
+            case TYPE_MOVIES_WHERE:
+                index = getArrayIndex(R.array.preferences_movies_where_values_array,
+                        R.string.preferences_now_playing_movies_where_key);
+                break;
         }
         Log.i(TAG, "(getNowPlayingMoviesIndex) Index for current value: " + index);
         return index;
@@ -561,7 +709,8 @@ public class MyPreferences {
      *
      * @param context is the context of the calling activity.
      * @param type    is the type of the preferences array to be used. Admitted values are
-     *                TYPE_MOVIES_HOW, TYPE_MOVIES_WHEN.
+     *                {@link #TYPE_MOVIES_HOW}, {@link #TYPE_MOVIES_WHEN},
+     *                {@link #TYPE_MOVIES_WHERE}.
      * @return an integer with the corresponding array index.
      */
     public static int getUpcomingMoviesIndex(Context context, int type) {
@@ -573,17 +722,20 @@ public class MyPreferences {
         String value = "";
         int index = 0;
         switch (type) {
-            case TYPE_MOVIES_HOW: {
+            case TYPE_MOVIES_HOW:
                 index = getArrayIndex(R.array.preferences_upcoming_movies_how_values_array,
                         R.string.preferences_upcoming_movies_how_key);
                 break;
-            }
 
-            case TYPE_MOVIES_WHEN: {
+            case TYPE_MOVIES_WHEN:
                 index = getArrayIndex(R.array.preferences_upcoming_movies_when_values_array,
                         R.string.preferences_upcoming_movies_when_key);
                 break;
-            }
+
+            case TYPE_MOVIES_WHERE:
+                index = getArrayIndex(R.array.preferences_movies_where_values_array,
+                        R.string.preferences_upcoming_movies_where_key);
+                break;
         }
 
         Log.i(TAG, "(getUpcomingMoviesIndex) Current value: " + value);
@@ -614,6 +766,11 @@ public class MyPreferences {
             case TYPE_MOVIES_WHEN:
                 title = res.getStringArray(
                         R.array.preferences_now_playing_movies_when_list_array)[index];
+                break;
+
+            case TYPE_MOVIES_WHERE:
+                title = res.getStringArray(
+                        R.array.preferences_movies_where_list_array)[index];
                 break;
 
             default:
@@ -647,6 +804,11 @@ public class MyPreferences {
             case TYPE_MOVIES_WHEN:
                 title = res.getStringArray(
                         R.array.preferences_upcoming_movies_when_list_array)[index];
+                break;
+
+            case TYPE_MOVIES_WHERE:
+                title = res.getStringArray(
+                        R.array.preferences_movies_where_list_array)[index];
                 break;
 
             default:

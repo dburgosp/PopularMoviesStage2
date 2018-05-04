@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".activities.ConfigMoviesActivity">
+    tools:context=".activities.ConfigFilteredMoviesActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,6 +31,16 @@
 
         <RadioGroup
             android:id="@+id/config_upcoming_movies_when_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/config_upcoming_movies_where_title"
+            style="@style/PreferencesOptionsTitleStyle"
+            android:text="@string/preferences_movies_where_title" />
+
+        <RadioGroup
+            android:id="@+id/config_upcoming_movies_where_radiogroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

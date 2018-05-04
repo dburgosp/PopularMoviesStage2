@@ -705,7 +705,7 @@
     <string name="preferences_upcoming_movies_how_key">upcoming_movies_how</string>
     <string name="preferences_movies_how_title">How</string>
     <string name="preferences_movies_how_theaters_title">In theaters</string>
-    <string name="preferences_movies_how_digital_title">Digital movie releases</string>
+    <string name="preferences_movies_how_digital_title">Online</string>
     <string name="preferences_movies_how_physical_title">On DVD/Blu-ray</string>
     <string name="preferences_movies_how_theaters_value">3</string>
     <string name="preferences_movies_how_digital_value">4</string>
@@ -718,6 +718,7 @@
     <string name="preferences_movies_when_any_date_title">On any date</string>
 
     <string name="preferences_upcoming_movies_where_key">upcoming_movies_where</string>
+    <string name="preferences_now_playing_movies_where_key">now_playing_movies_where</string>
     <string name="preferences_movies_where_title">Where</string>
     <string name="preferences_movies_where_your_country_title">In my country</string>
     <string name="preferences_movies_where_any_country_title">Anywhere in the World</string>
@@ -737,32 +738,36 @@
     <!-- Plurals -->
 
     <plurals name="genres">
-        <item quantity="one">Genre"></item>
-        <item quantity="other">Genres"></item>
+        <item quantity="one">Genre</item>
+        <item quantity="other">Genres></item>
     </plurals>
     <plurals name="keywords">
-        <item quantity="one">Keyword"></item>
-        <item quantity="other">Keywords"></item>
+        <item quantity="one">Keyword</item>
+        <item quantity="other">Keywords</item>
     </plurals>
     <plurals name="production_companies">
-        <item quantity="one">Production company"></item>
-        <item quantity="other">Production companies"></item>
+        <item quantity="one">Production company</item>
+        <item quantity="other">Production companies</item>
     </plurals>
     <plurals name="production_countries">
-        <item quantity="one">Production country"></item>
-        <item quantity="other">Production countries"></item>
+        <item quantity="one">Production country</item>
+        <item quantity="other">Production countries</item>
     </plurals>
     <plurals name="release_dates">
-        <item quantity="one">Release date"></item>
-        <item quantity="other">Release dates"></item>
+        <item quantity="one">Release date</item>
+        <item quantity="other">Release dates</item>
     </plurals>
     <plurals name="results">
-        <item quantity="one">result"></item>
-        <item quantity="other">results"></item>
+        <item quantity="one">result</item>
+        <item quantity="other">results</item>
     </plurals>
     <plurals name="score_votes">
-        <item quantity="one">(1 vote)"></item>
-        <item quantity="other">(%s votes)"></item>
+        <item quantity="one">(1 vote)</item>
+        <item quantity="other">(%s votes)</item>
+    </plurals>
+    <plurals name="movies_number">
+        <item quantity="one">1 movie</item>
+        <item quantity="other">%s movies</item>
     </plurals>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -784,14 +789,14 @@
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
-        <item>Always"></item>
-        <item>When possible"></item>
-        <item>Never"></item>
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
     </string-array>
     <string-array name="pref_example_list_values">
-        <item>1"></item>
-        <item>0"></item>
-        <item>-1"></item>
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
     </string-array>
 
     <!-- Example settings for Data & Sync -->
@@ -799,32 +804,32 @@
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes"></item>
-        <item>30 minutes"></item>
-        <item>1 hour"></item>
-        <item>3 hours"></item>
-        <item>6 hours"></item>
-        <item>Never"></item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
-        <item>15"></item>
-        <item>30"></item>
-        <item>60"></item>
-        <item>180"></item>
-        <item>360"></item>
-        <item>-1"></item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
     </string-array>
 
     <string-array name="list_preference_entries">
-        <item>Entry 1"></item>
-        <item>Entry 2"></item>
-        <item>Entry 3"></item>
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
     </string-array>
 
     <string-array name="list_preference_entry_values">
-        <item>1"></item>
-        <item>2"></item>
-        <item>3"></item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="multi_select_list_preference_default_value" />

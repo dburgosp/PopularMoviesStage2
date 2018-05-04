@@ -13,9 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.IntroActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,11 +25,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.IntroActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
@@ -83,7 +83,7 @@
                 android:value=".activities.MoviesListActivity" />
         </activity>
         <activity
-            android:name=".activities.ConfigMoviesActivity"
+            android:name=".activities.ConfigFilteredMoviesActivity"
             android:label="@string/movies_sort_by_upcoming"
             android:parentActivityName=".activities.MoviesActivity"
             android:screenOrientation="portrait">

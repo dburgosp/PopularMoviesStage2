@@ -314,13 +314,17 @@ public class MainActivity extends AppCompatActivity implements
             upcomingMoviesTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Set preferences for "Upcoming Movies" to show "In Theaters" and "Any date".
+                    // Set preferences for "Upcoming Movies" to show "In Theaters", "Any date" and
+                    // "In my country".
                     MyPreferences.setUpcomingMovies(MainActivity.this,
                             MyPreferences.MOVIES_UPCOMING_HOW_THEATERS_INDEX,
                             MyPreferences.TYPE_MOVIES_HOW);
                     MyPreferences.setUpcomingMovies(MainActivity.this,
                             MyPreferences.MOVIES_UPCOMING_WHEN_ANY_DATE_INDEX,
                             MyPreferences.TYPE_MOVIES_WHEN);
+                    MyPreferences.setUpcomingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
+                            MyPreferences.TYPE_MOVIES_WHERE);
 
                     // Set intent for calling MoviesActivity.
                     Intent intent = new Intent(MainActivity.this,
@@ -384,9 +388,14 @@ public class MainActivity extends AppCompatActivity implements
             nowPlayingMoviesTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Set preferences for "Now Playing Movies" to show "In Theaters".
+                    // Set preferences for "Now Playing Movies" to show "In Theaters" and "In my
+                    // country".
                     MyPreferences.setNowPlayingMovies(MainActivity.this,
-                            MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX);
+                            MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
+                            MyPreferences.TYPE_MOVIES_HOW);
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
+                            MyPreferences.TYPE_MOVIES_WHERE);
 
                     // Set intent for calling MoviesActivity.
                     Intent intent = new Intent(MainActivity.this,
@@ -437,9 +446,13 @@ public class MainActivity extends AppCompatActivity implements
                 @Override
                 public void onClick(View v) {
                     // Set preferences for "Now Playing Movies" to show "Digital movie releases" and
-                    // "any date".
+                    // "any date" and "In my country".
                     MyPreferences.setNowPlayingMovies(MainActivity.this,
-                            MyPreferences.MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX);
+                            MyPreferences.MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX,
+                            MyPreferences.TYPE_MOVIES_HOW);
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
+                            MyPreferences.TYPE_MOVIES_WHERE);
 
                     // Set intent for calling MoviesActivity.
                     Intent intent = new Intent(MainActivity.this,
@@ -484,8 +497,8 @@ public class MainActivity extends AppCompatActivity implements
         animatedViews.add(buyAndRentMoviesCardView);
         animatedViews.add(buyAndRentSeriesCardView);
         animatedViews.add(airingTodayCardView);
-        processAnimationQueue(
-                AnimationUtils.loadAnimation(this, R.anim.in_from_left), 50);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_left);
+        processAnimationQueue(animation, 50);
     }
 
     /**
