@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Public class for managing the countries related to movies.
+ * Public class for managing the countries related to movies_menu.
  */
 public class TmdbMovieCountry implements Parcelable {
     private String iso_3166_1;

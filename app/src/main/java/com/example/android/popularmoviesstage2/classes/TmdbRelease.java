@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Public class for managing the releases of a movie.
  */
 public class TmdbRelease {
-    // Available release status for movies.
+    // Available release status for movies_menu.
     public final static String TMDB_RELEASE_STATUS_RUMORED = "Rumored";
     public final static String TMDB_RELEASE_STATUS_PLANNED = "Planned";
     public final static String TMDB_RELEASE_STATUS_IN_PRODUCTION = "In Production";

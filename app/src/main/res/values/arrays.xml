@@ -909,7 +909,7 @@
         <item>revenue</item>
     </string-array>
 
-    <!-- Arrays for movies certification preferences -->
+    <!-- Arrays for movies_menu certification preferences -->
     <string-array name="preferences_movies_certification_US_list_array">
         <item>@string/preferences_movies_certification_NR_title</item>
         <item>@string/preferences_movies_certification_US_G_title</item>
@@ -1280,7 +1280,7 @@
         <item>X</item>
     </string-array>
 
-    <!-- Arrays for sorting movies preferences -->
+    <!-- Arrays for sorting movies_menu preferences -->
     <string-array name="preferences_now_playing_movies_how_list_array">
         <item>@string/preferences_movies_how_theaters_title</item>
         <item>@string/preferences_movies_how_digital_title</item>

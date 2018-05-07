@@ -59,9 +59,9 @@ public class TmdbMovieDetails {
      * @param keywords              is an array of {@link TmdbKeyword} object containing the
      *                              keywords related to the movie.
      * @param similarMovies         is an array of {@link TmdbMovie} object containing a list of
-     *                              movies that are similar to the current one.
+     *                              movies_menu that are similar to the current one.
      * @param recommendedMovies     is an array of {@link TmdbMovie} object containing a list of
-     *                              recommended movies. This is not the same list than similarMovies.
+     *                              recommended movies_menu. This is not the same list than similarMovies.
      */
     TmdbMovieDetails(TmdbMovie movie, TmdbMovieCollection belongs_to_collection, int budget,
                      String homepage, String imdb_id,

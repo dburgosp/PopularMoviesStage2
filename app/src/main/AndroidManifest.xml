@@ -27,7 +27,8 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
@@ -92,5 +93,4 @@
                 android:value=".activities.MoviesActivity" />
         </activity>
     </application>
-
 </manifest>

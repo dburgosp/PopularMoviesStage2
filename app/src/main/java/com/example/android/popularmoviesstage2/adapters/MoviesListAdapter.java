@@ -41,7 +41,7 @@ public class MoviesListAdapter
      * Constructor for this class.
      *
      * @param resource        is the identifier of the layout resource to be inflated.
-     * @param moviesArrayList is the list of movies that will be represented into the adapter.
+     * @param moviesArrayList is the list of movies_menu that will be represented into the adapter.
      * @param listener        is the listener for receiving the clicks.
      */
     public MoviesListAdapter(@LayoutRes int resource, ArrayList<TmdbMovie> moviesArrayList,
@@ -60,7 +60,7 @@ public class MoviesListAdapter
      * Constructor for this class.
      *
      * @param resource        is the identifier of the layout resource to be inflated.
-     * @param moviesArrayList is the list of movies that will be represented into the adapter.
+     * @param moviesArrayList is the list of movies_menu that will be represented into the adapter.
      * @param widthPixels     is the width in pixels of a movie poster.
      * @param heightPixels    is the height in pixels of a movie poster.
      * @param listener        is the listener for receiving the clicks.
@@ -78,7 +78,7 @@ public class MoviesListAdapter
     }
 
     /**
-     * Public helper method to clear the current movies arrayList.
+     * Public helper method to clear the current movies_menu arrayList.
      */
     public void clearMoviesArrayList() {
         this.moviesArrayList.clear();
@@ -89,9 +89,9 @@ public class MoviesListAdapter
     }
 
     /**
-     * Setter method for updating the list of movies in the adapter.
+     * Setter method for updating the list of movies_menu in the adapter.
      *
-     * @param moviesArrayList is the new list of movies.
+     * @param moviesArrayList is the new list of movies_menu.
      * @param appendToEnd     if true, the new list will be appended to the end of the current
      *                        moviesArrayList; if false, the new list will be appended to the
      *                        start.

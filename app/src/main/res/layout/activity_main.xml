@@ -1,101 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <LinearLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/small_padding"
-        android:paddingStart="@dimen/small_padding"
-        android:paddingTop="@dimen/small_padding">
+        android:layout_height="match_parent">
 
-        <!-- Main options -->
-        <include layout="@layout/layout_main_options" />
-
-        <!-- Upcoming movies -->
-        <android.support.v7.widget.CardView
-            android:id="@+id/home_upcoming_movies_cardview"
-            style="@style/HomeCardViewStyle"
-            android:layout_width="match_parent"
-            android:background="@color/colorMoviesPrimaryDark"
-            app:cardCornerRadius="@dimen/small_padding" />
-
-        <!-- Popular people and series on the air -->
-        <LinearLayout
-            android:id="@+id/home_popular_on_the_air_linearlayout"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <!-- Popular people -->
-            <android.support.v7.widget.CardView
-                android:id="@+id/home_popular_people_cardview"
-                style="@style/HomeCardViewStyle"
-                android:layout_width="0dp"
-                android:layout_marginEnd="@dimen/tiny_padding"
-                android:layout_weight="1"
-                android:background="@color/colorPeoplePrimaryDark"
-                app:cardCornerRadius="@dimen/small_padding" />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/main_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimaryDark"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="@string/app_name" />
+        </android.support.design.widget.AppBarLayout>
 
-            <!-- On the air (TV) -->
-            <android.support.v7.widget.CardView
-                android:id="@+id/home_on_the_air_cardview"
-                style="@style/HomeCardViewStyle"
-                android:layout_width="0dp"
-                android:layout_marginStart="@dimen/tiny_padding"
-                android:layout_weight="1"
-                android:background="@color/colorSeriesPrimaryDark"
-                app:cardCornerRadius="@dimen/small_padding" />
-        </LinearLayout>
-
-        <!-- Now playing movies -->
-        <android.support.v7.widget.CardView
-            android:id="@+id/home_now_playing_movies_cardview"
-            style="@style/HomeCardViewStyle"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:background="@color/colorMoviesPrimaryDark"
-            app:cardCornerRadius="@dimen/small_padding" />
+            android:layout_height="match_parent"
+            android:layout_gravity="fill_vertical"
+            android:background="@color/colorPrimaryDark"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Buy and rent section -->
-        <LinearLayout
-            android:id="@+id/home_buy_and_rent_series_linearlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingEnd="@dimen/small_padding"
+                android:paddingStart="@dimen/small_padding"
+                android:paddingTop="@dimen/small_padding">
 
-            <!-- Buy and rent series -->
-            <android.support.v7.widget.CardView
-                android:id="@+id/home_buy_and_rent_series_cardview"
-                style="@style/HomeCardViewStyle"
-                android:layout_width="0dp"
-                android:layout_marginEnd="@dimen/tiny_padding"
-                android:layout_weight="1"
-                app:cardCornerRadius="@dimen/small_padding" />
+                <!-- Main options -->
+                <include layout="@layout/layout_main_options" />
 
-            <!-- Buy and rent movies -->
-            <android.support.v7.widget.CardView
-                android:id="@+id/home_buy_and_rent_movies_cardview"
-                style="@style/HomeCardViewStyle"
-                android:layout_width="0dp"
-                android:layout_marginStart="@dimen/tiny_padding"
-                android:layout_weight="1"
-                app:cardCornerRadius="@dimen/small_padding" />
-        </LinearLayout>
+                <!-- Upcoming movies_menu -->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/home_upcoming_movies_cardview"
+                    style="@style/HomeCardViewStyle"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorMoviesPrimaryDark"
+                    app:cardCornerRadius="@dimen/small_padding" />
 
-        <!-- Airing today series -->
-        <android.support.v7.widget.CardView
-            android:id="@+id/home_airing_today_cardview"
-            style="@style/HomeCardViewStyle"
-            android:layout_width="match_parent"
-            app:cardCornerRadius="@dimen/small_padding" />
+                <!-- Popular people and series on the air -->
+                <LinearLayout
+                    android:id="@+id/home_popular_on_the_air_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-        <!-- Layout to be shown while retrieving info -->
-        <include layout="@layout/layout_connection_status" />
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+                    <!-- Popular people -->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/home_popular_people_cardview"
+                        style="@style/HomeCardViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_marginEnd="@dimen/tiny_padding"
+                        android:layout_weight="1"
+                        android:background="@color/colorPeoplePrimaryDark"
+                        app:cardCornerRadius="@dimen/small_padding" />
+
+                    <!-- On the air (TV) -->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/home_on_the_air_cardview"
+                        style="@style/HomeCardViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_marginStart="@dimen/tiny_padding"
+                        android:layout_weight="1"
+                        android:background="@color/colorSeriesPrimaryDark"
+                        app:cardCornerRadius="@dimen/small_padding" />
+                </LinearLayout>
+
+                <!-- Now playing movies_menu -->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/home_now_playing_movies_cardview"
+                    style="@style/HomeCardViewStyle"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorMoviesPrimaryDark"
+                    app:cardCornerRadius="@dimen/small_padding" />
+
+                <!-- Buy and rent section -->
+                <LinearLayout
+                    android:id="@+id/home_buy_and_rent_series_linearlayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <!-- Buy and rent series -->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/home_buy_and_rent_series_cardview"
+                        style="@style/HomeCardViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_marginEnd="@dimen/tiny_padding"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="@dimen/small_padding" />
+
+                    <!-- Buy and rent movies_menu -->
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/home_buy_and_rent_movies_cardview"
+                        style="@style/HomeCardViewStyle"
+                        android:layout_width="0dp"
+                        android:layout_marginStart="@dimen/tiny_padding"
+                        android:layout_weight="1"
+                        app:cardCornerRadius="@dimen/small_padding" />
+                </LinearLayout>
+
+                <!-- Airing today series -->
+                <android.support.v7.widget.CardView
+                    android:id="@+id/home_airing_today_cardview"
+                    style="@style/HomeCardViewStyle"
+                    android:layout_width="match_parent"
+                    app:cardCornerRadius="@dimen/small_padding" />
+
+                <!-- Layout to be shown while retrieving info -->
+                <include layout="@layout/layout_connection_status" />
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
+</android.support.v4.widget.DrawerLayout>

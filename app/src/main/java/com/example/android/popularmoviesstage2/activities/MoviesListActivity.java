@@ -90,7 +90,7 @@ public class MoviesListActivity extends AppCompatActivity
             getMyPreferences();
 
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
-            // retrieving the list of movies.
+            // retrieving the list of movies_menu.
             setRecyclerView();
             if (getSupportLoaderManager().getLoader(loaderId) == null)
                 getSupportLoaderManager().initLoader(loaderId, null, this);
@@ -175,7 +175,7 @@ public class MoviesListActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case (R.id.movies_list_menu_home): {
-                // Navigate to the main activity.
+                // Navigate to the main_menu activity.
                 cls = MainActivity.class;
                 intent = new Intent(packageContext, cls);
                 startActivity(intent);
@@ -216,7 +216,7 @@ public class MoviesListActivity extends AppCompatActivity
             sortOrder = currentSortBy;
             language = currentLanguage;
 
-            // Restart the loader for displaying the current movies list with the new sort order.
+            // Restart the loader for displaying the current movies_menu list with the new sort order.
             initVariables();
             moviesListAdapter.clearMoviesArrayList();
             getSupportLoaderManager().restartLoader(loaderId, null, this);
@@ -345,7 +345,7 @@ public class MoviesListActivity extends AppCompatActivity
                     customToast.show();
                 }
 
-                // Get movies list and display it.
+                // Get movies_menu list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
             } else {
@@ -417,7 +417,7 @@ public class MoviesListActivity extends AppCompatActivity
      */
     private void getParameters() {
         if (getIntent().hasExtra(PARAM_GENRE_ID) && getIntent().hasExtra(PARAM_GENRE_NAME)) {
-            // Sorting movies by genre. Create the genres array with only one element, set the
+            // Sorting movies_menu by genre. Create the genres array with only one element, set the
             // introTitle for the activity using the genre name and select the appropriate loader id.
             genres.add(getIntent().getIntExtra(PARAM_GENRE_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_GENRE_NAME);
@@ -426,7 +426,7 @@ public class MoviesListActivity extends AppCompatActivity
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
         } else if (getIntent().hasExtra(PARAM_KEYWORD_ID) &&
                 getIntent().hasExtra(PARAM_KEYWORD_NAME)) {
-            // Sorting movies by keyword. Create the keywords array with only one element, set the
+            // Sorting movies_menu by keyword. Create the keywords array with only one element, set the
             // introTitle for the activity using the keyword name and select the appropriate loader id.
             keywords.add(getIntent().getIntExtra(PARAM_KEYWORD_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_KEYWORD_NAME);
@@ -441,7 +441,7 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     /**
-     * Helper method for setting the RecyclerView in order to display a list of movies with a given
+     * Helper method for setting the RecyclerView in order to display a list of movies_menu with a given
      * arrangement.
      */
     private void setRecyclerView() {
@@ -531,7 +531,7 @@ public class MoviesListActivity extends AppCompatActivity
         });
 
         // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
-        // are at the top of the RecyclerViews and we need to reload previous movies.
+        // are at the top of the RecyclerViews and we need to reload previous movies_menu.
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override

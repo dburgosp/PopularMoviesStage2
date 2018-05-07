@@ -62,7 +62,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * {@link Fragment} that displays the main information about the current movieDetails.
+ * {@link Fragment} that displays the main_menu information about the current movieDetails.
  */
 public class MovieDetailsInfoFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<TmdbMovieDetails> {
@@ -228,7 +228,7 @@ public class MovieDetailsInfoFragment extends Fragment
         // Clean all elements in the layout when creating this fragment.
         clearLayout();
 
-        // Set recycler views for recommended movies and collection, if available.
+        // Set recycler views for recommended movies_menu and collection, if available.
         setRecyclerViews();
 
         // Get arguments from calling activity.
@@ -379,7 +379,7 @@ public class MovieDetailsInfoFragment extends Fragment
     }
 
     /**
-     * Helper method for setting the RecyclerView in order to display lists of recommended movies
+     * Helper method for setting the RecyclerView in order to display lists of recommended movies_menu
      * with a horizontal arrangement.
      */
     void setRecyclerViews() {
@@ -411,7 +411,7 @@ public class MovieDetailsInfoFragment extends Fragment
                     startActivity(intent);
                 } else {
                     // If we are clicking on the current movie (it may be shown again as part of the
-                    // collection or in the recommended movies list), we don't need to move from
+                    // collection or in the recommended movies_menu list), we don't need to move from
                     // here.
                     Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
                             Toast.LENGTH_SHORT).show();
@@ -444,7 +444,7 @@ public class MovieDetailsInfoFragment extends Fragment
         if (setOverviewSection())
             overviewLinearLayout.setVisibility(View.VISIBLE);
 
-        // Set main info section.
+        // Set main_menu info section.
         if (setMainInfoSection())
             mainLinearLayout.setVisibility(View.VISIBLE);
 
@@ -458,7 +458,7 @@ public class MovieDetailsInfoFragment extends Fragment
                 linksLayout.getVisibility() == View.VISIBLE)
             dataLayout.setVisibility(View.VISIBLE);
 
-        // Recommended movies section.
+        // Recommended movies_menu section.
         if (setRecommendedMoviesSection())
             recommendedMoviesLayout.setVisibility(View.VISIBLE);
 
@@ -466,7 +466,7 @@ public class MovieDetailsInfoFragment extends Fragment
         if (setKeywordsSection())
             keywordsLayout.setVisibility(View.VISIBLE);
 
-        // Recommended movies and keywords section are into the same layout. Make it visible if any
+        // Recommended movies_menu and keywords section are into the same layout. Make it visible if any
         // of the inner sections has data.
         if (recommendedMoviesLayout.getVisibility() == View.VISIBLE ||
                 keywordsLayout.getVisibility() == View.VISIBLE)
@@ -876,7 +876,7 @@ public class MovieDetailsInfoFragment extends Fragment
      */
     private boolean setCollectionSection() {
         if (movieDetails.getBelongs_to_collection() != null) {
-            // Retrieve the list of movies that belong to the collection, and return.
+            // Retrieve the list of movies_menu that belong to the collection, and return.
             new CollectionMoviesList(movieDetails.getBelongs_to_collection().getId());
             return true;
         } else
@@ -944,7 +944,7 @@ public class MovieDetailsInfoFragment extends Fragment
     }
 
     /**
-     * Set recommended movies section.
+     * Set recommended movies_menu section.
      *
      * @return true if any of the elements of this section has been set, false otherwise.
      */
@@ -1062,7 +1062,7 @@ public class MovieDetailsInfoFragment extends Fragment
     /* INNER CLASSES */
     /* ------------- */
 
-    // Private inner class to retrieve the list of movies of a given collection.
+    // Private inner class to retrieve the list of movies_menu of a given collection.
     private class CollectionMoviesList implements LoaderManager.LoaderCallbacks<TmdbMovieCollection> {
         private final String TAG = MovieDetailsInfoFragment.CollectionMoviesList.class.getSimpleName();
         private int collectionID;
@@ -1071,7 +1071,7 @@ public class MovieDetailsInfoFragment extends Fragment
         CollectionMoviesList(int collectionID) {
             this.collectionID = collectionID;
 
-            // Create an AsyncTaskLoader for retrieving the list of movies.
+            // Create an AsyncTaskLoader for retrieving the list of movies_menu.
             getLoaderManager().initLoader(NetworkUtils.TMDB_COLLECTION_LOADER_ID, null, this);
 
         }
@@ -1140,7 +1140,7 @@ public class MovieDetailsInfoFragment extends Fragment
                     else
                         collectionOverviewTextView.setVisibility(View.GONE);
 
-                    // Order the movies list by release date and set adapter to show it.
+                    // Order the movies_menu list by release date and set adapter to show it.
                     ArrayList<TmdbMovie> movieCollection = data.getParts();
                     Collections.sort(movieCollection, new Comparator<TmdbMovie>() {
                         @Override

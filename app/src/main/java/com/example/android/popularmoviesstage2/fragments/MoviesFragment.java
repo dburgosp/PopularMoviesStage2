@@ -89,7 +89,7 @@ public class MoviesFragment extends Fragment
     /**
      * Factory method to create a new instance of this fragment using the provided parameters.
      *
-     * @param sortOrder is the sort order of the movies list.
+     * @param sortOrder is the sort order of the movies_menu list.
      * @return a new instance of fragment MoviesFragment.
      */
     public static MoviesFragment newInstance(String sortOrder) {
@@ -129,7 +129,7 @@ public class MoviesFragment extends Fragment
         // By default, FAB is not visible.
         floatingActionButton.setVisibility(View.GONE);
 
-        // Create the AsyncTaskLoader for getting movies lists from TMDB in a separate thread.
+        // Create the AsyncTaskLoader for getting movies_menu lists from TMDB in a separate thread.
         loaderId = getLoaderId();
         if (loaderId >= 0) {
             // If there is a valid loaderId, check if we have to init or restart the loader.
@@ -178,7 +178,7 @@ public class MoviesFragment extends Fragment
         switch (requestCode) {
             case RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES: {
                 if (resultCode == RESULT_OK) {
-                    // Preferences have changed for now playing movies section. Read new preferences
+                    // Preferences have changed for now playing movies_menu section. Read new preferences
                     // values and refresh the current movie list.
                     refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
                 }
@@ -187,7 +187,7 @@ public class MoviesFragment extends Fragment
 
             case RESULT_CODE_CONFIG_UPCOMING_MOVIES: {
                 if (resultCode == RESULT_OK) {
-                    // Preferences have changed for upcoming movies section. Read new preferences
+                    // Preferences have changed for upcoming movies_menu section. Read new preferences
                     // values and refresh the current movie list.
                     refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
                 }
@@ -282,7 +282,7 @@ public class MoviesFragment extends Fragment
         swipeRefreshLayout.setRefreshing(false);
 
         // Loaders issue? onLoadFinished triggers sometimes twice returning the same page. Avoid
-        // adding the same page to the list of movies.
+        // adding the same page to the list of movies_menu.
         if (moviesArrayList != null && moviesArrayList.size() > 0 &&
                 currentPage == moviesArrayList.get(moviesArrayList.size() - 1).getPage())
             return;
@@ -319,7 +319,7 @@ public class MoviesFragment extends Fragment
                                             MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
                             break;
 
-                        default: // case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
+                        case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
                             htmlText = "<strong>" + getString(R.string.movies_sort_by_upcoming)
                                     .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
                                     + getString(R.string.preferences_movies_how_title) + ": "
@@ -332,6 +332,13 @@ public class MoviesFragment extends Fragment
                                     MyPreferences.getUpcomingMoviesTitle(getContext(),
                                             MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
                             break;
+
+                        default:
+                            Log.i(TAG, "(onLoadFinished) No valid loader.");
+                            floatingActionButton.setVisibility(View.GONE);
+                            noResultsTextView.setVisibility(View.VISIBLE);
+                            noResultsTextView.setText(getResources().getString(R.string.no_results));
+                            return;
                     }
                     int results = data.get(0).getTotal_results();
                     htmlText = htmlText + "<br><br><strong>" + getResources().getQuantityString(
@@ -346,7 +353,7 @@ public class MoviesFragment extends Fragment
                     customToast.show();
                 }
 
-                // Get movies list and display it.
+                // Get movies_menu list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
             } else {
@@ -359,7 +366,7 @@ public class MoviesFragment extends Fragment
             // Set FAB onClick behaviour anyway.
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
-                    // If we are showing now playing movies info, show FAB and set its onClick
+                    // If we are showing now playing movies_menu info, show FAB and set its onClick
                     // behaviour for opening ConfigFilteredMoviesActivity.
                     setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
                             RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES);
@@ -367,7 +374,7 @@ public class MoviesFragment extends Fragment
                 }
 
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
-                    // If we are showing upcoming movies info, show FAB and set its onClick
+                    // If we are showing upcoming movies_menu info, show FAB and set its onClick
                     // behaviour for opening ConfigFilteredMoviesActivity.
                     setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_UPCOMING,
                             RESULT_CODE_CONFIG_UPCOMING_MOVIES);
@@ -443,7 +450,7 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Helper method for setting the RecyclerView in order to display a list of movies with a grid
+     * Helper method for setting the RecyclerView in order to display a list of movies_menu with a grid
      * arrangement.
      */
     private void setRecyclerView() {
@@ -563,7 +570,7 @@ public class MoviesFragment extends Fragment
 
     /**
      * Helper method to set a listener on the SwipeRefreshLayout that contains the RecyclerViews,
-     * just in case we are at the top of the RecyclerViews and we need to reload previous movies.
+     * just in case we are at the top of the RecyclerViews and we need to reload previous movies_menu.
      */
     private void setSwipeRefreshLayout() {
         swipeRefreshLayout.setOnRefreshListener(
@@ -577,7 +584,7 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Get a fresh new movies list.
+     * Get a fresh new movies_menu list.
      */
     private void refreshMovieList(String contentType) {
         initVariables();

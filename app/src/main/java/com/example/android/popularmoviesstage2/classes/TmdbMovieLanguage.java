@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Public class for managing the languages related to the movies.
+ * Public class for managing the languages related to the movies_menu.
  */
 public class TmdbMovieLanguage implements Parcelable {
     private String iso_639_1;

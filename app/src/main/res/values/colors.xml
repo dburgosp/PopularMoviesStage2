@@ -14,7 +14,7 @@
     <color name="colorHighScoreBackground">#204529</color>
     <color name="colorHighScoreForeground">#01d277</color>
 
-    <!-- Colors for movies sections. -->
+    <!-- Colors for movies_menu sections. -->
     <color name="colorMoviesPrimaryDark">@color/colorPinkPrimaryDark</color>
     <color name="colorMoviesPrimary">@color/colorPinkPrimary</color>
     <color name="colorMoviesPrimaryLight">@color/colorPinkPrimaryLight</color>

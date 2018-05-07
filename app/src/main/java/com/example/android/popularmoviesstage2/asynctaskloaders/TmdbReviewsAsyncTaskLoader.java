@@ -86,7 +86,7 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
     /**
      * Sends the result of the load to the registered listener. Should only be called by subclasses.
      * <p>
-     * Must be called from the process's main thread.
+     * Must be called from the process's main_menu thread.
      *
      * @param data the result of the load
      */

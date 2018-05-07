@@ -13,7 +13,7 @@ import com.example.android.popularmoviesstage2.R;
 public class DisplayUtils {
     private static final String TAG = DisplayUtils.class.getSimpleName();
 
-    // Width and height in pixels for posters in the full movies list without any margin at all,
+    // Width and height in pixels for posters in the full movies_menu list without any margin at all,
     // depending on display dimensions, current device orientation and desired number of elements to
     // be displayed for each column ("vertical_span_count" and "horizontal_span_count" defined in
     // dimens.xml).
@@ -24,8 +24,8 @@ public class DisplayUtils {
     private int fullDisplayBackdropWidthPixels;
     private int fullDisplayBackdropHeightPixels;
 
-    // Number of column elements to be displayed in a vertical GridLayoutManager showing the main
-    // list of movies.
+    // Number of column elements to be displayed in a vertical GridLayoutManager showing the main_menu
+    // list of movies_menu.
     private int spanCount;
 
     /**
@@ -95,14 +95,14 @@ public class DisplayUtils {
             Log.i(TAG, "Landscape orientation");
         }
 
-        // Number of columns for the movies list in the RecyclerView (spanCount) is different
+        // Number of columns for the movies_menu list in the RecyclerView (spanCount) is different
         // depending on device rotation, so poster width and height for this list also depend on
         // device rotation.
         fullListPosterWidthPixels = displayWidthPixels / spanCount;
         fullListPosterHeightPixels = 3 * fullListPosterWidthPixels / 2;
-        Log.i(TAG, "Poster width for movies full list with no margins: " +
+        Log.i(TAG, "Poster width for movies_menu full list with no margins: " +
                 fullListPosterWidthPixels);
-        Log.i(TAG, "Poster height for movies full list with no margins: " +
+        Log.i(TAG, "Poster height for movies_menu full list with no margins: " +
                 fullListPosterHeightPixels);
 
         // Sizes for backdrops.

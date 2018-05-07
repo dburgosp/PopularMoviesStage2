@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="action_settings">Configuración</string>
+    <string name="action_search">Búsqueda</string>
     <string name="app_name">Pelis &#038; Series</string>
     <string name="age_rating_title">Calificación por edades</string>
     <string name="add_to_favorites">Añadir a mis favoritos</string>
@@ -101,6 +103,9 @@
     <string name="view_all_this_week_released_movies">Ver la lista completa con los %d estrenos de esta semana en cines en %s</string>
     <string name="view_all_upcoming_movies">Ver la lista completa con los próximos %d estrenos de cine en %s</string>
 
+    <string name="people">Gente</string>
+    <string name="series">Series</string>
+
     <!-- Texts for preferences -->
     <string name="preferences_order_title">Ordenación</string>
     <string name="preferences_order_descending_title">Orden descendente</string>
@@ -192,7 +197,4 @@
         <item quantity="one">1 peli</item>
         <item quantity="other">%s pelis</item>
     </plurals>
-
-    <string name="people">Gente</string>
-    <string name="series">Series</string>
 </resources>

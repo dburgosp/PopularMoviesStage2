@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Public class for managing information about companies related to movies.
+ * Public class for managing information about companies related to movies_menu.
  */
 public class TmdbMovieCompany implements Parcelable {
     private String description;

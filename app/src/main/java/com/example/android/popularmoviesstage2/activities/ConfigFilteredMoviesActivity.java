@@ -149,7 +149,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
      *                        {@link MyPreferences#TYPE_MOVIES_HOW},
      *                        {@link MyPreferences#TYPE_MOVIES_WHEN},
      *                        {@link MyPreferences#TYPE_MOVIES_WHERE}.
-     * @param moviesType      is a value that indicates the type of movies in order to update the
+     * @param moviesType      is a value that indicates the type of movies_menu in order to update the
      *                        corresponding global index values. Available values are
      *                        {@link #TYPE_UPCOMING}, {@link #TYPE_NOW_PLAYING}.
      */

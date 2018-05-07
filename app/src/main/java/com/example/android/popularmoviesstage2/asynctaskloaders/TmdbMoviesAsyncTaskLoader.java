@@ -30,10 +30,10 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      * @param language      is the language for retrieving results from TMDB.
      * @param region        is the region for retrieving results from TMDB.
      * @param sortBy        is the sort order for the list of results.
-     * @param certification is the minimum age rating of the movies in the list for the current
+     * @param certification is the minimum age rating of the movies_menu in the list for the current
      *                      country (region parameter).
-     * @param voteCount     is the minimum number of users votes of the movies in the list.
-     * @param voteAverage   is the minimum users rating of the movies in the list.
+     * @param voteCount     is the minimum number of users votes of the movies_menu in the list.
+     * @param voteAverage   is the minimum users rating of the movies_menu in the list.
      * @param releaseType   is the value or list of values to filter release types by.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String contentType, ArrayList<Integer> values,
@@ -114,7 +114,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
     /**
      * Sends the result of the load to the registered listener. Should only be called by subclasses.
      * <p>
-     * Must be called from the process's main thread.
+     * Must be called from the process's main_menu thread.
      *
      * @param data the result of the load
      */

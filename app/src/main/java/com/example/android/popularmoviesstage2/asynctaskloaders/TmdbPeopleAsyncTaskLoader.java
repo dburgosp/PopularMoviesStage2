@@ -22,7 +22,7 @@ public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
      * Constructor for this class.
      *
      * @param context     is the context of the activity.
-     * @param contentType is the sort order of the movies list.
+     * @param contentType is the sort order of the movies_menu list.
      * @param currentPage is the current page to fetch results from TMDB.
      * @param language    is the language for retrieving results from TMDB.
      */
@@ -91,7 +91,7 @@ public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
     /**
      * Sends the result of the load to the registered listener. Should only be called by subclasses.
      * <p>
-     * Must be called from the process's main thread.
+     * Must be called from the process's main_menu thread.
      *
      * @param data the result of the load
      */

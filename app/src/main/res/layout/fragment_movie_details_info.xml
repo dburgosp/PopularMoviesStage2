@@ -43,7 +43,7 @@
             <!-- Collection section -->
             <include layout="@layout/layout_movie_details_info_collection" />
 
-            <!-- Recommended movies section -->
+            <!-- Recommended movies_menu section -->
             <include layout="@layout/layout_movie_details_info_recommended" />
         </LinearLayout>
 

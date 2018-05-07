@@ -9,18 +9,22 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -170,6 +174,18 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         getMyPreferences();
 
         // Initialise layout.
@@ -191,15 +207,67 @@ public class MainActivity extends AppCompatActivity implements
         Log.i(TAG, "(onCreate) Activity created");
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * Called when an item in the navigation menu is selected.
      *
      * @param item The selected item
      * @return true to display the item as the selected item
      */
+    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return false;
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /* -------------- */
@@ -278,10 +346,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Helper method to initially set every element in the main layout.
+     * Helper method to initially set every element in the main_menu layout.
      */
     private void setLayoutElements() {
-        // All movies section. Click to start MoviesActivity with animation.
+        // All movies_menu section. Click to start MoviesActivity with animation.
         allMoviesCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -293,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-        // Upcoming movies section.
+        // Upcoming movies_menu section.
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_upcoming), 5000);
         if (upcomingMoviesLayout != null) {
@@ -308,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             upcomingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing upcoming movies page.
+            // Click to start MoviesActivity with animation, showing upcoming movies_menu page.
             upcomingMoviesTitle = (TextView) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             upcomingMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -367,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements
             onTheAirViewFlipper.setLayoutParams(posterRelativeLayoutParams);
         }
 
-        // Now playing movies section.
+        // Now playing movies_menu section.
         nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_now_playing), 5000);
         if (nowPlayingMoviesLayout != null) {
@@ -382,7 +450,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             nowPlayingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing now playing movies page.
+            // Click to start MoviesActivity with animation, showing now playing movies_menu page.
             nowPlayingMoviesTitle = (TextView) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             nowPlayingMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -439,7 +507,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             buyAndRentMoviesViewFlipper.setLayoutParams(posterRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing buy and rent movies page.
+            // Click to start MoviesActivity with animation, showing buy and rent movies_menu page.
             buyAndRentMoviesTitle = (TextView) buyAndRentMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             buyAndRentMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -719,13 +787,13 @@ public class MainActivity extends AppCompatActivity implements
                         // after performing the animation associated to the corresponding view.
                         View currentView = animatedViews.get(animatedViewCurrentIndex);
                         if (currentView == upcomingMoviesCardView) {
-                            // Displaying animation for upcoming movies section: fetch upcoming
-                            // movies list from TMDB.
+                            // Displaying animation for upcoming movies_menu section: fetch upcoming
+                            // movies_menu list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
                         } else if (currentView == nowPlayingMoviesCardView) {
-                            // Displaying animation for now playing movies section: fetch now
-                            // playing movies list from TMDB.
+                            // Displaying animation for now playing movies_menu section: fetch now
+                            // playing movies_menu list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
                         } else if (currentView == popularPeopleCardView) {
@@ -734,8 +802,8 @@ public class MainActivity extends AppCompatActivity implements
                             new MainActivity.MainActivityPeopleList(
                                     NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID);
                         } else if (currentView == buyAndRentMoviesCardView) {
-                            // Displaying animation for buy and rent movies section: fetch buy and
-                            // rent movies list from TMDB.
+                            // Displaying animation for buy and rent movies_menu section: fetch buy and
+                            // rent movies_menu list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID);
                         }
@@ -757,7 +825,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Helper method to set movie, series or people info in a ViewFlipper into a CardView in the
-     * main activity.
+     * main_menu activity.
      *
      * @param data          is the array of elements to be shown.
      * @param viewFlipper   is the ViewFlipper that displays the info.
@@ -982,14 +1050,14 @@ public class MainActivity extends AppCompatActivity implements
     /* INNER CLASSES */
     /* ------------- */
 
-    // Private inner class to retrieve a given list of movies.
+    // Private inner class to retrieve a given list of movies_menu.
     private class MainActivityMoviesList
             implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
         private final String TAG = MainActivity.MainActivityMoviesList.class.getSimpleName();
 
         // Constructor for objects of this class.
         MainActivityMoviesList(int loaderId) {
-            // Create an AsyncTaskLoader for retrieving the list of movies.
+            // Create an AsyncTaskLoader for retrieving the list of movies_menu.
             if (loaderId >= 0)
                 if (getSupportLoaderManager().getLoader(loaderId) == null) {
                     // If this is the first time, init loader.
@@ -1018,7 +1086,7 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     upcomingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch upcoming movies (in theaters and
+                        // There is an available connection. Fetch upcoming movies_menu (in theaters and
                         // released any date later than tomorrow) from TMDB.
                         upcomingMoviesMessage.setVisibility(View.GONE);
                         String moviesUpcomingReleaseType = getResources().getStringArray(
@@ -1046,7 +1114,7 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
                     nowPlayingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch Fetch now playing movies (in
+                        // There is an available connection. Fetch Fetch now playing movies_menu (in
                         // theaters, released 45 days ago or later) from TMDB.
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
                         String moviesNowPlayingReleaseType = getResources().getStringArray(
@@ -1075,7 +1143,7 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID: {
                     buyAndRentMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch buy and rent movies (released in
+                        // There is an available connection. Fetch buy and rent movies_menu (released in
                         // digital platforms, any date) from TMDB.
                         buyAndRentMoviesMessage.setVisibility(View.GONE);
                         String buyAndRentMoviesReleaseType = getResources().getStringArray(
@@ -1148,7 +1216,7 @@ public class MainActivity extends AppCompatActivity implements
         public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
             Context context = MainActivity.this;
 
-            // Get movies list and display it, depending on the loader identifier.
+            // Get movies_menu list and display it, depending on the loader identifier.
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
@@ -1159,7 +1227,7 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
-                                    "movies not null.");
+                                    "movies_menu not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1168,11 +1236,11 @@ public class MainActivity extends AppCompatActivity implements
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for upcoming " +
-                                    "movies.");
+                                    "movies_menu.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies array or there's no elements
+                            // There's no search results in the movies_menu array or there's no elements
                             // into the ViewFlipper. Show alert message.
                             upcomingMoviesMessage.setText(getResources().getString(
                                     R.string.no_movies_results));
@@ -1197,7 +1265,7 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for now playing " +
-                                    "movies not null.");
+                                    "movies_menu not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1206,11 +1274,11 @@ public class MainActivity extends AppCompatActivity implements
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for now playing " +
-                                    "movies.");
+                                    "movies_menu.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies array or there's no elements
+                            // There's no search results in the movies_menu array or there's no elements
                             // into the ViewFlipper. Show alert message.
                             nowPlayingMoviesMessage.setText(getResources().getString(
                                     R.string.no_movies_results));
@@ -1235,7 +1303,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (data != null && data.size() > 0) {
                             // If there is a valid result, display it on its corresponding layout.
                             Log.i(TAG, "(onLoadFinished) Search results for buy and rent " +
-                                    "movies not null.");
+                                    "movies_menu not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
@@ -1243,11 +1311,11 @@ public class MainActivity extends AppCompatActivity implements
                                     false, MAX_HALF_SCREEN_ELEMENTS);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for buy and " +
-                                    "rent movies.");
+                                    "rent movies_menu.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies array or there's no elements
+                            // There's no search results in the movies_menu array or there's no elements
                             // into the ViewFlipper. Show alert messages.
                             buyAndRentMoviesMessage.setText(getResources().getString(
                                     R.string.no_results));

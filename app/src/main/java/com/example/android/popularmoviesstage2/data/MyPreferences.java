@@ -58,10 +58,10 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to fetch SharedPreferences for the current sort order for movies lists.
+     * Helper method to fetch SharedPreferences for the current sort order for movies_menu lists.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the sort order for movies lists value stored in the preferences file.
+     * @return a string with the sort order for movies_menu lists value stored in the preferences file.
      */
     public static String getMoviesSortOrder(Context context) {
         sharedPreferences = getDefaultSharedPreferences(context);
@@ -79,17 +79,17 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the human-readable string value of the current
-     * sort order for movies lists.
+     * sort order for movies_menu lists.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the current sort order for movies lists written in a human-readable
+     * @return a string with the current sort order for movies_menu lists written in a human-readable
      * language.
      */
     public static String getMoviesSortOrderTitle(Context context) {
         sharedPreferences = getDefaultSharedPreferences(context);
         res = context.getResources();
 
-        // Get current "movies sort by" value index into the corresponding values array.
+        // Get current "movies_menu sort by" value index into the corresponding values array.
         ArrayList<String> sortByArrayList = new ArrayList<>(
                 Arrays.asList(res.getStringArray(R.array.preferences_movies_sort_by_values_array)));
         String sortByValue = sharedPreferences.getString(
@@ -190,7 +190,7 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to fetch SharedPreferences for the current certification level for movies.
+     * Helper method to fetch SharedPreferences for the current certification level for movies_menu.
      *
      * @param context is the context of the calling activity.
      * @return a string with the ISO 639-1 code of the language stored in the preferences file.
@@ -217,7 +217,7 @@ public class MyPreferences {
             Log.i(TAG, "(getMoviesCertification) Certification level for current region (" +
                     region + "): " + certification);
         } else {
-            // No certification for movies at the current country.
+            // No certification for movies_menu at the current country.
             certification = "";
             Log.i(TAG, "(getMoviesCertification) No certificationc for current region (" +
                     region + ")");
@@ -227,10 +227,10 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the current release type filter for upcoming
-     * movies.
+     * movies_menu.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the current release type filter for upcoming movies stored in the
+     * @return a string with the current release type filter for upcoming movies_menu stored in the
      * preferences file.
      */
     public static String getUpcomingMoviesReleaseType(Context context) {
@@ -239,17 +239,17 @@ public class MyPreferences {
         String upcomingMoviesReleaseType = sharedPreferences.getString(
                 res.getString(R.string.preferences_upcoming_movies_how_key),
                 res.getStringArray(R.array.preferences_upcoming_movies_how_values_array)[0]);
-        Log.i(TAG, "(getUpcomingMoviesReleaseType) Release type for upcoming movies: " +
+        Log.i(TAG, "(getUpcomingMoviesReleaseType) Release type for upcoming movies_menu: " +
                 upcomingMoviesReleaseType);
         return upcomingMoviesReleaseType;
     }
 
     /**
      * Helper method to fetch SharedPreferences for the current release type filter for now playing
-     * movies.
+     * movies_menu.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the current release type filter for now playing movies stored in the
+     * @return a string with the current release type filter for now playing movies_menu stored in the
      * preferences file.
      */
     public static String getNowPlayingMoviesReleaseType(Context context) {
@@ -258,17 +258,17 @@ public class MyPreferences {
         String nowPlayingMoviesReleaseType = sharedPreferences.getString(
                 res.getString(R.string.preferences_now_playing_movies_how_key),
                 res.getStringArray(R.array.preferences_now_playing_movies_how_values_array)[0]);
-        Log.i(TAG, "(getNowPlayingMoviesReleaseType) Release type for now playing movies: " +
+        Log.i(TAG, "(getNowPlayingMoviesReleaseType) Release type for now playing movies_menu: " +
                 nowPlayingMoviesReleaseType);
         return nowPlayingMoviesReleaseType;
     }
 
     /**
      * Helper method to fetch SharedPreferences for the current region filter for now playing
-     * movies.
+     * movies_menu.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the current region filter for now playing movies stored in the
+     * @return a string with the current region filter for now playing movies_menu stored in the
      * preferences file.
      */
     public static String getNowPlayingMoviesRegion(Context context) {
@@ -285,17 +285,17 @@ public class MyPreferences {
                 nowPlayingMoviesRegion = "";
         }
 
-        Log.i(TAG, "(getNowPlayingMoviesRegion) Region for now playing movies: " +
+        Log.i(TAG, "(getNowPlayingMoviesRegion) Region for now playing movies_menu: " +
                 nowPlayingMoviesRegion);
         return nowPlayingMoviesRegion;
     }
 
     /**
      * Helper method to fetch SharedPreferences for the current region filter for upcoming
-     * movies.
+     * movies_menu.
      *
      * @param context is the context of the calling activity.
-     * @return a string with the current region filter for upcoming movies stored in the
+     * @return a string with the current region filter for upcoming movies_menu stored in the
      * preferences file.
      */
     public static String getUpcomingMoviesRegion(Context context) {
@@ -312,7 +312,7 @@ public class MyPreferences {
                 upcomingMoviesRegion = "";
         }
 
-        Log.i(TAG, "(getUpcomingMoviesRegion) Region for upcoming movies: " +
+        Log.i(TAG, "(getUpcomingMoviesRegion) Region for upcoming movies_menu: " +
                 upcomingMoviesRegion);
         return upcomingMoviesRegion;
     }
@@ -340,10 +340,10 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to fetch SharedPreferences for the current movies vote average value.
+     * Helper method to fetch SharedPreferences for the current movies_menu vote average value.
      *
      * @param context is the context of the calling activity.
-     * @return a Double with the current movies vote average value stored in the preferences file.
+     * @return a Double with the current movies_menu vote average value stored in the preferences file.
      */
     public static Double getMoviesVoteAverage(Context context) {
         sharedPreferences = getDefaultSharedPreferences(context);
@@ -356,10 +356,10 @@ public class MyPreferences {
     }
 
     /**
-     * Helper method to fetch SharedPreferences for the current movies vote count value.
+     * Helper method to fetch SharedPreferences for the current movies_menu vote count value.
      *
      * @param context is the context of the calling activity.
-     * @return an integer with the current movies vote count value stored in the preferences file.
+     * @return an integer with the current movies_menu vote count value stored in the preferences file.
      */
     public static int getMoviesVoteCount(Context context) {
         sharedPreferences = getDefaultSharedPreferences(context);
@@ -373,11 +373,11 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the current initial value of the dates range for
-     * filtering upcoming movies.
+     * filtering upcoming movies_menu.
      *
      * @param context is the context of the calling activity.
      * @return a string with the current initial value of the dates range for filtering upcoming
-     * movies.
+     * movies_menu.
      */
     public static String getUpcomingMoviesInitDate(Context context) {
         // Get current "Upcoming Movies When" value index into the corresponding values array.
@@ -407,11 +407,11 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the current initial value of the dates range for
-     * filtering now playing movies.
+     * filtering now playing movies_menu.
      *
      * @param context is the context of the calling activity.
      * @return a string with the current initial value of the dates range for filtering now playing
-     * movies.
+     * movies_menu.
      */
     public static String getNowPlayingMoviesInitDate(Context context) {
         // Get current "Now Playing Movies When" value index into the corresponding values array.
@@ -435,11 +435,11 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the current end value of the dates range for
-     * filtering upcoming movies.
+     * filtering upcoming movies_menu.
      *
      * @param context is the context of the calling activity.
      * @return a string with the current end value of the dates range for filtering upcoming
-     * movies.
+     * movies_menu.
      */
     public static String getUpcomingMoviesEndDate(Context context) {
         // Get current "Upcoming Movies When" value index into the corresponding values array.
@@ -468,14 +468,14 @@ public class MyPreferences {
 
     /**
      * Helper method to fetch SharedPreferences for the current end value of the dates range for
-     * filtering now playing movies.
+     * filtering now playing movies_menu.
      *
      * @param context is the context of the calling activity.
      * @return a string with the current end value of the dates range for filtering now playing
-     * movies.
+     * movies_menu.
      */
     public static String getNowPlayingMoviesEndDate(Context context) {
-        // End date is always today for now playing movies.
+        // End date is always today for now playing movies_menu.
         String endDate = DateTimeUtils.getStringCurrentDate();
         Log.i(TAG, "(getNowPlayingMoviesEndDate) End date: " + endDate);
         return endDate;
@@ -624,16 +624,16 @@ public class MyPreferences {
                     switch (index) {
                         case MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX:
                         case MOVIES_NOW_PLAYING_HOW_PHYSICAL_INDEX:
-                            // For now playing movies online and on DVD/Blu-ray, set "Any date" as "When"
-                            // value. It means that we will look for movies with release date lower or equal
+                            // For now playing movies_menu online and on DVD/Blu-ray, set "Any date" as "When"
+                            // value. It means that we will look for movies_menu with release date lower or equal
                             // than today.
                             nowPlayingMoviesWhenValue =
                                     nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_ANY_DATE_INDEX];
                             break;
 
                         case MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX:
-                            // For now playing movies on theaters, set "45 days" as "When" value. It means
-                            // that we will look for movies with release date lower or equal than today and
+                            // For now playing movies_menu on theaters, set "45 days" as "When" value. It means
+                            // that we will look for movies_menu with release date lower or equal than today and
                             // greater than 45 days ago.
                             nowPlayingMoviesWhenValue =
                                     nowPlayingMoviesWhenArray[MOVIES_NOW_PLAYING_WHEN_45_DAYS_INDEX];

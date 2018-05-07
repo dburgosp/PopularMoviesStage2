@@ -44,7 +44,7 @@ public class TmdbPerson implements Parcelable {
      * @param popularity     is a double value indicating how popular is the person on TMDB
      *                       (based on views, ratings, favourite additions, etc.).
      * @param profile_path   is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL} and
-     *                       get the main photograph of the person.
+     *                       get the main_menu photograph of the person.
      */
     public TmdbPerson(boolean adult, ArrayList<String> also_known_as, String biography,
                       String birthday, String deathday, int gender, String homepage, int id,
@@ -72,7 +72,7 @@ public class TmdbPerson implements Parcelable {
      * @param id           is the unique identifier of the {@link TmdbPerson}.
      * @param name         is the complete name of the person.
      * @param profile_path is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL} and
-     *                     get the main photograph of the person.
+     *                     get the main_menu photograph of the person.
      */
     public TmdbPerson(int id, String name, String profile_path) {
         this.adult = false;

@@ -27,7 +27,7 @@ public class Tmdb {
     public final static String TMDB_POSTER_SIZE_W185_URL = "https://image.tmdb.org/t/p/w185";
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
-    // Content type for fetching movies.
+    // Content type for fetching movies_menu.
     public final static String TMDB_CONTENT_TYPE_ALL = "all";
     public final static String TMDB_CONTENT_TYPE_POPULAR = "popular";
     public final static String TMDB_CONTENT_TYPE_TOP_RATED = "top_rated";
@@ -99,7 +99,7 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for a list of movies.
+     * Fetches TMDB for a list of movies_menu.
      *
      * @param contentType   is the content type that we are looking for.
      * @param values        is the list of possible values for the contentType parameter.
@@ -107,13 +107,13 @@ public class Tmdb {
      * @param language      is the language of the results.
      * @param region        is the region for getting results.
      * @param sortOrder     is the sort order for the list of results.
-     * @param certification is the minimum age rating of the movies in the list for the current
+     * @param certification is the minimum age rating of the movies_menu in the list for the current
      *                      country (region parameter).
-     * @param voteCount     is the minimum number of users votes of the movies in the list.
-     * @param voteAverage   is the minimum users rating of the movies in the list.
+     * @param voteCount     is the minimum number of users votes of the movies_menu in the list.
+     * @param voteAverage   is the minimum users rating of the movies_menu in the list.
      * @param releaseType   is the value or list of values to filter release types by.
-     * @param initDate      is the initial date of the time range to filter movies, if needed.
-     * @param endDate       is the end date of the time range to filter movies, if needed.
+     * @param initDate      is the initial date of the time range to filter movies_menu, if needed.
+     * @param endDate       is the end date of the time range to filter movies_menu, if needed.
      * @return an array of {@link TmdbMovie} objects.
      */
     public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, ArrayList<Integer> values,
@@ -155,7 +155,7 @@ public class Tmdb {
         if (!releaseType.equals("") && !releaseType.isEmpty())
             builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseType);
 
-        // Filter movies with genres or keywords = list of comma-separated values.
+        // Filter movies_menu with genres or keywords = list of comma-separated values.
         if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
                 contentType.equals(TMDB_CONTENT_TYPE_KEYWORDS)) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -238,7 +238,7 @@ public class Tmdb {
             JSONObject baseJSONResponse;
             for (int n = 0; n < arrayJSONResponse.length(); n++) {
                 // Get a single result at position n within the list of results, extract the movie
-                // info and append it to the movies array..
+                // info and append it to the movies_menu array..
                 baseJSONResponse = arrayJSONResponse.getJSONObject(n);
                 TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
                 movies.add(movie);
@@ -249,7 +249,7 @@ public class Tmdb {
             Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);
         }
 
-        // Return the movies array.
+        // Return the movies_menu array.
         return movies;
     }
 
@@ -340,7 +340,7 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for the list of movies of a given collection.
+     * Fetches TMDB for the list of movies_menu of a given collection.
      *
      * @param collectionId is the unique identifier of the collection.
      * @param language     is the language of the results.
@@ -414,7 +414,7 @@ public class Tmdb {
             ArrayList<TmdbMovie> parts = new ArrayList<>();
             for (int n = 0; n < partsJSONarray.length(); n++) {
                 // Get a single result at position n within the list of results, extract the movie
-                // info and append it to the movies array.
+                // info and append it to the movies_menu array.
                 partJSONObject = partsJSONarray.getJSONObject(n);
                 TmdbMovie movie = getMovie(partJSONObject, n, 0, 0, 0);
                 parts.add(movie);
@@ -428,7 +428,7 @@ public class Tmdb {
             Log.e(TAG, "(TmdbMovieCollection) Error parsing the JSON response: " + e);
         }
 
-        // Return the movies array.
+        // Return the movies_menu array.
         return collection;
     }
 
@@ -436,10 +436,10 @@ public class Tmdb {
      * Private helper method to extract a {@link TmdbMovie} object from a JSON.
      *
      * @param baseJSONResponse is the JSONObject containing the movie info.
-     * @param n                is the current index of the element into the movies array.
+     * @param n                is the current index of the element into the movies_menu array.
      * @param page             is the current page of the movie element.
      * @param total_pages      is the number of pages of the current query.
-     * @param total_results    is the number of movies of the current query.
+     * @param total_results    is the number of movies_menu of the current query.
      * @return the {@link TmdbMovie} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
@@ -738,14 +738,14 @@ public class Tmdb {
                 keywords = getKeywords(keywordsObject);
             }
 
-            // Extract similar movies array.
+            // Extract similar movies_menu array.
             ArrayList<TmdbMovie> similarMovies = null;
             if (!baseJSONResponse.isNull("similar")) {
                 JSONObject moviesObject = baseJSONResponse.getJSONObject("similar");
                 similarMovies = getMovies(moviesObject);
             }
 
-            // Extract recommended movies array.
+            // Extract recommended movies_menu array.
             ArrayList<TmdbMovie> recommendedMovies = null;
             if (!baseJSONResponse.isNull("recommendations")) {
                 JSONObject moviesObject = baseJSONResponse.getJSONObject("recommendations");
@@ -1116,9 +1116,9 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for a list of similar or recommended movies.
+     * Fetches TMDB for a list of similar or recommended movies_menu.
      *
-     * @param moviesJSONObject is the JSON object containing the list of movies.
+     * @param moviesJSONObject is the JSON object containing the list of movies_menu.
      * @return an array of {@link TmdbMovie} objects.
      */
     private static ArrayList<TmdbMovie> getMovies(JSONObject moviesJSONObject) {
@@ -1135,7 +1135,7 @@ public class Tmdb {
                 return null;
             }
 
-            // Get the movies array.
+            // Get the movies_menu array.
             JSONArray moviesJSONArray = moviesJSONObject.getJSONArray("results");
             JSONObject jsonObject;
             for (int n = 0; n < moviesJSONArray.length(); n++) {

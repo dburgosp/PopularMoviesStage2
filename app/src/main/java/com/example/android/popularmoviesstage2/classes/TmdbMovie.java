@@ -55,9 +55,9 @@ public class TmdbMovie implements Parcelable {
      * @param vote_average      is the current users rating for the movie, from 0 to 10.
      * @param vote_count        is the number of persons who have voted for the movie.
      * @param position          is the position of the movie into the current page.
-     * @param page              is the current page in the list of movies.
+     * @param page              is the current page in the list of movies_menu.
      * @param total_pages       is the total number of movie pages.
-     * @param total_results     is the total number of movies.
+     * @param total_results     is the total number of movies_menu.
      */
     public TmdbMovie(int id, boolean adult, String backdrop_path, ArrayList<TmdbMovieGenre> genres,
                      String original_language, String original_title, String overview,

@@ -29,7 +29,7 @@ public class TmdbMovieCollection implements Parcelable {
      * @param backdrop_path is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL}
      *                      and get the backdrop image of the movie collection.
      * @param parts         is an array of {@link TmdbMovie} elements containing some simple
-     *                      information about the movies in the current collection.
+     *                      information about the movies_menu in the current collection.
      */
     public TmdbMovieCollection(int id, String name, String overview, String poster_path,
                                String backdrop_path, ArrayList<TmdbMovie> parts) {
