@@ -141,9 +141,9 @@ public class Tmdb {
 
         // Append dates range, if required.
         if (!initDate.equals("") && !initDate.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_RELEASE_DATE_GREATER, initDate);
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate);
         if (!endDate.equals("") && !endDate.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_RELEASE_DATE_LESS, endDate);
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, endDate);
 
         // Append filters for number of votes and/or users rating, if required.
         if (voteCount > 0)
