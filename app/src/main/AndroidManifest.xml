@@ -28,13 +28,13 @@
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoTitle" />
         <activity
             android:name=".activities.MoviesActivity"
             android:label="@string/movies"
             android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MainActivity" />
@@ -42,7 +42,7 @@
         <activity
             android:name=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MovieDetailsActivity" />
@@ -60,7 +60,7 @@
             android:name=".activities.PersonDetailsActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MovieDetailsActivity" />
@@ -68,7 +68,8 @@
         <activity
             android:name=".activities.MoviesListActivity"
             android:parentActivityName=".activities.MovieDetailsActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MovieDetailsActivity" />

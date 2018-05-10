@@ -36,8 +36,12 @@ public class MoviesActivity extends AppCompatActivity {
         setTransitions();
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
+
+        // Set custom Toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.movies_toolbar);
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // If we have passed a "sort" param into the intent, take this param as the default sort
         // order to show (selected page in the ViewPager) when this activity is created.
