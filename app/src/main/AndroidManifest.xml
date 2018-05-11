@@ -79,7 +79,8 @@
             android:label="@string/menu_settings"
             android:noHistory="true"
             android:parentActivityName=".activities.MoviesListActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MoviesListActivity" />
@@ -88,7 +89,8 @@
             android:name=".activities.ConfigFilteredMoviesActivity"
             android:label="@string/movies_sort_by_upcoming"
             android:parentActivityName=".activities.MoviesActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MoviesActivity" />

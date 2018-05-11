@@ -7,10 +7,10 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,8 +53,6 @@ public class MoviesListActivity extends AppCompatActivity
     ProgressBar connectionStatusLoadingIndicator;
     @BindView(R.id.movies_list_no_result_text_view)
     TextView connectionStatusText;
-    @BindView(R.id.movies_list_swipe_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
 
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
@@ -80,6 +78,12 @@ public class MoviesListActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);
+
+        // Set the custom tool bar and show the back button.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.movies_list_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Read the sort parameter passed to this activity into the intent and get the corresponding
         // loader id. If there's no valid parameters, then there's no valid loader id and there's
@@ -307,7 +311,6 @@ public class MoviesListActivity extends AppCompatActivity
     public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
         // Hide connection status.
         isLoading = false;
-        swipeRefreshLayout.setRefreshing(false);
         connectionStatusText.setVisibility(View.GONE);
         connectionStatusLoadingIndicator.setVisibility(View.GONE);
 
@@ -529,23 +532,5 @@ public class MoviesListActivity extends AppCompatActivity
                 }
             }
         });
-
-        // Set a listener on the SwipeRefreshLayout that contains the RecyclerViews, just in case we
-        // are at the top of the RecyclerViews and we need to reload previous movies_menu.
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        if (NetworkUtils.isConnected(MoviesListActivity.this)) {
-                            initVariables();
-                            moviesListAdapter.clearMoviesArrayList();
-                            getSupportLoaderManager().restartLoader(loaderId, null,
-                                    MoviesListActivity.this);
-                        } else {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
-                }
-        );
     }
 }

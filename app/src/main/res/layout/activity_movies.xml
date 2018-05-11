@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.android.popularmoviesstage2.activities.MoviesActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/movies_appbarlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -18,9 +18,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/movies" />
 
         <android.support.design.widget.TabLayout
@@ -36,10 +36,18 @@
 
     <android.support.v4.view.ViewPager
         android:id="@+id/movies_viewpager"
-        android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:fillViewport="true"
         android:layout_height="match_parent"
+        android:layout_below="@+id/movies_appbarlayout"
         android:background="@color/colorPrimaryDark"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/movies_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/normal_padding"
+        android:src="@drawable/ic_filter_list_white_36dp"
+        app:backgroundTint="@color/colorAccent" />
 </android.support.design.widget.CoordinatorLayout>

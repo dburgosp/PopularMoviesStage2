@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
 
 import com.example.android.popularmoviesstage2.R;
@@ -25,6 +27,8 @@ public class MoviesActivity extends AppCompatActivity {
     ViewPager viewPager;
     @BindView(R.id.movies_tab_layout)
     TabLayout tabLayout;
+    @BindView(R.id.movies_fab)
+    FloatingActionButton floatingActionButton;
 
     private Unbinder unbinder;
     private int sort = MoviesFragmentPagerAdapter.PAGE_ALL;
@@ -48,9 +52,28 @@ public class MoviesActivity extends AppCompatActivity {
         if (getIntent().hasExtra("sort"))
             sort = getIntent().getIntExtra("sort", MoviesFragmentPagerAdapter.PAGE_ALL);
 
+        // By default, FAB is not visible.
+        floatingActionButton.setVisibility(View.GONE);
+
         // Set TabLayout and ViewPager to manage the fragments with the different ways of displaying
         // movies_menu lists.
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                        switch (tab.getPosition()) {
+                            case 1:
+                            case 2:
+                                floatingActionButton.setVisibility(View.VISIBLE);
+                                break;
+
+                            default:
+                                floatingActionButton.setVisibility(View.GONE);
+                        }
+                    }
+                });
         MoviesFragmentPagerAdapter adapter =
                 new MoviesFragmentPagerAdapter(getSupportFragmentManager(),
                         MoviesActivity.this);

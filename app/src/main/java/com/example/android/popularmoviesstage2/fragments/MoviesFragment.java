@@ -11,7 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,8 +49,8 @@ public class MoviesFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
     private static final String TAG = MoviesFragment.class.getSimpleName();
     private static final int RESULT_CODE_MOVIE_DETAILS = 0;
-    private static final int RESULT_CODE_CONFIG_UPCOMING_MOVIES = 1;
-    private static final int RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES = 2;
+    public static final int RESULT_CODE_CONFIG_UPCOMING_MOVIES = 1;
+    public static final int RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES = 2;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -61,12 +60,6 @@ public class MoviesFragment extends Fragment
     TextView noResultsTextView;
     @BindView(R.id.fragment_movies_loading_indicator)
     ProgressBar progressBar;
-    @BindView(R.id.fragment_movies_swipe_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(R.id.fragment_movies_fab)
-    FloatingActionButton floatingActionButton;
-    @BindView(R.id.fragment_movies_layout)
-    RelativeLayout mainLayout;
 
     private boolean allowClicks = true;
     private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, language, region, sortBy,
@@ -79,6 +72,8 @@ public class MoviesFragment extends Fragment
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
     private Toast customToast = null;
+    private ViewPager viewPager;
+    private FloatingActionButton floatingActionButton;
 
     /**
      * Required empty public constructor.
@@ -115,19 +110,17 @@ public class MoviesFragment extends Fragment
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.movies_fab);
+        viewPager = (ViewPager) getActivity().findViewById(R.id.movies_viewpager);
 
         // Get arguments from calling activity.
         contentType = getArguments().getString("contentType");
 
-        // Initialize variables, set the RecyclerView for displaying movie posters and set the
-        // SwipeRefreshLayout.
+        // Initialize variables, set the RecyclerView for displaying movie posters and get
+        // preferences.
         initVariables();
         getMyPreferences();
         setRecyclerView();
-        setSwipeRefreshLayout();
-
-        // By default, FAB is not visible.
-        floatingActionButton.setVisibility(View.GONE);
 
         // Create the AsyncTaskLoader for getting movies_menu lists from TMDB in a separate thread.
         loaderId = getLoaderId();
@@ -279,7 +272,6 @@ public class MoviesFragment extends Fragment
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         isLoading = false;
-        swipeRefreshLayout.setRefreshing(false);
 
         // Loaders issue? onLoadFinished triggers sometimes twice returning the same page. Avoid
         // adding the same page to the list of movies_menu.
@@ -291,46 +283,49 @@ public class MoviesFragment extends Fragment
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
             // set.
-            if (data != null && data.size() > 0) {
+            if (getUserVisibleHint() && data != null && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
 
                 // Show a message with search results, only when displaying the first page in the
                 // currently visible fragment.
-                if (getUserVisibleHint() && data.get(0).getPage() == 1) {
+                if (data.get(0).getPage() == 1) {
                     // Set text.
-                    String htmlText;
+                    String htmlText = "";
                     String color = String.format("%X",
                             getResources().getColor(R.color.colorDarkWhite)).substring(2);
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
                     switch (loader.getId()) {
                         case NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID:
-                            htmlText = "<strong>" + getString(R.string.all_movies).toUpperCase() +
-                                    "</strong>";
+                            if (viewPager.getCurrentItem() == 0)
+                                htmlText = "<strong>" + getString(R.string.all_movies).toUpperCase() +
+                                        "</strong>";
                             break;
 
                         case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
-                            htmlText = "<strong>" + getString(R.string.movies_sort_by_now_playing)
-                                    .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
-                                    + getString(R.string.preferences_movies_how_title) + ": " +
-                                    MyPreferences.getNowPlayingMoviesTitle(getContext(),
-                                            MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
-                                    getString(R.string.preferences_movies_where_title) + ": " +
-                                    MyPreferences.getNowPlayingMoviesTitle(getContext(),
-                                            MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
+                            if (viewPager.getCurrentItem() == 1)
+                                htmlText = "<strong>" + getString(R.string.movies_sort_by_now_playing)
+                                        .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
+                                        + getString(R.string.preferences_movies_how_title) + ": " +
+                                        MyPreferences.getNowPlayingMoviesTitle(getContext(),
+                                                MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
+                                        getString(R.string.preferences_movies_where_title) + ": " +
+                                        MyPreferences.getNowPlayingMoviesTitle(getContext(),
+                                                MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
                             break;
 
                         case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
-                            htmlText = "<strong>" + getString(R.string.movies_sort_by_upcoming)
-                                    .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
-                                    + getString(R.string.preferences_movies_how_title) + ": "
-                                    + MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                    MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
-                                    getString(R.string.preferences_movies_when_title) + ": " +
-                                    MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                            MyPreferences.TYPE_MOVIES_WHEN) + "<br>" +
-                                    getString(R.string.preferences_movies_where_title) + ": " +
-                                    MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                            MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
+                            if (viewPager.getCurrentItem() == 2)
+                                htmlText = "<strong>" + getString(R.string.movies_sort_by_upcoming)
+                                        .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
+                                        + getString(R.string.preferences_movies_how_title) + ": "
+                                        + MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                        MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
+                                        getString(R.string.preferences_movies_when_title) + ": " +
+                                        MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                                MyPreferences.TYPE_MOVIES_WHEN) + "<br>" +
+                                        getString(R.string.preferences_movies_where_title) + ": " +
+                                        MyPreferences.getUpcomingMoviesTitle(getContext(),
+                                                MyPreferences.TYPE_MOVIES_WHERE) + "</font>";
                             break;
 
                         default:
@@ -340,17 +335,19 @@ public class MoviesFragment extends Fragment
                             noResultsTextView.setText(getResources().getString(R.string.no_results));
                             return;
                     }
-                    int results = data.get(0).getTotal_results();
-                    htmlText = htmlText + "<br><br><strong>" + getResources().getQuantityString(
-                            R.plurals.results, results).toUpperCase() + "</strong>" +
-                            "<br><font color=\"#" + color + "\">" + getResources().getQuantityString(
-                            R.plurals.movies_number, results, numberFormat.format(results)) +
-                            "</font>";
+                    if (!htmlText.equals("")) {
+                        int results = data.get(0).getTotal_results();
+                        htmlText = htmlText + "<br><br><strong>" + getResources().getQuantityString(
+                                R.plurals.results, results).toUpperCase() + "</strong>" +
+                                "<br><font color=\"#" + color + "\">" + getResources().getQuantityString(
+                                R.plurals.movies_number, results, numberFormat.format(results)) +
+                                "</font>";
 
-                    // Use customised Toast layout.
-                    customToast = CustomToast.setCustomToast(getContext(), htmlText,
-                            R.drawable.ic_local_movies_white_24dp);
-                    customToast.show();
+                        // Use customised Toast layout.
+                        customToast = CustomToast.setCustomToast(getContext(), htmlText,
+                                R.drawable.ic_local_movies_white_24dp);
+                        customToast.show();
+                    }
                 }
 
                 // Get movies_menu list and display it.
@@ -358,14 +355,13 @@ public class MoviesFragment extends Fragment
                 moviesListAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
-                floatingActionButton.setVisibility(View.GONE);
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
             }
 
             // Set FAB onClick behaviour anyway.
-            switch (loader.getId()) {
-                case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
+            switch (viewPager.getCurrentItem()) {
+                case 1: {
                     // If we are showing now playing movies_menu info, show FAB and set its onClick
                     // behaviour for opening ConfigFilteredMoviesActivity.
                     setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
@@ -373,7 +369,7 @@ public class MoviesFragment extends Fragment
                     break;
                 }
 
-                case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
+                case 2: {
                     // If we are showing upcoming movies_menu info, show FAB and set its onClick
                     // behaviour for opening ConfigFilteredMoviesActivity.
                     setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_UPCOMING,
@@ -481,15 +477,17 @@ public class MoviesFragment extends Fragment
 
                     // Create an ActivityOptions to transition between Activities using
                     // cross-Activity scene animations.
-                    //ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getContext(), clickedView, getString(R.string.transition_list_to_details));
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                            getActivity(), clickedView,
+                            getString(R.string.transition_list_to_details));
 
-                    // Start MovieDetailsActivity to show movie movie_details_menu when the current element is
-                    // clicked. We need to know when the other activity finishes, so we use
-                    // startActivityForResult. No need a requestCode, we don't care for any result.
+                    // Start MovieDetailsActivity to show movie movie_details_menu when the current
+                    // element is clicked. We need to know when the other activity finishes, so we
+                    // use startActivityForResult. No need a requestCode, we don't care for any
+                    // result.
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                    //startActivityForResult(intent, 0, options.toBundle());
-                    startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS);
+                    startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS, options.toBundle());
                 }
             }
         };
@@ -548,15 +546,14 @@ public class MoviesFragment extends Fragment
     /**
      * Helper method for showing FloatingActionButton and setting its behaviour.
      *
-     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.PARAM_TYPE parameter of the
-     *                   intent for calling ConfigFilteredMoviesActivity when the FloatingActionButton is
-     *                   clicked.
+     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.PARAM_TYPE parameter of
+     *                   the intent for calling ConfigFilteredMoviesActivity when the
+     *                   FloatingActionButton is clicked.
      * @param resultCode is the request code for calling ConfigFilteredMoviesActivity for result.
      */
     private void setFloatingActionButton(int typeValue, final int resultCode) {
         final Intent intent = new Intent(getContext(), ConfigFilteredMoviesActivity.class);
         intent.putExtra(ConfigFilteredMoviesActivity.PARAM_TYPE, typeValue);
-        floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -566,21 +563,6 @@ public class MoviesFragment extends Fragment
                 startActivityForResult(intent, resultCode, option);
             }
         });
-    }
-
-    /**
-     * Helper method to set a listener on the SwipeRefreshLayout that contains the RecyclerViews,
-     * just in case we are at the top of the RecyclerViews and we need to reload previous movies_menu.
-     */
-    private void setSwipeRefreshLayout() {
-        swipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        refreshMovieList(contentType);
-                    }
-                }
-        );
     }
 
     /**

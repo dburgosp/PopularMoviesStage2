@@ -33,10 +33,13 @@ public class MoviesFragmentPagerAdapter extends FragmentPagerAdapter {
         switch (position) {
             case PAGE_ALL:
                 return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_ALL);
+
             case PAGE_NOW_PLAYING:
                 return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
+
             case PAGE_UPCOMING:
                 return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
+
             default: // case PAGE_FAVORITES:
                 return MoviesFragment.newInstance(Tmdb.TMDB_CONTENT_TYPE_FAVORITES);
         }
