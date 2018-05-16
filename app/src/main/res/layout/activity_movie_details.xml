@@ -40,7 +40,6 @@
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/padding_top_movie_details_header"
                 app:layout_collapseMode="pin">
 
                 <RelativeLayout
@@ -48,6 +47,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
+                        android:id="@+id/movie_details_gradient"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/backdrop_info_height"
                         android:layout_alignParentBottom="true"
@@ -70,6 +70,8 @@
                             android:layout_alignBottom="@+id/movie_details_score_title"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/no_movie_poster"
+                            android:backgroundTint="@color/colorPrimary"
+                            android:backgroundTintMode="multiply"
                             android:contentDescription="@string/content_description_poster"
                             android:scaleType="centerCrop" />
                     </android.support.v7.widget.CardView>

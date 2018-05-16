@@ -29,6 +29,7 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncT
 import com.example.android.popularmoviesstage2.classes.CustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
@@ -57,12 +58,12 @@ public class MoviesListActivity extends AppCompatActivity
     private ArrayList<Integer> genres = new ArrayList<>(), keywords = new ArrayList<>();
     private MoviesListAdapter moviesListAdapter;
     private boolean allowClicks = true, isLoading = false, appendToEnd;
-    private String moviesBy, sortOrder, language, region, certification;
-    private Double voteAverage;
-    private int voteCount, loaderId = -1, currentPage = 1;
+    private String moviesBy;
+    private int loaderId = -1, currentPage = 1;
     private Unbinder unbinder;
     private Loader<ArrayList<TmdbMovie>> loader = null;
     private Toast customToast = null;
+    private TmdbMoviesParameters tmdbMoviesParameters;
 
     // Public parameters for using to call this activity.
     public static final String PARAM_GENRE_ID = "genreId";
@@ -91,7 +92,7 @@ public class MoviesListActivity extends AppCompatActivity
         getParameters();
         if (loaderId >= 0) {
             initVariables();
-            getMyPreferences();
+            tmdbMoviesParameters = MyPreferences.getAll(this, Tmdb.TMDB_CONTENT_TYPE_ALL);
 
             // Set the recycler view to display the list and create an AsyncTaskLoader for 
             // retrieving the list of movies_menu.
@@ -216,11 +217,14 @@ public class MoviesListActivity extends AppCompatActivity
         // Get current sort order and current language and check if they have been changed.
         String currentSortBy = MyPreferences.getMoviesSortOrder(this);
         String currentLanguage = MyPreferences.getIsoLanguage(this);
-        if (!currentSortBy.equals(sortOrder) || !currentLanguage.equals(language)) {
-            sortOrder = currentSortBy;
-            language = currentLanguage;
+        String oldSortBy = tmdbMoviesParameters.getSortBy();
+        String oldLanguage = tmdbMoviesParameters.getLanguage();
+        if (!currentSortBy.equals(oldSortBy) || !currentLanguage.equals(oldLanguage)) {
 
-            // Restart the loader for displaying the current movies_menu list with the new sort order.
+            tmdbMoviesParameters.setSortBy(currentSortBy);
+            tmdbMoviesParameters.setLanguage(currentLanguage);
+
+            // Restart the loader for displaying the current movies list with the new sort order.
             initVariables();
             moviesListAdapter.clearMoviesArrayList();
             getSupportLoaderManager().restartLoader(loaderId, null, this);
@@ -262,18 +266,15 @@ public class MoviesListActivity extends AppCompatActivity
             isLoading = true;
             connectionStatusLoadingIndicator.setVisibility(View.VISIBLE);
             Context context = MoviesListActivity.this;
-            String releaseType = "", initDate = "", endDate = "";
             switch (id) {
                 case NetworkUtils.TMDB_GENRES_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(context, Tmdb.TMDB_CONTENT_TYPE_GENRES,
-                            genres, currentPage, language, region, sortOrder, certification,
-                            voteCount, voteAverage, releaseType, initDate, endDate);
+                            genres, currentPage, tmdbMoviesParameters);
                     break;
                 }
                 case NetworkUtils.TMDB_KEYWORDS_LOADER_ID: {
                     loader = new TmdbMoviesAsyncTaskLoader(context, Tmdb.TMDB_CONTENT_TYPE_KEYWORDS,
-                            keywords, currentPage, language, region, sortOrder, certification,
-                            voteCount, voteAverage, releaseType, initDate, endDate);
+                            keywords, currentPage, tmdbMoviesParameters);
                     break;
                 }
                 default:
@@ -348,7 +349,7 @@ public class MoviesListActivity extends AppCompatActivity
                     customToast.show();
                 }
 
-                // Get movies_menu list and display it.
+                // Get movies list and display it.
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
             } else {
@@ -403,24 +404,12 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     /**
-     * Helper method to get current values from preferences for query parameters.
-     */
-    private void getMyPreferences() {
-        language = MyPreferences.getIsoLanguage(this);
-        region = MyPreferences.getIsoRegion(this);
-        sortOrder = MyPreferences.getMoviesSortOrder(this);
-        certification = MyPreferences.getMoviesCertification(this);
-        voteAverage = MyPreferences.getMoviesVoteAverage(this);
-        voteCount = MyPreferences.getMoviesVoteCount(this);
-    }
-
-    /**
      * Helper method to get the sort parameters passed to the activity into the intent. Initialize
      * some global variables too.
      */
     private void getParameters() {
         if (getIntent().hasExtra(PARAM_GENRE_ID) && getIntent().hasExtra(PARAM_GENRE_NAME)) {
-            // Sorting movies_menu by genre. Create the genres array with only one element, set the
+            // Sorting movies by genre. Create the genres array with only one element, set the
             // introTitle for the activity using the genre name and select the appropriate loader id.
             genres.add(getIntent().getIntExtra(PARAM_GENRE_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_GENRE_NAME);
@@ -429,7 +418,7 @@ public class MoviesListActivity extends AppCompatActivity
             loaderId = NetworkUtils.TMDB_GENRES_LOADER_ID;
         } else if (getIntent().hasExtra(PARAM_KEYWORD_ID) &&
                 getIntent().hasExtra(PARAM_KEYWORD_NAME)) {
-            // Sorting movies_menu by keyword. Create the keywords array with only one element, set the
+            // Sorting movies by keyword. Create the keywords array with only one element, set the
             // introTitle for the activity using the keyword name and select the appropriate loader id.
             keywords.add(getIntent().getIntExtra(PARAM_KEYWORD_ID, 0));
             moviesBy = getIntent().getStringExtra(PARAM_KEYWORD_NAME);
@@ -444,7 +433,7 @@ public class MoviesListActivity extends AppCompatActivity
     }
 
     /**
-     * Helper method for setting the RecyclerView in order to display a list of movies_menu with a given
+     * Helper method for setting the RecyclerView in order to display a list of movies with a given
      * arrangement.
      */
     private void setRecyclerView() {
@@ -473,7 +462,7 @@ public class MoviesListActivity extends AppCompatActivity
                             ActivityOptionsCompat options =
                                     ActivityOptionsCompat.makeSceneTransitionAnimation(
                                             MoviesListActivity.this, clickedView,
-                                            getString(R.string.transition_list_to_details));
+                                            getString(R.string.transition_poster));
 
                             // Start MovieDetailsActivity to show movie movie_details_menu when the
                             // current element is clicked. We need to know when the other activity

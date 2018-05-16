@@ -8,51 +8,36 @@ import android.util.Log;
 
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 
 import java.util.ArrayList;
 
 public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMovie>> {
     private final String TAG = TmdbMoviesAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbMovie> moviesArray;
-    private String contentType, language, region, certification, sortBy, releaseType,
-            initDate, endDate;
-    private int voteCount, currentPage;
-    private Double voteAverage;
-    private ArrayList<Integer> values = new ArrayList<>();
+    private String contentType;
+    private int currentPage;
+    private ArrayList<Integer> values;
+    private TmdbMoviesParameters tmdbMoviesParameters;
 
     /**
      * Constructor for this class.
      *
-     * @param context       is the context of the activity.
-     * @param contentType   is the content type to fetch from TMDB.
-     * @param values        is the list of possible values to assign to the contentType parameter.
-     * @param currentPage   is the current page to fetch results from TMDB.
-     * @param language      is the language for retrieving results from TMDB.
-     * @param region        is the region for retrieving results from TMDB.
-     * @param sortBy        is the sort order for the list of results.
-     * @param certification is the minimum age rating of the movies_menu in the list for the current
-     *                      country (region parameter).
-     * @param voteCount     is the minimum number of users votes of the movies_menu in the list.
-     * @param voteAverage   is the minimum users rating of the movies_menu in the list.
-     * @param releaseType   is the value or list of values to filter release types by.
+     * @param context              is the context of the activity.
+     * @param contentType          is the content type to fetch from TMDB.
+     * @param values               is the list of possible values to assign to the contentType
+     *                             parameter.
+     * @param currentPage          is the current page to fetch results from TMDB.
+     * @param tmdbMoviesParameters are the parameters to append to the url for fetching the movies
+     *                             list.
      */
     public TmdbMoviesAsyncTaskLoader(Context context, String contentType, ArrayList<Integer> values,
-                                     int currentPage, String language, String region, String sortBy,
-                                     String certification, int voteCount, Double voteAverage,
-                                     String releaseType, String initDate, String endDate) {
+                                     int currentPage, TmdbMoviesParameters tmdbMoviesParameters) {
         super(context);
         this.contentType = contentType;
         this.values = values;
         this.currentPage = currentPage;
-        this.language = language;
-        this.region = region;
-        this.sortBy = sortBy;
-        this.voteAverage = voteAverage;
-        this.voteCount = voteCount;
-        this.certification = certification;
-        this.releaseType = releaseType;
-        this.initDate = initDate;
-        this.endDate = endDate;
+        this.tmdbMoviesParameters = tmdbMoviesParameters;
     }
 
     /**
@@ -103,8 +88,7 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
             // Perform the network request, parse the response, and extract results.
             Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
                     currentPage);
-            return Tmdb.getTmdbMovies(contentType, values, currentPage, language, region, sortBy,
-                    certification, voteCount, voteAverage, releaseType, initDate, endDate);
+            return Tmdb.getTmdbMovies(contentType, values, currentPage, tmdbMoviesParameters);
         } else {
             Log.i(TAG, "(loadInBackground) Wrong parameters.");
             return null;

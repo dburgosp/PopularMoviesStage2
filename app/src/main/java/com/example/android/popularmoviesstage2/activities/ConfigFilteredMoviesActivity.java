@@ -3,6 +3,7 @@ package com.example.android.popularmoviesstage2.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -24,17 +25,17 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
-    @BindView(R.id.config_upcoming_movies_how_title)
+    @BindView(R.id.config_filtered_movies_how_title)
     TextView howTextView;
-    @BindView(R.id.config_upcoming_movies_how_radiogroup)
+    @BindView(R.id.config_filtered_movies_how_radiogroup)
     RadioGroup howRadioGroup;
-    @BindView(R.id.config_upcoming_movies_when_title)
+    @BindView(R.id.config_filtered_movies_when_title)
     TextView whenTextView;
-    @BindView(R.id.config_upcoming_movies_when_radiogroup)
+    @BindView(R.id.config_filtered_movies_when_radiogroup)
     RadioGroup whenRadioGroup;
-    @BindView(R.id.config_upcoming_movies_where_title)
+    @BindView(R.id.config_filtered_movies_where_title)
     TextView whereTextView;
-    @BindView(R.id.config_upcoming_movies_where_radiogroup)
+    @BindView(R.id.config_filtered_movies_where_radiogroup)
     RadioGroup whereRadioGroup;
 
     private Unbinder unbinder;
@@ -55,6 +56,12 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_config_filtered_movies);
         unbinder = ButterKnife.bind(this);
+
+        // Set the custom tool bar and show the back button.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.config_filtered_movies_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get intent and parameters from calling activity.
         intent = getIntent();
@@ -119,6 +126,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
             // Preferences have changed.
             setResult(RESULT_OK, intent);
         }
+        finish();
     }
 
     @Override

@@ -20,14 +20,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CursorAdapter;
@@ -43,10 +40,12 @@ import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncT
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbPeopleAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
 import com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
@@ -161,15 +160,15 @@ public class MainActivity extends AppCompatActivity implements
     private ArrayList<View> animatedViews = new ArrayList<>();
     private LinearLayout.LayoutParams backdropLinearLayoutParams, posterLinearLayoutParams;
     private RelativeLayout.LayoutParams backdropRelativeLayoutParams, posterRelativeLayoutParams;
-    private int moviesVoteCount = 0, animatedViewCurrentIndex = 0;
-    private String language, region, moviesCertification, moviesSortBy;
-    private Double moviesVoteAverage = 0.0;
+    private int animatedViewCurrentIndex = 0;
+    private TmdbMoviesParameters tmdbUpcomingMoviesParameters, tmdbNowPlayingMoviesParameters,
+            tmdbBuyAndRentMoviesParameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTransitions();
+        AnimatedViewsUtils.setTransitions(getWindow());
 
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
@@ -186,7 +185,12 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        getMyPreferences();
+        tmdbNowPlayingMoviesParameters =
+                MyPreferences.getAll(this, Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
+        tmdbUpcomingMoviesParameters =
+                MyPreferences.getAll(this, Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
+        tmdbBuyAndRentMoviesParameters =
+                MyPreferences.getAll(this, Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT);
 
         // Initialise layout.
         clearLayout();
@@ -275,30 +279,6 @@ public class MainActivity extends AppCompatActivity implements
     /* -------------- */
 
     /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Slide slideIn = new Slide(Gravity.END);
-        getWindow().setEnterTransition(slideIn.setDuration(250));
-        Slide slideOut = new Slide(Gravity.START);
-        getWindow().setExitTransition(slideOut.setDuration(250));
-    }
-
-    /**
-     * Helper method to get current values from preferences for query parameters.
-     */
-    private void getMyPreferences() {
-        moviesSortBy = MyPreferences.getMoviesSortOrder(this);
-        language = MyPreferences.getIsoLanguage(this);
-        region = MyPreferences.getIsoRegion(this);
-        moviesCertification = MyPreferences.getMoviesCertification(this);
-        moviesVoteAverage = MyPreferences.getMoviesVoteAverage(this);
-        moviesVoteCount = MyPreferences.getMoviesVoteCount(this);
-    }
-
-    /**
      * Helper method to initially clear all the sections in the layout.
      */
     private void clearLayout() {
@@ -345,11 +325,32 @@ public class MainActivity extends AppCompatActivity implements
                         getResources().getDimensionPixelSize(R.dimen.big_padding));
     }
 
+    private void setAnimationListener(Animation animation, final Intent intent, final Bundle option) {
+        // Navigate to next activity when animation ends.
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (option != null)
+                    startActivity(intent, option);
+                else
+                    startActivity(intent);
+            }
+        });
+    }
+
     /**
      * Helper method to initially set every element in the main_menu layout.
      */
     private void setLayoutElements() {
-        // All movies_menu section. Click to start MoviesActivity with animation.
+        // All movies section. Click to start MoviesActivity with animation.
         allMoviesCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -357,11 +358,15 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_ALL);
                 Bundle option = ActivityOptions
                         .makeSceneTransitionAnimation(MainActivity.this).toBundle();
-                startActivity(intent, option);
+
+                // Trigger an animation on the clicked element.
+                Animation animation = AnimatedViewsUtils.setButtonAnimation(
+                        MainActivity.this, allMoviesCardView);
+                setAnimationListener(animation, intent, option);
             }
         });
 
-        // Upcoming movies_menu section.
+        // Upcoming movies section.
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_upcoming), 5000);
         if (upcomingMoviesLayout != null) {
@@ -376,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             upcomingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing upcoming movies_menu page.
+            // Click to start MoviesActivity with animation, showing upcoming movies page.
             upcomingMoviesTitle = (TextView) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             upcomingMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -400,7 +405,11 @@ public class MainActivity extends AppCompatActivity implements
                     intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_UPCOMING);
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
-                    startActivity(intent, option);
+
+                    // Trigger an animation on the clicked element.
+                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
+                            MainActivity.this, upcomingMoviesCardView);
+                    setAnimationListener(animation, intent, option);
                 }
             });
         }
@@ -435,7 +444,7 @@ public class MainActivity extends AppCompatActivity implements
             onTheAirViewFlipper.setLayoutParams(posterRelativeLayoutParams);
         }
 
-        // Now playing movies_menu section.
+        // Now playing movies section.
         nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_now_playing), 5000);
         if (nowPlayingMoviesLayout != null) {
@@ -450,7 +459,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             nowPlayingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing now playing movies_menu page.
+            // Click to start MoviesActivity with animation, showing now playing movies page.
             nowPlayingMoviesTitle = (TextView) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             nowPlayingMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -471,7 +480,11 @@ public class MainActivity extends AppCompatActivity implements
                     intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_NOW_PLAYING);
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
-                    startActivity(intent, option);
+
+                    // Trigger an animation on the clicked element.
+                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
+                            MainActivity.this, nowPlayingMoviesCardView);
+                    setAnimationListener(animation, intent, option);
                 }
             });
         }
@@ -507,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             buyAndRentMoviesViewFlipper.setLayoutParams(posterRelativeLayoutParams);
 
-            // Click to start MoviesActivity with animation, showing buy and rent movies_menu page.
+            // Click to start MoviesActivity with animation, showing buy and rent movies page.
             buyAndRentMoviesTitle = (TextView) buyAndRentMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_title);
             buyAndRentMoviesTitle.setOnClickListener(new View.OnClickListener() {
@@ -528,7 +541,11 @@ public class MainActivity extends AppCompatActivity implements
                     intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_NOW_PLAYING);
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
-                    startActivity(intent, option);
+
+                    // Trigger an animation on the clicked element.
+                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
+                            MainActivity.this, buyAndRentMoviesCardView);
+                    setAnimationListener(animation, intent, option);
                 }
             });
         }
@@ -565,8 +582,7 @@ public class MainActivity extends AppCompatActivity implements
         animatedViews.add(buyAndRentMoviesCardView);
         animatedViews.add(buyAndRentSeriesCardView);
         animatedViews.add(airingTodayCardView);
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_left);
-        processAnimationQueue(animation, 50);
+        processAnimationQueue(100);
     }
 
     /**
@@ -678,6 +694,9 @@ public class MainActivity extends AppCompatActivity implements
                         viewFlipper.setOutAnimation(animationOutFromLeft);
                         viewFlipper.showPrevious();
                         play.setVisibility(View.VISIBLE);
+
+                        // Animate view when clicked.
+                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
                     }
                 });
 
@@ -691,6 +710,9 @@ public class MainActivity extends AppCompatActivity implements
                         viewFlipper.setOutAnimation(animationOutFromRight);
                         viewFlipper.showNext();
                         play.setVisibility(View.VISIBLE);
+
+                        // Animate view when clicked.
+                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
                     }
                 });
 
@@ -706,6 +728,9 @@ public class MainActivity extends AppCompatActivity implements
                             viewFlipper.setDisplayedChild(0);
                         viewFlipper.startFlipping();
                         play.setVisibility(View.INVISIBLE);
+
+                        // Animate view when clicked.
+                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
                     }
                 });
 
@@ -761,12 +786,11 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Display animations for every view included in animatedViews array.
      *
-     * @param animation   is the Animation to be performed over the current view.
-     * @param delayMillis is the delay, in milliseconds, to wait before displaying
-     *                    current animation.
+     * @param delayMillis is the delay (in milliseconds) to wait before displaying current animation.
      */
-    public void processAnimationQueue(final Animation animation, final int delayMillis) {
+    public void processAnimationQueue(final int delayMillis) {
         final Handler handler = new Handler();
+        final Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_left);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -775,25 +799,17 @@ public class MainActivity extends AppCompatActivity implements
                 animation.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation arg0) {
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation arg0) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation arg0) {
                         // Instantiate classes for opening new threads to retrieve data from TMDB
                         // after performing the animation associated to the corresponding view.
                         View currentView = animatedViews.get(animatedViewCurrentIndex);
                         if (currentView == upcomingMoviesCardView) {
-                            // Displaying animation for upcoming movies_menu section: fetch upcoming
-                            // movies_menu list from TMDB.
+                            // Displaying animation for upcoming movies section: fetch upcoming
+                            // movies list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
                         } else if (currentView == nowPlayingMoviesCardView) {
-                            // Displaying animation for now playing movies_menu section: fetch now
-                            // playing movies_menu list from TMDB.
+                            // Displaying animation for now playing movies section: fetch now
+                            // playing movies list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
                         } else if (currentView == popularPeopleCardView) {
@@ -802,8 +818,8 @@ public class MainActivity extends AppCompatActivity implements
                             new MainActivity.MainActivityPeopleList(
                                     NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID);
                         } else if (currentView == buyAndRentMoviesCardView) {
-                            // Displaying animation for buy and rent movies_menu section: fetch buy and
-                            // rent movies_menu list from TMDB.
+                            // Displaying animation for buy and rent movies section: fetch buy and
+                            // rent movies list from TMDB.
                             new MainActivity.MainActivityMoviesList(
                                     NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID);
                         }
@@ -811,7 +827,15 @@ public class MainActivity extends AppCompatActivity implements
                         // Order animation for next view, if there's still another one in the queue.
                         animatedViewCurrentIndex++;
                         if (animatedViewCurrentIndex < animatedViews.size())
-                            processAnimationQueue(animation, delayMillis);
+                            processAnimationQueue(delayMillis);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation arg0) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation arg0) {
                     }
                 });
 
@@ -895,12 +919,12 @@ public class MainActivity extends AppCompatActivity implements
                     View view = inflater.inflate(R.layout.list_item_main, null);
 
                     // Load image file and set size.
-                    ImageView imageView =
+                    final ImageView imageView =
                             (ImageView) view.findViewById(R.id.list_item_main_image);
                     switch (loaderId) {
                         case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                         case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
-                            imagePath = Tmdb.TMDB_POSTER_SIZE_W500_URL + imagePath;
+                            imagePath = Tmdb.TMDB_POSTER_SIZE_W300_URL + imagePath;
                             break;
 
                         case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
@@ -990,7 +1014,7 @@ public class MainActivity extends AppCompatActivity implements
                             switch (loaderId) {
                                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
-                                case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
+                                    // Prepare default enter transition for the new activity.
                                     intent = new Intent(MainActivity.this,
                                             MovieDetailsActivity.class);
                                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE,
@@ -999,19 +1023,37 @@ public class MainActivity extends AppCompatActivity implements
                                             MainActivity.this).toBundle();
                                     break;
 
+                                case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
+                                    // Order transition to new activity between common elements
+                                    // (movie poster).
+                                    intent = new Intent(MainActivity.this,
+                                            MovieDetailsActivity.class);
+                                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE,
+                                            ((ArrayList<TmdbMovie>) data).get(currentElement));
+                                    option = ActivityOptions.makeSceneTransitionAnimation(
+                                            MainActivity.this, v,
+                                            getString(R.string.transition_poster)).toBundle();
+                                    break;
+
                                 default: // case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
                                     intent = new Intent(MainActivity.this,
                                             PersonDetailsActivity.class);
+                                    ArrayList<TmdbPerson> personArrayList =
+                                            (ArrayList<TmdbPerson>) data;
                                     TmdbPerson person = new TmdbPerson(
-                                            ((ArrayList<TmdbPerson>) data).get(currentElement).getId(),
-                                            ((ArrayList<TmdbPerson>) data).get(currentElement).getName(),
-                                            ((ArrayList<TmdbPerson>) data).get(currentElement).getProfile_path());
+                                            personArrayList.get(currentElement).getId(),
+                                            personArrayList.get(currentElement).getName(),
+                                            personArrayList.get(currentElement).getProfile_path());
                                     intent.putExtra(PersonDetailsActivity.EXTRA_PARAM_PERSON, person);
                                     option = ActivityOptions.makeSceneTransitionAnimation(
                                             MainActivity.this).toBundle();
                                     break;
                             }
-                            startActivity(intent, option);
+
+                            // Animate view when clicked.
+                            Animation animation = AnimatedViewsUtils.setButtonAnimation(
+                                    MainActivity.this, imageView);
+                            setAnimationListener(animation, intent, option);
                         }
                     });
 
@@ -1050,14 +1092,14 @@ public class MainActivity extends AppCompatActivity implements
     /* INNER CLASSES */
     /* ------------- */
 
-    // Private inner class to retrieve a given list of movies_menu.
+    // Private inner class to retrieve a given list of movies.
     private class MainActivityMoviesList
             implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
         private final String TAG = MainActivity.MainActivityMoviesList.class.getSimpleName();
 
         // Constructor for objects of this class.
         MainActivityMoviesList(int loaderId) {
-            // Create an AsyncTaskLoader for retrieving the list of movies_menu.
+            // Create an AsyncTaskLoader for retrieving the list of movies.
             if (loaderId >= 0)
                 if (getSupportLoaderManager().getLoader(loaderId) == null) {
                     // If this is the first time, init loader.
@@ -1086,7 +1128,7 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     upcomingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch upcoming movies_menu (in theaters and
+                        // There is an available connection. Fetch upcoming movies (in theaters and
                         // released any date later than tomorrow) from TMDB.
                         upcomingMoviesMessage.setVisibility(View.GONE);
                         String moviesUpcomingReleaseType = getResources().getStringArray(
@@ -1094,12 +1136,12 @@ public class MainActivity extends AppCompatActivity implements
                                 [MyPreferences.MOVIES_UPCOMING_HOW_THEATERS_INDEX];
                         String moviesUpcomingInitDate = DateTimeUtils.getStringAddedDaysToDate(
                                 DateTimeUtils.getCurrentDate(), 1);
+                        tmdbUpcomingMoviesParameters.setReleaseType(moviesUpcomingReleaseType);
+                        tmdbUpcomingMoviesParameters.setInitDate(moviesUpcomingInitDate);
+                        tmdbUpcomingMoviesParameters.setEndDate("");
                         return new TmdbMoviesAsyncTaskLoader(context,
-                                Tmdb.TMDB_CONTENT_TYPE_UPCOMING, null,
-                                1, language, region, moviesSortBy,
-                                moviesCertification, moviesVoteCount, moviesVoteAverage,
-                                moviesUpcomingReleaseType, moviesUpcomingInitDate,
-                                "");
+                                Tmdb.TMDB_CONTENT_TYPE_UPCOMING, null, 1,
+                                tmdbUpcomingMoviesParameters);
                     } else {
                         // There is no connection. Show error message.
                         upcomingMoviesMessage.setText(
@@ -1114,7 +1156,7 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID: {
                     nowPlayingMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch Fetch now playing movies_menu (in
+                        // There is an available connection. Fetch Fetch now playing movies (in
                         // theaters, released 45 days ago or later) from TMDB.
                         nowPlayingMoviesMessage.setVisibility(View.GONE);
                         String moviesNowPlayingReleaseType = getResources().getStringArray(
@@ -1123,12 +1165,12 @@ public class MainActivity extends AppCompatActivity implements
                         String moviesNowPlayingInitDate = DateTimeUtils.getStringAddedDaysToDate(
                                 DateTimeUtils.getCurrentDate(), -45);
                         String moviesNowPlayingEndDate = DateTimeUtils.getStringCurrentDate();
+                        tmdbNowPlayingMoviesParameters.setReleaseType(moviesNowPlayingReleaseType);
+                        tmdbNowPlayingMoviesParameters.setInitDate(moviesNowPlayingInitDate);
+                        tmdbNowPlayingMoviesParameters.setEndDate(moviesNowPlayingEndDate);
                         return new TmdbMoviesAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, null,
-                                1, language, region, moviesSortBy,
-                                moviesCertification, moviesVoteCount, moviesVoteAverage,
-                                moviesNowPlayingReleaseType, moviesNowPlayingInitDate,
-                                moviesNowPlayingEndDate);
+                                1, tmdbNowPlayingMoviesParameters);
                     } else {
                         // There is no connection. Show error message.
                         nowPlayingMoviesMessage.setText(
@@ -1143,19 +1185,19 @@ public class MainActivity extends AppCompatActivity implements
                 case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID: {
                     buyAndRentMoviesLoadingIndicator.setVisibility(View.VISIBLE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch buy and rent movies_menu (released in
+                        // There is an available connection. Fetch buy and rent movies (released in
                         // digital platforms, any date) from TMDB.
                         buyAndRentMoviesMessage.setVisibility(View.GONE);
                         String buyAndRentMoviesReleaseType = getResources().getStringArray(
                                 R.array.preferences_now_playing_movies_how_values_array)
                                 [MyPreferences.MOVIES_NOW_PLAYING_HOW_DIGITAL_INDEX];
                         String buyAndRentMoviesEndDate = DateTimeUtils.getStringCurrentDate();
+                        tmdbBuyAndRentMoviesParameters.setReleaseType(buyAndRentMoviesReleaseType);
+                        tmdbBuyAndRentMoviesParameters.setInitDate("");
+                        tmdbBuyAndRentMoviesParameters.setEndDate(buyAndRentMoviesEndDate);
                         return new TmdbMoviesAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT, null,
-                                1, language, region, moviesSortBy,
-                                moviesCertification, moviesVoteCount, moviesVoteAverage,
-                                buyAndRentMoviesReleaseType, "",
-                                buyAndRentMoviesEndDate);
+                                1, tmdbBuyAndRentMoviesParameters);
                     } else {
                         // There is no connection. Show error message.
                         buyAndRentMoviesMessage.setText(
@@ -1216,7 +1258,7 @@ public class MainActivity extends AppCompatActivity implements
         public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
             Context context = MainActivity.this;
 
-            // Get movies_menu list and display it, depending on the loader identifier.
+            // Get movies list and display it, depending on the loader identifier.
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
                     upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
@@ -1227,7 +1269,7 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
-                                    "movies_menu not null.");
+                                    "movies not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1236,11 +1278,11 @@ public class MainActivity extends AppCompatActivity implements
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for upcoming " +
-                                    "movies_menu.");
+                                    "movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies_menu array or there's no elements
+                            // There's no search results in the movies array or there's no elements
                             // into the ViewFlipper. Show alert message.
                             upcomingMoviesMessage.setText(getResources().getString(
                                     R.string.no_movies_results));
@@ -1265,7 +1307,7 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results for now playing " +
-                                    "movies_menu not null.");
+                                    "movies not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1274,11 +1316,11 @@ public class MainActivity extends AppCompatActivity implements
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for now playing " +
-                                    "movies_menu.");
+                                    "movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies_menu array or there's no elements
+                            // There's no search results in the movies array or there's no elements
                             // into the ViewFlipper. Show alert message.
                             nowPlayingMoviesMessage.setText(getResources().getString(
                                     R.string.no_movies_results));
@@ -1303,7 +1345,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (data != null && data.size() > 0) {
                             // If there is a valid result, display it on its corresponding layout.
                             Log.i(TAG, "(onLoadFinished) Search results for buy and rent " +
-                                    "movies_menu not null.");
+                                    "movies not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateMoviesViewFlipperChildren(data,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
@@ -1311,11 +1353,11 @@ public class MainActivity extends AppCompatActivity implements
                                     false, MAX_HALF_SCREEN_ELEMENTS);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for buy and " +
-                                    "rent movies_menu.");
+                                    "rent movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
-                            // There's no search results in the movies_menu array or there's no elements
+                            // There's no search results in the movies array or there's no elements
                             // into the ViewFlipper. Show alert messages.
                             buyAndRentMoviesMessage.setText(getResources().getString(
                                     R.string.no_results));

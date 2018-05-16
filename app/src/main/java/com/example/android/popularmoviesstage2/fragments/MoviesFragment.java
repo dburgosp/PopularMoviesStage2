@@ -18,19 +18,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.activities.ConfigFilteredMoviesActivity;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.CustomToast;
+import com.example.android.popularmoviesstage2.utils.SoundsUtils;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
+import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
@@ -43,14 +45,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static android.app.Activity.RESULT_OK;
-
 public class MoviesFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
     private static final String TAG = MoviesFragment.class.getSimpleName();
     private static final int RESULT_CODE_MOVIE_DETAILS = 0;
-    public static final int RESULT_CODE_CONFIG_UPCOMING_MOVIES = 1;
-    public static final int RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES = 2;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -62,11 +60,9 @@ public class MoviesFragment extends Fragment
     ProgressBar progressBar;
 
     private boolean allowClicks = true;
-    private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, language, region, sortBy,
-            certification, releaseType, initDate, endDate;
+    private String contentType = Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING;
     private MoviesListAdapter moviesListAdapter;
-    private int currentPage = 1, currentScrollPosition = 0, loaderId = 0, voteCount = 0;
-    private Double voteAverage = 0.0;
+    private int currentPage = 1, loaderId = 0;
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
@@ -74,6 +70,7 @@ public class MoviesFragment extends Fragment
     private Toast customToast = null;
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
+    private TmdbMoviesParameters tmdbMoviesParameters;
 
     /**
      * Required empty public constructor.
@@ -102,12 +99,6 @@ public class MoviesFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: Define transitions to exit and enter to this activity.
-/*        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        getWindow().setEnterTransition(new Explode());
-        getWindow().setExitTransition(new Explode());*/
-
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.movies_fab);
@@ -119,7 +110,7 @@ public class MoviesFragment extends Fragment
         // Initialize variables, set the RecyclerView for displaying movie posters and get
         // preferences.
         initVariables();
-        getMyPreferences();
+        tmdbMoviesParameters = MyPreferences.getAll(getContext(), contentType);
         setRecyclerView();
 
         // Create the AsyncTaskLoader for getting movies_menu lists from TMDB in a separate thread.
@@ -141,18 +132,6 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Called when the fragment is no longer in use.  This is called
-     * after {@link #onStop()} and before {@link #onDetach()}.
-     */
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
-        if (customToast != null)
-            customToast.cancel();
-    }
-
-    /**
      * Receive the result from a previous call to
      * {@link #startActivityForResult(Intent, int)}.  This follows the
      * related Activity API as described there in
@@ -168,32 +147,20 @@ public class MoviesFragment extends Fragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES: {
-                if (resultCode == RESULT_OK) {
-                    // Preferences have changed for now playing movies_menu section. Read new preferences
-                    // values and refresh the current movie list.
-                    refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING);
-                }
-                break;
-            }
-
-            case RESULT_CODE_CONFIG_UPCOMING_MOVIES: {
-                if (resultCode == RESULT_OK) {
-                    // Preferences have changed for upcoming movies_menu section. Read new preferences
-                    // values and refresh the current movie list.
-                    refreshMovieList(Tmdb.TMDB_CONTENT_TYPE_UPCOMING);
-                }
-                break;
-            }
-        }
         allowClicks = true;
-
-        // Set result for calling activity.
-        getActivity().setResult(resultCode, getActivity().getIntent());
     }
 
-
+    /**
+     * Called when the fragment is no longer in use.  This is called
+     * after {@link #onStop()} and before {@link #onDetach()}.
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+        if (customToast != null)
+            customToast.cancel();
+    }
 
     /* ------ */
     /* LOADER */
@@ -214,8 +181,7 @@ public class MoviesFragment extends Fragment
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
             loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, null,
-                    currentPage, language, region, sortBy, certification, voteCount, voteAverage,
-                    releaseType, initDate, endDate);
+                    currentPage, tmdbMoviesParameters);
         } else {
             // There is no connection. Restart everything and show error message.
             Log.i(TAG, "(onCreateLoader) No internet connection.");
@@ -283,12 +249,16 @@ public class MoviesFragment extends Fragment
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
             // set.
-            if (getUserVisibleHint() && data != null && data.size() > 0) {
+            if (data != null && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) Search results not null.");
+
+                // Get movies_menu list and display it.
+                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
+                moviesListAdapter.notifyDataSetChanged();
 
                 // Show a message with search results, only when displaying the first page in the
                 // currently visible fragment.
-                if (data.get(0).getPage() == 1) {
+                if (getUserVisibleHint() && data.get(0).getPage() == 1) {
                     // Set text.
                     String htmlText = "";
                     String color = String.format("%X",
@@ -349,33 +319,10 @@ public class MoviesFragment extends Fragment
                         customToast.show();
                     }
                 }
-
-                // Get movies_menu list and display it.
-                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
-                moviesListAdapter.notifyDataSetChanged();
             } else {
                 Log.i(TAG, "(onLoadFinished) No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
-            }
-
-            // Set FAB onClick behaviour anyway.
-            switch (viewPager.getCurrentItem()) {
-                case 1: {
-                    // If we are showing now playing movies_menu info, show FAB and set its onClick
-                    // behaviour for opening ConfigFilteredMoviesActivity.
-                    setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
-                            RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES);
-                    break;
-                }
-
-                case 2: {
-                    // If we are showing upcoming movies_menu info, show FAB and set its onClick
-                    // behaviour for opening ConfigFilteredMoviesActivity.
-                    setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_UPCOMING,
-                            RESULT_CODE_CONFIG_UPCOMING_MOVIES);
-                    break;
-                }
             }
         } else {
             // There is no connection. Show error message.
@@ -406,43 +353,31 @@ public class MoviesFragment extends Fragment
      */
     void initVariables() {
         moviesArrayList = new ArrayList<>();
-        currentScrollPosition = 0;
         currentPage = 1;
         loader = null;
         isLoading = false;
         appendToEnd = true;
     }
 
-    /**
-     * Helper method to get current values from preferences for query parameters.
-     */
-    private void getMyPreferences() {
-        language = MyPreferences.getIsoLanguage(getContext());
-        sortBy = MyPreferences.getMoviesSortOrder(getContext());
-        certification = MyPreferences.getMoviesCertification(getContext());
-        voteAverage = MyPreferences.getMoviesVoteAverage(getContext());
-        voteCount = MyPreferences.getMoviesVoteCount(getContext());
-        switch (contentType) {
-            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
-                region = MyPreferences.getNowPlayingMoviesRegion(getContext());
-                releaseType = MyPreferences.getNowPlayingMoviesReleaseType(getContext());
-                initDate = MyPreferences.getNowPlayingMoviesInitDate(getContext());
-                endDate = MyPreferences.getNowPlayingMoviesEndDate(getContext());
-                break;
+    private void setAnimationListener(Animation animation, final Intent intent, final int requestCode, final Bundle option) {
+        // Navigate to next activity when animation ends.
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING:
-                region = MyPreferences.getUpcomingMoviesRegion(getContext());
-                releaseType = MyPreferences.getUpcomingMoviesReleaseType(getContext());
-                initDate = MyPreferences.getUpcomingMoviesInitDate(getContext());
-                endDate = MyPreferences.getUpcomingMoviesEndDate(getContext());
-                break;
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
 
-            default:
-                region = "";
-                releaseType = "";
-                initDate = "";
-                endDate = "";
-        }
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (option != null)
+                    startActivityForResult(intent, requestCode, option);
+                else
+                    startActivityForResult(intent, requestCode);
+            }
+        });
     }
 
     /**
@@ -470,6 +405,9 @@ public class MoviesFragment extends Fragment
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
                 if (allowClicks) {
+                    // Play a sound when clicked.
+                    SoundsUtils.buttonClick(getContext());
+
                     // Disable clicks for now, in order to prevent more than one click while the
                     // transition is running. Clicks will be enabled again into onActivityResult,
                     // when we return from MovieDetailsActivity.
@@ -479,12 +417,11 @@ public class MoviesFragment extends Fragment
                     // cross-Activity scene animations.
                     ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                             getActivity(), clickedView,
-                            getString(R.string.transition_list_to_details));
+                            getString(R.string.transition_poster));
 
                     // Start MovieDetailsActivity to show movie movie_details_menu when the current
                     // element is clicked. We need to know when the other activity finishes, so we
-                    // use startActivityForResult. No need a requestCode, we don't care for any
-                    // result.
+                    // use startActivityForResult.
                     Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
                     startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS, options.toBundle());
@@ -544,43 +481,9 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Helper method for showing FloatingActionButton and setting its behaviour.
+     * Helper method that returns the loader id depending on the current content type for movies.
      *
-     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.PARAM_TYPE parameter of
-     *                   the intent for calling ConfigFilteredMoviesActivity when the
-     *                   FloatingActionButton is clicked.
-     * @param resultCode is the request code for calling ConfigFilteredMoviesActivity for result.
-     */
-    private void setFloatingActionButton(int typeValue, final int resultCode) {
-        final Intent intent = new Intent(getContext(), ConfigFilteredMoviesActivity.class);
-        intent.putExtra(ConfigFilteredMoviesActivity.PARAM_TYPE, typeValue);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start config activity only when required.
-                Bundle option = ActivityOptions.makeSceneTransitionAnimation(
-                        getActivity()).toBundle();
-                startActivityForResult(intent, resultCode, option);
-            }
-        });
-    }
-
-    /**
-     * Get a fresh new movies_menu list.
-     */
-    private void refreshMovieList(String contentType) {
-        initVariables();
-        getMyPreferences();
-        this.contentType = contentType;
-        loaderId = getLoaderId();
-        moviesListAdapter.clearMoviesArrayList();
-        getLoaderManager().restartLoader(loaderId, null, MoviesFragment.this);
-    }
-
-    /**
-     * Helper method that returns the loader id depending on the current sort order.
-     *
-     * @return a number with the loader id .
+     * @return a number with the loader id.
      */
     private int getLoaderId() {
         switch (contentType) {

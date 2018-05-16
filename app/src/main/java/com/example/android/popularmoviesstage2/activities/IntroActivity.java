@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,7 +69,11 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(IntroActivity.this, MainActivity.class);
-                startActivity(intent);
+                Bundle option = ActivityOptions
+                        .makeSceneTransitionAnimation(IntroActivity.this).toBundle();
+                startActivity(intent, option);
+
+                // We don't want to go back to this activity anymore.
                 finish();
             }
         });

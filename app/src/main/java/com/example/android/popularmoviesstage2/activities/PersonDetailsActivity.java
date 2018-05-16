@@ -233,7 +233,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
 
         // Set image, if it exists.
         String profilePath = person.getProfile_path();
-        imageView.setTransitionName(getString(R.string.transition_list_to_details));
+        imageView.setTransitionName(getString(R.string.transition_poster));
         if (profilePath != null && !profilePath.equals("") && !profilePath.isEmpty()) {
             Picasso.with(this)
                     .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + profilePath)

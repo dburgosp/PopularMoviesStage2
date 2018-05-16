@@ -25,6 +25,7 @@ public class Tmdb {
     // URLs.
     private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3";
     public final static String TMDB_POSTER_SIZE_W185_URL = "https://image.tmdb.org/t/p/w185";
+    public final static String TMDB_POSTER_SIZE_W300_URL = "https://image.tmdb.org/t/p/w300";
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
     // Content type for fetching movies_menu.
@@ -101,32 +102,24 @@ public class Tmdb {
     /**
      * Fetches TMDB for a list of movies_menu.
      *
-     * @param contentType   is the content type that we are looking for.
-     * @param values        is the list of possible values for the contentType parameter.
-     * @param currentPage   is the page number to fetch.
-     * @param language      is the language of the results.
-     * @param region        is the region for getting results.
-     * @param sortOrder     is the sort order for the list of results.
-     * @param certification is the minimum age rating of the movies_menu in the list for the current
-     *                      country (region parameter).
-     * @param voteCount     is the minimum number of users votes of the movies_menu in the list.
-     * @param voteAverage   is the minimum users rating of the movies_menu in the list.
-     * @param releaseType   is the value or list of values to filter release types by.
-     * @param initDate      is the initial date of the time range to filter movies_menu, if needed.
-     * @param endDate       is the end date of the time range to filter movies_menu, if needed.
+     * @param contentType          is the content type that we are looking for.
+     * @param values               is the list of possible values for the contentType parameter.
+     * @param currentPage          is the page number to fetch.
+     * @param tmdbMoviesParameters are the parameters to append to the url for fetching the movies
+     *                             list.
      * @return an array of {@link TmdbMovie} objects.
      */
     public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, ArrayList<Integer> values,
-                                                     int currentPage, String language, String region,
-                                                     String sortOrder, String certification,
-                                                     int voteCount, Double voteAverage,
-                                                     String releaseType, String initDate,
-                                                     String endDate) {
+                                                     int currentPage,
+                                                     TmdbMoviesParameters tmdbMoviesParameters) {
 
         Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
-                currentPage + ". Language: " + language + ". Region: " + region + ". Sort order: " +
-                sortOrder + ". Release types: " + releaseType + ". Init date: " + initDate +
-                ". End date: " + endDate);
+                currentPage + ". Language: " + tmdbMoviesParameters.getLanguage() + ". Region: " +
+                tmdbMoviesParameters.getRegion() + ". Sort order: " +
+                tmdbMoviesParameters.getSortBy() + ". Release types: " +
+                tmdbMoviesParameters.getReleaseType() + ". Init date: " +
+                tmdbMoviesParameters.getInitDate() + ". End date: " +
+                tmdbMoviesParameters.getEndDate());
 
         /* ------------ */
         /* Get the JSON */
@@ -137,23 +130,31 @@ public class Tmdb {
                 .appendPath(TMDB_DISCOVER_PATH)
                 .appendPath(TMDB_MOVIE_PATH)
                 .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
-                .appendQueryParameter(TMDB_PARAM_SORT_BY, sortOrder);
+                .appendQueryParameter(TMDB_PARAM_SORT_BY, tmdbMoviesParameters.getSortBy());
 
         // Append dates range, if required.
-        if (!initDate.equals("") && !initDate.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER, initDate);
-        if (!endDate.equals("") && !endDate.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS, endDate);
+        if (!tmdbMoviesParameters.getInitDate().equals("") &&
+                !tmdbMoviesParameters.getInitDate().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER,
+                    tmdbMoviesParameters.getInitDate());
+        if (!tmdbMoviesParameters.getEndDate().equals("") &&
+                !tmdbMoviesParameters.getEndDate().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS,
+                    tmdbMoviesParameters.getEndDate());
 
         // Append filters for number of votes and/or users rating, if required.
-        if (voteCount > 0)
-            builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT, Integer.toString(voteCount));
-        if (voteAverage > 0.0)
-            builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE, Double.toString(voteAverage));
+        if (tmdbMoviesParameters.getVoteCount() > 0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT,
+                    Integer.toString(tmdbMoviesParameters.getVoteCount()));
+        if (tmdbMoviesParameters.getVoteAverage() > 0.0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE,
+                    Double.toString(tmdbMoviesParameters.getVoteAverage()));
 
         // Append filter for release type (on theaters, on DVD, etc.) if required.
-        if (!releaseType.equals("") && !releaseType.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE, releaseType);
+        if (!tmdbMoviesParameters.getReleaseType().equals("") &&
+                !tmdbMoviesParameters.getReleaseType().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE,
+                    tmdbMoviesParameters.getReleaseType());
 
         // Filter movies_menu with genres or keywords = list of comma-separated values.
         if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
@@ -173,15 +174,20 @@ public class Tmdb {
         }
 
         // Append language filter, if required.
-        if (!language.equals("") && !language.isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, language);
+        if (!tmdbMoviesParameters.getLanguage().equals("") &&
+                !tmdbMoviesParameters.getLanguage().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, tmdbMoviesParameters.getLanguage());
 
         // Append region and certification filter, if required.
-        if (!region.equals("") && !region.isEmpty()) {
-            builder.appendQueryParameter(TMDB_PARAM_REGION, region);
-            if (!certification.equals("") && !certification.isEmpty()) {
-                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION_COUNTRY, region);
-                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION, certification);
+        if (!tmdbMoviesParameters.getRegion().equals("") &&
+                !tmdbMoviesParameters.getRegion().isEmpty()) {
+            builder.appendQueryParameter(TMDB_PARAM_REGION, tmdbMoviesParameters.getRegion());
+            if (!tmdbMoviesParameters.getCertification().equals("") &&
+                    !tmdbMoviesParameters.getCertification().isEmpty()) {
+                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION_COUNTRY,
+                        tmdbMoviesParameters.getRegion());
+                builder.appendQueryParameter(TMDB_PARAM_CERTIFICATION,
+                        tmdbMoviesParameters.getCertification());
             }
         }
 

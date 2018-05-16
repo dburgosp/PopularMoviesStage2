@@ -314,7 +314,7 @@ public class MoviesListAdapter
                     // Set transition name to the current ImageView, so it can be animated if
                     // clicked.
                     ViewCompat.setTransitionName(posterImageView,
-                            context.getResources().getString(R.string.transition_list_to_details));
+                            context.getResources().getString(R.string.transition_poster));
                     break;
                 }
                 default:

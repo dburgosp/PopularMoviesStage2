@@ -11,6 +11,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -891,5 +893,47 @@ public class MyPreferences {
 
         // Return current value index into the preferences array.
         return array.indexOf(value);
+    }
+
+    /**
+     * Helper method to get current values from preferences for query parameters.
+     *
+     * @param context     is the context of the calling activity.
+     * @param contentType is the content type for the movies. Admitted values are
+     *                    {@link Tmdb#TMDB_CONTENT_TYPE_NOW_PLAYING},
+     *                    {@link Tmdb#TMDB_CONTENT_TYPE_UPCOMING}.
+     * @return a {@link TmdbMoviesParameters} object with the preferences.
+     */
+    public static TmdbMoviesParameters getAll(Context context, String contentType) {
+        String language = MyPreferences.getIsoLanguage(context);
+        String sortBy = MyPreferences.getMoviesSortOrder(context);
+        String certification = MyPreferences.getMoviesCertification(context);
+        Double voteAverage = MyPreferences.getMoviesVoteAverage(context);
+        int voteCount = MyPreferences.getMoviesVoteCount(context);
+        String region = "";
+        String releaseType = "";
+        String initDate = "";
+        String endDate = "";
+        switch (contentType) {
+            case Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING:
+                region = MyPreferences.getNowPlayingMoviesRegion(context);
+                releaseType = MyPreferences.getNowPlayingMoviesReleaseType(context);
+                initDate = MyPreferences.getNowPlayingMoviesInitDate(context);
+                endDate = MyPreferences.getNowPlayingMoviesEndDate(context);
+                break;
+
+            case Tmdb.TMDB_CONTENT_TYPE_UPCOMING:
+                region = MyPreferences.getUpcomingMoviesRegion(context);
+                releaseType = MyPreferences.getUpcomingMoviesReleaseType(context);
+                initDate = MyPreferences.getUpcomingMoviesInitDate(context);
+                endDate = MyPreferences.getUpcomingMoviesEndDate(context);
+                break;
+
+            default:
+                region = MyPreferences.getIsoRegion(context);
+        }
+
+        return new TmdbMoviesParameters(language, sortBy, certification,
+                voteAverage, voteCount, region, releaseType, initDate, endDate);
     }
 }

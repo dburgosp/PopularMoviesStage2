@@ -10,26 +10,27 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.MyBounceInterpolator;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
+import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -46,6 +47,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // the corresponding views.
     @BindView(R.id.movie_details_background)
     ImageView backgroundImageView;
+    @BindView(R.id.movie_details_gradient)
+    ImageView gradientImageView;
     @BindView(R.id.movie_details_poster)
     ImageView posterImageView;
     @BindView(R.id.movie_details_title)
@@ -77,7 +80,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTransitions();
+        AnimatedViewsUtils.setTransitions(getWindow());
 
         setContentView(R.layout.activity_movie_details);
         unbinder = ButterKnife.bind(this);
@@ -94,7 +97,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Set introTitle for this activity, depending on the collapsing state of the toolbar.
+        // Set title for this activity, depending on the collapsing state of the toolbar.
         setTitle("");
         AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -102,7 +105,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 if (collapsingToolbarLayout != null)
                     if (collapsingToolbarLayout.getHeight() + verticalOffset <
                             2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-                        // CollapsingToolbar is collapsed. Show introTitle.
+                        // CollapsingToolbar is collapsed. Show title.
                         String title = movie.getTitle();
                         String year = DateTimeUtils.getYear(movie.getRelease_date());
                         if (title != null && !title.equals("") && !title.isEmpty())
@@ -114,7 +117,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         else
                             collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
                     } else {
-                        // CollapsingToolbar is expanded. Hide introTitle.
+                        // CollapsingToolbar is expanded. Hide title.
                         collapsingToolbarLayout.setTitle("");
                     }
             }
@@ -136,37 +139,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         viewPager.setCurrentItem(0);
 
         Log.i(TAG, "(onCreate) Activity created");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        posterImageView = null;
-        backgroundImageView = null;
-    }
-
-    /**
-     * This method is called after {@link #onStart} when the activity is
-     * being re-initialized from a previously saved state, given here in
-     * <var>savedInstanceState</var>.  Most implementations will simply use {@link #onCreate}
-     * to restore their state, but it is sometimes convenient to do it here
-     * after all of the initialization has been done or to allow subclasses to
-     * decide whether to use your default implementation.  The default
-     * implementation of this method performs a restore of any view state that
-     * had previously been frozen by {@link #onSaveInstanceState}.
-     * <p>
-     * <p>This method is called between {@link #onStart} and
-     * {@link #onPostCreate}.
-     *
-     * @param savedInstanceState the data most recently supplied in {@link #onSaveInstanceState}.
-     * @see #onCreate
-     * @see #onPostCreate
-     * @see #onResume
-     * @see #onSaveInstanceState
-     */
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -194,7 +166,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
-        // Transition back to the movie poster on OLD_MainActivity.
+        // Hide background with animation.
+        AnimatedViewsUtils.exitReveal(backgroundImageView);
+
+        // Transition back to the movie poster into the calling activity.
         supportFinishAfterTransition();
         return true;
     }
@@ -231,28 +206,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-/*        if (unbinder != null)
-            unbinder.unbind();*/
-    }
-
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
-
-    /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Slide slideIn = new Slide(Gravity.END);
-        getWindow().setEnterTransition(slideIn.setDuration(250));
-        Slide slideOut = new Slide(Gravity.START);
-        getWindow().setExitTransition(slideOut.setDuration(250));
-    }
 
     /**
      * Helper method to display current movie information in the header of this activity.
@@ -260,36 +216,62 @@ public class MovieDetailsActivity extends AppCompatActivity {
     void setMovieInfo() {
         Log.i(TAG, "(setPersonInfo) Display movie information on the header");
 
+        // Set background image. Also set its size, according to display measures, and its
+        // transition between the backdrop in calling activity and this. The background is invisible
+        // by default and it will be shown later.
+        backgroundImageView.setVisibility(View.INVISIBLE);
+        final DisplayUtils displayUtils = new DisplayUtils(MovieDetailsActivity.this);
+        int backdropWidthPixels = displayUtils.getFullDisplayBackdropWidthPixels();
+        int backdropHeightPixels = (backdropWidthPixels * 9 / 16);
+        CollapsingToolbarLayout.LayoutParams layoutParams =
+                new CollapsingToolbarLayout.LayoutParams(backdropWidthPixels, backdropHeightPixels);
+        backgroundImageView.setLayoutParams(layoutParams);
+        String backdropPath = movie.getBackdrop_path();
+        Picasso.with(this)
+                .load(Tmdb.TMDB_POSTER_SIZE_W300_URL + backdropPath)
+                .noFade()
+                .resize(backdropWidthPixels, backdropHeightPixels)
+                .centerCrop()
+                .into(backgroundImageView);
+
         // Set poster. Also set transition between the poster in calling activity and this.
+        posterImageView.setVisibility(View.INVISIBLE);
         String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + movie.getPoster_path();
-        posterImageView.setTransitionName(getString(R.string.transition_list_to_details));
+        posterImageView.setTransitionName(getString(R.string.transition_poster));
+        postponeEnterTransition();
         Picasso.with(this)
                 .load(posterPath)
-                .placeholder(R.drawable.no_movie_poster)
-                .error(R.drawable.no_movie_poster)
                 .noFade()
+                .fit()
+                .centerCrop()
                 .into(posterImageView, new Callback() {
                     @Override
                     public void onSuccess() {
-                        supportStartPostponedEnterTransition();
+                        posterImageView.getViewTreeObserver().addOnPreDrawListener(
+                                new ViewTreeObserver.OnPreDrawListener() {
+                                    @Override
+                                    public boolean onPreDraw() {
+                                        posterImageView.setVisibility(View.VISIBLE);
+                                        posterImageView.getViewTreeObserver()
+                                                .removeOnPreDrawListener(this);
+                                        startPostponedEnterTransition();
+
+                                        // Show background with a circular reveal animation.
+                                        AnimatedViewsUtils.enterReveal(backgroundImageView);
+                                        return true;
+                                    }
+                                });
                     }
 
                     @Override
                     public void onError() {
-                        supportStartPostponedEnterTransition();
+                        posterImageView.setVisibility(View.VISIBLE);
+                        startPostponedEnterTransition();
                     }
                 });
 
-        // Set background image, if it exists.
-        String backdropPath = movie.getBackdrop_path();
-        if (backdropPath != null && !backdropPath.equals("") && !backdropPath.isEmpty())
-            Picasso.with(this)
-                    .load(Tmdb.TMDB_POSTER_SIZE_W500_URL + backdropPath)
-                    .memoryPolicy(MemoryPolicy.NO_STORE)
-                    .networkPolicy(NetworkPolicy.NO_STORE)
-                    .into(backgroundImageView);
-
-        // Set movie introTitle and year.
+        // Set movie title and year. Hide text by default and show it using an animation.
+        titleTextView.setVisibility(View.INVISIBLE);
         String title = movie.getTitle();
         String year = DateTimeUtils.getYear(movie.getRelease_date());
         if (title != null && !title.equals("") && !title.isEmpty())
@@ -304,6 +286,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         "</big></strong>");
         else
             titleTextView.setText(getResources().getString(R.string.no_title));
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_right);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        animation.setInterpolator(interpolator);
+        titleTextView.setVisibility(View.VISIBLE);
+        titleTextView.startAnimation(animation);
 
         // Set users rating.
         String rating = String.valueOf(movie.getVote_average());

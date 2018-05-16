@@ -106,7 +106,8 @@
     <string name="subtitle_activity_main">and people who make them</string>
     <string name="synopsis">Synopsis</string>
     <string name="thumbnail_description">Thumbnail image</string>
-    <string name="transition_list_to_details">poster_transition_1</string>
+    <string name="transition_backdrop">backdrop_transition</string>
+    <string name="transition_poster">poster_transition</string>
     <string name="transition_review">review_transition</string>
     <string name="tv_airing_today">Airing today</string>
     <string name="tv_on_the_air">On the air</string>
