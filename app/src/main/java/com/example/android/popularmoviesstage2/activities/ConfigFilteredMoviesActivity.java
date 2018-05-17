@@ -48,7 +48,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
     private int revealX;
     private int revealY;
 
-    public static final String EXTRA_PARAM_TYPE = "type";
+    public static final String EXTRA_TYPE = "EXTRA_TYPE";
     public static final String EXTRA_CIRCULAR_REVEAL_X = "EXTRA_CIRCULAR_REVEAL_X";
     public static final String EXTRA_CIRCULAR_REVEAL_Y = "EXTRA_CIRCULAR_REVEAL_Y";
     public static final int TYPE_UPCOMING = 0;
@@ -69,7 +69,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
 
         // Get intent and parameters from calling activity.
         intent = getIntent();
-        int type = intent.getIntExtra(EXTRA_PARAM_TYPE, TYPE_UPCOMING);
+        int type = intent.getIntExtra(EXTRA_TYPE, TYPE_UPCOMING);
         if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
                 intent.hasExtra(EXTRA_CIRCULAR_REVEAL_X) &&
                 intent.hasExtra(EXTRA_CIRCULAR_REVEAL_Y)) {

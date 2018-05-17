@@ -51,6 +51,7 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
         setContentView(R.layout.activity_intro);
         ButterKnife.bind(this);
 

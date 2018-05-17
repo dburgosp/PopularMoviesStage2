@@ -1,11 +1,11 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
+import com.example.android.popularmoviesstage2.fragments.ConfigFilteredMoviesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +41,7 @@ public class MoviesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //AnimatedViewsUtils.setTransitions(getWindow());
+        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
 
@@ -151,7 +153,7 @@ public class MoviesActivity extends AppCompatActivity {
     /**
      * Helper method for showing FloatingActionButton and setting its behaviour.
      *
-     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.EXTRA_PARAM_TYPE
+     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.EXTRA_TYPE
      *                   parameter of the intent for calling ConfigFilteredMoviesActivity when the
      *                   FloatingActionButton is clicked.
      * @param resultCode is the request code for calling ConfigFilteredMoviesActivity for result.
@@ -168,18 +170,23 @@ public class MoviesActivity extends AppCompatActivity {
                 // animation taking these coordinates as the center of the circle.
                 int revealX = (int) (v.getX() + v.getWidth() / 2);
                 int revealY = (int) (v.getY() + v.getHeight() / 2);
-                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_X, revealX);
+
+/*                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_X, revealX);
                 intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_Y, revealY);
 
                 // Set the sort type, so that ConfigFilteredMoviesActivity knows which settings to
                 // show.
-                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_PARAM_TYPE, typeValue);
+                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_TYPE, typeValue);
 
                 // Start config activity for result. We need to know, as a result, if the
                 // configuration has changed on preferences for the current movies sort type.
                 Bundle option = ActivityOptions.makeSceneTransitionAnimation(
                         MoviesActivity.this, v, "transition").toBundle();
-                startActivityForResult(intent, resultCode, option);
+                startActivityForResult(intent, resultCode, option);*/
+
+                FragmentManager fm = getSupportFragmentManager();
+                ConfigFilteredMoviesFragment editNameDialogFragment = ConfigFilteredMoviesFragment.newInstance("Some Title",typeValue,revealX,revealY);
+                editNameDialogFragment.show(fm, "fragment_edit_name");
             }
         });
     }
