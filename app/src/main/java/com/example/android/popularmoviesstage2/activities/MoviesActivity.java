@@ -3,18 +3,14 @@ package com.example.android.popularmoviesstage2.activities;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
@@ -43,7 +39,7 @@ public class MoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTransitions();
+        //AnimatedViewsUtils.setTransitions(getWindow());
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
 
@@ -68,16 +64,18 @@ public class MoviesActivity extends AppCompatActivity {
                         super.onTabSelected(tab);
                         switch (tab.getPosition()) {
                             case 1:
-                                // If we are showing now playing movies_menu info, show FAB and set its onClick
-                                // behaviour for opening ConfigFilteredMoviesActivity.
-                                setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
+                                // If we are showing now playing movies_menu info, show FAB and set
+                                // its onClick behaviour for opening ConfigFilteredMoviesActivity.
+                                setFloatingActionButton(
+                                        ConfigFilteredMoviesActivity.TYPE_NOW_PLAYING,
                                         RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES);
                                 break;
 
                             case 2:
-                                // If we are showing upcoming movies_menu info, show FAB and set its onClick
-                                // behaviour for opening ConfigFilteredMoviesActivity.
-                                setFloatingActionButton(ConfigFilteredMoviesActivity.TYPE_UPCOMING,
+                                // If we are showing upcoming movies_menu info, show FAB and set its
+                                // onClick behaviour for opening ConfigFilteredMoviesActivity.
+                                setFloatingActionButton(
+                                        ConfigFilteredMoviesActivity.TYPE_UPCOMING,
                                         RESULT_CODE_CONFIG_UPCOMING_MOVIES);
                                 break;
 
@@ -151,40 +149,36 @@ public class MoviesActivity extends AppCompatActivity {
     /* -------------- */
 
     /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        // Check if we're running on Android 5.0 or higher.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Apply activity transition.
-            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-            getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-            Slide slideIn = new Slide(Gravity.END);
-            getWindow().setEnterTransition(slideIn.setDuration(250));
-            Slide slideOut = new Slide(Gravity.START);
-            getWindow().setExitTransition(slideOut.setDuration(250));
-        }
-    }
-
-    /**
      * Helper method for showing FloatingActionButton and setting its behaviour.
      *
-     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.PARAM_TYPE parameter of
-     *                   the intent for calling ConfigFilteredMoviesActivity when the
+     * @param typeValue  is the value for the ConfigFilteredMoviesActivity.EXTRA_PARAM_TYPE
+     *                   parameter of the intent for calling ConfigFilteredMoviesActivity when the
      *                   FloatingActionButton is clicked.
      * @param resultCode is the request code for calling ConfigFilteredMoviesActivity for result.
      */
-    private void setFloatingActionButton(int typeValue, final int resultCode) {
-        final Intent intent = new Intent(MoviesActivity.this,
-                ConfigFilteredMoviesActivity.class);
-        intent.putExtra(ConfigFilteredMoviesActivity.PARAM_TYPE, typeValue);
+    private void setFloatingActionButton(final int typeValue, final int resultCode) {
         floatingActionButton.setVisibility(View.VISIBLE);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start config activity only when required.
+                Intent intent = new Intent(MoviesActivity.this,
+                        ConfigFilteredMoviesActivity.class);
+
+                // Get the center of the clicked view, in order to perform a circular reveal
+                // animation taking these coordinates as the center of the circle.
+                int revealX = (int) (v.getX() + v.getWidth() / 2);
+                int revealY = (int) (v.getY() + v.getHeight() / 2);
+                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_X, revealX);
+                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_Y, revealY);
+
+                // Set the sort type, so that ConfigFilteredMoviesActivity knows which settings to
+                // show.
+                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_PARAM_TYPE, typeValue);
+
+                // Start config activity for result. We need to know, as a result, if the
+                // configuration has changed on preferences for the current movies sort type.
                 Bundle option = ActivityOptions.makeSceneTransitionAnimation(
-                        MoviesActivity.this).toBundle();
+                        MoviesActivity.this, v, "transition").toBundle();
                 startActivityForResult(intent, resultCode, option);
             }
         });

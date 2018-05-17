@@ -1,20 +1,20 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,22 +37,26 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
     TextView whereTextView;
     @BindView(R.id.config_filtered_movies_where_radiogroup)
     RadioGroup whereRadioGroup;
+    @BindView(R.id.config_filtered_movies_layout)
+    CoordinatorLayout rootLayout;
 
     private Unbinder unbinder;
     private int endHowCheckedIndex = 0, startHowCheckedIndex = 0;
     private int endWhenCheckedIndex = 0, startWhenCheckedIndex = 0;
     private int endWhereCheckedIndex = 0, startWhereCheckedIndex = 0;
     private Intent intent;
+    private int revealX;
+    private int revealY;
 
-    public static final String PARAM_TYPE = "type";
+    public static final String EXTRA_PARAM_TYPE = "type";
+    public static final String EXTRA_CIRCULAR_REVEAL_X = "EXTRA_CIRCULAR_REVEAL_X";
+    public static final String EXTRA_CIRCULAR_REVEAL_Y = "EXTRA_CIRCULAR_REVEAL_Y";
     public static final int TYPE_UPCOMING = 0;
     public static final int TYPE_NOW_PLAYING = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setTransitions();
 
         setContentView(R.layout.activity_config_filtered_movies);
         unbinder = ButterKnife.bind(this);
@@ -65,7 +69,17 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
 
         // Get intent and parameters from calling activity.
         intent = getIntent();
-        int type = intent.getIntExtra(PARAM_TYPE, TYPE_UPCOMING);
+        int type = intent.getIntExtra(EXTRA_PARAM_TYPE, TYPE_UPCOMING);
+        if (savedInstanceState == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                intent.hasExtra(EXTRA_CIRCULAR_REVEAL_X) &&
+                intent.hasExtra(EXTRA_CIRCULAR_REVEAL_Y)) {
+            // Get coordinates for the center of the CircularReveal animation of the root View.
+            revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
+            revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
+            AnimatedViewsUtils.revealActivity(rootLayout, revealX, revealY);
+        } else {
+            rootLayout.setVisibility(View.VISIBLE);
+        }
 
         // Add radio buttons to RadioGroups and set checked elements according to saved preferences.
         switch (type) {
@@ -116,7 +130,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        // super.onBackPressed();
         if ((endHowCheckedIndex == startHowCheckedIndex) &&
                 (endWhenCheckedIndex == startWhenCheckedIndex) &&
                 (endWhereCheckedIndex == startWhereCheckedIndex)) {
@@ -126,7 +140,10 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
             // Preferences have changed.
             setResult(RESULT_OK, intent);
         }
-        finish();
+
+        // Reverse circular reveal animation and finish this activity.
+        AnimatedViewsUtils.unrevealActivity(rootLayout, revealX, revealY,
+                ConfigFilteredMoviesActivity.this);
     }
 
     @Override
@@ -157,8 +174,8 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
      *                        {@link MyPreferences#TYPE_MOVIES_HOW},
      *                        {@link MyPreferences#TYPE_MOVIES_WHEN},
      *                        {@link MyPreferences#TYPE_MOVIES_WHERE}.
-     * @param moviesType      is a value that indicates the type of movies_menu in order to update the
-     *                        corresponding global index values. Available values are
+     * @param moviesType      is a value that indicates the type of movies_menu in order to update
+     *                        the corresponding global index values. Available values are
      *                        {@link #TYPE_UPCOMING}, {@link #TYPE_NOW_PLAYING}.
      */
     private void setRadioButtons(final RadioGroup radioGroup, String array[],
@@ -280,17 +297,5 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
             currentRadioButton.setChecked(true);
             currentRadioButton.setTextColor(getResources().getColor(R.color.colorAccent));
         }
-    }
-
-    /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Slide slideIn = new Slide(Gravity.END);
-        getWindow().setEnterTransition(slideIn.setDuration(250));
-        Slide slideOut = new Slide(Gravity.START);
-        getWindow().setExitTransition(slideOut.setDuration(250));
     }
 }

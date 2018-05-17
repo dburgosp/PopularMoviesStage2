@@ -2,13 +2,16 @@ package com.example.android.popularmoviesstage2.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -144,5 +147,76 @@ public final class AnimatedViewsUtils {
 
         // start the animation
         anim.start();
+    }
+
+    /**
+     * https://android.jlelse.eu/a-little-thing-that-matter-how-to-reveal-an-activity-with-circular-revelation-d94f9bfcae28
+     *
+     * @param rootLayout is the View to be animated.
+     * @param x          is the horizontal coordinate of the center of the circle.
+     * @param y          is the vertical coordinate of the center of the circle.
+     */
+    public static void revealActivity(final View rootLayout, final int x, final int y) {
+        rootLayout.setVisibility(View.INVISIBLE);
+        ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    float finalRadius = (float) (Math.max(rootLayout.getWidth(),
+                            rootLayout.getHeight()) * 1.1);
+
+                    // Create the animator for this view (the start radius is zero).
+                    Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x,
+                            y, 0, finalRadius);
+                    circularReveal.setDuration(500);
+                    circularReveal.setInterpolator(new AccelerateInterpolator());
+
+                    // Make the view visible and start the animation.
+                    rootLayout.setVisibility(View.VISIBLE);
+                    circularReveal.start();
+
+                    rootLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+    }
+
+    /**
+     * https://android.jlelse.eu/a-little-thing-that-matter-how-to-reveal-an-activity-with-circular-revelation-d94f9bfcae28
+     *
+     * @param rootLayout is the View to be animated.
+     * @param x          is the horizontal coordinate of the center of the circle.
+     * @param y          is the vertical coordinate of the center of the circle.
+     * @param activity   is the activity to be finished (if it is not null) after performing the
+     *                   animation.
+     */
+    public static void unrevealActivity(final View rootLayout, int x, int y,
+                                        final Activity activity) {
+        float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x,
+                y, finalRadius, 0);
+        circularReveal.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                rootLayout.setVisibility(View.INVISIBLE);
+                if (activity != null)
+                    activity.finish();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+            }
+        });
+        circularReveal.setDuration(500);
+        circularReveal.start();
     }
 }

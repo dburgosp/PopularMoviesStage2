@@ -90,7 +90,7 @@
             android:label="@string/movies_sort_by_upcoming"
             android:parentActivityName=".activities.MoviesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoTitle">
+            android:theme="@style/AppTheme.Transparent">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.MoviesActivity" />
