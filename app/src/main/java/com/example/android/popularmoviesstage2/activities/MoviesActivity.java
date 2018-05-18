@@ -1,11 +1,11 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
-import com.example.android.popularmoviesstage2.fragments.ConfigFilteredMoviesFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -171,7 +170,7 @@ public class MoviesActivity extends AppCompatActivity {
                 int revealX = (int) (v.getX() + v.getWidth() / 2);
                 int revealY = (int) (v.getY() + v.getHeight() / 2);
 
-/*                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_X, revealX);
+                intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_X, revealX);
                 intent.putExtra(ConfigFilteredMoviesActivity.EXTRA_CIRCULAR_REVEAL_Y, revealY);
 
                 // Set the sort type, so that ConfigFilteredMoviesActivity knows which settings to
@@ -182,11 +181,7 @@ public class MoviesActivity extends AppCompatActivity {
                 // configuration has changed on preferences for the current movies sort type.
                 Bundle option = ActivityOptions.makeSceneTransitionAnimation(
                         MoviesActivity.this, v, "transition").toBundle();
-                startActivityForResult(intent, resultCode, option);*/
-
-                FragmentManager fm = getSupportFragmentManager();
-                ConfigFilteredMoviesFragment editNameDialogFragment = ConfigFilteredMoviesFragment.newInstance("Some Title",typeValue,revealX,revealY);
-                editNameDialogFragment.show(fm, "fragment_edit_name");
+                startActivityForResult(intent, resultCode, option);
             }
         });
     }

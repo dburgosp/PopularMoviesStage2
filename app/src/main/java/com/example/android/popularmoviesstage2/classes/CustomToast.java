@@ -18,22 +18,25 @@ import com.example.android.popularmoviesstage2.utils.TextViewUtils;
  * Public class that provides a customised Toast layout.
  */
 public class CustomToast {
+    /**
+     * Empty constructor for objects of this class.
+     */
     private CustomToast() {
-
     }
 
     /**
-     * Constructor for objects of this class.
+     * Sets a Toast with a custom layout, an image and a styled text.
      *
      * @param context     is the context of the calling activity.
      * @param htmlText    is the text to be displayed into the layout.
      * @param drawableRes is the identifier of the drawable to be displayed into the layout.
      */
-    public static Toast setCustomToast(Context context, String htmlText, @DrawableRes int drawableRes) {
+    public static Toast setCustomToast(Context context, String htmlText,
+                                       @DrawableRes int drawableRes) {
         // Get custom layout.
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.layout_toast,
+        View layout = inflater.inflate(R.layout.layout_custom_toast,
                 (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
 
         // Set text.
@@ -45,12 +48,11 @@ public class CustomToast {
         imageView.setImageDrawable(
                 context.getResources().getDrawable(drawableRes));
 
-        // Customize toast.
+        // Customize toast and return it.
         Toast toast = new Toast(context);
         toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);
-        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
-
         return toast;
     }
 }
