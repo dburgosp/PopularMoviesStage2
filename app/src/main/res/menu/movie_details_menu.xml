@@ -13,9 +13,4 @@
         android:orderInCategory="200"
         android:title="@string/share_this"
         app:showAsAction="ifRoom" />
-    <item
-        android:icon="@drawable/ic_favorite_border_white_24dp"
-        android:orderInCategory="300"
-        android:title="@string/add_to_favorites"
-        app:showAsAction="ifRoom" />
 </menu>

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,15 +27,15 @@ import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.CustomToast;
+import com.example.android.popularmoviesstage2.classes.MyCustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
-import com.example.android.popularmoviesstage2.utils.SoundsUtils;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -157,7 +156,6 @@ public class MoviesFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
         if (customToast != null)
             customToast.cancel();
     }
@@ -320,7 +318,7 @@ public class MoviesFragment extends Fragment
                     }
                     if (!htmlText.equals("")) {
                         // Show customised Toast layout.
-                        customToast = CustomToast.setCustomToast(getContext(), htmlText,
+                        customToast = MyCustomToast.setCustomToast(getContext(), htmlText,
                                 R.drawable.ic_local_movies_white_24dp);
                         customToast.show();
                     }
@@ -365,27 +363,6 @@ public class MoviesFragment extends Fragment
         appendToEnd = true;
     }
 
-    private void setAnimationListener(Animation animation, final Intent intent, final int requestCode, final Bundle option) {
-        // Navigate to next activity when animation ends.
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (option != null)
-                    startActivityForResult(intent, requestCode, option);
-                else
-                    startActivityForResult(intent, requestCode);
-            }
-        });
-    }
-
     /**
      * Helper method for setting the RecyclerView in order to display a list of movies_menu with a grid
      * arrangement.
@@ -411,9 +388,6 @@ public class MoviesFragment extends Fragment
             @Override
             public void onItemClick(TmdbMovie movie, View clickedView) {
                 if (allowClicks) {
-                    // Play a sound when clicked.
-                    SoundsUtils.buttonClick(getContext());
-
                     // Disable clicks for now, in order to prevent more than one click while the
                     // transition is running. Clicks will be enabled again into onActivityResult,
                     // when we return from MovieDetailsActivity.
@@ -421,16 +395,19 @@ public class MoviesFragment extends Fragment
 
                     // Create an ActivityOptions to transition between Activities using
                     // cross-Activity scene animations.
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                            getActivity(), clickedView,
-                            getString(R.string.transition_poster));
+                    final Bundle option = ActivityOptions.makeSceneTransitionAnimation(
+                            (Activity) getContext(), clickedView,
+                            getString(R.string.transition_poster)).toBundle();
 
                     // Start MovieDetailsActivity to show movie movie_details_menu when the current
                     // element is clicked. We need to know when the other activity finishes, so we
                     // use startActivityForResult.
-                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                    final Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                     intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                    startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS, options.toBundle());
+
+                    // Animate view when clicked.
+                    AnimatedViewsUtils.animateOnClick(getContext(), clickedView);
+                    startActivityForResult(intent, RESULT_CODE_MOVIE_DETAILS, option);
                 }
             }
         };

@@ -11,14 +11,14 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.ViewFlipper;
 
-public class ViewFlipperIndicator extends ViewFlipper {
+public class MyViewFlipperIndicator extends ViewFlipper {
 
     private Paint paintCurrent, paintNormal;
 
     private int radius;
     private int margin;
 
-    public ViewFlipperIndicator(Context context, AttributeSet attrs) {
+    public MyViewFlipperIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

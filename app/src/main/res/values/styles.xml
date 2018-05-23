@@ -112,16 +112,16 @@
     <style name="HomeUpRightTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentEnd">true</item>
-        <item name="android:layout_marginEnd">-12dp</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_marginStart">-12dp</item>
         <item name="android:layout_marginTop">-12dp</item>
         <item name="android:alpha">0.9</item>
         <item name="android:background">@drawable/rounded_button</item>
         <item name="android:drawablePadding">@dimen/tiny_padding</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingBottom">@dimen/tiny_padding</item>
-        <item name="android:paddingEnd">@dimen/big_padding</item>
-        <item name="android:paddingStart">@dimen/regular_padding</item>
+        <item name="android:paddingEnd">@dimen/regular_padding</item>
+        <item name="android:paddingStart">@dimen/big_padding</item>
         <item name="android:paddingTop">15dp</item>
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">@dimen/normal_text_size</item>
@@ -143,22 +143,14 @@
         <item name="android:textSize">@dimen/normal_text_size</item>
     </style>
 
-    <style name="PreferenceRadioButtonStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">6dp</item>
-        <item name="android:background">@drawable/rounded_button</item>
-        <item name="android:padding">6dp</item>
-        <item name="android:textColor">@color/colorWhite</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
     <style name="PreferencesOptionsTitleStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">@dimen/small_padding</item>
         <item name="android:paddingTop">@dimen/big_padding</item>
-        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingBottom">@dimen/tiny_padding</item>
+        <item name="android:textSize">@dimen/dialog_title_text_size</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorWhite</item>
     </style>
 </resources>

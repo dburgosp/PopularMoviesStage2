@@ -12,10 +12,10 @@
         android:layout_below="@id/layout_main_cardview_content_viewflipper"
         android:layout_marginTop="-20dp"
         android:background="@color/colorMoviesPrimary"
-        android:text="@string/movies_sort_by_upcoming"
-        android:textAllCaps="true" />
+        android:textAllCaps="true"
+        tools:text="@string/movies_sort_by_upcoming" />
 
-    <com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator
+    <com.example.android.popularmoviesstage2.classes.MyViewFlipperIndicator
         android:id="@+id/layout_main_cardview_content_viewflipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,20 +24,21 @@
 
         <!-- Children views will be added programmatically. -->
 
-    </com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator>
-
-    <TextView
-        android:id="@+id/layout_main_cardview_content_section"
-        style="@style/HomeUpRightTextStyle"
-        android:backgroundTint="@color/colorMoviesPrimary"
-        android:drawableEnd="@drawable/ic_local_movies_white_18dp"
-        android:text="@string/movies" />
+    </com.example.android.popularmoviesstage2.classes.MyViewFlipperIndicator>
 
     <RelativeLayout
+        android:id="@+id/layout_main_cardview_content_relativelayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_main_cardview_content_section"
-        android:layout_marginTop="14dp">
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_main_cardview_content_separator"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:id="@+id/layout_main_cardview_content_section"
+            style="@style/HomeUpRightTextStyle"
+            android:backgroundTint="@color/colorMoviesPrimary"
+            android:drawableStart="@drawable/ic_local_movies_white_18dp"
+            tools:text="@string/movies" />
 
         <ImageView
             android:id="@+id/layout_main_cardview_content_previous"
@@ -48,22 +49,11 @@
             android:alpha="0.6"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingStart="6dp"
-            android:paddingTop="@dimen/tiny_padding"
+            android:paddingBottom="@dimen/small_padding"
+            android:paddingEnd="-4dp"
+            android:paddingStart="4dp"
+            android:paddingTop="@dimen/small_padding"
             android:src="@drawable/ic_keyboard_arrow_left_white_36dp" />
-
-        <ImageView
-            android:id="@+id/layout_main_cardview_content_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="@dimen/regular_padding"
-            android:alpha="0.8"
-            android:background="@drawable/circle"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:src="@drawable/ic_play_circle_outline_white_48dp" />
 
         <ImageView
             android:id="@+id/layout_main_cardview_content_next"
@@ -75,30 +65,31 @@
             android:alpha="0.6"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:paddingBottom="@dimen/tiny_padding"
-            android:paddingEnd="6dp"
-            android:paddingTop="@dimen/tiny_padding"
+            android:paddingBottom="@dimen/small_padding"
+            android:paddingEnd="4dp"
+            android:paddingStart="-4dp"
+            android:paddingTop="@dimen/small_padding"
             android:src="@drawable/ic_keyboard_arrow_right_white_36dp" />
+
+        <TextView
+            android:id="@+id/layout_main_cardview_content_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:alpha="0.7"
+            android:gravity="center"
+            android:padding="@dimen/regular_padding"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/normal_plus_text_size"
+            tools:text="@string/no_connection" />
+
+        <ProgressBar
+            android:id="@+id/layout_main_cardview_content_loading_indicator"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/layout_main_cardview_content_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:alpha="0.7"
-        android:gravity="center"
-        android:padding="@dimen/regular_padding"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/normal_plus_text_size"
-        tools:text="@string/no_connection" />
-
-    <ProgressBar
-        android:id="@+id/layout_main_cardview_content_loading_indicator"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
 
     <View
         android:id="@+id/layout_main_cardview_content_separator"

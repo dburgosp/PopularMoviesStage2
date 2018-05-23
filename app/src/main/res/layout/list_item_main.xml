@@ -22,17 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_marginBottom="-12dp"
-            android:layout_marginEnd="-12dp"
+            android:layout_marginStart="-12dp"
             android:alpha="0.8"
             android:background="@drawable/rounded_button"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:gravity="end"
+            android:gravity="start"
             android:orientation="vertical"
             android:paddingBottom="24dp"
-            android:paddingEnd="@dimen/big_padding"
-            android:paddingStart="@dimen/regular_padding"
+            android:paddingStart="@dimen/big_padding"
+            android:paddingEnd="@dimen/regular_padding"
             android:paddingTop="@dimen/tiny_padding">
 
             <TextView
@@ -40,8 +40,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:gravity="end"
+                android:gravity="start"
                 android:lines="1"
+                android:paddingBottom="@dimen/separator"
+                android:textStyle="bold"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/normal_plus_text_size"
                 tools:text="Movie title / Series title / Person name" />
@@ -64,7 +66,7 @@
                 android:alpha="0.7"
                 android:drawablePadding="@dimen/separator"
                 android:drawableStart="@drawable/ic_star_black_18dp"
-                android:gravity="center_vertical|end"
+                android:gravity="center_vertical|start"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/normal_text_size"
                 tools:text="5.5" />

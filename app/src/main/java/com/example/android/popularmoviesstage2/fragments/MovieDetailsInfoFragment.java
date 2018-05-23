@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.fragments;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -44,10 +45,12 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.classes.TmdbRelease;
 import com.example.android.popularmoviesstage2.classes.Twitter;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.LocaleUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
+import com.example.android.popularmoviesstage2.utils.SoundsUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.example.android.popularmoviesstage2.viewgroups.FlowLayout;
 import com.github.lzyzsd.circleprogress.DonutProgress;
@@ -399,25 +402,37 @@ public class MovieDetailsInfoFragment extends Fragment
                 SpaceItemDecoration.HORIZONTAL_SEPARATION));
 
         // Set the listeners for click events in the adapters.
-        MoviesListAdapter.OnItemClickListener recommendedMovieListener = new MoviesListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(TmdbMovie clickedMovie, View clickedView) {
-                if (movieId != clickedMovie.getId()) {
-                    // Start MovieDetailsActivity to show movie movie_details_menu when the current element is
-                    // clicked. We need to know when the other activity finishes, so we use
-                    // startActivityForResult. No need a requestCode, we don't care for any result.
-                    Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
-                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, clickedMovie);
-                    startActivity(intent);
-                } else {
-                    // If we are clicking on the current movie (it may be shown again as part of the
-                    // collection or in the recommended movies_menu list), we don't need to move from
-                    // here.
-                    Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
+        MoviesListAdapter.OnItemClickListener recommendedMovieListener =
+                new MoviesListAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(TmdbMovie clickedMovie, View clickedView) {
+                        if (movieId != clickedMovie.getId()) {
+                            // Play a sound when clicked.
+                            SoundsUtils.buttonClick(getContext());
+
+                            // Start MovieDetailsActivity to show movie movie_details_menu when the current
+                            // element is clicked. We need to know when the other activity finishes, so we
+                            // use startActivityForResult. No need a requestCode, we don't care for any result.
+                            Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
+                            intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, clickedMovie);
+
+                            // Create an ActivityOptions to transition between Activities using
+                            // cross-Activity scene animations.
+                            Bundle option = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                                    clickedView, getString(R.string.transition_poster)).toBundle();
+
+                            // Animate view when clicked and navigate to next activity.
+                            AnimatedViewsUtils.animateOnClick(getActivity(), clickedView);
+                            startActivity(intent, option);
+                        } else {
+                            // If we are clicking on the current movie (it may be shown again as part of the
+                            // collection or in the recommended movies_menu list), we don't need to move from
+                            // here.
+                            Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                };
 
         // Set the Adapter for the RecyclerViews.
         recommendedMoviesAdapter = new MoviesListAdapter(
@@ -541,7 +556,12 @@ public class MovieDetailsInfoFragment extends Fragment
                                     genreTextView.getId());
                             intent.putExtra(MoviesListActivity.PARAM_GENRE_NAME,
                                     genreTextView.getText());
-                            startActivity(intent);
+                            Bundle option = ActivityOptions
+                                    .makeSceneTransitionAnimation(getActivity()).toBundle();
+
+                            // Animate view when clicked and navigate to next activity.
+                            AnimatedViewsUtils.animateOnClick(getActivity(), view);
+                            startActivity(intent, option);
                         }
                     });
                 } catch (java.lang.NullPointerException e) {
@@ -652,9 +672,10 @@ public class MovieDetailsInfoFragment extends Fragment
                                     currentCountry));
                     }
                     String note = releases.getReleaseDateArrayList().get(i).getNote();
-                    if (note != null && !note.equals("") && !note.isEmpty()){
+                    if (note != null && !note.equals("") && !note.isEmpty()) {
                         stringBuilder.append(", ");
-                        stringBuilder.append(note);}
+                        stringBuilder.append(note);
+                    }
                     stringBuilder.append(")");
                 }
 
@@ -905,7 +926,10 @@ public class MovieDetailsInfoFragment extends Fragment
                 public void onClick(View v) {
                     Uri uri = Uri.parse(homepage);
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
+
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(getActivity(), v);
+                    startActivity(intent, null);
                 }
             });
             infoSectionSet = true;
@@ -1013,7 +1037,13 @@ public class MovieDetailsInfoFragment extends Fragment
                                     keywordTextView.getId());
                             intent.putExtra(MoviesListActivity.PARAM_KEYWORD_NAME,
                                     keywordTextView.getText());
-                            startActivity(intent);
+
+                            Bundle option = ActivityOptions
+                                    .makeSceneTransitionAnimation(getActivity()).toBundle();
+
+                            // Animate view when clicked ang navigate to next activity.
+                            AnimatedViewsUtils.animateOnClick(getActivity(), view);
+                            startActivity(intent, option);
                         }
                     });
                 } catch (NullPointerException e) {
@@ -1050,7 +1080,10 @@ public class MovieDetailsInfoFragment extends Fragment
                             .appendPath(externalId)
                             .build();
                     Intent intent = new Intent(Intent.ACTION_VIEW, builtUri);
-                    startActivity(intent);
+
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(getActivity(), v);
+                    startActivity(intent, null);
                 }
             });
             return true;

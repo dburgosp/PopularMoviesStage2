@@ -38,11 +38,12 @@ import android.widget.ViewFlipper;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbPeopleAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.classes.MyNavigationDrawer;
+import com.example.android.popularmoviesstage2.classes.MyViewFlipperIndicator;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
-import com.example.android.popularmoviesstage2.classes.ViewFlipperIndicator;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
@@ -101,10 +102,18 @@ public class MainActivity extends AppCompatActivity implements
     CardView airingTodayCardView;
 
     ImageView upcomingMoviesPreviousImageView;
+    ImageView popularPeoplePreviousImageView;
+    ImageView onTheAirPreviousImageView;
     ImageView nowPlayingMoviesPreviousImageView;
+    ImageView buyAndRentSeriesPreviousImageView;
+    ImageView buyAndRentMoviesPreviousImageView;
     ImageView airingTodayPreviousImageView;
     ImageView upcomingMoviesNextImageView;
+    ImageView popularPeopleNextImageView;
+    ImageView onTheAirNextImageView;
     ImageView nowPlayingMoviesNextImageView;
+    ImageView buyAndRentSeriesNextImageView;
+    ImageView buyAndRentMoviesNextImageView;
     ImageView airingTodayNextImageView;
 
     @BindView(R.id.connection_status_layout)
@@ -124,13 +133,13 @@ public class MainActivity extends AppCompatActivity implements
     private View buyAndRentSeriesLayout = null;
     private View airingTodayLayout = null;
 
-    private ViewFlipperIndicator upcomingMoviesViewFlipper = null;
-    private ViewFlipperIndicator popularPeopleViewFlipper = null;
-    private ViewFlipperIndicator onTheAirViewFlipper = null;
-    private ViewFlipperIndicator nowPlayingMoviesViewFlipper = null;
-    private ViewFlipperIndicator buyAndRentMoviesViewFlipper = null;
-    private ViewFlipperIndicator buyAndRentSeriesViewFlipper = null;
-    private ViewFlipperIndicator airingTodayViewFlipper = null;
+    private MyViewFlipperIndicator upcomingMoviesViewFlipper = null;
+    private MyViewFlipperIndicator popularPeopleViewFlipper = null;
+    private MyViewFlipperIndicator onTheAirViewFlipper = null;
+    private MyViewFlipperIndicator nowPlayingMoviesViewFlipper = null;
+    private MyViewFlipperIndicator buyAndRentMoviesViewFlipper = null;
+    private MyViewFlipperIndicator buyAndRentSeriesViewFlipper = null;
+    private MyViewFlipperIndicator airingTodayViewFlipper = null;
 
     private ProgressBar upcomingMoviesLoadingIndicator = null;
     private ProgressBar popularPeopleLoadingIndicator = null;
@@ -236,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 
@@ -252,26 +261,8 @@ public class MainActivity extends AppCompatActivity implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return MyNavigationDrawer.onNavigationItemSelected(item.getItemId(),
+                (DrawerLayout) findViewById(R.id.main_drawer_layout));
     }
 
     /* -------------- */
@@ -325,27 +316,6 @@ public class MainActivity extends AppCompatActivity implements
                         getResources().getDimensionPixelSize(R.dimen.big_padding));
     }
 
-    private void setAnimationListener(Animation animation, final Intent intent, final Bundle option) {
-        // Navigate to next activity when animation ends.
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                if (option != null)
-                    startActivity(intent, option);
-                else
-                    startActivity(intent);
-            }
-        });
-    }
-
     /**
      * Helper method to initially set every element in the main_menu layout.
      */
@@ -359,19 +329,19 @@ public class MainActivity extends AppCompatActivity implements
                 Bundle option = ActivityOptions
                         .makeSceneTransitionAnimation(MainActivity.this).toBundle();
 
-                // Trigger an animation on the clicked element.
-                Animation animation = AnimatedViewsUtils.setButtonAnimation(
-                        MainActivity.this, allMoviesCardView);
-                setAnimationListener(animation, intent, option);
+                // Animate view when clicked and navigate to next activity.
+                AnimatedViewsUtils.animateOnClick(MainActivity.this, allMoviesCardView);
+                startActivity(intent, option);
             }
         });
 
         // Upcoming movies section.
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, getString(R.string.movies_sort_by_upcoming), 5000);
+                true, getString(R.string.movies_sort_by_upcoming), 5000,
+                upcomingMoviesPreviousImageView, upcomingMoviesNextImageView);
         if (upcomingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            upcomingMoviesViewFlipper = (ViewFlipperIndicator) upcomingMoviesLayout.findViewById(
+            upcomingMoviesViewFlipper = (MyViewFlipperIndicator) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             upcomingMoviesMessage = (TextView) upcomingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -406,19 +376,20 @@ public class MainActivity extends AppCompatActivity implements
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
 
-                    // Trigger an animation on the clicked element.
-                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
-                            MainActivity.this, upcomingMoviesCardView);
-                    setAnimationListener(animation, intent, option);
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(MainActivity.this,
+                            upcomingMoviesCardView);
+                    startActivity(intent, option);
                 }
             });
         }
 
         popularPeopleLayout = setCardView(popularPeopleCardView, CONTENT_TYPE_PEOPLE,
-                false, getString(R.string.popular), 3000);
+                true, getString(R.string.popular), 3000,
+                popularPeoplePreviousImageView, popularPeopleNextImageView);
         if (popularPeopleLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            popularPeopleViewFlipper = (ViewFlipperIndicator) popularPeopleLayout.findViewById(
+            popularPeopleViewFlipper = (MyViewFlipperIndicator) popularPeopleLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             popularPeopleMessage = (TextView) popularPeopleLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -429,11 +400,12 @@ public class MainActivity extends AppCompatActivity implements
             popularPeopleViewFlipper.setLayoutParams(posterRelativeLayoutParams);
         }
 
-        onTheAirLayout = setCardView(onTheAirCardView, CONTENT_TYPE_SERIES, false,
-                getString(R.string.tv_on_the_air), 4000);
+        onTheAirLayout = setCardView(onTheAirCardView, CONTENT_TYPE_SERIES, true,
+                getString(R.string.tv_on_the_air), 4000, onTheAirPreviousImageView,
+                onTheAirNextImageView);
         if (onTheAirLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            onTheAirViewFlipper = (ViewFlipperIndicator) onTheAirLayout.findViewById(
+            onTheAirViewFlipper = (MyViewFlipperIndicator) onTheAirLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             onTheAirMessage = (TextView) onTheAirLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -446,10 +418,11 @@ public class MainActivity extends AppCompatActivity implements
 
         // Now playing movies section.
         nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, getString(R.string.movies_sort_by_now_playing), 5000);
+                true, getString(R.string.movies_sort_by_now_playing), 5000,
+                nowPlayingMoviesPreviousImageView, nowPlayingMoviesNextImageView);
         if (nowPlayingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            nowPlayingMoviesViewFlipper = (ViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
+            nowPlayingMoviesViewFlipper = (MyViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             nowPlayingMoviesMessage = (TextView) nowPlayingMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -481,20 +454,20 @@ public class MainActivity extends AppCompatActivity implements
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
 
-                    // Trigger an animation on the clicked element.
-                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
-                            MainActivity.this, nowPlayingMoviesCardView);
-                    setAnimationListener(animation, intent, option);
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(MainActivity.this,
+                            nowPlayingMoviesCardView);
+                    startActivity(intent, option);
                 }
             });
         }
 
         buyAndRentSeriesLayout = setCardView(buyAndRentSeriesCardView, CONTENT_TYPE_SERIES,
-                false, getString(R.string.movies_sort_by_online),
-                4000);
+                true, getString(R.string.movies_sort_by_online),
+                4000, buyAndRentSeriesPreviousImageView, buyAndRentSeriesNextImageView);
         if (buyAndRentSeriesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            buyAndRentSeriesViewFlipper = (ViewFlipperIndicator) buyAndRentSeriesLayout.findViewById(
+            buyAndRentSeriesViewFlipper = (MyViewFlipperIndicator) buyAndRentSeriesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             buyAndRentSeriesMessage = (TextView) buyAndRentSeriesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -506,11 +479,11 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         buyAndRentMoviesLayout = setCardView(buyAndRentMoviesCardView, CONTENT_TYPE_MOVIES,
-                false, getString(R.string.movies_sort_by_online),
-                4000);
+                true, getString(R.string.movies_sort_by_online),
+                4000, buyAndRentMoviesPreviousImageView, buyAndRentMoviesNextImageView);
         if (buyAndRentMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            buyAndRentMoviesViewFlipper = (ViewFlipperIndicator) buyAndRentMoviesLayout.findViewById(
+            buyAndRentMoviesViewFlipper = (MyViewFlipperIndicator) buyAndRentMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             buyAndRentMoviesMessage = (TextView) buyAndRentMoviesLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -542,19 +515,20 @@ public class MainActivity extends AppCompatActivity implements
                     Bundle option = ActivityOptions
                             .makeSceneTransitionAnimation(MainActivity.this).toBundle();
 
-                    // Trigger an animation on the clicked element.
-                    Animation animation = AnimatedViewsUtils.setButtonAnimation(
-                            MainActivity.this, buyAndRentMoviesCardView);
-                    setAnimationListener(animation, intent, option);
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(MainActivity.this,
+                            buyAndRentMoviesCardView);
+                    startActivity(intent, option);
                 }
             });
         }
 
         airingTodayLayout = setCardView(airingTodayCardView, CONTENT_TYPE_SERIES, true,
-                getString(R.string.tv_airing_today), 5000);
+                getString(R.string.tv_airing_today), 5000, airingTodayPreviousImageView,
+                airingTodayNextImageView);
         if (airingTodayLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
-            airingTodayViewFlipper = (ViewFlipperIndicator) airingTodayLayout.findViewById(
+            airingTodayViewFlipper = (MyViewFlipperIndicator) airingTodayLayout.findViewById(
                     R.id.layout_main_cardview_content_viewflipper);
             airingTodayMessage = (TextView) airingTodayLayout.findViewById(
                     R.id.layout_main_cardview_content_message);
@@ -564,6 +538,34 @@ public class MainActivity extends AppCompatActivity implements
             // Set ViewFlipper size.
             airingTodayViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
         }
+    }
+
+    /**
+     * Helper method to run an animation before navigating to the next activity.
+     *
+     * @param animation is the Animation to be displayed.
+     * @param intent    is the Intent for starting the new activity.
+     * @param option    is the Bundle with the options to start the new activity. It can be null.
+     */
+    public void setAnimationListener(Animation animation, final Intent intent, final Bundle option) {
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // Navigate to next activity when animation ends.
+                if (option != null)
+                    startActivity(intent, option);
+                else
+                    startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -589,17 +591,23 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method for creating a new view, inflated from the layout_main_cardview_content.xml
      * file, and making it the child of the given cardView.
      *
-     * @param cardView     is the CardView in which the new child layout is going to be created.
-     * @param contentType  is the content type to display into the CardView. Available values are
-     *                     CONTENT_TYPE_MOVIES, CONTENT_TYPE_SERIES and CONTENT_TYPE_PEOPLE.
-     * @param showControls is true if control elements (next, previous and play) for ViewFlipper
-     *                     must be shown; false otherwise.
-     * @param title        is the title for this section.
-     * @param flipInterval is the flip interval duration in milliseconds.
+     * @param cardView          is the CardView in which the new child layout is going to be
+     *                          created.
+     * @param contentType       is the content type to display into the CardView. Available values
+     *                          are CONTENT_TYPE_MOVIES, CONTENT_TYPE_SERIES, CONTENT_TYPE_PEOPLE.
+     * @param showControls      is true if control elements (next and previous) for ViewFlipper
+     *                          must be shown; false otherwise.
+     * @param title             is the title for this section.
+     * @param flipInterval      is the flip interval duration in milliseconds.
+     * @param previousImageView is the global ImageView to be set with the "navigate to previous"
+     *                          behavior in the ViewFlipper, if showControls parameter is true.
+     * @param nextImageView     is the global ImageView to be set with the "navigate to next"
+     *                          behavior in the ViewFlipper, if showControls parameter is true.
      * @return the inflated view or null if there has happened something wrong.
      */
     private View setCardView(CardView cardView, int contentType, boolean showControls, String title,
-                             int flipInterval) {
+                             final int flipInterval, ImageView previousImageView,
+                             ImageView nextImageView) {
         LayoutInflater inflater =
                 (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
@@ -608,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements
                     inflater.inflate(R.layout.layout_main_cardview_content, null);
 
             // Extract ViewFlipper from the current layout.
-            final ViewFlipperIndicator viewFlipper = (ViewFlipperIndicator)
+            final MyViewFlipperIndicator viewFlipper = (MyViewFlipperIndicator)
                     cardViewContent.findViewById(R.id.layout_main_cardview_content_viewflipper);
 
             // Animations.
@@ -678,25 +686,50 @@ public class MainActivity extends AppCompatActivity implements
                     R.id.layout_main_cardview_content_previous);
             ImageView nextImage = (ImageView) cardViewContent.findViewById(
                     R.id.layout_main_cardview_content_next);
-            final ImageView play = (ImageView) cardViewContent.findViewById(
-                    R.id.layout_main_cardview_content_play);
             previousImage.setVisibility(View.GONE);
             nextImage.setVisibility(View.GONE);
 
             if (showControls) {
+                // Define Handler and Runnable for restarting auto flipping again when the Runnable
+                // is dispatched.
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        // Set animation from right to left and show set next element to be
+                        // displayed.
+                        viewFlipper.setInAnimation(animationInFromRight);
+                        viewFlipper.setOutAnimation(animationOutFromRight);
+                        if (viewFlipper.getDisplayedChild() < viewFlipper.getChildCount())
+                            viewFlipper.setDisplayedChild(viewFlipper.getDisplayedChild() + 1);
+                        else
+                            viewFlipper.setDisplayedChild(0);
+
+                        // Start flipping again.
+                        viewFlipper.startFlipping();
+                    }
+                };
+
                 // Show previous element of the ViewFlipper and stop auto flipping when clicking
                 // on "previous" arrow.
                 previousImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // Animate view when clicked.
+                        AnimatedViewsUtils.animateOnClick(MainActivity.this, v);
+
+                        // Stop flipping and show previous element with an animation from left to
+                        // right.
                         viewFlipper.stopFlipping();
                         viewFlipper.setInAnimation(animationInFromLeft);
                         viewFlipper.setOutAnimation(animationOutFromLeft);
                         viewFlipper.showPrevious();
-                        play.setVisibility(View.VISIBLE);
 
-                        // Animate view when clicked.
-                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
+                        // Remove previous callbacks on the Handler (for avoiding to be dispatched
+                        // again if it was defined previously) and set the runnable again to be
+                        // dispatched after the flipInterval value.
+                        handler.removeCallbacks(runnable);
+                        handler.postDelayed(runnable, flipInterval);
                     }
                 });
 
@@ -705,52 +738,30 @@ public class MainActivity extends AppCompatActivity implements
                 nextImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        // Animate view when clicked.
+                        AnimatedViewsUtils.animateOnClick(MainActivity.this, v);
+
+                        // Stop flipping and show next element with an animation from right to left.
                         viewFlipper.stopFlipping();
                         viewFlipper.setInAnimation(animationInFromRight);
                         viewFlipper.setOutAnimation(animationOutFromRight);
                         viewFlipper.showNext();
-                        play.setVisibility(View.VISIBLE);
 
-                        // Animate view when clicked.
-                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
-                    }
-                });
-
-                // Restart auto flipping when clicking on "play" icon.
-                play.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        viewFlipper.setInAnimation(animationInFromRight);
-                        viewFlipper.setOutAnimation(animationOutFromRight);
-                        if (viewFlipper.getDisplayedChild() < viewFlipper.getChildCount())
-                            viewFlipper.setDisplayedChild(viewFlipper.getDisplayedChild() + 1);
-                        else
-                            viewFlipper.setDisplayedChild(0);
-                        viewFlipper.startFlipping();
-                        play.setVisibility(View.INVISIBLE);
-
-                        // Animate view when clicked.
-                        AnimatedViewsUtils.setButtonAnimation(MainActivity.this, v);
+                        // Remove previous callbacks on the Handler (for avoiding to be dispatched
+                        // again if it was defined previously) and set the runnable again to be
+                        // dispatched after the flipInterval value.
+                        handler.removeCallbacks(runnable);
+                        handler.postDelayed(runnable, flipInterval);
                     }
                 });
 
                 // Set global control images for previous and next navigation into ViewFlippers.
-                if (title.equals(getString(R.string.tv_airing_today))) {
-                    airingTodayPreviousImageView = previousImage;
-                    airingTodayNextImageView = nextImage;
-                } else if (title.equals(getString(R.string.movies_sort_by_now_playing))) {
-                    nowPlayingMoviesPreviousImageView = previousImage;
-                    nowPlayingMoviesNextImageView = nextImage;
-                } else if (title.equals(getString(R.string.movies_sort_by_upcoming))) {
-                    upcomingMoviesPreviousImageView = previousImage;
-                    upcomingMoviesNextImageView = nextImage;
-                }
+                setViewFlipperControls(title, previousImage, nextImage);
             } else {
                 // Hide control elements.
                 previousImage.setVisibility(View.GONE);
                 nextImage.setVisibility(View.GONE);
             }
-            play.setVisibility(View.INVISIBLE);
 
             // Set texts and colors.
             TextView sectionTitleTextView = (TextView)
@@ -758,7 +769,7 @@ public class MainActivity extends AppCompatActivity implements
             sectionTitleTextView.setText(sectionTitle);
             sectionTitleTextView.setBackgroundTintList(colorStateListPrimary);
             TextViewUtils.setTintedCompoundDrawable(this, sectionTitleTextView,
-                    TextViewUtils.DRAWABLE_RIGHT_INDEX, tintedCompoundDrawable, R.color.colorWhite,
+                    TextViewUtils.DRAWABLE_LEFT_INDEX, tintedCompoundDrawable, R.color.colorWhite,
                     R.dimen.tiny_padding);
 
             TextView contentTitleTextView = (TextView)
@@ -780,6 +791,36 @@ public class MainActivity extends AppCompatActivity implements
         } catch (NullPointerException e) {
             Log.e(TAG, "(setCardView) Error inflating view: " + e);
             return null;
+        }
+    }
+
+    /**
+     * Private helper method to set global ImageViews for controlling navigation into each
+     * ViewFlipper of this activity.
+     *
+     * @param title         is the title of the ViewFlipper, which determines what is the current
+     *                      ViewFlipper.
+     * @param previousImage is the ImageView to be assigned to a global ImageView used to navigate
+     *                      back in the current ViewFlipper.
+     * @param nextImage     is the ImageView to be assigned to a global ImageView used to navigate
+     *                      forward in the current ViewFlipper.
+     */
+    private void setViewFlipperControls(String title, ImageView previousImage, ImageView nextImage) {
+        if (title.equals(getString(R.string.tv_airing_today))) {
+            airingTodayPreviousImageView = previousImage;
+            airingTodayNextImageView = nextImage;
+        } else if (title.equals(getString(R.string.popular))) {
+            popularPeoplePreviousImageView = previousImage;
+            popularPeopleNextImageView = nextImage;
+        } else if (title.equals(getString(R.string.movies_sort_by_now_playing))) {
+            nowPlayingMoviesPreviousImageView = previousImage;
+            nowPlayingMoviesNextImageView = nextImage;
+        } else if (title.equals(getString(R.string.movies_sort_by_upcoming))) {
+            upcomingMoviesPreviousImageView = previousImage;
+            upcomingMoviesNextImageView = nextImage;
+        } else if (title.equals(getString(R.string.movies_sort_by_online))) {
+            buyAndRentMoviesPreviousImageView = previousImage;
+            buyAndRentMoviesNextImageView = nextImage;
         }
     }
 
@@ -867,12 +908,12 @@ public class MainActivity extends AppCompatActivity implements
      * @return true if viewFlipper is displaying at least one element, false otherwise.
      */
     @SuppressWarnings("unchecked")
-    private boolean inflateMoviesViewFlipperChildren(final ArrayList<?> data,
-                                                     final ViewFlipper viewFlipper,
-                                                     LinearLayout.LayoutParams layoutParams,
-                                                     final int loaderId, ImageView previousImage,
-                                                     ImageView nextImage, boolean fullScreen,
-                                                     int maxElements) {
+    private boolean inflateViewFlipperChildren(final ArrayList<?> data,
+                                               final ViewFlipper viewFlipper,
+                                               LinearLayout.LayoutParams layoutParams,
+                                               final int loaderId, ImageView previousImage,
+                                               ImageView nextImage, boolean fullScreen,
+                                               int maxElements) {
         viewFlipper.removeAllViews();
 
         // Add children to ViewFlipper, only the first maxElements elements and only for those
@@ -1014,6 +1055,7 @@ public class MainActivity extends AppCompatActivity implements
                             switch (loaderId) {
                                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
+                                case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
                                     // Prepare default enter transition for the new activity.
                                     intent = new Intent(MainActivity.this,
                                             MovieDetailsActivity.class);
@@ -1021,18 +1063,6 @@ public class MainActivity extends AppCompatActivity implements
                                             ((ArrayList<TmdbMovie>) data).get(currentElement));
                                     option = ActivityOptions.makeSceneTransitionAnimation(
                                             MainActivity.this).toBundle();
-                                    break;
-
-                                case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
-                                    // Order transition to new activity between common elements
-                                    // (movie poster).
-                                    intent = new Intent(MainActivity.this,
-                                            MovieDetailsActivity.class);
-                                    intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE,
-                                            ((ArrayList<TmdbMovie>) data).get(currentElement));
-                                    option = ActivityOptions.makeSceneTransitionAnimation(
-                                            MainActivity.this, v,
-                                            getString(R.string.transition_poster)).toBundle();
                                     break;
 
                                 default: // case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
@@ -1050,17 +1080,16 @@ public class MainActivity extends AppCompatActivity implements
                                     break;
                             }
 
-                            // Animate view when clicked.
-                            Animation animation = AnimatedViewsUtils.setButtonAnimation(
-                                    MainActivity.this, imageView);
-                            setAnimationListener(animation, intent, option);
+                            // Animate view when clicked and navigate to next activity.
+                            AnimatedViewsUtils.animateOnClick(MainActivity.this, imageView);
+                            startActivity(intent, option);
                         }
                     });
 
                     // Add current child to ViewFlipper.
                     viewFlipper.addView(view, viewFlipper.getLayoutParams());
                 } catch (java.lang.NullPointerException e) {
-                    Log.e(TAG, "(inflateMoviesViewFlipperChildren) Error inflatingview: "
+                    Log.e(TAG, "(inflateViewFlipperChildren) Error inflatingview: "
                             + e);
                 }
             }
@@ -1077,6 +1106,8 @@ public class MainActivity extends AppCompatActivity implements
             switch (loaderId) {
                 case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
+                case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
+                case NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID:
                     // Make controls visible.
                     previousImage.setVisibility(View.VISIBLE);
                     nextImage.setVisibility(View.VISIBLE);
@@ -1271,7 +1302,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
                                     "movies not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateMoviesViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(data,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
                                     loader.getId(), upcomingMoviesPreviousImageView,
                                     upcomingMoviesNextImageView, true,
@@ -1309,7 +1340,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(TAG, "(onLoadFinished) Search results for now playing " +
                                     "movies not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateMoviesViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(data,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
                                     loader.getId(), nowPlayingMoviesPreviousImageView,
                                     nowPlayingMoviesNextImageView, true,
@@ -1347,10 +1378,11 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(TAG, "(onLoadFinished) Search results for buy and rent " +
                                     "movies not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateMoviesViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(data,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
-                                    loader.getId(), null, null,
-                                    false, MAX_HALF_SCREEN_ELEMENTS);
+                                    loader.getId(), buyAndRentMoviesPreviousImageView,
+                                    buyAndRentMoviesNextImageView, false,
+                                    MAX_HALF_SCREEN_ELEMENTS);
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results for buy and " +
                                     "rent movies.");
@@ -1492,9 +1524,10 @@ public class MainActivity extends AppCompatActivity implements
                         // If there is a valid result, display it on its corresponding layout.
                         if (data != null && data.size() > 0) {
                             Log.i(TAG, "(onLoadFinished) Search results not null.");
-                            inflateMoviesViewFlipperChildren(data, popularPeopleViewFlipper,
-                                    posterLinearLayoutParams, loader.getId(), null,
-                                    null, false, MAX_HALF_SCREEN_ELEMENTS);
+                            inflateViewFlipperChildren(data, popularPeopleViewFlipper,
+                                    posterLinearLayoutParams, loader.getId(),
+                                    popularPeoplePreviousImageView, popularPeopleNextImageView,
+                                    false, MAX_HALF_SCREEN_ELEMENTS);
                             break;
                         } else {
                             Log.i(TAG, "(onLoadFinished) No search results.");

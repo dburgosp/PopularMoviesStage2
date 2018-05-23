@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -12,6 +13,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -92,6 +94,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             movie = intent.getParcelableExtra(EXTRA_PARAM_MOVIE);
         }
 
+        // Write the basic movie info on activity_movie_details.xml header.
+        setMovieInfo();
+
         // Set the custom tool bar and show the back button.
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
@@ -126,9 +131,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         collapsingToolbarLayout.setElevation(0);
         appBarLayout.setElevation(0);
         toolbar.setElevation(0);
-
-        // Write the basic movie info on activity_movie_details.xml header.
-        setMovieInfo();
 
         // Set TabLayout and ViewPager to manage the fragments with info for the current movie.
         tabLayout.setupWithViewPager(viewPager);
@@ -166,12 +168,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = getIntent();
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+
         // Hide background with animation.
-        AnimatedViewsUtils.exitReveal(backgroundImageView);
+        AnimatedViewsUtils.unrevealLayout(backgroundImageView,
+                backgroundImageView.getMeasuredWidth() / 2,
+                backgroundImageView.getMeasuredHeight() / 2, null);
 
         // Transition back to the movie poster into the calling activity.
         supportFinishAfterTransition();
-        return true;
+
+        super.onBackPressed();
     }
 
     /**
@@ -204,6 +222,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_details_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: {
+                // Back button.
+                onBackPressed();
+                return true;
+            }
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /* -------------- */
@@ -257,7 +289,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                         startPostponedEnterTransition();
 
                                         // Show background with a circular reveal animation.
-                                        AnimatedViewsUtils.enterReveal(backgroundImageView);
+                                        //AnimatedViewsUtils.enterReveal(backgroundImageView);
+                                        AnimatedViewsUtils.revealLayout(backgroundImageView,
+                                                backgroundImageView.getMeasuredWidth() / 2,
+                                                backgroundImageView.getMeasuredHeight() / 2);
                                         return true;
                                     }
                                 });

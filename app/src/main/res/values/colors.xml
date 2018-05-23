@@ -73,6 +73,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorDirtyWhite">#FEFEFE</color>
     <color name="colorDarkWhite">#EEEEEE</color>
+    <color name="colorDarkerWhite">#EDEDED</color>
     <color name="colorLightGrey">#DDDDDD</color>
     <color name="colorGrey">#B5BBBE</color>
     <color name="colorDarkGrey">#888888</color>

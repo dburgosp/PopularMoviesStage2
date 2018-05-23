@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage2.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -76,7 +77,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
             // Get coordinates for the center of the CircularReveal animation of the root View.
             revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
             revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
-            AnimatedViewsUtils.revealActivity(rootLayout, revealX, revealY);
+            AnimatedViewsUtils.revealLayout(rootLayout, revealX, revealY);
         } else {
             rootLayout.setVisibility(View.VISIBLE);
         }
@@ -87,6 +88,11 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
                 setTitle(getString(R.string.movies_sort_by_now_playing));
 
                 // Show only "How" and "Where" elements.
+                startHowCheckedIndex = MyPreferences.getNowPlayingMoviesIndex(this,
+                        MyPreferences.TYPE_MOVIES_HOW);
+                startWhereCheckedIndex = MyPreferences.getNowPlayingMoviesIndex(this,
+                        MyPreferences.TYPE_MOVIES_WHERE);
+
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_now_playing_movies_how_list_array),
                         MyPreferences.TYPE_MOVIES_HOW, type);
@@ -104,6 +110,13 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
                 setTitle(getString(R.string.movies_sort_by_upcoming));
 
                 // Show all.
+                startHowCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
+                        MyPreferences.TYPE_MOVIES_HOW);
+                startWhenCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
+                        MyPreferences.TYPE_MOVIES_WHEN);
+                startWhereCheckedIndex = MyPreferences.getUpcomingMoviesIndex(this,
+                        MyPreferences.TYPE_MOVIES_WHERE);
+
                 setRadioButtons(howRadioGroup, getResources().getStringArray(
                         R.array.preferences_upcoming_movies_how_list_array),
                         MyPreferences.TYPE_MOVIES_HOW, type);
@@ -142,7 +155,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
         }
 
         // Reverse circular reveal animation and finish this activity.
-        AnimatedViewsUtils.unrevealActivity(rootLayout, revealX, revealY,
+        AnimatedViewsUtils.unrevealLayout(rootLayout, revealX, revealY,
                 ConfigFilteredMoviesActivity.this);
     }
 
@@ -184,14 +197,28 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
         int index = 0;
         for (String text : array) {
             // Create the new RadioButton.
-            RadioButton radioButton = MyPreferences.createRadioButton(this, text, index);
+            RadioButton radioButton;
+            switch (preferencesType) {
+                case MyPreferences.TYPE_MOVIES_HOW:
+                    radioButton = MyPreferences.createRadioButton(this, text, index,
+                            startHowCheckedIndex);
+                    break;
+
+                case MyPreferences.TYPE_MOVIES_WHEN:
+                    radioButton = MyPreferences.createRadioButton(this, text, index,
+                            startWhenCheckedIndex);
+                    break;
+
+                default: // case MyPreferences.TYPE_MOVIES_WHERE:
+                    radioButton = MyPreferences.createRadioButton(this, text, index,
+                            startWhereCheckedIndex);
+            }
             index++;
 
             // Set onClickListener.
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Get current RadioGroup state.
                     int endCheckedIndex, checkedIndex = radioGroup.getCheckedRadioButtonId();
                     switch (preferencesType) {
                         case MyPreferences.TYPE_MOVIES_HOW:
@@ -212,11 +239,13 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
                         RadioButton checkedRadioButton =
                                 (RadioButton) radioGroup.getChildAt(checkedIndex);
                         checkedRadioButton.setTextColor(
-                                getResources().getColor(R.color.colorAccent));
+                                getResources().getColor(R.color.colorWhite));
+                        checkedRadioButton.setTypeface(null, Typeface.BOLD);
                         RadioButton uncheckedRadioButton =
                                 (RadioButton) radioGroup.getChildAt(endCheckedIndex);
                         uncheckedRadioButton.setTextColor(
-                                getResources().getColor(R.color.colorWhite));
+                                getResources().getColor(R.color.colorDarkerWhite));
+                        uncheckedRadioButton.setTypeface(null, Typeface.NORMAL);
 
                         // Update preferences and global variables.
                         switch (preferencesType) {
@@ -233,8 +262,9 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
                         }
                         switch (moviesType) {
                             case TYPE_UPCOMING:
-                                MyPreferences.setUpcomingMovies(ConfigFilteredMoviesActivity.this,
-                                        checkedIndex, preferencesType);
+                                MyPreferences.setUpcomingMovies(
+                                        ConfigFilteredMoviesActivity.this, checkedIndex,
+                                        preferencesType);
                                 break;
 
                             case TYPE_NOW_PLAYING:
@@ -295,7 +325,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
         }
         if (currentRadioButton != null) {
             currentRadioButton.setChecked(true);
-            currentRadioButton.setTextColor(getResources().getColor(R.color.colorAccent));
+            //currentRadioButton.setTextColor(getResources().getColor(R.color.colorAccent));
         }
     }
 }

@@ -2,37 +2,66 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="@string/movies">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_all_movies"
+                android:icon="@drawable/ic_local_movies_white_24dp"
+                android:title="@string/all_movies" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_now_playing_movies"
+                android:icon="@drawable/ic_local_movies_white_24dp"
+                android:title="@string/movies_sort_by_now_playing" />
+            <item
+                android:id="@+id/nav_upcoming_movies"
+                android:icon="@drawable/ic_local_movies_white_24dp"
+                android:title="@string/movies_sort_by_upcoming" />
+            <item
+                android:id="@+id/nav_favorite_movies"
+                android:icon="@drawable/ic_local_movies_white_24dp"
+                android:title="@string/movies_sort_by_favorites" />
         </menu>
     </item>
-
+    <item android:title="@string/series">
+        <menu>
+            <item
+                android:id="@+id/nav_all_series"
+                android:icon="@drawable/ic_tv_white_24dp"
+                android:title="@string/all_series" />
+            <item
+                android:id="@+id/nav_on_the_air_series"
+                android:icon="@drawable/ic_tv_white_24dp"
+                android:title="@string/tv_on_the_air" />
+            <item
+                android:id="@+id/nav_airing_today_series"
+                android:icon="@drawable/ic_tv_white_24dp"
+                android:title="@string/tv_airing_today" />
+            <item
+                android:id="@+id/nav_favorite_series"
+                android:icon="@drawable/ic_tv_white_24dp"
+                android:title="@string/movies_sort_by_favorites" />
+        </menu>
+    </item>
+    <item android:title="@string/people">
+        <menu>
+            <item
+                android:id="@+id/nav_people"
+                android:icon="@drawable/ic_person_white_24dp"
+                android:title="@string/popular" />
+        </menu>
+    </item>
+    <group>
+        <item
+            android:id="@+id/nav_results_language"
+            android:icon="@drawable/baseline_language_white_24"
+            android:title="Idioma de los resultados" />
+        <item
+            android:id="@+id/nav_image_quality"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Calidad de las imágenes" />
+        <item
+            android:id="@+id/nav_delete_favorites"
+            android:icon="@drawable/baseline_delete_white_24"
+            android:title="Borrar todos mis favoritos" />
+    </group>
 </menu>

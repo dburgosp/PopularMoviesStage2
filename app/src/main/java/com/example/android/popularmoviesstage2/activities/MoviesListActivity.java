@@ -11,14 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,12 +23,13 @@ import android.widget.Toast;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
 import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.classes.CustomToast;
+import com.example.android.popularmoviesstage2.classes.MyCustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
 import com.example.android.popularmoviesstage2.data.MyPreferences;
 import com.example.android.popularmoviesstage2.itemdecorations.SpaceItemDecoration;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.NetworkUtils;
 
 import java.text.NumberFormat;
@@ -75,7 +73,7 @@ public class MoviesListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTransitions();
+        AnimatedViewsUtils.setTransitions(getWindow());
 
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);
@@ -344,7 +342,7 @@ public class MoviesListActivity extends AppCompatActivity
                             numberFormat.format(data.get(0).getTotal_results()) + "</font>";
 
                     // Use customised Toast layout.
-                    customToast = CustomToast.setCustomToast(this, htmlText,
+                    customToast = MyCustomToast.setCustomToast(this, htmlText,
                             R.drawable.ic_local_movies_white_24dp);
                     customToast.show();
                 }
@@ -380,18 +378,6 @@ public class MoviesListActivity extends AppCompatActivity
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
-
-    /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Slide slideIn = new Slide(Gravity.END);
-        getWindow().setEnterTransition(slideIn.setDuration(250));
-        Slide slideOut = new Slide(Gravity.START);
-        getWindow().setExitTransition(slideOut.setDuration(250));
-    }
 
     /**
      * Helper method to init global variables.
@@ -459,10 +445,9 @@ public class MoviesListActivity extends AppCompatActivity
 
                             // Create an ActivityOptions to transition between Activities using
                             // cross-Activity scene animations.
-                            ActivityOptionsCompat options =
-                                    ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                            MoviesListActivity.this, clickedView,
-                                            getString(R.string.transition_poster));
+                            Bundle option = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                    MoviesListActivity.this, clickedView,
+                                    getString(R.string.transition_poster)).toBundle();
 
                             // Start MovieDetailsActivity to show movie movie_details_menu when the
                             // current element is clicked. We need to know when the other activity
@@ -471,7 +456,11 @@ public class MoviesListActivity extends AppCompatActivity
                             Intent intent = new Intent(MoviesListActivity.this,
                                     MovieDetailsActivity.class);
                             intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, movie);
-                            startActivityForResult(intent, 0, options.toBundle());
+
+                            // Animate view when clicked and navigate to next activity for result.
+                            AnimatedViewsUtils.animateOnClick(MoviesListActivity.this,
+                                    clickedView);
+                            startActivityForResult(intent, 0, option);
                         }
                     }
                 };

@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.util.TypedValue;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -823,27 +824,35 @@ public class MyPreferences {
     /**
      * Helper method for creating a new RadioButton for Preferences with a custom style.
      *
-     * @param text  is the text to be shown in the RadioButton.
-     * @param index is the index of the new RadioButton into the RadioGroup that contains it.
+     * @param text         is the text to be shown in the RadioButton.
+     * @param currentIndex is the index of the new RadioButton into the RadioGroup that contains it.
+     * @param checkedIndex is the index of the currently checked RadioButton in this RadioGroup.
      * @return the newly created RadioButton.
      */
-    public static RadioButton createRadioButton(Context context, String text, int index) {
+    public static RadioButton createRadioButton(Context context, String text, int currentIndex,
+                                                int checkedIndex) {
         RadioButton radioButton = new RadioButton(context);
-        radioButton.setId(index);
+        radioButton.setId(currentIndex);
         radioButton.setPadding(6, 6, 6, 6);
-        radioButton.setBackground(context.getDrawable(R.drawable.rounded_button));
+        //radioButton.setBackground(context.getDrawable(R.drawable.rounded_button));
 
         // Layout params for the new RadioButton.
         LinearLayout.LayoutParams params = new RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.MATCH_PARENT,
                 RadioGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 6, 0, 0);
+        params.setMargins(18, 0, 0, 0);
         radioButton.setLayoutParams(params);
 
         // Text for the new RadioButton.
         radioButton.setText(text);
-        radioButton.setTextColor(context.getResources().getColor(R.color.colorWhite));
-        radioButton.setTypeface(null, Typeface.BOLD);
+        if (currentIndex == checkedIndex) {
+            radioButton.setTextColor(context.getResources().getColor(R.color.colorWhite));
+            radioButton.setTypeface(null, Typeface.BOLD);
+        } else {
+            radioButton.setTextColor(context.getResources().getColor(R.color.colorDarkerWhite));
+            radioButton.setTypeface(null, Typeface.NORMAL);
+        }
+        radioButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f);
 
         // Set colors for button and background when RadioButton is checked or unchecked.
         ColorStateList buttonColorStateList = new ColorStateList(
@@ -852,8 +861,8 @@ public class MyPreferences {
                         new int[]{android.R.attr.state_checked}
                 },
                 new int[]{
-                        context.getResources().getColor(R.color.colorBlueGreyPrimary),
-                        context.getResources().getColor(R.color.colorAccent),
+                        context.getResources().getColor(R.color.colorDarkerWhite),
+                        context.getResources().getColor(R.color.colorWhite),
                 }
         );
         radioButton.setButtonTintList(buttonColorStateList);
@@ -863,7 +872,7 @@ public class MyPreferences {
                         new int[]{android.R.attr.state_checked}
                 },
                 new int[]{
-                        context.getResources().getColor(R.color.colorAccent),
+                        context.getResources().getColor(R.color.colorDarkerWhite),
                         context.getResources().getColor(R.color.colorWhite),
                 }
         );

@@ -4,22 +4,29 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.popularmoviesstage2.R;
+import com.example.android.popularmoviesstage2.classes.MyNavigationDrawer;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MoviesActivity extends AppCompatActivity {
+public class MoviesActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
     private static final int RESULT_CODE_CONFIG_UPCOMING_MOVIES = 1;
     private static final int RESULT_CODE_CONFIG_NOW_PLAYING_MOVIES = 2;
 
@@ -47,8 +54,15 @@ public class MoviesActivity extends AppCompatActivity {
         // Set custom Toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.movies_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.movies_drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
         // If we have passed a "sort" param into the intent, take this param as the default sort
         // order to show (selected page in the ViewPager) when this activity is created.
@@ -137,6 +151,18 @@ public class MoviesActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    /**
+     * Called when an item in the navigation menu is selected.
+     *
+     * @param item The selected item
+     * @return true to display the item as the selected item
+     */
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return MyNavigationDrawer.onNavigationItemSelected(item.getItemId(),
+                (DrawerLayout) findViewById(R.id.movies_drawer_layout));
     }
 
     @Override

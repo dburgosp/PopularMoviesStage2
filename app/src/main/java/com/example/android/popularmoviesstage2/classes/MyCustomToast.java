@@ -17,11 +17,11 @@ import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 /**
  * Public class that provides a customised Toast layout.
  */
-public class CustomToast {
+public class MyCustomToast {
     /**
      * Empty constructor for objects of this class.
      */
-    private CustomToast() {
+    private MyCustomToast() {
     }
 
     /**
