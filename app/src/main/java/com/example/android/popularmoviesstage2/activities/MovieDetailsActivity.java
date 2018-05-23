@@ -44,6 +44,7 @@ import butterknife.Unbinder;
 public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
     public static final String EXTRA_PARAM_MOVIE = "movie";
+    public static final String EXTRA_PARAM_CALLING_MOVIE_TITLE = "title";
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -75,11 +76,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
 
     private static TmdbMovie movie;
-    private Bundle options;
     private static Unbinder unbinder;
+    private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         AnimatedViewsUtils.setTransitions(getWindow());
@@ -104,33 +105,39 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         // Set title for this activity, depending on the collapsing state of the toolbar.
         setTitle("");
-        AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
+        onOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (collapsingToolbarLayout != null)
+                if (collapsingToolbarLayout != null) {
                     if (collapsingToolbarLayout.getHeight() + verticalOffset <
                             2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
                         // CollapsingToolbar is collapsed. Show title.
+                        CharSequence oldTitle = collapsingToolbarLayout.getTitle();
                         String title = movie.getTitle();
                         String year = DateTimeUtils.getYear(movie.getRelease_date());
-                        if (title != null && !title.equals("") && !title.isEmpty())
+                        if (title != null && !title.equals("") && !title.isEmpty()) {
+                            // There is a title defined for current movie.
                             if (year != null && !year.equals("") && !year.isEmpty())
-                                collapsingToolbarLayout.setTitle(movie.getTitle() + " (" +
-                                        DateTimeUtils.getYear(movie.getRelease_date()) + ")");
-                            else
-                                collapsingToolbarLayout.setTitle(movie.getTitle());
-                        else
-                            collapsingToolbarLayout.setTitle(getResources().getString(R.string.no_title));
+                                title = title + " (" + year + ")";
+                            if (oldTitle != null && !oldTitle.equals("")) {
+                                // Avoid setting wrong title from another MovieDetailsActivity. If
+                                // there was already a title defined for this activity, reuse it.
+                                collapsingToolbarLayout.setTitle(oldTitle);
+                            } else
+                                collapsingToolbarLayout.setTitle(title);
+                        } else {
+                            // No title for current movie. Write default "no title" string.
+                            collapsingToolbarLayout.setTitle(getResources().getString(
+                                    R.string.no_title));
+                        }
                     } else {
                         // CollapsingToolbar is expanded. Hide title.
                         collapsingToolbarLayout.setTitle("");
                     }
+                }
             }
         };
-        appBarLayout.addOnOffsetChangedListener(listener);
-        collapsingToolbarLayout.setElevation(0);
-        appBarLayout.setElevation(0);
-        toolbar.setElevation(0);
+        appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener);
 
         // Set TabLayout and ViewPager to manage the fragments with info for the current movie.
         tabLayout.setupWithViewPager(viewPager);
@@ -178,6 +185,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+        appBarLayout.removeOnOffsetChangedListener(onOffsetChangedListener);
         Intent returnIntent = getIntent();
         setResult(Activity.RESULT_CANCELED, returnIntent);
 
@@ -190,6 +198,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
         supportFinishAfterTransition();
 
         super.onBackPressed();
+    }
+
+    /**
+     * Dispatch incoming result to the correct fragment.
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String title = data.getStringExtra(EXTRA_PARAM_CALLING_MOVIE_TITLE);
+        movie.setTitle(title);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -245,7 +263,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /**
      * Helper method to display current movie information in the header of this activity.
      */
-    void setMovieInfo() {
+    private void setMovieInfo() {
         Log.i(TAG, "(setPersonInfo) Display movie information on the header");
 
         // Set background image. Also set its size, according to display measures, and its
@@ -312,9 +330,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         if (title != null && !title.equals("") && !title.isEmpty())
             if (year != null && !year.equals("") && !year.isEmpty()) {
                 int labelColor = getResources().getColor(R.color.colorGrey);
-                String сolorString = String.format("%X", labelColor).substring(2);
+                String color = String.format("%X", labelColor).substring(2);
                 TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
-                        " </big></strong><small><font color=\"#" + сolorString + "\">(" + year +
+                        " </big></strong><small><font color=\"#" + color + "\">(" + year +
                         ")</font></small>");
             } else
                 TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +

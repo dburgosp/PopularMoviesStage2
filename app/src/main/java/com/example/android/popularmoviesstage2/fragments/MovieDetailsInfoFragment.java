@@ -247,21 +247,6 @@ public class MovieDetailsInfoFragment extends Fragment
         return rootView;
     }
 
-    /**
-     * Called when the view previously created by {@link #onCreateView} has
-     * been detached from the fragment.  The next time the fragment needs
-     * to be displayed, a new view will be created.  This is called
-     * after {@link #onStop()} and before {@link #onDestroy()}.  It is called
-     * <em>regardless</em> of whether {@link #onCreateView} returned a
-     * non-null view.  Internally it is called after the view's state has
-     * been saved but before it has been removed from its parent.
-     */
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
     /* ------ */
     /* LOADER */
     /* ------ */
@@ -410,24 +395,27 @@ public class MovieDetailsInfoFragment extends Fragment
                             // Play a sound when clicked.
                             SoundsUtils.buttonClick(getContext());
 
-                            // Start MovieDetailsActivity to show movie movie_details_menu when the current
-                            // element is clicked. We need to know when the other activity finishes, so we
-                            // use startActivityForResult. No need a requestCode, we don't care for any result.
+                            // Start MovieDetailsActivity to show movie movie_details_menu when the
+                            // current element is clicked. We need to know when the other activity
+                            // finishes, so we use startActivityForResult. No need a requestCode,
+                            // we don't care for any result.
                             Intent intent = new Intent(getContext(), MovieDetailsActivity.class);
                             intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_MOVIE, clickedMovie);
+                            intent.putExtra(MovieDetailsActivity.EXTRA_PARAM_CALLING_MOVIE_TITLE,
+                                    movieDetails.getMovie().getTitle());
 
                             // Create an ActivityOptions to transition between Activities using
                             // cross-Activity scene animations.
-                            Bundle option = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                                    clickedView, getString(R.string.transition_poster)).toBundle();
+                            Bundle option = ActivityOptions.makeSceneTransitionAnimation(
+                                    getActivity(), clickedView, getString(R.string.transition_poster)).toBundle();
 
                             // Animate view when clicked and navigate to next activity.
                             AnimatedViewsUtils.animateOnClick(getActivity(), clickedView);
-                            startActivity(intent, option);
+                            startActivityForResult(intent, 0, option);
                         } else {
-                            // If we are clicking on the current movie (it may be shown again as part of the
-                            // collection or in the recommended movies_menu list), we don't need to move from
-                            // here.
+                            // If we are clicking on the current movie (it may be shown again as
+                            // part of the collection or in the recommended movies_menu list), we
+                            // don't need to move from here.
                             Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -540,7 +528,8 @@ public class MovieDetailsInfoFragment extends Fragment
             for (int n = 0; n < movieGenres.size(); n++) {
                 // Create the genre element into the FlowLayout.
                 try {
-                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
+                    final ViewGroup nullParent = null;
+                    View view = inflater.inflate(R.layout.list_item_flowlayout, nullParent);
                     final TextView genreTextView =
                             (TextView) view.findViewById(R.id.flowlayout_textview);
                     genreTextView.setText(movieGenres.get(n).getName());
@@ -637,7 +626,6 @@ public class MovieDetailsInfoFragment extends Fragment
         TmdbRelease releases = movieDetails.getReleases();
         if (releases != null) {
             // Extract release dates info related to current country.
-            stringBuilder = new StringBuilder();
             for (int i = 0; i < releases.getReleaseDateArrayList().size(); i++) {
                 String date = releases.getReleaseDateArrayList().get(i).getRelease_date();
                 stringBuilder.append(DateTimeUtils.getStringDate(date, DateTimeUtils.DATE_FORMAT_LONG));
@@ -1022,7 +1010,8 @@ public class MovieDetailsInfoFragment extends Fragment
             for (int n = 0; n < keywordsArrayList.size(); n++) {
                 // Create the current keyword element into the FlowLayout.
                 try {
-                    View view = inflater.inflate(R.layout.list_item_flowlayout, null);
+                    final ViewGroup nullParent = null;
+                    View view = inflater.inflate(R.layout.list_item_flowlayout, nullParent);
                     final TextView keywordTextView = (TextView) view.findViewById(R.id.flowlayout_textview);
                     keywordTextView.setText(keywordsArrayList.get(n).getName());
                     keywordTextView.setId(keywordsArrayList.get(n).getId());
@@ -1181,7 +1170,7 @@ public class MovieDetailsInfoFragment extends Fragment
                             return tmdbMovie2.getRelease_date().compareTo(tmdbMovie1.getRelease_date());
                         }
                     });
-                    if (movieCollection != null && movieCollection.size() > 0) {
+                    if (movieCollection.size() > 0) {
                         collectionAdapter.updateMoviesArrayList(movieCollection, true);
                         collectionAdapter.notifyDataSetChanged();
                     }
