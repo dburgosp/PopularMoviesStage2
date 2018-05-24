@@ -92,6 +92,10 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
             movieId = getArguments().getInt("id");
         }
 
+        // Hide "no results" views.
+        noResultsTextView.setVisibility(View.GONE);
+        noResultsImageView.setVisibility(View.GONE);
+
         // Set RecyclerViews for displaying cast & crew photos.
         setRecyclerViews();
 
@@ -203,7 +207,7 @@ public class MovieDetailsReviewsFragment extends Fragment implements LoaderManag
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbReview} objects, then add them to the adapter's
             // data set.
-            if (data != null && data.size() > 0 && !data.isEmpty()) {
+            if (data != null && data.size() > 0) {
                 Log.i(TAG, "(onLoadFinished) " + data.size() + " review(s) received.");
                 reviewsAdapter.updateReviewsArray(data, appendToEnd);
                 reviewsAdapter.notifyDataSetChanged();

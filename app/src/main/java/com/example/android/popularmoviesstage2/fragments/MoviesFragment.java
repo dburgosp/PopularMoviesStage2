@@ -259,24 +259,27 @@ public class MoviesFragment extends Fragment
                 if (getUserVisibleHint() && data.get(0).getPage() == 1) {
                     // Set text.
                     int results = data.get(0).getTotal_results();
+                    String title = "";
                     String htmlText = "";
                     String color = String.format("%X",
                             getResources().getColor(R.color.colorDarkWhite)).substring(2);
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
                     switch (loader.getId()) {
                         case NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID:
-                            if (viewPager.getCurrentItem() == 0)
-                                htmlText = "<strong>" + getString(R.string.all_movies).toUpperCase() +
+                            if (viewPager.getCurrentItem() == 0) {
+                                title = getString(R.string.all_movies);
+                                htmlText = "<strong>" + getResources().getQuantityString(
+                                        R.plurals.results, results).toUpperCase() +
                                         "</strong><br><font color=\"#" + color + "\">" +
                                         getResources().getQuantityString(R.plurals.movies_number,
                                                 results, numberFormat.format(results)) + "</font>";
+                            }
                             break;
 
                         case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
-                            if (viewPager.getCurrentItem() == 1)
-                                htmlText = "<strong>" + getString(R.string.movies_sort_by_now_playing)
-                                        .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
-                                        + getString(R.string.preferences_movies_how_title) + ": " +
+                            if (viewPager.getCurrentItem() == 1) {
+                                title = getString(R.string.movies_sort_by_now_playing);
+                                htmlText = getString(R.string.preferences_movies_how_title) + ": " +
                                         MyPreferences.getNowPlayingMoviesTitle(getContext(),
                                                 MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
                                         getString(R.string.preferences_movies_where_title) + ": " +
@@ -287,13 +290,13 @@ public class MoviesFragment extends Fragment
                                         "<br><font color=\"#" + color + "\">" +
                                         getResources().getQuantityString(R.plurals.movies_number,
                                                 results, numberFormat.format(results)) + "</font>";
+                            }
                             break;
 
                         case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
-                            if (viewPager.getCurrentItem() == 2)
-                                htmlText = "<strong>" + getString(R.string.movies_sort_by_upcoming)
-                                        .toUpperCase() + "</strong><br><font color=\"#" + color + "\">"
-                                        + getString(R.string.preferences_movies_how_title) + ": "
+                            if (viewPager.getCurrentItem() == 2) {
+                                title = getString(R.string.movies_sort_by_upcoming);
+                                htmlText = getString(R.string.preferences_movies_how_title) + ": "
                                         + MyPreferences.getUpcomingMoviesTitle(getContext(),
                                         MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
                                         getString(R.string.preferences_movies_when_title) + ": " +
@@ -307,6 +310,7 @@ public class MoviesFragment extends Fragment
                                         "<br><font color=\"#" + color + "\">" +
                                         getResources().getQuantityString(R.plurals.movies_number,
                                                 results, numberFormat.format(results)) + "</font>";
+                            }
                             break;
 
                         default:
@@ -318,7 +322,7 @@ public class MoviesFragment extends Fragment
                     }
                     if (!htmlText.equals("")) {
                         // Show customised Toast layout.
-                        customToast = MyCustomToast.setCustomToast(getContext(), htmlText,
+                        customToast = MyCustomToast.setCustomToast(getContext(), title, htmlText,
                                 R.drawable.ic_local_movies_white_24dp);
                         customToast.show();
                     }

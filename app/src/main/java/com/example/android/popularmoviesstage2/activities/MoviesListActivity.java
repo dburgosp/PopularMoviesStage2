@@ -323,17 +323,20 @@ public class MoviesListActivity extends AppCompatActivity
                 // Show a message with search results, only when displaying the first page.
                 if (data.get(0).getPage() == 1) {
                     // Set text.
-                    String htmlText;
-                    if (loaderId == NetworkUtils.TMDB_GENRES_LOADER_ID)
-                        htmlText = getResources().getString(R.string.sort_movies_by_genre);
-                    else
-                        htmlText = getResources().getString(R.string.sort_movies_by_keyword);
+                    String title = "";
+                    switch (loaderId) {
+                        case NetworkUtils.TMDB_GENRES_LOADER_ID:
+                            title = getResources().getString(R.string.sort_movies_by_genre);
+                            break;
+
+                        case NetworkUtils.TMDB_KEYWORDS_LOADER_ID:
+                            title = getResources().getString(R.string.sort_movies_by_keyword);
+                    }
                     String color = String.format("%X",
-                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
+                            getResources().getColor(R.color.colorDarkGrey)).substring(2);
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                    htmlText = "<strong>" + htmlText.toUpperCase() + "</strong><br>" +
-                            "<font color=\"#" + color + "\">" + moviesBy + "</font><br><br>" +
-                            "<strong>" + getResources().getString(
+                    String htmlText = "<font color=\"#" + color + "\">" + moviesBy + "</font><br>" +
+                            "<<br>strong>" + getResources().getString(
                             R.string.preferences_movies_sort_by_title).toUpperCase() + "</strong><br><font " +
                             "color=\"#" + color + "\">" + MyPreferences.getMoviesSortOrderTitle(
                             this) + "</font><br><br> <strong>" + getResources().
@@ -342,7 +345,7 @@ public class MoviesListActivity extends AppCompatActivity
                             numberFormat.format(data.get(0).getTotal_results()) + "</font>";
 
                     // Use customised Toast layout.
-                    customToast = MyCustomToast.setCustomToast(this, htmlText,
+                    customToast = MyCustomToast.setCustomToast(this, title, htmlText,
                             R.drawable.ic_local_movies_white_24dp);
                     customToast.show();
                 }

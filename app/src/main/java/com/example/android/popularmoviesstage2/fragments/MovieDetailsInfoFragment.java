@@ -62,7 +62,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * {@link Fragment} that displays the main_menu information about the current movieDetails.
@@ -196,7 +195,6 @@ public class MovieDetailsInfoFragment extends Fragment
     private int movieId;
     private MoviesListAdapter recommendedMoviesAdapter, collectionAdapter;
     String ageRating = "";
-    private Unbinder unbinder;
 
     /**
      * Required empty public constructor.
@@ -226,7 +224,7 @@ public class MovieDetailsInfoFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie_details_info, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        ButterKnife.bind(this, rootView);
 
         // Clean all elements in the layout when creating this fragment.
         clearLayout();
@@ -481,6 +479,7 @@ public class MovieDetailsInfoFragment extends Fragment
      *
      * @return true if any of the elements of this section has been set, false otherwise.
      */
+    @SuppressWarnings("ConstantConditions")
     private boolean setOverviewSection() {
         boolean infoSectionSet = false;
 
@@ -1001,6 +1000,7 @@ public class MovieDetailsInfoFragment extends Fragment
      *
      * @return true if any of the elements of this section has been set, false otherwise.
      */
+    @SuppressWarnings("ConstantConditions")
     private boolean setKeywordsSection() {
         ArrayList<TmdbKeyword> keywordsArrayList = movieDetails.getKeywords();
 

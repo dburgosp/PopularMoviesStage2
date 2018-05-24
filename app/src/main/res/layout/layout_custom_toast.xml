@@ -9,27 +9,39 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/normal_padding"
         android:background="@drawable/rounded_button"
-        android:orientation="horizontal"
-        android:padding="@dimen/regular_padding">
+        android:elevation="@dimen/tiny_padding"
+        android:orientation="vertical"
+        android:shadowColor="@color/colorBlack">
 
-        <ImageView
-            android:id="@+id/toast_image"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/toast_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/small_padding"
-            android:contentDescription="@string/content_description_icon"
+            android:drawablePadding="@dimen/small_padding"
+            android:drawableStart="@drawable/ic_info_outline_white_24dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/regular_padding"
+            android:paddingEnd="@dimen/regular_padding"
+            android:paddingStart="@dimen/regular_padding"
             android:paddingTop="@dimen/normal_padding"
-            android:src="@drawable/ic_info_outline_white_24dp" />
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/normal_plus_text_size"
+            android:textStyle="bold"
+            tools:text="TITLE" />
 
         <TextView
             android:id="@+id/toast_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/small_padding"
-            android:paddingBottom="@dimen/normal_padding"
-            android:paddingTop="@dimen/normal_padding"
-            android:textColor="@color/colorWhite"
+            android:layout_margin="@dimen/tiny_padding"
+            android:alpha="0.9"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/colorWhite"
+            android:gravity="start"
+            android:padding="@dimen/regular_padding"
+            android:textColor="@color/colorDarkGrey"
             android:textSize="@dimen/normal_plus_text_size"
-            tools:text="HEADER 1\nContent for header 1\n\nHEADER 2\nContent for header 2\n\n..." />
+            tools:text="SUBTITLE 1\nContent for header 1\n\nSUBTITLE 2\nContent for header 2" />
     </LinearLayout>
 </RelativeLayout>

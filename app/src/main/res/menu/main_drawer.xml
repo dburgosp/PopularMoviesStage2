@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
     <item android:title="@string/movies">
@@ -50,18 +51,25 @@
                 android:title="@string/popular" />
         </menu>
     </item>
-    <group>
-        <item
-            android:id="@+id/nav_results_language"
-            android:icon="@drawable/baseline_language_white_24"
-            android:title="Idioma de los resultados" />
-        <item
-            android:id="@+id/nav_image_quality"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Calidad de las imágenes" />
-        <item
-            android:id="@+id/nav_delete_favorites"
-            android:icon="@drawable/baseline_delete_white_24"
-            android:title="Borrar todos mis favoritos" />
-    </group>
+    <item android:title="Configuración">
+        <menu>
+            <item
+                android:id="@+id/nav_results_language"
+                android:icon="@drawable/baseline_language_white_24"
+                android:title="Idioma de los resultados" />
+            <item
+                android:id="@+id/nav_sound_switch"
+                android:icon="@drawable/baseline_volume_up_white_24"
+                android:title="Efectos de sonido"
+                app:actionLayout="@layout/switch_item" />
+            <item
+                android:id="@+id/nav_image_quality"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="Calidad de las imágenes" />
+            <item
+                android:id="@+id/nav_delete_favorites"
+                android:icon="@drawable/baseline_delete_white_24"
+                android:title="Borrar todos mis favoritos" />
+        </menu>
+    </item>
 </menu>
