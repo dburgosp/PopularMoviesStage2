@@ -46,18 +46,18 @@ public class MyCustomToast {
             View layout = inflater.inflate(R.layout.layout_custom_toast,
                     (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
 
-            // Set title.
+            // Set header.
             TextView titleTextView = (TextView) layout.findViewById(R.id.toast_header);
             titleTextView.setText(title);
+
+            // Set icon for header.
+            int colorRes = R.color.colorWhite;
+            TextViewUtils.setTintedCompoundDrawable(context, titleTextView,
+                    TextViewUtils.DRAWABLE_LEFT_INDEX, drawableRes, colorRes, R.dimen.small_padding);
 
             // Set text.
             TextView textView = (TextView) layout.findViewById(R.id.toast_text);
             TextViewUtils.setHtmlText(textView, htmlText);
-
-            // Set icon.
-            int colorRes = R.color.colorWhite;
-            TextViewUtils.setTintedCompoundDrawable(context, textView,
-                    TextViewUtils.DRAWABLE_LEFT_INDEX, drawableRes, colorRes, R.dimen.small_padding);
 
             // Customize toast and return it.
             toast.setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL, 0, 0);

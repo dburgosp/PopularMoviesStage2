@@ -77,7 +77,8 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
             // Get coordinates for the center of the CircularReveal animation of the root View.
             revealX = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_X, 0);
             revealY = intent.getIntExtra(EXTRA_CIRCULAR_REVEAL_Y, 0);
-            AnimatedViewsUtils.revealLayout(rootLayout, revealX, revealY);
+            AnimatedViewsUtils.circularRevealLayout(rootLayout, revealX, revealY,
+                    AnimatedViewsUtils.ANIM_DURATION_SHORT);
         } else {
             rootLayout.setVisibility(View.VISIBLE);
         }
@@ -155,8 +156,8 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
         }
 
         // Reverse circular reveal animation and finish this activity.
-        AnimatedViewsUtils.unrevealLayout(rootLayout, revealX, revealY,
-                ConfigFilteredMoviesActivity.this);
+        AnimatedViewsUtils.circularUnrevealLayout(rootLayout, revealX, revealY,
+                ConfigFilteredMoviesActivity.this, AnimatedViewsUtils.ANIM_DURATION_SHORT);
     }
 
     @Override

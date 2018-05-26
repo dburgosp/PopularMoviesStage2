@@ -324,25 +324,28 @@ public class MoviesListActivity extends AppCompatActivity
                 if (data.get(0).getPage() == 1) {
                     // Set text.
                     String title = "";
+                    String concept = "";
                     switch (loaderId) {
                         case NetworkUtils.TMDB_GENRES_LOADER_ID:
                             title = getResources().getString(R.string.sort_movies_by_genre);
+                            concept = getResources().getQuantityString(R.plurals.genres, 1);
                             break;
 
                         case NetworkUtils.TMDB_KEYWORDS_LOADER_ID:
                             title = getResources().getString(R.string.sort_movies_by_keyword);
+                            concept = getResources().getQuantityString(R.plurals.keywords, 1);
                     }
-                    String color = String.format("%X",
-                            getResources().getColor(R.color.colorDarkGrey)).substring(2);
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                    String htmlText = "<font color=\"#" + color + "\">" + moviesBy + "</font><br>" +
-                            "<<br>strong>" + getResources().getString(
-                            R.string.preferences_movies_sort_by_title).toUpperCase() + "</strong><br><font " +
-                            "color=\"#" + color + "\">" + MyPreferences.getMoviesSortOrderTitle(
-                            this) + "</font><br><br> <strong>" + getResources().
-                            getQuantityString(R.plurals.results, data.size()).toUpperCase() +
-                            "</strong><br><font color=\"#" + color + "\">" +
-                            numberFormat.format(data.get(0).getTotal_results()) + "</font>";
+                    String htmlText = "<strong>" + concept + ": </strong>" + moviesBy + "<br>" +
+                            "<strong>" + getResources().getString(
+                            R.string.preferences_movies_sort_by_title) + "</strong>: " +
+                            MyPreferences.getMoviesSortOrderTitle(this) + "<br><br>" +
+                            "<strong>" + (getResources().getQuantityString(
+                            R.plurals.results, data.size()) + ": " +
+                            getResources().getQuantityString(R.plurals.movies_number,
+                                    data.get(0).getTotal_results(), numberFormat.format(
+                                            data.get(0).getTotal_results())) + "</strong>")
+                            .toUpperCase();
 
                     // Use customised Toast layout.
                     customToast = MyCustomToast.setCustomToast(this, title, htmlText,

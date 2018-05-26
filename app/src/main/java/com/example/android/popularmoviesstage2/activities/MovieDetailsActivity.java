@@ -190,9 +190,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED, returnIntent);
 
         // Hide background with animation.
-        AnimatedViewsUtils.unrevealLayout(backgroundImageView,
+        AnimatedViewsUtils.circularUnrevealLayout(backgroundImageView,
                 backgroundImageView.getMeasuredWidth() / 2,
-                backgroundImageView.getMeasuredHeight() / 2, null);
+                backgroundImageView.getMeasuredHeight() / 2, null,
+                AnimatedViewsUtils.ANIM_DURATION_LONG);
 
         // Transition back to the movie poster into the calling activity.
         supportFinishAfterTransition();
@@ -308,9 +309,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                                         // Show background with a circular reveal animation.
                                         //AnimatedViewsUtils.enterReveal(backgroundImageView);
-                                        AnimatedViewsUtils.revealLayout(backgroundImageView,
+                                        AnimatedViewsUtils.circularRevealLayout(backgroundImageView,
                                                 backgroundImageView.getMeasuredWidth() / 2,
-                                                backgroundImageView.getMeasuredHeight() / 2);
+                                                backgroundImageView.getMeasuredHeight() / 2,
+                                                AnimatedViewsUtils.ANIM_DURATION_LONG);
                                         return true;
                                     }
                                 });

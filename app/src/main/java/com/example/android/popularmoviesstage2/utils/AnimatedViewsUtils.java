@@ -21,6 +21,8 @@ import java.util.ArrayList;
 
 public final class AnimatedViewsUtils {
     private static final String TAG = AnimatedViewsUtils.class.getSimpleName();
+    public static final int ANIM_DURATION_SHORT = 500;
+    public static final int ANIM_DURATION_LONG = 1000;
 
     /**
      * Create a private constructor because no one should ever create a {@link AnimatedViewsUtils}
@@ -98,8 +100,10 @@ public final class AnimatedViewsUtils {
      * @param rootLayout is the View to be animated.
      * @param x          is the horizontal coordinate of the center of the circle.
      * @param y          is the vertical coordinate of the center of the circle.
+     * @param duration   is the duration of the animation, in milliseconds.
      */
-    public static void revealLayout(final View rootLayout, final int x, final int y) {
+    public static void circularRevealLayout(final View rootLayout, final int x, final int y,
+                                            final int duration) {
         rootLayout.setVisibility(View.INVISIBLE);
         ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
         if (viewTreeObserver.isAlive()) {
@@ -112,7 +116,7 @@ public final class AnimatedViewsUtils {
                     // Create the animator for this view (the start radius is zero).
                     Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x,
                             y, 0, finalRadius);
-                    circularReveal.setDuration(1000);
+                    circularReveal.setDuration(duration);
                     circularReveal.setInterpolator(new AccelerateInterpolator());
 
                     // Make the view visible and start the animation.
@@ -133,12 +137,14 @@ public final class AnimatedViewsUtils {
      * @param y          is the vertical coordinate of the center of the circle.
      * @param activity   is the activity to be finished (if it is not null) after performing the
      *                   animation.
+     * @param duration   is the duration of the animation, in milliseconds.
      */
-    public static void unrevealLayout(final View rootLayout, int x, int y, final Activity activity) {
+    public static void circularUnrevealLayout(final View rootLayout, int x, int y,
+                                              final Activity activity, int duration) {
         float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
         Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, x, y,
                 finalRadius, 0);
-        circularReveal.setDuration(1000);
+        circularReveal.setDuration(duration);
         circularReveal.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {

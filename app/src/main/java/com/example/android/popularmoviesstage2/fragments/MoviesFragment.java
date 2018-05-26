@@ -261,55 +261,51 @@ public class MoviesFragment extends Fragment
                     int results = data.get(0).getTotal_results();
                     String title = "";
                     String htmlText = "";
-                    String color = String.format("%X",
-                            getResources().getColor(R.color.colorDarkWhite)).substring(2);
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
                     switch (loader.getId()) {
                         case NetworkUtils.TMDB_ALL_MOVIES_LOADER_ID:
                             if (viewPager.getCurrentItem() == 0) {
                                 title = getString(R.string.all_movies);
-                                htmlText = "<strong>" + getResources().getQuantityString(
-                                        R.plurals.results, results).toUpperCase() +
-                                        "</strong><br><font color=\"#" + color + "\">" +
+                                htmlText = ("<strong>" + getResources().getQuantityString(
+                                        R.plurals.results, results) + ": " +
                                         getResources().getQuantityString(R.plurals.movies_number,
-                                                results, numberFormat.format(results)) + "</font>";
+                                                results, numberFormat.format(results)) +
+                                        "</strong>").toUpperCase();
                             }
                             break;
 
                         case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                             if (viewPager.getCurrentItem() == 1) {
                                 title = getString(R.string.movies_sort_by_now_playing);
-                                htmlText = getString(R.string.preferences_movies_how_title) + ": " +
+                                htmlText = "<strong>" + getString(R.string.preferences_movies_how_title) + "</strong>: " +
                                         MyPreferences.getNowPlayingMoviesTitle(getContext(),
-                                                MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
-                                        getString(R.string.preferences_movies_where_title) + ": " +
+                                                MyPreferences.TYPE_MOVIES_HOW) + "<br><strong>" +
+                                        getString(R.string.preferences_movies_where_title) + "</strong>: " +
                                         MyPreferences.getNowPlayingMoviesTitle(getContext(),
-                                                MyPreferences.TYPE_MOVIES_WHERE) + "</font>" +
-                                        "<br><br><strong>" + getResources().getQuantityString(
-                                        R.plurals.results, results).toUpperCase() + "</strong>" +
-                                        "<br><font color=\"#" + color + "\">" +
-                                        getResources().getQuantityString(R.plurals.movies_number,
-                                                results, numberFormat.format(results)) + "</font>";
+                                                MyPreferences.TYPE_MOVIES_WHERE) +
+                                        "<br><br><strong>" + (getResources().getQuantityString(
+                                        R.plurals.results, results) + ": " + getResources().getQuantityString(
+                                        R.plurals.movies_number, results,
+                                        numberFormat.format(results)) + "</strong>").toUpperCase();
                             }
                             break;
 
                         case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
                             if (viewPager.getCurrentItem() == 2) {
                                 title = getString(R.string.movies_sort_by_upcoming);
-                                htmlText = getString(R.string.preferences_movies_how_title) + ": "
+                                htmlText = "<strong>" + getString(R.string.preferences_movies_how_title) + "</strong>: "
                                         + MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                        MyPreferences.TYPE_MOVIES_HOW) + "<br>" +
-                                        getString(R.string.preferences_movies_when_title) + ": " +
+                                        MyPreferences.TYPE_MOVIES_HOW) + "<br><strong>" +
+                                        getString(R.string.preferences_movies_when_title) + "</strong>: " +
                                         MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                                MyPreferences.TYPE_MOVIES_WHEN) + "<br>" +
-                                        getString(R.string.preferences_movies_where_title) + ": " +
+                                                MyPreferences.TYPE_MOVIES_WHEN) + "<br><strong>" +
+                                        getString(R.string.preferences_movies_where_title) + "</strong>: " +
                                         MyPreferences.getUpcomingMoviesTitle(getContext(),
-                                                MyPreferences.TYPE_MOVIES_WHERE) + "</font>" +
-                                        "<br><br><strong>" + getResources().getQuantityString(
-                                        R.plurals.results, results).toUpperCase() + "</strong>" +
-                                        "<br><font color=\"#" + color + "\">" +
-                                        getResources().getQuantityString(R.plurals.movies_number,
-                                                results, numberFormat.format(results)) + "</font>";
+                                                MyPreferences.TYPE_MOVIES_WHERE) +
+                                        "<br><br><strong>" + (getResources().getQuantityString(
+                                        R.plurals.results, results) + ": " + getResources().getQuantityString(
+                                        R.plurals.movies_number, results,
+                                        numberFormat.format(results)) + "</strong>").toUpperCase();
                             }
                             break;
 
