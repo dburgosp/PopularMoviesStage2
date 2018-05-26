@@ -323,6 +323,8 @@ public class MoviesListActivity extends AppCompatActivity
                 // Show a message with search results, only when displaying the first page.
                 if (data.get(0).getPage() == 1) {
                     // Set text.
+                    NumberFormat numberFormat = NumberFormat.getNumberInstance();
+                    int results = data.get(0).getTotal_results();
                     String title = "";
                     String concept = "";
                     switch (loaderId) {
@@ -335,17 +337,17 @@ public class MoviesListActivity extends AppCompatActivity
                             title = getResources().getString(R.string.sort_movies_by_keyword);
                             concept = getResources().getQuantityString(R.plurals.keywords, 1);
                     }
-                    NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                    String htmlText = "<strong>" + concept + ": </strong>" + moviesBy + "<br>" +
-                            "<strong>" + getResources().getString(
-                            R.string.preferences_movies_sort_by_title) + "</strong>: " +
-                            MyPreferences.getMoviesSortOrderTitle(this) + "<br><br>" +
-                            "<strong>" + (getResources().getQuantityString(
-                            R.plurals.results, data.size()) + ": " +
-                            getResources().getQuantityString(R.plurals.movies_number,
-                                    data.get(0).getTotal_results(), numberFormat.format(
-                                            data.get(0).getTotal_results())) + "</strong>")
-                            .toUpperCase();
+                    String sortByTitle =
+                            getResources().getString(R.string.preferences_movies_sort_by_title);
+                    String sortByValue = MyPreferences.getMoviesSortOrderTitle(this);
+                    String resultsTitle = getResources().getQuantityString(R.plurals.results,
+                            results);
+                    String resultsValue = getResources().getQuantityString(R.plurals.movies_number,
+                            results, numberFormat.format(results));
+                    String line1 = "<strong>" + concept + "</strong>: " + moviesBy;
+                    String line2 = "<strong>" + sortByTitle + "</strong>: " + sortByValue;
+                    String line3 = "<strong>" + resultsTitle + ": " + resultsValue + "</strong>";
+                    String htmlText = line1 + "<br>" + line2 + "<br><br>" + line3.toUpperCase();
 
                     // Use customised Toast layout.
                     customToast = MyCustomToast.setCustomToast(this, title, htmlText,

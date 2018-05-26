@@ -12,12 +12,12 @@
         android:elevation="@dimen/tiny_padding"
         android:orientation="vertical"
         app:cardCornerRadius="@dimen/regular_padding"
-        app:cardElevation="@dimen/tiny_padding">
+        app:cardElevation="@dimen/small_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorDarkWhite"
+            android:background="@color/colorWhite"
             android:orientation="vertical">
 
             <TextView
@@ -39,13 +39,10 @@
                 android:id="@+id/toast_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/tiny_padding"
-                android:alpha="0.9"
-                android:paddingBottom="@dimen/regular_padding"
-                android:paddingEnd="@dimen/regular_padding"
-                android:paddingStart="@dimen/regular_padding"
-                android:paddingTop="@dimen/regular_padding"
-                android:textColor="@color/colorDarkGrey"
+                android:alpha="0.54"
+                android:background="@color/colorDarkWhite"
+                android:padding="@dimen/normal_padding"
+                android:textColor="@color/colorBlack"
                 android:textSize="@dimen/normal_plus_text_size"
                 tools:text="SUBTITLE 1\nContent for header 1\n\nSUBTITLE 2\nContent for header 2" />
         </LinearLayout>
