@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
-import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
+import com.example.android.popularmoviesstage2.classes.TmdbGenre;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.squareup.picasso.Picasso;
@@ -46,6 +46,7 @@ public class MoviesListAdapter
      */
     public MoviesListAdapter(@LayoutRes int resource, ArrayList<TmdbMovie> moviesArrayList,
                              OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.resource = resource;
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
@@ -53,7 +54,7 @@ public class MoviesListAdapter
         this.currentScrollPosition = 0;
         this.totalPages = 0;
         this.layoutParams = null;
-        Log.i(TAG, "(MoviesListAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -67,6 +68,7 @@ public class MoviesListAdapter
      */
     public MoviesListAdapter(@LayoutRes int resource, ArrayList<TmdbMovie> moviesArrayList,
                              int widthPixels, int heightPixels, OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.resource = resource;
         this.moviesArrayList = moviesArrayList;
         this.listener = listener;
@@ -74,7 +76,7 @@ public class MoviesListAdapter
         this.currentScrollPosition = 0;
         this.totalPages = 0;
         this.layoutParams = new RelativeLayout.LayoutParams(widthPixels, heightPixels);
-        Log.i(TAG, "(MoviesListAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -97,11 +99,12 @@ public class MoviesListAdapter
      *                        start.
      */
     public void updateMoviesArrayList(ArrayList<TmdbMovie> moviesArrayList, boolean appendToEnd) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (appendToEnd)
             this.moviesArrayList.addAll(moviesArrayList);
         else
             this.moviesArrayList.addAll(0, moviesArrayList);
-        Log.i(TAG, "(updateMoviesArrayList) Movie list updated. Current size is " +
+        Log.i(TAG + "." + methodName, "Movie list updated. Current size is " +
                 this.moviesArrayList.size());
     }
 
@@ -151,9 +154,10 @@ public class MoviesListAdapter
      */
     @Override
     public MoviesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(resource, parent, false);
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         return new MoviesListViewHolder(view);
     }
 
@@ -177,7 +181,8 @@ public class MoviesListAdapter
      */
     @Override
     public void onBindViewHolder(MoviesListViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!moviesArrayList.isEmpty()) {
             // Update MoviesListViewHolder with the movie movie_details_menu at current position in the adapter.
             TmdbMovie currentTmdbMovie = moviesArrayList.get(position);
@@ -197,8 +202,9 @@ public class MoviesListAdapter
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = moviesArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -256,10 +262,11 @@ public class MoviesListAdapter
          */
         MoviesListViewHolder(View itemView) {
             super(itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             ButterKnife.bind(this, itemView);
             context = itemView.getContext();
             viewHolder = itemView;
-            Log.i(TAG, "(MoviesListViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -275,7 +282,8 @@ public class MoviesListAdapter
         public void bind(final TmdbMovie currentTmdbMovie,
                          final MoviesListAdapter.OnItemClickListener listener,
                          RelativeLayout.LayoutParams layoutParams) {
-            Log.i(TAG, "(bind) Binding data for the current MoviesListViewHolder.");
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for the current MoviesListViewHolder.");
 
             // Set movie info: poster, title, release date, users rating, popularity and genres.
             drawMoviePoster(currentTmdbMovie);
@@ -451,7 +459,7 @@ public class MoviesListAdapter
                 case R.layout.list_item_poster_vertical_layout_1:
                 case R.layout.list_item_poster_vertical_layout_2:
                     // List of genres only for the specified layouts.
-                    ArrayList<TmdbMovieGenre> movieGenres = currentTmdbMovie.getGenres();
+                    ArrayList<TmdbGenre> movieGenres = currentTmdbMovie.getGenres();
                     if (movieGenres != null && movieGenres.size() > 0) {
                         // Build the string with the genres list.
                         StringBuilder genresStringBuilder = new StringBuilder();

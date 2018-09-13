@@ -81,6 +81,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         AnimatedViewsUtils.setTransitions(getWindow());
@@ -147,7 +148,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
-        Log.i(TAG, "(onCreate) Activity created");
+        Log.i(TAG + "." + methodName, "Activity created");
     }
 
     /**
@@ -265,7 +266,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
      * Helper method to display current movie information in the header of this activity.
      */
     private void setMovieInfo() {
-        Log.i(TAG, "(setPersonInfo) Display movie information on the header");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Display movie information on the header");
 
         // Set background image. Also set its size, according to display measures, and its
         // transition between the backdrop in calling activity and this. The background is invisible

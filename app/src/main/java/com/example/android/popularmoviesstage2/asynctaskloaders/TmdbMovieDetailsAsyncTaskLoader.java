@@ -35,11 +35,12 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (movieDetails != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(movieDetails);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -71,12 +72,14 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      */
     @Override
     public TmdbMovieDetails loadInBackground() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (movieId >= 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Movie id: " + movieId + ". Language: " + language);
+            Log.i(TAG + "." + methodName, "Movie id: " + movieId + ". Language: " + 
+                    language);
             return Tmdb.getTmdbMovieDetails(movieId, language);
         } else {
-            Log.i(TAG, "(loadInBackground) Wrong parameters.");
+            Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
     }
@@ -90,10 +93,11 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
      */
     @Override
     public void deliverResult(TmdbMovieDetails data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         else
-            Log.i(TAG, "(deliverResult) Movie movie_details_menu delivered.");
+            Log.i(TAG + "." + methodName, "Movie details delivered.");
         movieDetails = data;
         super.deliverResult(data);
     }

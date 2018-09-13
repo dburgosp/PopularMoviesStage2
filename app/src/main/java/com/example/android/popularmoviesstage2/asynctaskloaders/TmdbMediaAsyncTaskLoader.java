@@ -32,11 +32,12 @@ public class TmdbMediaAsyncTaskLoader extends AsyncTaskLoader<TmdbMedia> {
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (tmdbMedia != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(tmdbMedia);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -68,13 +69,14 @@ public class TmdbMediaAsyncTaskLoader extends AsyncTaskLoader<TmdbMedia> {
      */
     @Override
     public TmdbMedia loadInBackground() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (movieId <= 0) {
-            Log.i(TAG, "(loadInBackground) Wrong parameters.");
+            Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) Movie ID: " + movieId);
+        Log.i(TAG + "." + methodName, "Movie ID: " + movieId);
         return Tmdb.getTmdbMedia(movieId);
     }
 
@@ -87,12 +89,16 @@ public class TmdbMediaAsyncTaskLoader extends AsyncTaskLoader<TmdbMedia> {
      */
     @Override
     public void deliverResult(TmdbMedia data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         else {
-            Log.i(TAG, "(deliverResult) " + data.getTmdbVideos().size() + " video(s) delivered.");
-            Log.i(TAG, "(deliverResult) " + data.getPosters().size() + " poster(s) delivered.");
-            Log.i(TAG, "(deliverResult) " + data.getBackdrops().size() + " backdrops(s) delivered.");
+            Log.i(TAG + "." + methodName, "" + data.getTmdbVideos().size() +
+                    " video(s) delivered.");
+            Log.i(TAG + "." + methodName, "" + data.getPosters().size() + "" +
+                    " poster(s) delivered.");
+            Log.i(TAG + "." + methodName, "" + data.getBackdrops().size() + " " +
+                    "backdrops(s) delivered.");
         }
         tmdbMedia = data;
         super.deliverResult(data);

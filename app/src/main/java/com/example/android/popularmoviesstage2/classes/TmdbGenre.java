@@ -3,18 +3,18 @@ package com.example.android.popularmoviesstage2.classes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TmdbMovieGenre implements Parcelable {
+public class TmdbGenre implements Parcelable {
     private int id;
     private String name;
 
     /**
-     * Constructor for TmdbMovieGenre class objects.
+     * Constructor for TmdbGenre class objects.
      *
-     * @param id   is the identifier of the movie genre.
-     * @param name is the name of the movie genre, given in the currently selected language for
+     * @param id   is the identifier of the genre.
+     * @param name is the name of the genre, given in the currently selected language for
      *             retrieving information form the TMDB API.
      */
-    public TmdbMovieGenre(int id, String name) {
+    public TmdbGenre(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -39,7 +39,7 @@ public class TmdbMovieGenre implements Parcelable {
 
     // Parcelable configuration.
 
-    protected TmdbMovieGenre(Parcel in) {
+    protected TmdbGenre(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
     }
@@ -55,15 +55,15 @@ public class TmdbMovieGenre implements Parcelable {
         dest.writeString(this.name);
     }
 
-    public static final Parcelable.Creator<TmdbMovieGenre> CREATOR = new Parcelable.Creator<TmdbMovieGenre>() {
+    public static final Parcelable.Creator<TmdbGenre> CREATOR = new Parcelable.Creator<TmdbGenre>() {
         @Override
-        public TmdbMovieGenre createFromParcel(Parcel source) {
-            return new TmdbMovieGenre(source);
+        public TmdbGenre createFromParcel(Parcel source) {
+            return new TmdbGenre(source);
         }
 
         @Override
-        public TmdbMovieGenre[] newArray(int size) {
-            return new TmdbMovieGenre[size];
+        public TmdbGenre[] newArray(int size) {
+            return new TmdbGenre[size];
         }
     };
 }

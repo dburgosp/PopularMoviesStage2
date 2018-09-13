@@ -28,7 +28,7 @@ public class Tmdb {
     public final static String TMDB_POSTER_SIZE_W300_URL = "https://image.tmdb.org/t/p/w300";
     public final static String TMDB_POSTER_SIZE_W500_URL = "https://image.tmdb.org/t/p/w500";
 
-    // Content type for fetching movies_menu.
+    // Content type for fetching movies.
     public final static String TMDB_CONTENT_TYPE_ALL = "all";
     public final static String TMDB_CONTENT_TYPE_POPULAR = "popular";
     public final static String TMDB_CONTENT_TYPE_TOP_RATED = "top_rated";
@@ -48,6 +48,7 @@ public class Tmdb {
     private final static String TMDB_REVIEWS_PATH = "reviews";
     private final static String TMDB_DISCOVER_PATH = "discover";
     private final static String TMDB_COLLECTION_PATH = "collection";
+    private final static String TMDB_TVSERIES_PATH = "tv";
     private final static String TMDB_VIDEOS_PATH = "videos";
     private final static String TMDB_IMAGES_PATH = "images";
 
@@ -100,7 +101,161 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for a list of movies_menu.
+     * Fetches TMDB for a list of tv series.
+     *
+     * @param contentType            is the content type that we are looking for.
+     * @param values                 is the list of possible values for the contentType parameter.
+     * @param currentPage            is the page number to fetch.
+     * @param tmdbTVSeriesParameters are the parameters to append to the url for fetching the tv
+     *                               series list.
+     * @return an array of {@link TmdbTVSeries} objects.
+     */
+    public static ArrayList<TmdbTVSeries> getTmdbTVSeries(String contentType,
+                                                          ArrayList<Integer> values,
+                                                          int currentPage,
+                                                          TmdbTVSeriesParameters tmdbTVSeriesParameters) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Content type: " + contentType + ". Page number: " +
+                currentPage + ". Language: " + tmdbTVSeriesParameters.getLanguage() + ". Region: " +
+                tmdbTVSeriesParameters.getRegion() + ". Sort order: " +
+                tmdbTVSeriesParameters.getSortBy() + ". Release types: " +
+                tmdbTVSeriesParameters.getReleaseType() + ". Init date: " +
+                tmdbTVSeriesParameters.getInitAirDate() + ". End date: " +
+                tmdbTVSeriesParameters.getEndAirDate());
+
+        /* ------------ */
+        /* Get the JSON */
+        /* ------------ */
+
+        // Build the uniform resource identifier (uri) for fetching data from TMDB API.
+        Uri.Builder builder = Uri.parse(TMDB_BASE_URL).buildUpon()
+                .appendPath(TMDB_DISCOVER_PATH)
+                .appendPath(TMDB_TVSERIES_PATH)
+                .appendQueryParameter(TMDB_PARAM_API_KEY, TMBD_API_KEY)
+                .appendQueryParameter(TMDB_PARAM_SORT_BY, tmdbTVSeriesParameters.getSortBy());
+
+        // Append dates range, if required.
+        if (!tmdbTVSeriesParameters.getInitAirDate().equals("") &&
+                !tmdbTVSeriesParameters.getInitAirDate().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER,
+                    tmdbTVSeriesParameters.getInitAirDate());
+        if (!tmdbTVSeriesParameters.getEndAirDate().equals("") &&
+                !tmdbTVSeriesParameters.getEndAirDate().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS,
+                    tmdbTVSeriesParameters.getEndAirDate());
+
+        // Append filters for number of votes and/or users rating, if required.
+        if (tmdbTVSeriesParameters.getVoteCount() > 0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_COUNT,
+                    Integer.toString(tmdbTVSeriesParameters.getVoteCount()));
+        if (tmdbTVSeriesParameters.getVoteAverage() > 0.0)
+            builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE,
+                    Double.toString(tmdbTVSeriesParameters.getVoteAverage()));
+
+        // Append filter for release type (on theaters, on DVD, etc.) if required.
+        if (!tmdbTVSeriesParameters.getReleaseType().equals("") &&
+                !tmdbTVSeriesParameters.getReleaseType().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE,
+                    tmdbTVSeriesParameters.getReleaseType());
+
+        // Filter tv series with genres or keywords = list of comma-separated values.
+        if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
+                contentType.equals(TMDB_CONTENT_TYPE_KEYWORDS)) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < values.size(); i++) {
+                stringBuilder.append(Integer.toString(values.get(i)));
+                if ((i + 1) < values.size())
+                    stringBuilder.append(",");
+            }
+            String queryParameter;
+            if (contentType.equals(TMDB_CONTENT_TYPE_GENRES))
+                queryParameter = TMDB_PARAM_WITH_GENRES;
+            else
+                queryParameter = TMDB_PARAM_WITH_KEYWORDS;
+            builder.appendQueryParameter(queryParameter, stringBuilder.toString());
+        }
+
+        // Append language filter, if required.
+        if (!tmdbTVSeriesParameters.getLanguage().equals("") &&
+                !tmdbTVSeriesParameters.getLanguage().isEmpty())
+            builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, tmdbTVSeriesParameters.getLanguage());
+
+        // Append region filter, if required.
+        if (!tmdbTVSeriesParameters.getRegion().equals("") &&
+                !tmdbTVSeriesParameters.getRegion().isEmpty()) {
+            builder.appendQueryParameter(TMDB_PARAM_REGION, tmdbTVSeriesParameters.getRegion());
+        }
+
+        // Paging information.
+        if (currentPage > 0)
+            builder.appendQueryParameter(TMDB_PARAM_PAGE, Integer.toString(currentPage));
+
+        // Finally, build the Uri.
+        Uri builtUri = builder.build();
+
+        // Use the built Uri to get the JSON document with the results of the query.
+        String JSONresponse;
+        try {
+            JSONresponse = NetworkUtils.getJSONresponse(builtUri);
+        } catch (java.io.IOException e) {
+            // If getJSONresponse has thrown an exception, exit returning null.
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
+            return null;
+        }
+
+        /* -------------- */
+        /* Parse the JSON */
+        /* -------------- */
+
+        // If the JSON string is empty or null, then return null.
+        if (TextUtils.isEmpty(JSONresponse)) {
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
+            return null;
+        }
+
+        // Create an empty array of TmdbTVSeries objects to append data.
+        ArrayList<TmdbTVSeries> tvSeries = new ArrayList<>();
+
+        // Try to parse the JSON response string. If there's a problem with the way the JSON is
+        // formatted, a JSONException exception object will be thrown.
+        try {
+            // Create a JSONObject from the JSON response string.
+            JSONObject resultsJSONResponse = new JSONObject(JSONresponse);
+
+            // If there is no "results" section exit returning null. Otherwise, create a new
+            // JSONArray for parsing results.
+            if (resultsJSONResponse.isNull("results")) {
+                Log.i(TAG + "." + methodName, "No \"results\" section in the JSON string.");
+                return null;
+            }
+
+            // Get paging info.
+            int page = NetworkUtils.getIntFromJSON(resultsJSONResponse, "page");
+            int total_pages = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_pages");
+            int total_results = NetworkUtils.getIntFromJSON(resultsJSONResponse, "total_results");
+
+            // Get results array.
+            JSONArray arrayJSONResponse = resultsJSONResponse.getJSONArray("results");
+            JSONObject baseJSONResponse;
+            for (int n = 0; n < arrayJSONResponse.length(); n++) {
+                // Get a single result at position n within the list of results, extract the tvSeries
+                // info and append it to the tv series array..
+                baseJSONResponse = arrayJSONResponse.getJSONObject(n);
+                TmdbTVSeries tvSeries = getTVSeries(baseJSONResponse, n, page, total_pages, total_results);
+                tvSeries.add(tvSeries);
+            }
+        } catch (JSONException e) {
+            // If an error is thrown when executing any of the above statements in the "try" block,
+            // catch the exception here, so the app doesn't crash.
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ",e);
+        }
+
+        // Return the tv series array.
+        return tvSeries;
+    }
+
+    /**
+     * Fetches TMDB for a list of movies.
      *
      * @param contentType          is the content type that we are looking for.
      * @param values               is the list of possible values for the contentType parameter.
@@ -112,8 +267,8 @@ public class Tmdb {
     public static ArrayList<TmdbMovie> getTmdbMovies(String contentType, ArrayList<Integer> values,
                                                      int currentPage,
                                                      TmdbMoviesParameters tmdbMoviesParameters) {
-
-        Log.i(TAG, "(getTmdbMovies) Content type: " + contentType + ". Page number: " +
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Content type: " + contentType + ". Page number: " +
                 currentPage + ". Language: " + tmdbMoviesParameters.getLanguage() + ". Region: " +
                 tmdbMoviesParameters.getRegion() + ". Sort order: " +
                 tmdbMoviesParameters.getSortBy() + ". Release types: " +
@@ -156,7 +311,7 @@ public class Tmdb {
             builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE,
                     tmdbMoviesParameters.getReleaseType());
 
-        // Filter movies_menu with genres or keywords = list of comma-separated values.
+        // Filter movies with genres or keywords = list of comma-separated values.
         if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
                 contentType.equals(TMDB_CONTENT_TYPE_KEYWORDS)) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -204,7 +359,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbMovies) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -214,7 +369,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbMovies) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -230,7 +385,7 @@ public class Tmdb {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(getTmdbMovies) No \"results\" section in the JSON string.");
+                Log.i(TAG, methodName + ") No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -244,7 +399,7 @@ public class Tmdb {
             JSONObject baseJSONResponse;
             for (int n = 0; n < arrayJSONResponse.length(); n++) {
                 // Get a single result at position n within the list of results, extract the movie
-                // info and append it to the movies_menu array..
+                // info and append it to the movies array..
                 baseJSONResponse = arrayJSONResponse.getJSONObject(n);
                 TmdbMovie movie = getMovie(baseJSONResponse, n, page, total_pages, total_results);
                 movies.add(movie);
@@ -252,10 +407,10 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbMovies) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
-        // Return the movies_menu array.
+        // Return the movies array.
         return movies;
     }
 
@@ -267,7 +422,8 @@ public class Tmdb {
      * @return an array of {@link TmdbPerson} objects.
      */
     public static ArrayList<TmdbPerson> getTmdbPeople(int currentPage, String language) {
-        Log.i(TAG, "(getTmdbPeople) Page number: " + currentPage + ". Language: " + language);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Page number: " + currentPage + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
@@ -290,7 +446,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbPeople) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -300,7 +456,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbPeople) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -316,7 +472,7 @@ public class Tmdb {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(getTmdbPeople) No \"results\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -338,7 +494,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbPeople) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the persons array.
@@ -346,7 +502,7 @@ public class Tmdb {
     }
 
     /**
-     * Fetches TMDB for the list of movies_menu of a given collection.
+     * Fetches TMDB for the list of movies of a given collection.
      *
      * @param collectionId is the unique identifier of the collection.
      * @param language     is the language of the results.
@@ -355,8 +511,9 @@ public class Tmdb {
      */
     public static TmdbMovieCollection getTmdbCollection(int collectionId, String language,
                                                         String region) {
-        Log.i(TAG, "(getTmdbCollection) Collection ID: " + collectionId + ". Language: " +
-                language + ". Region: " + region);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Collection ID: " + collectionId + ". Language: "
+                + language + ". Region: " + region);
 
         /* ------------ */
         /* Get the JSON */
@@ -377,7 +534,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbCollection) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -387,7 +544,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbCollection) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -403,7 +560,7 @@ public class Tmdb {
             // If there is no "parts" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("parts")) {
-                Log.i(TAG, "(TmdbMovieCollection) No \"parts\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"parts\" section in the JSON string.");
                 return null;
             }
 
@@ -420,7 +577,7 @@ public class Tmdb {
             ArrayList<TmdbMovie> parts = new ArrayList<>();
             for (int n = 0; n < partsJSONarray.length(); n++) {
                 // Get a single result at position n within the list of results, extract the movie
-                // info and append it to the movies_menu array.
+                // info and append it to the movies array.
                 partJSONObject = partsJSONarray.getJSONObject(n);
                 TmdbMovie movie = getMovie(partJSONObject, n, 0, 0, 0);
                 parts.add(movie);
@@ -431,10 +588,10 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(TmdbMovieCollection) Error parsing the JSON response: " + e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: " + e);
         }
 
-        // Return the movies_menu array.
+        // Return the movies array.
         return collection;
     }
 
@@ -442,10 +599,10 @@ public class Tmdb {
      * Private helper method to extract a {@link TmdbMovie} object from a JSON.
      *
      * @param baseJSONResponse is the JSONObject containing the movie info.
-     * @param n                is the current index of the element into the movies_menu array.
+     * @param n                is the current index of the element into the movies array.
      * @param page             is the current page of the movie element.
      * @param total_pages      is the number of pages of the current query.
-     * @param total_results    is the number of movies_menu of the current query.
+     * @param total_results    is the number of movies of the current query.
      * @return the {@link TmdbMovie} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
@@ -469,10 +626,10 @@ public class Tmdb {
 
         // Extract the JSONArray associated with the key called "genres" or "genre_ids", which
         // represents the list of genres which the movie belongs to.
-        ArrayList<TmdbMovieGenre> genres = new ArrayList<>();
+        ArrayList<TmdbGenre> genres = new ArrayList<>();
         JSONArray genresArray = null;
         if (!baseJSONResponse.isNull("genres")) {
-            // For each genre in the array, create an {@link TmdbMovieGenre} object.
+            // For each genre in the array, create an {@link TmdbGenre} object.
             genresArray = baseJSONResponse.getJSONArray("genres");
             JSONObject currentGenre;
             for (int i = 0; i < genresArray.length(); i++) {
@@ -483,8 +640,8 @@ public class Tmdb {
                 int genre_id = NetworkUtils.getIntFromJSON(currentGenre, "id");
                 String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
 
-                // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, genre_name);
+                // Create a new {@link TmdbGenre} object and add it to the array.
+                TmdbGenre genre = new TmdbGenre(genre_id, genre_name);
                 genres.add(genre);
             }
         } else if (!baseJSONResponse.isNull("genre_ids")) {
@@ -494,8 +651,8 @@ public class Tmdb {
                 // Extract the int value of the genre identifier, which has no key.
                 int genre_id = (int) genresArray.get(i);
 
-                // Create a new {@link TmdbMovieGenre} object and add it to the array.
-                TmdbMovieGenre genre = new TmdbMovieGenre(genre_id, "");
+                // Create a new {@link TmdbGenre} object and add it to the array.
+                TmdbGenre genre = new TmdbGenre(genre_id, "");
                 genres.add(genre);
             }
         }
@@ -578,7 +735,8 @@ public class Tmdb {
      * @return a {@link TmdbMovieDetails} object.
      */
     public static TmdbMovieDetails getTmdbMovieDetails(int movieId, String language) {
-        Log.i(TAG, "(getTmdbMovieDetails) Movie ID: " + movieId + ". Language: " + language);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Movie ID: " + movieId + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
@@ -599,7 +757,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbMovieDetails) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -609,7 +767,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbMovieDetails) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -744,14 +902,14 @@ public class Tmdb {
                 keywords = getKeywords(keywordsObject);
             }
 
-            // Extract similar movies_menu array.
+            // Extract similar movies array.
             ArrayList<TmdbMovie> similarMovies = null;
             if (!baseJSONResponse.isNull("similar")) {
                 JSONObject moviesObject = baseJSONResponse.getJSONObject("similar");
                 similarMovies = getMovies(moviesObject);
             }
 
-            // Extract recommended movies_menu array.
+            // Extract recommended movies array.
             ArrayList<TmdbMovie> recommendedMovies = null;
             if (!baseJSONResponse.isNull("recommendations")) {
                 JSONObject moviesObject = baseJSONResponse.getJSONObject("recommendations");
@@ -767,7 +925,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbMovieDetails) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
             return null;
         }
     }
@@ -779,7 +937,8 @@ public class Tmdb {
      * @return a {@link TmdbCastCrew} object.
      */
     public static TmdbCastCrew getTmdbCastAndCrew(int movieId) {
-        Log.i(TAG, "(getTmdbCastAndCrew) Movie ID: " + movieId);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Movie ID: " + movieId);
 
         /* ------------ */
         /* Get the JSON */
@@ -799,7 +958,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbCastAndCrew) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -879,7 +1038,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Update the TmdbCastCrew object with the data retrieved from the JSON object.
@@ -888,7 +1047,7 @@ public class Tmdb {
             castCrew.setCast(castArrayList);
             castCrew.setCrew(crewArrayList);
         } catch (NullPointerException e) {
-            Log.e(TAG, "(getTmdbCastAndCrew) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the TmdbCastCrew object.
@@ -903,7 +1062,8 @@ public class Tmdb {
      * @return a {@link TmdbPersonDetails} object.
      */
     public static TmdbPersonDetails getTmdbPersonDetails(int personId, String language) {
-        Log.i(TAG, "(getTmdbPersonDetails) Person ID: " + personId + ". Language: " + language);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Person ID: " + personId + ". Language: " + language);
 
         /* ------------ */
         /* Get the JSON */
@@ -924,7 +1084,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbPersonDetails) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -934,7 +1094,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbPersonDetails) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -960,7 +1120,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbPersonDetails) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
             return null;
         }
     }
@@ -973,7 +1133,8 @@ public class Tmdb {
      * @return an array of {@link TmdbReview} objects.
      */
     public static ArrayList<TmdbReview> getTmdbReviews(int movieId, String currentPage) {
-        Log.i(TAG, "(getTmdbReviews) Movie ID " + movieId + ", page " + currentPage);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Movie ID " + movieId + ", page " + currentPage);
 
         /* ------------ */
         /* Get the JSON */
@@ -994,7 +1155,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbReviews) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -1004,7 +1165,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(parseGetReviewsListJSON) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -1021,7 +1182,7 @@ public class Tmdb {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONResponse.isNull("results")) {
-                Log.i(TAG, "(parseGetReviewsListJSON) No \"results\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -1054,7 +1215,7 @@ public class Tmdb {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message with the
             // message from the exception.
-            Log.e(TAG, "(parseGetReviewsListJSON) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the list of reviews.
@@ -1086,6 +1247,8 @@ public class Tmdb {
      * @return an array of {@link TmdbKeyword} objects.
      */
     private static ArrayList<TmdbKeyword> getKeywords(JSONObject keywordsJSONObject) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
         // Create an empty array of TmdbKeyword objects to add data.
         ArrayList<TmdbKeyword> keywordArrayList = new ArrayList<>();
 
@@ -1095,7 +1258,7 @@ public class Tmdb {
             // If there is no "keywords" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (keywordsJSONObject.isNull("keywords")) {
-                Log.i(TAG, "(getKeywords) No \"keywords\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"keywords\" section in the JSON string.");
                 return null;
             }
 
@@ -1115,19 +1278,21 @@ public class Tmdb {
                 keywordArrayList.add(keyword);
             }
         } catch (JSONException e) {
-            Log.e(TAG, "(getKeywords) Error parsing JSON: " + e);
+            Log.e(TAG + "." + methodName, "Error parsing JSON: " + e);
         }
 
         return keywordArrayList;
     }
 
     /**
-     * Fetches TMDB for a list of similar or recommended movies_menu.
+     * Fetches TMDB for a list of similar or recommended movies.
      *
-     * @param moviesJSONObject is the JSON object containing the list of movies_menu.
+     * @param moviesJSONObject is the JSON object containing the list of movies.
      * @return an array of {@link TmdbMovie} objects.
      */
     private static ArrayList<TmdbMovie> getMovies(JSONObject moviesJSONObject) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
         // Create an empty array of TmdbMovie objects to add data.
         ArrayList<TmdbMovie> movieArrayList = new ArrayList<>();
 
@@ -1137,11 +1302,11 @@ public class Tmdb {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (moviesJSONObject.isNull("results")) {
-                Log.i(TAG, "(getMovies) No \"results\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"results\" section in the JSON string.");
                 return null;
             }
 
-            // Get the movies_menu array.
+            // Get the movies array.
             JSONArray moviesJSONArray = moviesJSONObject.getJSONArray("results");
             JSONObject jsonObject;
             for (int n = 0; n < moviesJSONArray.length(); n++) {
@@ -1153,7 +1318,7 @@ public class Tmdb {
                 movieArrayList.add(movie);
             }
         } catch (JSONException e) {
-            Log.e(TAG, "(getMovies) Error parsing JSON: " + e);
+            Log.e(TAG + "." + methodName, "Error parsing JSON: " + e);
         }
 
         return movieArrayList;
@@ -1166,6 +1331,7 @@ public class Tmdb {
      * @return a {@link TmdbRelease} object.
      */
     private static TmdbRelease getMovieReleases(JSONObject resultsJSONObject) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         TmdbRelease releases = null;
         boolean countryFound = false;
 
@@ -1175,7 +1341,7 @@ public class Tmdb {
             // If there is no "results" section exit returning null. Otherwise, create a new
             // JSONArray for parsing results.
             if (resultsJSONObject.isNull("results")) {
-                Log.i(TAG, "(getMovieReleases) No \"results\" section in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"results\" section in the JSON string.");
                 return null;
             }
 
@@ -1236,7 +1402,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getMovieReleases) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the releases object.
@@ -1250,7 +1416,8 @@ public class Tmdb {
      * @return a {@link TmdbMedia} object.
      */
     public static TmdbMedia getTmdbMedia(int movieId) {
-        Log.i(TAG, "(getTmdbMedia) Movie ID " + movieId);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Movie ID " + movieId);
 
         /* ------------ */
         /* Get the JSON */
@@ -1270,7 +1437,7 @@ public class Tmdb {
             JSONresponse = NetworkUtils.getJSONresponse(builtUri);
         } catch (java.io.IOException e) {
             // If getJSONresponse has thrown an exception, exit returning null.
-            Log.e(TAG, "(getTmdbMedia) Error retrieving JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error retrieving JSON response: ", e);
             return null;
         }
 
@@ -1280,7 +1447,7 @@ public class Tmdb {
 
         // If the JSON string is empty or null, then return null.
         if (TextUtils.isEmpty(JSONresponse)) {
-            Log.i(TAG, "(getTmdbMedia) The JSON string is empty.");
+            Log.i(TAG + "." + methodName, "The JSON string is empty.");
             return null;
         }
 
@@ -1294,7 +1461,7 @@ public class Tmdb {
             // If there is no "videos" or "images" section exit returning null. Otherwise, create a
             // new JSONArray for parsing results.
             if (resultsJSONResponse.isNull("videos") && resultsJSONResponse.isNull("images")) {
-                Log.i(TAG, "(getTmdbMedia) No \"videos\" or \"images\" sections in the JSON string.");
+                Log.i(TAG + "." + methodName, "No \"videos\" or \"images\" sections in the JSON string.");
                 return null;
             }
 
@@ -1354,7 +1521,7 @@ public class Tmdb {
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG, "(getTmdbMedia) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
             return null;
         }
     }
@@ -1386,8 +1553,10 @@ public class Tmdb {
      *                            "posters" and "backdrops".
      * @return an array list of TmdbImage objects.
      */
-    static private ArrayList<TmdbImage> getImagesArrayList(
-            JSONObject resultsJSONResponse, String key) {
+    static private ArrayList<TmdbImage> getImagesArrayList(JSONObject resultsJSONResponse,
+                                                           String key) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
         // Create an empty array of TmdbImage elements.
         ArrayList<TmdbImage> tmdbImages = new ArrayList<>();
 
@@ -1418,7 +1587,7 @@ public class Tmdb {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message with the
             // message from the exception.
-            Log.e(TAG, "(getTmdbMedia) Error parsing the JSON response: ", e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the previously created array. If the loop in the try/catch statement has produced

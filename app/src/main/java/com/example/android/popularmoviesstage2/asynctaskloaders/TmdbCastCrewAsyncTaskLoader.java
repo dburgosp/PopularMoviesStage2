@@ -32,11 +32,12 @@ public class TmdbCastCrewAsyncTaskLoader extends AsyncTaskLoader<TmdbCastCrew> {
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (tmdbCastCrew != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(tmdbCastCrew);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -68,13 +69,14 @@ public class TmdbCastCrewAsyncTaskLoader extends AsyncTaskLoader<TmdbCastCrew> {
      */
     @Override
     public TmdbCastCrew loadInBackground() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (movieId <= 0) {
-            Log.i(TAG, "(loadInBackground) Wrong parameters.");
+            Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) Movie ID: " + movieId);
+        Log.i(TAG + "." + methodName, "Movie ID: " + movieId);
         return Tmdb.getTmdbCastAndCrew(movieId);
     }
 
@@ -87,8 +89,9 @@ public class TmdbCastCrewAsyncTaskLoader extends AsyncTaskLoader<TmdbCastCrew> {
      */
     @Override
     public void deliverResult(TmdbCastCrew data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         tmdbCastCrew = data;
         super.deliverResult(data);
     }

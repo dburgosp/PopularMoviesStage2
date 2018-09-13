@@ -36,10 +36,12 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
      * @param tmdbCrewArrayList is the list of persons that will be represented into the adapter.
      * @param listener          is the listener for receiving the clicks.
      */
-    public CrewAdapter(ArrayList<TmdbCrew> tmdbCrewArrayList, CrewAdapter.OnItemClickListener listener) {
+    public CrewAdapter(ArrayList<TmdbCrew> tmdbCrewArrayList,
+                       CrewAdapter.OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbCrewArrayList = tmdbCrewArrayList;
         this.listener = listener;
-        Log.i(TAG, "(CrewAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -48,8 +50,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
      * @param personsArray is the new list of persons.
      */
     public void setCrewArray(ArrayList<TmdbCrew> personsArray) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbCrewArrayList = personsArray;
-        Log.i(TAG, "(setCrewArray) TmdbCrew list updated");
+        Log.i(TAG + "." + methodName, "TmdbCrew list updated");
     }
 
     /**
@@ -74,9 +77,11 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
      */
     @Override
     public CrewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_person_thumbnail_vertical, parent, false);
+        View view = inflater.inflate(R.layout.list_item_person_thumbnail_vertical, parent, 
+                false);
         return new CrewViewHolder(view);
     }
 
@@ -100,7 +105,8 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
      */
     @Override
     public void onBindViewHolder(CrewViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!tmdbCrewArrayList.isEmpty()) {
             TmdbCrew currentTmdbCrew = tmdbCrewArrayList.get(position);
 
@@ -122,8 +128,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = tmdbCrewArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -161,10 +168,11 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
          */
         CrewViewHolder(View itemView) {
             super(itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             ButterKnife.bind(this, itemView);
             context = itemView.getContext();
             viewHolder = itemView;
-            Log.i(TAG, "(CrewViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -175,7 +183,8 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
          * @param listener      is the listener for click events.
          */
         void bind(final TmdbCrew currentPerson, final CrewAdapter.OnItemClickListener listener) {
-            Log.i(TAG, "(bind) Binding data for the current CrewViewHolder.");
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for the current CrewViewHolder.");
 
             // Draw profile image for current person and resize image to fit screen size and orientation.
             String profilePath = currentPerson.getProfile_path();

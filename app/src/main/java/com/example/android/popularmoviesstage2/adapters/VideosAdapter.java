@@ -34,9 +34,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
      * @param listener        is the listener for receiving the clicks.
      */
     public VideosAdapter(ArrayList<TmdbVideo> videosArrayList, OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.videosArrayList = videosArrayList;
         this.listener = listener;
-        Log.i(TAG, "(VideosAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -45,8 +46,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
      * @param videosArrayList is the new list of videos.
      */
     public void setVideoArray(ArrayList<TmdbVideo> videosArrayList) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.videosArrayList = videosArrayList;
-        Log.i(TAG, "(setVideoArray) TmdbVideo list updated");
+        Log.i(TAG + "." + methodName, "TmdbVideo list updated");
     }
 
     /**
@@ -71,9 +73,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
      */
     @Override
     public VideosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.list_item_video_thumbnail, parent, false);
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         return new VideosViewHolder(view);
     }
 
@@ -97,11 +100,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
      */
     @Override
     public void onBindViewHolder(VideosViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!videosArrayList.isEmpty()) {
             TmdbVideo currentTmdbVideo = videosArrayList.get(position);
 
-            // Update VideosViewHolder with the video movie_details_menu at current position in the adapter.
+            // Update VideosViewHolder with the video at current position in the adapter.
             viewHolder.bind(currentTmdbVideo, listener);
         }
     }
@@ -113,8 +117,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = videosArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -155,9 +160,10 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
         public VideosViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             viewHolder = itemView;
             context = itemView.getContext();
-            Log.i(TAG, "(VideosViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -170,7 +176,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.VideosView
          */
         public void bind(final TmdbVideo currentTmdbVideo,
                          final VideosAdapter.OnItemClickListener listener) {
-            Log.i(TAG, "(bind) Binding data for the current VideosViewHolder.");
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for the current VideosViewHolder.");
 
             // Draw backdrop image for current video.
             String videoImagePath = currentTmdbVideo.getKey();

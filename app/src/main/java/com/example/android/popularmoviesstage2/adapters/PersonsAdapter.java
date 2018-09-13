@@ -38,11 +38,13 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
      * @param heightPixels        is the height in pixels of a movie poster.
      * @param listener            is the listener for receiving the clicks.
      */
-    PersonsAdapter(ArrayList<TmdbPerson> tmdbPersonArrayList, int widthPixels, int heightPixels, PersonsAdapter.OnItemClickListener listener) {
-        Log.i(TAG, "(PersonsAdapter) Object created");
+    PersonsAdapter(ArrayList<TmdbPerson> tmdbPersonArrayList, int widthPixels, int heightPixels, 
+                   PersonsAdapter.OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbPersonArrayList = tmdbPersonArrayList;
         this.listener = listener;
         layoutParams = new LinearLayout.LayoutParams(widthPixels, heightPixels);
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -51,8 +53,9 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
      * @param personsArray is the new list of persons.
      */
     void setPersonsArray(ArrayList<TmdbPerson> personsArray) {
-        Log.i(TAG, "(setPersonsArray) TmdbPerson list updated");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbPersonArrayList = personsArray;
+        Log.i(TAG + "." + methodName, "TmdbPerson list updated");
     }
 
     /**
@@ -77,9 +80,11 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
      */
     @Override
     public PersonsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.list_item_poster_grid_layout_1, parent, false);
+        View view = inflater.inflate(R.layout.list_item_poster_grid_layout_1, parent, 
+                false);
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         return new PersonsViewHolder(view);
     }
 
@@ -103,7 +108,8 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
      */
     @Override
     public void onBindViewHolder(PersonsViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!tmdbPersonArrayList.isEmpty()) {
             TmdbPerson currentTmdbPerson = tmdbPersonArrayList.get(position);
 
@@ -125,8 +131,9 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = tmdbPersonArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -164,8 +171,9 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
         PersonsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             context = itemView.getContext();
-            Log.i(TAG, "(PersonsViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -176,8 +184,11 @@ public class PersonsAdapter extends RecyclerView.Adapter<PersonsAdapter.PersonsV
          * @param listener          is the listener for click events.
          * @param layoutParams      contains the width and height for displaying the profile image.
          */
-        public void bind(final TmdbPerson currentTmdbPerson, final PersonsAdapter.OnItemClickListener listener, LinearLayout.LayoutParams layoutParams) {
-            Log.i(TAG, "(bind) Binding data for the current PersonsViewHolder.");
+        public void bind(final TmdbPerson currentTmdbPerson, 
+                         final PersonsAdapter.OnItemClickListener listener,
+                         LinearLayout.LayoutParams layoutParams) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for current PersonsViewHolder.");
 
             // Draw profile image for current person and resize image to fit screen size and orientation.
             String posterPath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentTmdbPerson.getProfile_path();

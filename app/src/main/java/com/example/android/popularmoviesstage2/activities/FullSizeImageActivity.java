@@ -40,6 +40,7 @@ public class FullSizeImageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_full_size_images);
@@ -73,7 +74,7 @@ public class FullSizeImageActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentImage);
 
-        Log.i(TAG, "(onCreate) Activity created");
+        Log.i(TAG + "." + methodName, "Activity created");
     }
 
     @Override

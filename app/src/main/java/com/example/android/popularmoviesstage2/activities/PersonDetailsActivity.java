@@ -56,6 +56,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         setTransitions();
@@ -108,7 +109,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);*/
 
-        Log.i(TAG, "(onCreate) Activity created");
+        Log.i(TAG + "." + methodName, "Activity created");
     }
 
     @Override
@@ -229,7 +230,8 @@ public class PersonDetailsActivity extends AppCompatActivity {
      * Helper method to display current person information in the header of this activity.
      */
     void setPersonInfo() {
-        Log.i(TAG, "(setPersonInfo) Display person information on the header");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Display person information on the header");
 
         // Set image, if it exists.
         String profilePath = person.getProfile_path();

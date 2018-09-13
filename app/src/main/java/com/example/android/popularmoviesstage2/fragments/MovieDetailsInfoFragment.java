@@ -40,7 +40,7 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCompany;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
-import com.example.android.popularmoviesstage2.classes.TmdbMovieGenre;
+import com.example.android.popularmoviesstage2.classes.TmdbGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.classes.TmdbRelease;
 import com.example.android.popularmoviesstage2.classes.Twitter;
@@ -511,7 +511,7 @@ public class MovieDetailsInfoFragment extends Fragment
         /* GENRES */
         /* ------ */
 
-        ArrayList<TmdbMovieGenre> movieGenres = movieDetails.getMovie().getGenres();
+        ArrayList<TmdbGenre> movieGenres = movieDetails.getMovie().getGenres();
         if (movieGenres != null && movieGenres.size() > 0) {
             infoSectionSet = true;
 

@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         AnimatedViewsUtils.setTransitions(getWindow());
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements
             connectionStatusLoadingIndicator.setVisibility(View.GONE);
         }
 
-        Log.i(TAG, "(onCreate) Activity created");
+        Log.i(TAG + "." + methodName, "Activity created");
     }
 
     @Override
@@ -608,6 +609,7 @@ public class MainActivity extends AppCompatActivity implements
     private View setCardView(CardView cardView, int contentType, boolean showControls, String title,
                              final int flipInterval, ImageView previousImageView,
                              ImageView nextImageView) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater =
                 (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
@@ -789,7 +791,7 @@ public class MainActivity extends AppCompatActivity implements
             cardView.addView(cardViewContent);
             return cardViewContent;
         } catch (NullPointerException e) {
-            Log.e(TAG, "(setCardView) Error inflating view: " + e);
+            Log.e(TAG + "." + methodName, "Error inflating view: " + e);
             return null;
         }
     }
@@ -914,6 +916,7 @@ public class MainActivity extends AppCompatActivity implements
                                                final int loaderId, ImageView previousImage,
                                                ImageView nextImage, boolean fullScreen,
                                                int maxElements) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         viewFlipper.removeAllViews();
 
         // Add children to ViewFlipper, only the first maxElements elements and only for those
@@ -1089,8 +1092,7 @@ public class MainActivity extends AppCompatActivity implements
                     // Add current child to ViewFlipper.
                     viewFlipper.addView(view, viewFlipper.getLayoutParams());
                 } catch (java.lang.NullPointerException e) {
-                    Log.e(TAG, "(inflateViewFlipperChildren) Error inflatingview: "
-                            + e);
+                    Log.e(TAG + "." + methodName, "Error inflatingview: " + e);
                 }
             }
             i++;
@@ -1154,6 +1156,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             Context context = MainActivity.this;
             switch (id) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
@@ -1179,7 +1182,7 @@ public class MainActivity extends AppCompatActivity implements
                                 getResources().getString(R.string.no_connection));
                         upcomingMoviesMessage.setVisibility(View.VISIBLE);
                         upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG, "(onCreateLoader) No internet connection.");
+                        Log.i(TAG + "." + methodName, "No internet connection.");
                         return null;
                     }
                 }
@@ -1208,7 +1211,7 @@ public class MainActivity extends AppCompatActivity implements
                                 getResources().getString(R.string.no_connection));
                         nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
                         nowPlayingMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG, "(onCreateLoader) No internet connection.");
+                        Log.i(TAG + "." + methodName, "No internet connection.");
                         return null;
                     }
                 }
@@ -1235,13 +1238,13 @@ public class MainActivity extends AppCompatActivity implements
                                 getResources().getString(R.string.no_connection));
                         buyAndRentMoviesMessage.setVisibility(View.VISIBLE);
                         buyAndRentMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG, "(onCreateLoader) No internet connection.");
+                        Log.i(TAG + "." + methodName, "No internet connection.");
                         return null;
                     }
                 }
 
                 default: {
-                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + id);
                     return null;
                 }
             }
@@ -1287,6 +1290,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             Context context = MainActivity.this;
 
             // Get movies list and display it, depending on the loader identifier.
@@ -1299,8 +1303,8 @@ public class MainActivity extends AppCompatActivity implements
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
-                            Log.i(TAG, "(onLoadFinished) Search results for upcoming " +
-                                    "movies not null.");
+                            Log.i(TAG + "." + methodName,
+                                    "Search results for upcoming movies not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(data,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1308,8 +1312,8 @@ public class MainActivity extends AppCompatActivity implements
                                     upcomingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for upcoming " +
-                                    "movies.");
+                            Log.i(TAG + "." + methodName,
+                                    "No search results for upcoming movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1321,7 +1325,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        Log.i(TAG + "." + methodName, "No connection to internet.");
                         upcomingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         upcomingMoviesMessage.setVisibility(View.VISIBLE);
@@ -1337,8 +1341,8 @@ public class MainActivity extends AppCompatActivity implements
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
-                            Log.i(TAG, "(onLoadFinished) Search results for now playing " +
-                                    "movies not null.");
+                            Log.i(TAG + "." + methodName,
+                                    "Search results for now playing movies not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(data,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
@@ -1346,8 +1350,8 @@ public class MainActivity extends AppCompatActivity implements
                                     nowPlayingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for now playing " +
-                                    "movies.");
+                            Log.i(TAG + "." + methodName,
+                                    "No search results for now playing movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1359,7 +1363,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        Log.i(TAG + "." + methodName, "No connection to internet.");
                         nowPlayingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
@@ -1375,8 +1379,8 @@ public class MainActivity extends AppCompatActivity implements
                         boolean hasData = true, hasValidData = true;
                         if (data != null && data.size() > 0) {
                             // If there is a valid result, display it on its corresponding layout.
-                            Log.i(TAG, "(onLoadFinished) Search results for buy and rent " +
-                                    "movies not null.");
+                            Log.i(TAG + "." + methodName,
+                                    "Search results for buy and rent movies not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(data,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
@@ -1384,8 +1388,8 @@ public class MainActivity extends AppCompatActivity implements
                                     buyAndRentMoviesNextImageView, false,
                                     MAX_HALF_SCREEN_ELEMENTS);
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results for buy and " +
-                                    "rent movies.");
+                            Log.i(TAG + "." + methodName,
+                                    "No search results for buy and rent movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1397,7 +1401,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        Log.i(TAG + "." + methodName, "No connection to internet.");
                         buyAndRentMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         buyAndRentMoviesMessage.setVisibility(View.VISIBLE);
@@ -1406,7 +1410,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 default: {
-                    Log.e(TAG, "(onLoadFinished) Unexpected loader id: " + loader.getId());
+                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + loader.getId());
                 }
             }
         }
@@ -1448,6 +1452,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override
         public Loader<ArrayList<TmdbPerson>> onCreateLoader(int id, Bundle args) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             switch (id) {
                 case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
                     popularPeopleLoadingIndicator.setVisibility(View.VISIBLE);
@@ -1463,13 +1468,13 @@ public class MainActivity extends AppCompatActivity implements
                                 getResources().getString(R.string.no_connection));
                         popularPeopleMessage.setVisibility(View.VISIBLE);
                         popularPeopleLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG, "(onCreateLoader) No internet connection.");
+                        Log.i(TAG + "." + methodName, "No internet connection.");
                         return null;
                     }
                 }
 
                 default: {
-                    Log.e(TAG, "(onCreateLoader) Unexpected loader id: " + id);
+                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + id);
                     return null;
                 }
             }
@@ -1516,6 +1521,8 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader,
                                    ArrayList<TmdbPerson> data) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
             // Get people list and display it.
             switch (loader.getId()) {
                 case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
@@ -1523,21 +1530,21 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // If there is a valid result, display it on its corresponding layout.
                         if (data != null && data.size() > 0) {
-                            Log.i(TAG, "(onLoadFinished) Search results not null.");
+                            Log.i(TAG + "." + methodName, "Search results not null.");
                             inflateViewFlipperChildren(data, popularPeopleViewFlipper,
                                     posterLinearLayoutParams, loader.getId(),
                                     popularPeoplePreviousImageView, popularPeopleNextImageView,
                                     false, MAX_HALF_SCREEN_ELEMENTS);
                             break;
                         } else {
-                            Log.i(TAG, "(onLoadFinished) No search results.");
+                            Log.i(TAG + "." + methodName, "No search results.");
                             popularPeopleMessage.setText(
                                     getResources().getString(R.string.no_results));
                             popularPeopleMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG, "(onLoadFinished) No connection to internet.");
+                        Log.i(TAG + "." + methodName, "No connection to internet.");
                         popularPeopleMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         popularPeopleMessage.setVisibility(View.VISIBLE);
@@ -1545,7 +1552,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 default: {
-                    Log.e(TAG, "(onLoadFinished) Unexpected loader id: " +
+                    Log.e(TAG + "." + methodName, "Unexpected loader id: " +
                             loader.getId());
                 }
             }

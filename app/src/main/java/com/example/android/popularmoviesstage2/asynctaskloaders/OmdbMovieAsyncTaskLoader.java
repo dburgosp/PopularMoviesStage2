@@ -32,11 +32,12 @@ public class OmdbMovieAsyncTaskLoader extends AsyncTaskLoader<OmdbMovie> {
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (omdbMovie != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(omdbMovie);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -68,13 +69,14 @@ public class OmdbMovieAsyncTaskLoader extends AsyncTaskLoader<OmdbMovie> {
      */
     @Override
     public OmdbMovie loadInBackground() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (imdbId == null || imdbId.equals("")) {
-            Log.i(TAG, "(loadInBackground) No IMDB identifier to search");
+            Log.i(TAG + "." + methodName, "No IMDB identifier to search");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) IMDB identifier od the movie: " + imdbId);
+        Log.i(TAG + "." + methodName, "IMDB identifier of the movie: " + imdbId);
         return Omdb.getOmdbMovie(imdbId);
     }
 
@@ -87,10 +89,11 @@ public class OmdbMovieAsyncTaskLoader extends AsyncTaskLoader<OmdbMovie> {
      */
     @Override
     public void deliverResult(OmdbMovie data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         else
-            Log.i(TAG, "(deliverResult) Result delivered.");
+            Log.i(TAG + "." + methodName, "Results fetched and delivered.");
         omdbMovie = data;
         super.deliverResult(data);
     }

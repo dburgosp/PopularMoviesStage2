@@ -47,11 +47,13 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
      *                        backdrops.
      * @param listener        is the listener for receiving the clicks.
      */
-    public ImagesAdapter(ArrayList<TmdbImage> imagesArrayList, int imageType, OnItemClickListener listener) {
+    public ImagesAdapter(ArrayList<TmdbImage> imagesArrayList, int imageType, 
+                         OnItemClickListener listener) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.imagesArrayList = imagesArrayList;
         this.imageType = imageType;
         this.listener = listener;
-        Log.i(TAG, "(ImagesAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     /**
@@ -60,8 +62,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
      * @param imagesArrayList is the new list of items.
      */
     public void setImageArray(ArrayList<TmdbImage> imagesArrayList) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.imagesArrayList = imagesArrayList;
-        Log.i(TAG, "(setImageArray) TmdbImage list updated");
+        Log.i(TAG + "." + methodName, "TmdbImage list updated");
     }
 
     /**
@@ -95,7 +98,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
      */
     @Override
     public ImagesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.list_item_image_thumbnail, parent, false);
         return new ImagesViewHolder(view);
@@ -121,7 +125,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
      */
     @Override
     public void onBindViewHolder(ImagesViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!imagesArrayList.isEmpty()) {
             // Update ImagesViewHolder with the item movie_details_menu at current position in the adapter.
             TmdbImage currentTmdbImage = imagesArrayList.get(position);
@@ -137,8 +142,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = imagesArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -179,10 +185,11 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
          */
         ImagesViewHolder(View itemView) {
             super(itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             unbinder = ButterKnife.bind(this, itemView);
             viewHolder = itemView;
             context = itemView.getContext();
-            Log.i(TAG, "(ImagesViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -195,8 +202,10 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
          *                         {@link FullSizeImageActivity#IMAGE_TYPE_BACKDROP} for backdrops.
          * @param listener         is the listener for click events.
          */
-        public void bind(final TmdbImage currentTmdbImage, int imageType, final ImagesAdapter.OnItemClickListener listener) {
-            Log.i(TAG, "(bind) Binding data for the current ImagesViewHolder.");
+        public void bind(final TmdbImage currentTmdbImage, int imageType, 
+                         final ImagesAdapter.OnItemClickListener listener) {
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for the current ImagesViewHolder.");
 
             // Set image dimensions and default background, according to its type, and draw image.
             int widthPixels, heightPixels;
@@ -302,7 +311,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
         protected void finalize() throws Throwable {
             super.finalize();
             unbinder.unbind();
-            Log.i(TAG, "(finalize) Release resources for freeing up memory");
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Release resources for freeing up memory");
         }
 
         /* -------------- */

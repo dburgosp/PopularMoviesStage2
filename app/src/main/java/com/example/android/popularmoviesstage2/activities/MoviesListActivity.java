@@ -41,7 +41,6 @@ import butterknife.Unbinder;
 
 public class MoviesListActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
-
     private static final String TAG = MoviesListActivity.class.getSimpleName();
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
@@ -259,6 +258,7 @@ public class MoviesListActivity extends AppCompatActivity
      */
     @Override
     public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (NetworkUtils.isConnected(MoviesListActivity.this)) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
@@ -284,7 +284,7 @@ public class MoviesListActivity extends AppCompatActivity
             isLoading = false;
             connectionStatusText.setText(getResources().getString(R.string.no_connection));
             connectionStatusLoadingIndicator.setVisibility(View.INVISIBLE);
-            Log.i(TAG, "(onCreateLoader) No internet connection.");
+            Log.i(TAG + "." + methodName, "No internet connection.");
             return null;
         }
     }
@@ -308,6 +308,8 @@ public class MoviesListActivity extends AppCompatActivity
      */
     @Override
     public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+
         // Hide connection status.
         isLoading = false;
         connectionStatusText.setVisibility(View.GONE);
@@ -318,7 +320,7 @@ public class MoviesListActivity extends AppCompatActivity
             // If there is a valid result, then update its data into the current
             // {@link TmdbMovieDetails} object.
             if (data != null && data.size() > 0) {
-                Log.i(TAG, "(onLoadFinished) Search results not null.");
+                Log.i(TAG + "." + methodName, "Search results not null.");
 
                 // Show a message with search results, only when displaying the first page.
                 if (data.get(0).getPage() == 1) {
@@ -359,13 +361,13 @@ public class MoviesListActivity extends AppCompatActivity
                 moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
             } else {
-                Log.i(TAG, "(onLoadFinished) No search results.");
+                Log.i(TAG + "." + methodName, "No search results.");
                 connectionStatusText.setText(getResources().getString(R.string.no_results));
                 connectionStatusText.setVisibility(View.VISIBLE);
             }
         } else {
             // There is no connection. Show error message.
-            Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            Log.i(TAG + "." + methodName, "No connection to internet.");
             connectionStatusText.setText(getResources().getString(R.string.no_connection));
             connectionStatusText.setVisibility(View.VISIBLE);
         }

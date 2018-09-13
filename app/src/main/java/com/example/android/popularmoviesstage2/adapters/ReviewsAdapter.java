@@ -32,11 +32,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      * @param reviewsArrayList is the list of reviews that will be represented into the adapter.
      */
     public ReviewsAdapter(ArrayList<TmdbReview> reviewsArrayList) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         this.reviewsArrayList = reviewsArrayList;
         this.currentPosition = 0;
         this.currentPage = 0;
         this.totalPages = 0;
-        Log.i(TAG, "(ReviewsAdapter) Object created");
+        Log.i(TAG + "." + methodName, "Object created");
     }
 
     // Getter methods.
@@ -71,11 +72,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      *                         start.
      */
     public void updateReviewsArray(ArrayList<TmdbReview> reviewsArrayList, boolean appendToEnd) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (appendToEnd)
             this.reviewsArrayList.addAll(reviewsArrayList);
         else
             this.reviewsArrayList.addAll(0, reviewsArrayList);
-        Log.i(TAG, "(updateReviewsArray) Review list updated. Current size is " +
+        Log.i(TAG + "." + methodName, "Review list updated. Current size is " +
                 this.reviewsArrayList.size());
     }
 
@@ -101,9 +103,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      */
     @Override
     public ReviewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG, "(onCreateViewHolder) ViewHolder created");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.list_item_review, parent, false);
+        Log.i(TAG + "." + methodName, "ViewHolder created");
         return new ReviewsViewHolder(view);
     }
 
@@ -127,7 +130,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      */
     @Override
     public void onBindViewHolder(ReviewsViewHolder viewHolder, int position) {
-        Log.i(TAG, "(onBindViewHolder) Displaying data at position " + position);
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
         if (!reviewsArrayList.isEmpty()) {
             // Get current review object and update the view holder with the review movie_details_menu at
             // current position in the adapter.
@@ -148,8 +152,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
      */
     @Override
     public int getItemCount() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = reviewsArrayList.size();
-        Log.i(TAG, "(getItemCount) Number of items in this adapter: " + itemCount);
+        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -181,9 +186,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
         ReviewsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
             context = itemView.getContext();
             viewHolder = itemView;
-            Log.i(TAG, "(ReviewsViewHolder) New ViewHolder created");
+            Log.i(TAG + "." + methodName, "New ViewHolder created");
         }
 
         /**
@@ -194,7 +200,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsV
          *                          ReviewsViewHolder element.
          */
         public void bind(final TmdbReview currentTmdbReview) {
-            Log.i(TAG, "(bind) Binding data for the current ReviewsViewHolder.");
+            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(TAG + "." + methodName, "Binding data for current ReviewsViewHolder.");
 
             // Set current review author.
             authorTextView.setText(currentTmdbReview.getAuthor());

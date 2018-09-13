@@ -13,7 +13,7 @@ public class TmdbMovie implements Parcelable {
     private boolean adult;
     private String overview;
     private String release_date;
-    private ArrayList<TmdbMovieGenre> genres;
+    private ArrayList<TmdbGenre> genres;
     private int id;
     private String original_title;
     private String original_language;
@@ -36,7 +36,7 @@ public class TmdbMovie implements Parcelable {
      *                          content or not.
      * @param backdrop_path     is a string for appending to {@link Tmdb#TMDB_POSTER_SIZE_W185_URL}
      *                          and get the backdrop image of the movie.
-     * @param genres            is an array with {@link TmdbMovieGenre} objects, containing the
+     * @param genres            is an array with {@link TmdbGenre} objects, containing the
      *                          genres of the movie.
      * @param original_language is a text string with the original language of the movie.
      * @param original_title    is a text string with the original title of the movie.
@@ -59,7 +59,7 @@ public class TmdbMovie implements Parcelable {
      * @param total_pages       is the total number of movie pages.
      * @param total_results     is the total number of movies_menu.
      */
-    public TmdbMovie(int id, boolean adult, String backdrop_path, ArrayList<TmdbMovieGenre> genres,
+    public TmdbMovie(int id, boolean adult, String backdrop_path, ArrayList<TmdbGenre> genres,
                      String original_language, String original_title, String overview,
                      Double popularity, String poster_path, String release_date, String title,
                      boolean video, Double vote_average, int vote_count, int position, int page,
@@ -118,11 +118,11 @@ public class TmdbMovie implements Parcelable {
         this.release_date = release_date;
     }
 
-    public ArrayList<TmdbMovieGenre> getGenres() {
+    public ArrayList<TmdbGenre> getGenres() {
         return genres;
     }
 
-    public void setGenres(ArrayList<TmdbMovieGenre> genres) {
+    public void setGenres(ArrayList<TmdbGenre> genres) {
         this.genres = genres;
     }
 
@@ -263,7 +263,7 @@ public class TmdbMovie implements Parcelable {
         this.adult = in.readByte() != 0;
         this.overview = in.readString();
         this.release_date = in.readString();
-        this.genres = in.createTypedArrayList(TmdbMovieGenre.CREATOR);
+        this.genres = in.createTypedArrayList(TmdbGenre.CREATOR);
         this.id = in.readInt();
         this.original_title = in.readString();
         this.original_language = in.readString();

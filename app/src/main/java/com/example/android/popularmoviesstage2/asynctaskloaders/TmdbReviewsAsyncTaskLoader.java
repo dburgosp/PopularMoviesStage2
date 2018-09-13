@@ -37,11 +37,12 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (tmdbReviewArrayList != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(tmdbReviewArrayList);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -73,13 +74,16 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
      */
     @Override
     public ArrayList<TmdbReview> loadInBackground() {
-        if (movieId <= 0 || Integer.valueOf(currentPage) <= 0 || Integer.valueOf(currentPage) > Tmdb.TMDB_MAX_PAGES) {
-            Log.i(TAG, "(loadInBackground) Wrong parameters.");
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        if (movieId <= 0 || Integer.valueOf(currentPage) <= 0 || 
+                Integer.valueOf(currentPage) > Tmdb.TMDB_MAX_PAGES) {
+            Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG, "(loadInBackground) Movie ID: " + movieId + ". Current page: " + currentPage);
+        Log.i(TAG + "." + methodName, "Movie ID: " + movieId + 
+                ". Current page: " + currentPage);
         return Tmdb.getTmdbReviews(movieId, currentPage);
     }
 
@@ -92,10 +96,11 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
      */
     @Override
     public void deliverResult(ArrayList<TmdbReview> data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         else
-            Log.i(TAG, "(deliverResult) " + data.size() + " element(s) delivered.");
+            Log.i(TAG + "." + methodName, "" + data.size() + " element(s) delivered.");
         tmdbReviewArrayList = data;
         super.deliverResult(data);
     }

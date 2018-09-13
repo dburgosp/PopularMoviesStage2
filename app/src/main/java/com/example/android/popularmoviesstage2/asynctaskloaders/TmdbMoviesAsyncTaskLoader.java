@@ -47,11 +47,12 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      */
     @Override
     protected void onStartLoading() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (moviesArray != null) {
-            Log.i(TAG, "(onStartLoading) Reload existing results.");
+            Log.i(TAG + "." + methodName, "Reload existing results.");
             deliverResult(moviesArray);
         } else {
-            Log.i(TAG, "(onStartLoading) Load new results.");
+            Log.i(TAG + "." + methodName, "Load new results.");
             forceLoad();
         }
     }
@@ -83,14 +84,15 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      */
     @Override
     public ArrayList<TmdbMovie> loadInBackground() {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (Tmdb.isAllowedSortOrder(contentType) &&
                 currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG, "(loadInBackground) Sort by: " + contentType + ". Page number: " +
+            Log.i(TAG + "." + methodName, "Sort by: " + contentType + ". Page number: " +
                     currentPage);
             return Tmdb.getTmdbMovies(contentType, values, currentPage, tmdbMoviesParameters);
         } else {
-            Log.i(TAG, "(loadInBackground) Wrong parameters.");
+            Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
     }
@@ -104,10 +106,11 @@ public class TmdbMoviesAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbMov
      */
     @Override
     public void deliverResult(ArrayList<TmdbMovie> data) {
+        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (data == null)
-            Log.i(TAG, "(deliverResult) No results to deliver.");
+            Log.i(TAG + "." + methodName, "No results to deliver.");
         else
-            Log.i(TAG, "(deliverResult) " + data.size() + " element(s) delivered.");
+            Log.i(TAG + "." + methodName, "" + data.size() + " element(s) delivered.");
         moviesArray = data;
         super.deliverResult(data);
     }
