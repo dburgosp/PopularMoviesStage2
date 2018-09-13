@@ -13,17 +13,46 @@ import java.util.ArrayList;
 
 public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST = 1;
-    public static final int ASYNC_TASK_LOADER_TYPE_OMDB_MOVIE_DETAILS = 2;
-    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW = 3;
-    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA = 4;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW = 2;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA = 3;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MOVIE_DETAILS = 4;
+    public static final int ASYNC_TASK_LOADER_TYPE_OMDB_MOVIE_DETAILS = 5;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_COLLECTION = 6;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE = 7;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_REVIEWS = 8;
     private final String TAG = GenericAsyncTaskLoader.class.getSimpleName();
 
     private Object mData;
-    private String mContentType, mIMDBid;
-    private int mCurrentPage, mMovieId;
+    private String mContentType, mIMDBid, mLanguage, mRegion;
+    private int mAsyncTaskLoaderType, mCurrentPage, mMovieId, mCollectionId;
     private ArrayList<Integer> mValues;
     private TmdbMoviesParameters mTMDBMoviesParameters;
-    private int mAsyncTaskLoaderType;
+
+    /**
+     * Constructor for this class (fetching a TmdbMovieDetails object or an ArrayList<TmdbPerson>
+     * from TMDB).
+     *
+     * @param context             is the context of the activity.
+     * @param id                  is the unique identifier of the movie at TMDB or the current page
+     *                            to fetch results from TMDB.
+     * @param language            is the mLanguage for retrieving results from TMDB.
+     * @param asyncTaskLoaderType available values are: ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE,
+     *                            ASYNC_TASK_LOADER_TYPE_TMDB_MOVIE_DETAILS.
+     */
+    public GenericAsyncTaskLoader(Context context, int id, String language, int asyncTaskLoaderType) {
+        super(context);
+        mLanguage = language;
+        mAsyncTaskLoaderType = asyncTaskLoaderType;
+        switch (mAsyncTaskLoaderType) {
+            case ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE:
+                // We are fetching a TmdbMovieDetails object.
+                mCurrentPage = id;
+                break;
+            case ASYNC_TASK_LOADER_TYPE_TMDB_MOVIE_DETAILS:
+                // We are fetching an ArrayList<TmdbPerson>.
+                mMovieId = id;
+        }
+    }
 
     /**
      * Constructor for this class (fetching an ArrayList<TmdbMovie> from TMDB).
@@ -35,7 +64,7 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
      * @param currentPage          is the current page to fetch results from TMDB.
      * @param tmdbMoviesParameters are the parameters to append to the url for fetching the movies
      *                             list.
-     * @param asyncTaskLoaderType  {@link GenericAsyncTaskLoader#ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST}.
+     * @param asyncTaskLoaderType  ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST.
      */
     public GenericAsyncTaskLoader(Context context, String contentType, ArrayList<Integer> values,
                                   int currentPage, TmdbMoviesParameters tmdbMoviesParameters,
@@ -53,7 +82,7 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
      *
      * @param context             is the context of the activity.
      * @param IMDBid              is the IMDB identifier of the movie.
-     * @param asyncTaskLoaderType {@link GenericAsyncTaskLoader#ASYNC_TASK_LOADER_TYPE_OMDB_MOVIE_DETAILS}.
+     * @param asyncTaskLoaderType ASYNC_TASK_LOADER_TYPE_OMDB_MOVIE_DETAILS.
      */
     public GenericAsyncTaskLoader(Context context, String IMDBid, int asyncTaskLoaderType) {
         super(context);
@@ -66,12 +95,46 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
      *
      * @param context             is the context of the calling activity.
      * @param movieId             is the unique identifier of the movie at TMDB.
-     * @param asyncTaskLoaderType {@link GenericAsyncTaskLoader#ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA},
-     *                            {@link GenericAsyncTaskLoader#ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW}.
+     * @param asyncTaskLoaderType available values are: ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA,
+     *                            ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW.
      */
     public GenericAsyncTaskLoader(Context context, int movieId, int asyncTaskLoaderType) {
         super(context);
         mMovieId = movieId;
+        mAsyncTaskLoaderType = asyncTaskLoaderType;
+    }
+
+    /**
+     * Constructor for this class (fetching a TmdbMovieCollection object from TMDB).
+     *
+     * @param context             is the context of the calling activity.
+     * @param collectionId        is the unique identifier of the collection at TMDB.
+     * @param language            is the mLanguage for retrieving results from TMDB.
+     * @param region              is the mRegion for retrieving results from TMDB.
+     * @param asyncTaskLoaderType ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_COLLECTION.
+     */
+    public GenericAsyncTaskLoader(Context context, int collectionId, String language,
+                                  String region, int asyncTaskLoaderType) {
+        super(context);
+        mCollectionId = collectionId;
+        mLanguage = language;
+        mRegion = region;
+        mAsyncTaskLoaderType = asyncTaskLoaderType;
+    }
+
+    /**
+     * Constructor for this class (fetching aN ArrayList<TmdbReview> from TMDB).
+     *
+     * @param context             is the context of the activity.
+     * @param movieId             is the unique identifier of the movie at TMDB.
+     * @param currentPage         is the current page for fetching results.
+     * @param asyncTaskLoaderType ASYNC_TASK_LOADER_TYPE_TMDB_REVIEWS.
+     */
+    public GenericAsyncTaskLoader(Context context, int movieId, int currentPage,
+                                  int asyncTaskLoaderType) {
+        super(context);
+        mMovieId = movieId;
+        mCurrentPage = currentPage;
         mAsyncTaskLoaderType = asyncTaskLoaderType;
     }
 
@@ -109,14 +172,15 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
             case ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST:
                 // We are fetching an ArrayList<TmdbMovie> from TMDB.
                 Log.i(methodTag, "Fetching an ArrayList<TmdbMovie> from TMDB...");
-                if (Tmdb.isAllowedSortOrder(mContentType) &&
-                        mCurrentPage <= Tmdb.TMDB_MAX_PAGES && mCurrentPage > 0) {
+                if (Tmdb.isAllowedSortOrder(mContentType) && mCurrentPage > 0 &&
+                        mCurrentPage <= Tmdb.TMDB_MAX_PAGES) {
                     // Perform the network request, parse the response, and extract results.
                     Log.i(methodTag, "Sort by: " + mContentType + ". Page number: " +
                             mCurrentPage);
                     return Tmdb.getTmdbMovies(mContentType, mValues, mCurrentPage,
                             mTMDBMoviesParameters);
                 } else {
+                    // Wrong parameters.
                     Log.i(methodTag, "Wrong parameters.");
                     return null;
                 }
@@ -129,6 +193,7 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
                     Log.i(methodTag, "IMDB identifier of the movie: " + mIMDBid);
                     return Omdb.getOmdbMovie(mIMDBid);
                 } else {
+                    // Wrong parameters.
                     Log.i(methodTag, "No IMDB identifier to search");
                     return null;
                 }
@@ -136,24 +201,82 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
             case ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW:
                 // We are fetching a TmdbCastCrew object from TMDB.
                 Log.i(methodTag, "Fetching a TmdbCastCrew object from TMDB...");
-                if (mMovieId > 0) {
+                if (mMovieId >= 0) {
                     // Perform the network request, parse the response, and extract results.
                     Log.i(methodTag, "Movie ID: " + mMovieId);
                     return Tmdb.getTmdbCastAndCrew(mMovieId);
                 } else {
-                    Log.i(methodTag, "Wrong TMDB movie ID.");
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong TMDB movie ID (" + mMovieId + ")");
                     return null;
                 }
 
             case ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA:
                 // We are fetching a TmdbMedia object from TMDB.
                 Log.i(methodTag, "Fetching a TmdbMedia object from TMDB...");
-                if (mMovieId > 0) {
+                if (mMovieId >= 0) {
                     // Perform the network request, parse the response, and extract results.
                     Log.i(methodTag, "Movie ID: " + mMovieId);
                     return Tmdb.getTmdbMedia(mMovieId);
                 } else {
-                    Log.i(methodTag, "Wrong TMDB movie ID.");
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong TMDB movie ID (" + mMovieId + ")");
+                    return null;
+                }
+
+            case ASYNC_TASK_LOADER_TYPE_TMDB_MOVIE_DETAILS:
+                // We are fetching a TmdbMovieDetails object from TMDB.
+                Log.i(methodTag, "Fetching a TmdbMovieDetails object from TMDB...");
+                if (mMovieId >= 0) {
+                    // Perform the network request, parse the response, and extract results.
+                    Log.i(methodTag, "Movie ID: " + mMovieId + ". Language: " + mLanguage);
+                    return Tmdb.getTmdbMovieDetails(mMovieId, mLanguage);
+                } else {
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong TMDB movie ID (" + mMovieId + ")");
+                    return null;
+                }
+
+            case ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_COLLECTION:
+                // We are fetching a TmdbMovieCollection object from TMDB.
+                Log.i(methodTag, "Fetching a TmdbMovieCollection object from TMDB...");
+                if (mCollectionId >= 0) {
+                    // Perform the network request, parse the response, and extract results.
+                    Log.i(methodTag, "Collection ID: " + mCollectionId + ". Language: " +
+                            mLanguage + ". Region: " + mRegion);
+                    return Tmdb.getTmdbCollection(mCollectionId, mLanguage, mRegion);
+                } else {
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong TMDB collection ID (" + mCollectionId + ")");
+                    return null;
+                }
+
+            case ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE:
+                // We are fetching an ArrayList<TmdbPerson> from TMDB.
+                Log.i(methodTag, "Fetching an ArrayList<TmdbPerson> from TMDB...");
+                if (mCurrentPage <= Tmdb.TMDB_MAX_PAGES && mCurrentPage > 0) {
+                    // Perform the network request, parse the response, and extract results.
+                    Log.i(methodTag, "Page number: " + mCurrentPage + ". Language: " +
+                            mLanguage);
+                    return Tmdb.getTmdbPeople(mCurrentPage, mLanguage);
+                } else {
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong page number (" + mCurrentPage + ")");
+                    return null;
+                }
+
+            case ASYNC_TASK_LOADER_TYPE_TMDB_REVIEWS:
+                // We are fetching an ArrayList<TmdbReview> from TMDB.
+                Log.i(methodTag, "Fetching an ArrayList<TmdbReview> from TMDB...");
+                if (mMovieId >= 0 && mCurrentPage <= Tmdb.TMDB_MAX_PAGES && mCurrentPage > 0) {
+                    // Perform the network request, parse the response, and extract results.
+                    Log.i(methodTag, "Movie ID: " + mMovieId + ". Page number: " +
+                            mCurrentPage);
+                    return Tmdb.getTmdbReviews(mMovieId, Integer.toString(mCurrentPage));
+                } else {
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong movie ID (" + mMovieId + ") or page number (" +
+                            mCurrentPage + ")");
                     return null;
                 }
 

@@ -14,9 +14,8 @@ import java.util.ArrayList;
 public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPerson>> {
     private final String TAG = TmdbPeopleAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbPerson> personArrayList;
-    private String contentType, language;
-    private int currentPage;
-    private ArrayList<Integer> values = new ArrayList<>();
+    private String mContentType, mLanguage;
+    private int mCurrentPage;
 
     /**
      * Constructor for this class.
@@ -24,14 +23,14 @@ public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
      * @param context     is the context of the activity.
      * @param contentType is the sort order of the movies_menu list.
      * @param currentPage is the current page to fetch results from TMDB.
-     * @param language    is the language for retrieving results from TMDB.
+     * @param language    is the mLanguage for retrieving results from TMDB.
      */
     public TmdbPeopleAsyncTaskLoader(Context context, String contentType, int currentPage,
                                      String language) {
         super(context);
-        this.contentType = contentType;
-        this.currentPage = currentPage;
-        this.language = language;
+        this.mContentType = contentType;
+        this.mCurrentPage = currentPage;
+        this.mLanguage = language;
     }
 
     /**
@@ -79,11 +78,11 @@ public class TmdbPeopleAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbPer
     @Override
     public ArrayList<TmdbPerson> loadInBackground() {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        if (currentPage <= Tmdb.TMDB_MAX_PAGES && currentPage > 0) {
+        if (mCurrentPage <= Tmdb.TMDB_MAX_PAGES && mCurrentPage > 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG + "." + methodName, "Sort by: " + contentType + ". Page number: " +
-                    currentPage);
-            return Tmdb.getTmdbPeople(currentPage, language);
+            Log.i(TAG + "." + methodName, "Sort by: " + mContentType + ". Page number: " +
+                    mCurrentPage);
+            return Tmdb.getTmdbPeople(mCurrentPage, mLanguage);
         } else {
             Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;

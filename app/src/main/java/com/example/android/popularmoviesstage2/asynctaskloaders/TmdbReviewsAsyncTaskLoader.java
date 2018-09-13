@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbReview>> {
     private final String TAG = TmdbReviewsAsyncTaskLoader.class.getSimpleName();
     private ArrayList<TmdbReview> tmdbReviewArrayList;
-    private int movieId;
-    private String currentPage;
+    private int mMovieId;
+    private String mCurrentPage;
 
     /**
      * Constructor for this class.
@@ -26,8 +26,8 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
      */
     public TmdbReviewsAsyncTaskLoader(Context context, int movieId, String currentPage) {
         super(context);
-        this.movieId = movieId;
-        this.currentPage = currentPage;
+        mMovieId = movieId;
+        mCurrentPage = currentPage;
     }
 
     /**
@@ -75,16 +75,16 @@ public class TmdbReviewsAsyncTaskLoader extends AsyncTaskLoader<ArrayList<TmdbRe
     @Override
     public ArrayList<TmdbReview> loadInBackground() {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        if (movieId <= 0 || Integer.valueOf(currentPage) <= 0 || 
-                Integer.valueOf(currentPage) > Tmdb.TMDB_MAX_PAGES) {
+        if (mMovieId <= 0 || Integer.valueOf(mCurrentPage) <= 0 ||
+                Integer.valueOf(mCurrentPage) > Tmdb.TMDB_MAX_PAGES) {
             Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;
         }
 
         // Perform the network request, parse the response, and extract results.
-        Log.i(TAG + "." + methodName, "Movie ID: " + movieId + 
-                ". Current page: " + currentPage);
-        return Tmdb.getTmdbReviews(movieId, currentPage);
+        Log.i(TAG + "." + methodName, "Movie ID: " + mMovieId +
+                ". Current page: " + mCurrentPage);
+        return Tmdb.getTmdbReviews(mMovieId, mCurrentPage);
     }
 
     /**

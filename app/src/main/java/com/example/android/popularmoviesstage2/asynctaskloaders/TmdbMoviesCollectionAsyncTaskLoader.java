@@ -13,23 +13,23 @@ import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
 public class TmdbMoviesCollectionAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieCollection> {
     private final String TAG = TmdbMoviesCollectionAsyncTaskLoader.class.getSimpleName();
     private TmdbMovieCollection movieCollection;
-    private int collectionId;
-    private String language, region;
+    private int mCollectionId;
+    private String mLanguage, mRegion;
 
     /**
      * Constructor for this class.
      *
      * @param context      is the context of the calling activity.
      * @param collectionId is the unique identifier of the collection at TMDB.
-     * @param language     is the language for retrieving results from TMDB.
-     * @param region       is the region for retrieving results from TMDB.
+     * @param language     is the mLanguage for retrieving results from TMDB.
+     * @param region       is the mRegion for retrieving results from TMDB.
      */
     public TmdbMoviesCollectionAsyncTaskLoader(Context context, int collectionId, String language,
                                                String region) {
         super(context);
-        this.collectionId = collectionId;
-        this.language = language;
-        this.region = region;
+        this.mCollectionId = collectionId;
+        this.mLanguage = language;
+        this.mRegion = region;
     }
 
     /**
@@ -77,11 +77,11 @@ public class TmdbMoviesCollectionAsyncTaskLoader extends AsyncTaskLoader<TmdbMov
     @Override
     public TmdbMovieCollection loadInBackground() {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        if (collectionId >= 0) {
+        if (mCollectionId >= 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG + "." + methodName, "Movie id: " + collectionId + ". Language: " +
-                    language + ". Region: " + region);
-            return Tmdb.getTmdbCollection(collectionId, language, region);
+            Log.i(TAG + "." + methodName, "Movie id: " + mCollectionId + ". Language: " +
+                    mLanguage + ". Region: " + mRegion);
+            return Tmdb.getTmdbCollection(mCollectionId, mLanguage, mRegion);
         } else {
             Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;

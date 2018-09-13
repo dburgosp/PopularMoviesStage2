@@ -36,8 +36,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
-import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbPeopleAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.GenericAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.MyNavigationDrawer;
 import com.example.android.popularmoviesstage2.classes.MyViewFlipperIndicator;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
@@ -175,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         AnimatedViewsUtils.setTransitions(getWindow());
@@ -218,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements
             connectionStatusLoadingIndicator.setVisibility(View.GONE);
         }
 
-        Log.i(TAG + "." + methodName, "Activity created");
+        Log.i(methodTag, "Activity created");
     }
 
     @Override
@@ -609,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements
     private View setCardView(CardView cardView, int contentType, boolean showControls, String title,
                              final int flipInterval, ImageView previousImageView,
                              ImageView nextImageView) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         LayoutInflater inflater =
                 (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         try {
@@ -791,7 +790,7 @@ public class MainActivity extends AppCompatActivity implements
             cardView.addView(cardViewContent);
             return cardViewContent;
         } catch (NullPointerException e) {
-            Log.e(TAG + "." + methodName, "Error inflating view: " + e);
+            Log.e(methodTag, "Error inflating view: " + e);
             return null;
         }
     }
@@ -848,22 +847,22 @@ public class MainActivity extends AppCompatActivity implements
                         if (currentView == upcomingMoviesCardView) {
                             // Displaying animation for upcoming movies section: fetch upcoming
                             // movies list from TMDB.
-                            new MainActivity.MainActivityMoviesList(
+                            new MainActivity.MainActivityResultsList(
                                     NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID);
                         } else if (currentView == nowPlayingMoviesCardView) {
                             // Displaying animation for now playing movies section: fetch now
                             // playing movies list from TMDB.
-                            new MainActivity.MainActivityMoviesList(
+                            new MainActivity.MainActivityResultsList(
                                     NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID);
                         } else if (currentView == popularPeopleCardView) {
                             // Displaying animation for popular people section: fetch popular people
                             // list from TMDB.
-                            new MainActivity.MainActivityPeopleList(
+                            new MainActivity.MainActivityResultsList(
                                     NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID);
                         } else if (currentView == buyAndRentMoviesCardView) {
                             // Displaying animation for buy and rent movies section: fetch buy and
                             // rent movies list from TMDB.
-                            new MainActivity.MainActivityMoviesList(
+                            new MainActivity.MainActivityResultsList(
                                     NetworkUtils.TMDB_BUY_AND_RENT_MOVIES_LOADER_ID);
                         }
 
@@ -916,7 +915,7 @@ public class MainActivity extends AppCompatActivity implements
                                                final int loaderId, ImageView previousImage,
                                                ImageView nextImage, boolean fullScreen,
                                                int maxElements) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         viewFlipper.removeAllViews();
 
         // Add children to ViewFlipper, only the first maxElements elements and only for those
@@ -1092,7 +1091,7 @@ public class MainActivity extends AppCompatActivity implements
                     // Add current child to ViewFlipper.
                     viewFlipper.addView(view, viewFlipper.getLayoutParams());
                 } catch (java.lang.NullPointerException e) {
-                    Log.e(TAG + "." + methodName, "Error inflatingview: " + e);
+                    Log.e(methodTag, "Error inflatingview: " + e);
                 }
             }
             i++;
@@ -1126,12 +1125,12 @@ public class MainActivity extends AppCompatActivity implements
     /* ------------- */
 
     // Private inner class to retrieve a given list of movies.
-    private class MainActivityMoviesList
-            implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
-        private final String TAG = MainActivity.MainActivityMoviesList.class.getSimpleName();
+    private class MainActivityResultsList
+            implements LoaderManager.LoaderCallbacks<Object> {
+        private final String TAG = MainActivity.MainActivityResultsList.class.getSimpleName();
 
         // Constructor for objects of this class.
-        MainActivityMoviesList(int loaderId) {
+        MainActivityResultsList(int loaderId) {
             // Create an AsyncTaskLoader for retrieving the list of movies.
             if (loaderId >= 0)
                 if (getSupportLoaderManager().getLoader(loaderId) == null) {
@@ -1155,8 +1154,8 @@ public class MainActivity extends AppCompatActivity implements
          * @return Return a new Loader instance that is ready to start loading.
          */
         @Override
-        public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        public Loader<Object> onCreateLoader(int id, Bundle args) {
+            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
             Context context = MainActivity.this;
             switch (id) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID: {
@@ -1173,16 +1172,17 @@ public class MainActivity extends AppCompatActivity implements
                         tmdbUpcomingMoviesParameters.setReleaseType(moviesUpcomingReleaseType);
                         tmdbUpcomingMoviesParameters.setInitDate(moviesUpcomingInitDate);
                         tmdbUpcomingMoviesParameters.setEndDate("");
-                        return new TmdbMoviesAsyncTaskLoader(context,
+                        return new GenericAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_UPCOMING, null, 1,
-                                tmdbUpcomingMoviesParameters);
+                                tmdbUpcomingMoviesParameters,
+                                GenericAsyncTaskLoader.ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST);
                     } else {
                         // There is no connection. Show error message.
                         upcomingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         upcomingMoviesMessage.setVisibility(View.VISIBLE);
                         upcomingMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG + "." + methodName, "No internet connection.");
+                        Log.i(methodTag, "No internet connection.");
                         return null;
                     }
                 }
@@ -1202,16 +1202,17 @@ public class MainActivity extends AppCompatActivity implements
                         tmdbNowPlayingMoviesParameters.setReleaseType(moviesNowPlayingReleaseType);
                         tmdbNowPlayingMoviesParameters.setInitDate(moviesNowPlayingInitDate);
                         tmdbNowPlayingMoviesParameters.setEndDate(moviesNowPlayingEndDate);
-                        return new TmdbMoviesAsyncTaskLoader(context,
+                        return new GenericAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_NOW_PLAYING, null,
-                                1, tmdbNowPlayingMoviesParameters);
+                                1, tmdbNowPlayingMoviesParameters,
+                                GenericAsyncTaskLoader.ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST);
                     } else {
                         // There is no connection. Show error message.
                         nowPlayingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
                         nowPlayingMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG + "." + methodName, "No internet connection.");
+                        Log.i(methodTag, "No internet connection.");
                         return null;
                     }
                 }
@@ -1229,22 +1230,42 @@ public class MainActivity extends AppCompatActivity implements
                         tmdbBuyAndRentMoviesParameters.setReleaseType(buyAndRentMoviesReleaseType);
                         tmdbBuyAndRentMoviesParameters.setInitDate("");
                         tmdbBuyAndRentMoviesParameters.setEndDate(buyAndRentMoviesEndDate);
-                        return new TmdbMoviesAsyncTaskLoader(context,
+                        return new GenericAsyncTaskLoader(context,
                                 Tmdb.TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT, null,
-                                1, tmdbBuyAndRentMoviesParameters);
+                                1, tmdbBuyAndRentMoviesParameters,
+                                GenericAsyncTaskLoader.ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST);
                     } else {
                         // There is no connection. Show error message.
                         buyAndRentMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         buyAndRentMoviesMessage.setVisibility(View.VISIBLE);
                         buyAndRentMoviesLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG + "." + methodName, "No internet connection.");
+                        Log.i(methodTag, "No internet connection.");
+                        return null;
+                    }
+                }
+
+                case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
+                    popularPeopleLoadingIndicator.setVisibility(View.VISIBLE);
+                    if (NetworkUtils.isConnected(MainActivity.this)) {
+                        // There is an available connection. Fetch results from TMDB.
+                        popularPeopleMessage.setVisibility(View.GONE);
+                        return new GenericAsyncTaskLoader(
+                                MainActivity.this, 1, Locale.getDefault().getLanguage(),
+                                GenericAsyncTaskLoader.ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE);
+                    } else {
+                        // There is no connection. Show error message.
+                        popularPeopleMessage.setText(
+                                getResources().getString(R.string.no_connection));
+                        popularPeopleMessage.setVisibility(View.VISIBLE);
+                        popularPeopleLoadingIndicator.setVisibility(View.GONE);
+                        Log.i(methodTag, "No internet connection.");
                         return null;
                     }
                 }
 
                 default: {
-                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + id);
+                    Log.e(methodTag, "Unexpected loader id: " + id);
                     return null;
                 }
             }
@@ -1289,8 +1310,8 @@ public class MainActivity extends AppCompatActivity implements
          * @param data   The data generated by the Loader.
          */
         @Override
-        public void onLoadFinished(Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        public void onLoadFinished(Loader<Object> loader, Object data) {
+            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
             Context context = MainActivity.this;
 
             // Get movies list and display it, depending on the loader identifier.
@@ -1302,17 +1323,18 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
-                        if (data != null && data.size() > 0) {
-                            Log.i(TAG + "." + methodName,
+                        ArrayList<TmdbMovie> movies = (ArrayList<TmdbMovie>) data;
+                        if (movies != null && movies.size() > 0) {
+                            Log.i(methodTag,
                                     "Search results for upcoming movies not null.");
                             upcomingMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(movies,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
                                     loader.getId(), upcomingMoviesPreviousImageView,
                                     upcomingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG + "." + methodName,
+                            Log.i(methodTag,
                                     "No search results for upcoming movies.");
                             hasData = false;
                         }
@@ -1325,7 +1347,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG + "." + methodName, "No connection to internet.");
+                        Log.i(methodTag, "No connection to internet.");
                         upcomingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         upcomingMoviesMessage.setVisibility(View.VISIBLE);
@@ -1340,17 +1362,18 @@ public class MainActivity extends AppCompatActivity implements
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         // If there is a valid result, display it on its corresponding layout.
                         boolean hasData = true, hasValidData = true;
-                        if (data != null && data.size() > 0) {
-                            Log.i(TAG + "." + methodName,
+                        ArrayList<TmdbMovie> movies = (ArrayList<TmdbMovie>) data;
+                        if (movies != null && movies.size() > 0) {
+                            Log.i(methodTag,
                                     "Search results for now playing movies not null.");
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(movies,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
                                     loader.getId(), nowPlayingMoviesPreviousImageView,
                                     nowPlayingMoviesNextImageView, true,
                                     MAX_ELEMENTS_FULL_SCREEN);
                         } else {
-                            Log.i(TAG + "." + methodName,
+                            Log.i(methodTag,
                                     "No search results for now playing movies.");
                             hasData = false;
                         }
@@ -1363,7 +1386,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG + "." + methodName, "No connection to internet.");
+                        Log.i(methodTag, "No connection to internet.");
                         nowPlayingMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         nowPlayingMoviesMessage.setVisibility(View.VISIBLE);
@@ -1377,19 +1400,18 @@ public class MainActivity extends AppCompatActivity implements
                     // Check if there is an available connection.
                     if (NetworkUtils.isConnected(MainActivity.this)) {
                         boolean hasData = true, hasValidData = true;
-                        if (data != null && data.size() > 0) {
+                        ArrayList<TmdbMovie> movies = (ArrayList<TmdbMovie>) data;
+                        if (movies != null && movies.size() > 0) {
                             // If there is a valid result, display it on its corresponding layout.
-                            Log.i(TAG + "." + methodName,
-                                    "Search results for buy and rent movies not null.");
+                            Log.i(methodTag, "Search results for buy and rent movies not null.");
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
-                            hasValidData = inflateViewFlipperChildren(data,
+                            hasValidData = inflateViewFlipperChildren(movies,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
                                     loader.getId(), buyAndRentMoviesPreviousImageView,
                                     buyAndRentMoviesNextImageView, false,
                                     MAX_HALF_SCREEN_ELEMENTS);
                         } else {
-                            Log.i(TAG + "." + methodName,
-                                    "No search results for buy and rent movies.");
+                            Log.i(methodTag, "No search results for buy and rent movies.");
                             hasData = false;
                         }
                         if (!hasData || !hasValidData) {
@@ -1401,7 +1423,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG + "." + methodName, "No connection to internet.");
+                        Log.i(methodTag, "No connection to internet.");
                         buyAndRentMoviesMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         buyAndRentMoviesMessage.setVisibility(View.VISIBLE);
@@ -1409,142 +1431,28 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 }
 
-                default: {
-                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + loader.getId());
-                }
-            }
-        }
-
-        /**
-         * Called when a previously created loaderId is being reset, and thus
-         * making its data unavailable.  The application should at this point
-         * remove any references it has to the Loader's data.
-         *
-         * @param loader The Loader that is being reset.
-         */
-        @Override
-        public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
-        }
-    }
-
-    // Private inner class to retrieve a given list of persons.
-    private class MainActivityPeopleList
-            implements LoaderManager.LoaderCallbacks<ArrayList<TmdbPerson>> {
-        private final String TAG = MainActivity.MainActivityPeopleList.class.getSimpleName();
-
-        // Constructor for objects of this class.
-        MainActivityPeopleList(int loaderId) {
-            // Create an AsyncTaskLoader for retrieving the list of people.
-            if (loaderId >= 0)
-                getSupportLoaderManager().initLoader(loaderId, null, this);
-        }
-
-        /* ------ */
-        /* LOADER */
-        /* ------ */
-
-        /**
-         * Instantiate and return a new Loader for the given ID.
-         *
-         * @param id   The ID whose loaderId is to be created.
-         * @param args Any arguments supplied by the caller.
-         * @return Return a new Loader instance that is ready to start loading.
-         */
-        @Override
-        public Loader<ArrayList<TmdbPerson>> onCreateLoader(int id, Bundle args) {
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            switch (id) {
-                case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
-                    popularPeopleLoadingIndicator.setVisibility(View.VISIBLE);
-                    if (NetworkUtils.isConnected(MainActivity.this)) {
-                        // There is an available connection. Fetch results from TMDB.
-                        popularPeopleMessage.setVisibility(View.GONE);
-                        return new TmdbPeopleAsyncTaskLoader(MainActivity.this,
-                                Tmdb.TMDB_CONTENT_TYPE_POPULAR, 1,
-                                Locale.getDefault().getLanguage());
-                    } else {
-                        // There is no connection. Show error message.
-                        popularPeopleMessage.setText(
-                                getResources().getString(R.string.no_connection));
-                        popularPeopleMessage.setVisibility(View.VISIBLE);
-                        popularPeopleLoadingIndicator.setVisibility(View.GONE);
-                        Log.i(TAG + "." + methodName, "No internet connection.");
-                        return null;
-                    }
-                }
-
-                default: {
-                    Log.e(TAG + "." + methodName, "Unexpected loader id: " + id);
-                    return null;
-                }
-            }
-        }
-
-        /**
-         * Called when a previously created loaderId has finished its load.  Note
-         * that normally an application is <em>not</em> allowed to commit fragment
-         * transactions while in this call, since it can happen after an
-         * activity's state is saved.  See {@link FragmentManager#beginTransaction()
-         * FragmentManager.openTransaction()} for further discussion on this.
-         * <p>
-         * <p>This function is guaranteed to be called prior to the release of
-         * the last data that was supplied for this Loader.  At this point
-         * you should remove all use of the old data (since it will be released
-         * soon), but should not do your own release of the data since its Loader
-         * owns it and will take care of that.  The Loader will take care of
-         * management of its data so you don't have to.  In particular:
-         * <p>
-         * <ul>
-         * <li> <p>The Loader will monitor for changes to the data, and report
-         * them to you through new calls here.  You should not monitor the
-         * data yourself.  For example, if the data is a {@link Cursor}
-         * and you place it in a {@link CursorAdapter}, use
-         * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
-         * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
-         * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
-         * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
-         * from doing its own observing of the Cursor, which is not needed since
-         * when a change happens you will get a new Cursor throw another call
-         * here.
-         * <li> The Loader will release the data once it knows the application
-         * is no longer using it.  For example, if the data is
-         * a {@link Cursor} from a {@link CursorLoader},
-         * you should not call close() on it yourself.  If the Cursor is being placed in a
-         * {@link CursorAdapter}, you should use the
-         * {@link CursorAdapter#swapCursor(Cursor)}
-         * method so that the old Cursor is not closed.
-         * </ul>
-         *
-         * @param loader The Loader that has finished.
-         * @param data   The data generated by the Loader.
-         */
-        @Override
-        public void onLoadFinished(Loader<ArrayList<TmdbPerson>> loader,
-                                   ArrayList<TmdbPerson> data) {
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-
-            // Get people list and display it.
-            switch (loader.getId()) {
                 case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID: {
                     popularPeopleLoadingIndicator.setVisibility(View.GONE);
                     if (NetworkUtils.isConnected(MainActivity.this)) {
+                        ArrayList<TmdbPerson> people = (ArrayList<TmdbPerson>) data;
+
                         // If there is a valid result, display it on its corresponding layout.
-                        if (data != null && data.size() > 0) {
-                            Log.i(TAG + "." + methodName, "Search results not null.");
-                            inflateViewFlipperChildren(data, popularPeopleViewFlipper,
+                        if (people != null && people.size() > 0) {
+                            Log.i(methodTag, "Search results not null.");
+                            inflateViewFlipperChildren(people, popularPeopleViewFlipper,
                                     posterLinearLayoutParams, loader.getId(),
                                     popularPeoplePreviousImageView, popularPeopleNextImageView,
                                     false, MAX_HALF_SCREEN_ELEMENTS);
                             break;
                         } else {
-                            Log.i(TAG + "." + methodName, "No search results.");
+                            Log.i(methodTag, "No search results.");
                             popularPeopleMessage.setText(
                                     getResources().getString(R.string.no_results));
                             popularPeopleMessage.setVisibility(View.VISIBLE);
                         }
                     } else {
                         // There is no connection. Show error message.
-                        Log.i(TAG + "." + methodName, "No connection to internet.");
+                        Log.i(methodTag, "No connection to internet.");
                         popularPeopleMessage.setText(
                                 getResources().getString(R.string.no_connection));
                         popularPeopleMessage.setVisibility(View.VISIBLE);
@@ -1552,8 +1460,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
 
                 default: {
-                    Log.e(TAG + "." + methodName, "Unexpected loader id: " +
-                            loader.getId());
+                    Log.e(methodTag, "Unexpected loader id: " + loader.getId());
                 }
             }
         }
@@ -1566,7 +1473,7 @@ public class MainActivity extends AppCompatActivity implements
          * @param loader The Loader that is being reset.
          */
         @Override
-        public void onLoaderReset(Loader<ArrayList<TmdbPerson>> loader) {
+        public void onLoaderReset(Loader<Object> loader) {
         }
     }
 }

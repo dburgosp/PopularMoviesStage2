@@ -13,19 +13,19 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
     private final String TAG = TmdbMovieDetailsAsyncTaskLoader.class.getSimpleName();
     private TmdbMovieDetails movieDetails;
     private int movieId;
-    private String language;
+    private String mLanguage;
 
     /**
      * Constructor for this class.
      *
      * @param context  is the context of the activity.
      * @param movieId  is the unique identifier of the movie at TMDB.
-     * @param language is the language for retrieving results from TMDB.
+     * @param language is the mLanguage for retrieving results from TMDB.
      */
     public TmdbMovieDetailsAsyncTaskLoader(Context context, int movieId, String language) {
         super(context);
         this.movieId = movieId;
-        this.language = language;
+        this.mLanguage = language;
     }
 
     /**
@@ -75,9 +75,9 @@ public class TmdbMovieDetailsAsyncTaskLoader extends AsyncTaskLoader<TmdbMovieDe
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if (movieId >= 0) {
             // Perform the network request, parse the response, and extract results.
-            Log.i(TAG + "." + methodName, "Movie id: " + movieId + ". Language: " + 
-                    language);
-            return Tmdb.getTmdbMovieDetails(movieId, language);
+            Log.i(TAG + "." + methodName, "Movie id: " + movieId + ". Language: " +
+                    mLanguage);
+            return Tmdb.getTmdbMovieDetails(movieId, mLanguage);
         } else {
             Log.i(TAG + "." + methodName, "Wrong parameters.");
             return null;

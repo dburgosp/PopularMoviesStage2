@@ -214,7 +214,7 @@ public class Tmdb {
         }
 
         // Create an empty array of TmdbTVSeries objects to append data.
-        ArrayList<TmdbTVSeries> tvSeries = new ArrayList<>();
+        ArrayList<TmdbTVSeries> tvSeriesArrayList = new ArrayList<>();
 
         // Try to parse the JSON response string. If there's a problem with the way the JSON is
         // formatted, a JSONException exception object will be thrown.
@@ -242,16 +242,86 @@ public class Tmdb {
                 // info and append it to the tv series array..
                 baseJSONResponse = arrayJSONResponse.getJSONObject(n);
                 TmdbTVSeries tvSeries = getTVSeries(baseJSONResponse, n, page, total_pages, total_results);
-                tvSeries.add(tvSeries);
+                tvSeriesArrayList.add(tvSeries);
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash.
-            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ",e);
+            Log.e(TAG + "." + methodName, "Error parsing the JSON response: ", e);
         }
 
         // Return the tv series array.
-        return tvSeries;
+        return tvSeriesArrayList;
+    }
+
+    /**
+     * Private helper method to extract a {@link TmdbMovie} object from a JSON.
+     *
+     * @param baseJSONResponse is the JSONObject containing the movie info.
+     * @param n                is the current index of the element into the movies array.
+     * @param page             is the current page of the movie element.
+     * @param total_pages      is the number of pages of the current query.
+     * @param total_results    is the number of movies of the current query.
+     * @return the {@link TmdbMovie} object parsed from the JSON.
+     * @throws JSONException from getJSONArray and getJSONObject calls.
+     */
+    private static TmdbTVSeries getTVSeries(JSONObject baseJSONResponse, int n, int page,
+                                            int total_pages,
+                                            int total_results) throws JSONException {
+        // Extract the required values for the corresponding keys.
+        boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
+        String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
+        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
+        String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
+        String original_title = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_title");
+        String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
+        Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
+        String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
+        String release_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "release_date");
+        String title = NetworkUtils.getStringFromJSON(baseJSONResponse, "title");
+        Boolean video = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "video");
+        Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
+        int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
+
+        // Extract the JSONArray associated with the key called "genres" or "genre_ids", which
+        // represents the list of genres which the movie belongs to.
+        ArrayList<TmdbGenre> genres = new ArrayList<>();
+        JSONArray genresArray = null;
+        if (!baseJSONResponse.isNull("genres")) {
+            // For each genre in the array, create an {@link TmdbGenre} object.
+            genresArray = baseJSONResponse.getJSONArray("genres");
+            JSONObject currentGenre;
+            for (int i = 0; i < genresArray.length(); i++) {
+                // Get a single genre at position i within the list of genres.
+                currentGenre = genresArray.getJSONObject(i);
+
+                // Extract the required values for the corresponding keys.
+                int genre_id = NetworkUtils.getIntFromJSON(currentGenre, "id");
+                String genre_name = NetworkUtils.getStringFromJSON(currentGenre, "name");
+
+                // Create a new {@link TmdbGenre} object and add it to the array.
+                TmdbGenre genre = new TmdbGenre(genre_id, genre_name);
+                genres.add(genre);
+            }
+        } else if (!baseJSONResponse.isNull("genre_ids")) {
+            // We have only an array of integer genre identifiers.
+            genresArray = baseJSONResponse.getJSONArray("genre_ids");
+            for (int i = 0; i < genresArray.length(); i++) {
+                // Extract the int value of the genre identifier, which has no key.
+                int genre_id = (int) genresArray.get(i);
+
+                // Create a new {@link TmdbGenre} object and add it to the array.
+                TmdbGenre genre = new TmdbGenre(genre_id, "");
+                genres.add(genre);
+            }
+        }
+
+        // Return the {@link TmdbMovie} object parsed from the JSON.
+        return new TmdbTVSeries(poster_path, popularity, id, backdrop_path,
+                vote_average, overview, release_date,
+                null, null,
+                original_language, vote_count, title, original_title,
+                0, page, total_pages, total_results);
     }
 
     /**
