@@ -48,9 +48,9 @@
                 <!-- Main options -->
                 <include layout="@layout/layout_main_options" />
 
-                <!-- Upcoming movies_menu -->
+                <!-- Now playing movies_menu -->
                 <android.support.v7.widget.CardView
-                    android:id="@+id/home_upcoming_movies_cardview"
+                    android:id="@+id/home_now_playing_movies_cardview"
                     style="@style/HomeCardViewStyle"
                     android:layout_width="match_parent"
                     android:background="@color/colorMoviesPrimaryDark"
@@ -85,9 +85,9 @@
                         app:cardCornerRadius="@dimen/small_padding" />
                 </LinearLayout>
 
-                <!-- Now playing movies_menu -->
+                <!-- Upcoming movies_menu -->
                 <android.support.v7.widget.CardView
-                    android:id="@+id/home_now_playing_movies_cardview"
+                    android:id="@+id/home_upcoming_movies_cardview"
                     style="@style/HomeCardViewStyle"
                     android:layout_width="match_parent"
                     android:background="@color/colorMoviesPrimaryDark"

@@ -58,6 +58,7 @@
     <string name="movies_sort_by_online">Ver online</string>
     <string name="movies_sort_by_favorites">Favoritos</string>
     <string name="movies_sort_by_now_playing">Ver ahora</string>
+    <string name="movies_sort_by_now_playing_in_theatres">En cartelera</string>
     <string name="movies_sort_by_popular">Populares</string>
     <string name="movies_sort_by_top_rated">Mejor valoradas</string>
     <string name="original_language">Idioma original</string>
@@ -81,6 +82,7 @@
     <string name="synopsis">Sinopsis</string>
     <string name="thumbnail_description">Imagen en miniatura</string>
     <string name="movies_sort_by_upcoming">Próximamente</string>
+    <string name="movies_sort_by_upcoming_in_theatres">Próximamente en cines</string>
     <string name="videos_title">Vídeos</string>
     <string name="view_all">Ver todo</string>
     <string name="release_status_canceled">Cancelada</string>

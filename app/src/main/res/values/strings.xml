@@ -50,10 +50,12 @@
     <string name="movies_sort_by_favorites">Favorites</string>
     <string name="movies_sort_by_online">Online</string>
     <string name="movies_sort_by_now_playing">Now playing</string>
+    <string name="movies_sort_by_now_playing_in_theatres">Now playing in theatres</string>
     <string name="movies_sort_by_popular">Popular Movies</string>
     <string name="movies_sort_by_released_this_week">This week</string>
     <string name="movies_sort_by_top_rated">Top rated</string>
     <string name="movies_sort_by_upcoming">Upcoming movies</string>
+    <string name="movies_sort_by_upcoming_in_theatres">Upcoming movies in theatres</string>
     <string name="no_author">Unknown author</string>
     <string name="no_connection">There is no connection to the internet right now.</string>
     <string name="no_content">Nothing to show&#8230;</string>

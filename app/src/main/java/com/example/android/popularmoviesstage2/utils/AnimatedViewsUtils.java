@@ -85,7 +85,7 @@ public final class AnimatedViewsUtils {
      */
     public static void animateOnClick(final Context context, View view) {
         // Play sound.
-        SoundsUtils.buttonClick(context);
+        //SoundsUtils.buttonClick(context);
 
         // Play animation.
         final Animation animation = AnimationUtils.loadAnimation(context, R.anim.bounce);

@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage2.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -21,9 +22,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -335,9 +338,87 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        // Now playing movies section.
+        nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
+                true, getString(R.string.movies_sort_by_now_playing_in_theatres),
+                5000, nowPlayingMoviesPreviousImageView, nowPlayingMoviesNextImageView);
+        if (nowPlayingMoviesLayout != null) {
+            // Extract all layout elements and assign them to their corresponding private variables.
+            nowPlayingMoviesViewFlipper = (MyViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
+                    R.id.layout_main_cardview_content_viewflipper);
+            nowPlayingMoviesMessage = (TextView) nowPlayingMoviesLayout.findViewById(
+                    R.id.layout_main_cardview_content_message);
+            nowPlayingMoviesLoadingIndicator = (ProgressBar) nowPlayingMoviesLayout.findViewById(
+                    R.id.layout_main_cardview_content_loading_indicator);
+
+            // Set ViewFlipper size.
+            nowPlayingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
+
+            // Click to start MoviesActivity with animation, showing now playing movies page.
+            nowPlayingMoviesTitle = (TextView) nowPlayingMoviesLayout.findViewById(
+                    R.id.layout_main_cardview_content_title);
+            nowPlayingMoviesTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Set preferences for "Now Playing Movies" to show "In Theaters" and "In my
+                    // country".
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
+                            MyPreferences.TYPE_MOVIES_HOW);
+                    MyPreferences.setNowPlayingMovies(MainActivity.this,
+                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
+                            MyPreferences.TYPE_MOVIES_WHERE);
+
+                    // Set intent for calling MoviesActivity.
+                    Intent intent = new Intent(MainActivity.this,
+                            MoviesActivity.class);
+                    intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_NOW_PLAYING);
+                    Bundle option = ActivityOptions
+                            .makeSceneTransitionAnimation(MainActivity.this).toBundle();
+
+                    // Animate view when clicked and navigate to next activity.
+                    AnimatedViewsUtils.animateOnClick(MainActivity.this,
+                            nowPlayingMoviesCardView);
+                    startActivity(intent, option);
+                }
+            });
+        }
+
+        popularPeopleLayout = setCardView(popularPeopleCardView, CONTENT_TYPE_PEOPLE,
+                true, getString(R.string.popular), 3000,
+                popularPeoplePreviousImageView, popularPeopleNextImageView);
+        if (popularPeopleLayout != null) {
+            // Extract all layout elements and assign them to their corresponding private variables.
+            popularPeopleViewFlipper = (MyViewFlipperIndicator) popularPeopleLayout.findViewById(
+                    R.id.layout_main_cardview_content_viewflipper);
+            popularPeopleMessage = (TextView) popularPeopleLayout.findViewById(
+                    R.id.layout_main_cardview_content_message);
+            popularPeopleLoadingIndicator = (ProgressBar) popularPeopleLayout.findViewById(
+                    R.id.layout_main_cardview_content_loading_indicator);
+
+            // Set ViewFlipper size.
+            popularPeopleViewFlipper.setLayoutParams(posterRelativeLayoutParams);
+        }
+
+        onTheAirLayout = setCardView(onTheAirCardView, CONTENT_TYPE_SERIES, true,
+                getString(R.string.tv_on_the_air), 4000, onTheAirPreviousImageView,
+                onTheAirNextImageView);
+        if (onTheAirLayout != null) {
+            // Extract all layout elements and assign them to their corresponding private variables.
+            onTheAirViewFlipper = (MyViewFlipperIndicator) onTheAirLayout.findViewById(
+                    R.id.layout_main_cardview_content_viewflipper);
+            onTheAirMessage = (TextView) onTheAirLayout.findViewById(
+                    R.id.layout_main_cardview_content_message);
+            onTheAirLoadingIndicator = (ProgressBar) onTheAirLayout.findViewById(
+                    R.id.layout_main_cardview_content_loading_indicator);
+
+            // Set ViewFlipper size.
+            onTheAirViewFlipper.setLayoutParams(posterRelativeLayoutParams);
+        }
+
         // Upcoming movies section.
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, getString(R.string.movies_sort_by_upcoming), 5000,
+                true, getString(R.string.movies_sort_by_upcoming_in_theatres), 5000,
                 upcomingMoviesPreviousImageView, upcomingMoviesNextImageView);
         if (upcomingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
@@ -379,84 +460,6 @@ public class MainActivity extends AppCompatActivity implements
                     // Animate view when clicked and navigate to next activity.
                     AnimatedViewsUtils.animateOnClick(MainActivity.this,
                             upcomingMoviesCardView);
-                    startActivity(intent, option);
-                }
-            });
-        }
-
-        popularPeopleLayout = setCardView(popularPeopleCardView, CONTENT_TYPE_PEOPLE,
-                true, getString(R.string.popular), 3000,
-                popularPeoplePreviousImageView, popularPeopleNextImageView);
-        if (popularPeopleLayout != null) {
-            // Extract all layout elements and assign them to their corresponding private variables.
-            popularPeopleViewFlipper = (MyViewFlipperIndicator) popularPeopleLayout.findViewById(
-                    R.id.layout_main_cardview_content_viewflipper);
-            popularPeopleMessage = (TextView) popularPeopleLayout.findViewById(
-                    R.id.layout_main_cardview_content_message);
-            popularPeopleLoadingIndicator = (ProgressBar) popularPeopleLayout.findViewById(
-                    R.id.layout_main_cardview_content_loading_indicator);
-
-            // Set ViewFlipper size.
-            popularPeopleViewFlipper.setLayoutParams(posterRelativeLayoutParams);
-        }
-
-        onTheAirLayout = setCardView(onTheAirCardView, CONTENT_TYPE_SERIES, true,
-                getString(R.string.tv_on_the_air), 4000, onTheAirPreviousImageView,
-                onTheAirNextImageView);
-        if (onTheAirLayout != null) {
-            // Extract all layout elements and assign them to their corresponding private variables.
-            onTheAirViewFlipper = (MyViewFlipperIndicator) onTheAirLayout.findViewById(
-                    R.id.layout_main_cardview_content_viewflipper);
-            onTheAirMessage = (TextView) onTheAirLayout.findViewById(
-                    R.id.layout_main_cardview_content_message);
-            onTheAirLoadingIndicator = (ProgressBar) onTheAirLayout.findViewById(
-                    R.id.layout_main_cardview_content_loading_indicator);
-
-            // Set ViewFlipper size.
-            onTheAirViewFlipper.setLayoutParams(posterRelativeLayoutParams);
-        }
-
-        // Now playing movies section.
-        nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, getString(R.string.movies_sort_by_now_playing), 5000,
-                nowPlayingMoviesPreviousImageView, nowPlayingMoviesNextImageView);
-        if (nowPlayingMoviesLayout != null) {
-            // Extract all layout elements and assign them to their corresponding private variables.
-            nowPlayingMoviesViewFlipper = (MyViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_viewflipper);
-            nowPlayingMoviesMessage = (TextView) nowPlayingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_message);
-            nowPlayingMoviesLoadingIndicator = (ProgressBar) nowPlayingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_loading_indicator);
-
-            // Set ViewFlipper size.
-            nowPlayingMoviesViewFlipper.setLayoutParams(backdropRelativeLayoutParams);
-
-            // Click to start MoviesActivity with animation, showing now playing movies page.
-            nowPlayingMoviesTitle = (TextView) nowPlayingMoviesLayout.findViewById(
-                    R.id.layout_main_cardview_content_title);
-            nowPlayingMoviesTitle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Set preferences for "Now Playing Movies" to show "In Theaters" and "In my
-                    // country".
-                    MyPreferences.setNowPlayingMovies(MainActivity.this,
-                            MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
-                            MyPreferences.TYPE_MOVIES_HOW);
-                    MyPreferences.setNowPlayingMovies(MainActivity.this,
-                            MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
-                            MyPreferences.TYPE_MOVIES_WHERE);
-
-                    // Set intent for calling MoviesActivity.
-                    Intent intent = new Intent(MainActivity.this,
-                            MoviesActivity.class);
-                    intent.putExtra("sort", MoviesFragmentPagerAdapter.PAGE_NOW_PLAYING);
-                    Bundle option = ActivityOptions
-                            .makeSceneTransitionAnimation(MainActivity.this).toBundle();
-
-                    // Animate view when clicked and navigate to next activity.
-                    AnimatedViewsUtils.animateOnClick(MainActivity.this,
-                            nowPlayingMoviesCardView);
                     startActivity(intent, option);
                 }
             });
@@ -577,10 +580,10 @@ public class MainActivity extends AppCompatActivity implements
         animatedViews.add(allMoviesCardView);
         animatedViews.add(allSeriesCardView);
         animatedViews.add(allPeopleCardView);
-        animatedViews.add(upcomingMoviesCardView);
+        animatedViews.add(nowPlayingMoviesCardView);
         animatedViews.add(onTheAirCardView);
         animatedViews.add(popularPeopleCardView);
-        animatedViews.add(nowPlayingMoviesCardView);
+        animatedViews.add(upcomingMoviesCardView);
         animatedViews.add(buyAndRentMoviesCardView);
         animatedViews.add(buyAndRentSeriesCardView);
         animatedViews.add(airingTodayCardView);
@@ -813,10 +816,10 @@ public class MainActivity extends AppCompatActivity implements
         } else if (title.equals(getString(R.string.popular))) {
             popularPeoplePreviousImageView = previousImage;
             popularPeopleNextImageView = nextImage;
-        } else if (title.equals(getString(R.string.movies_sort_by_now_playing))) {
+        } else if (title.equals(getString(R.string.movies_sort_by_now_playing_in_theatres))) {
             nowPlayingMoviesPreviousImageView = previousImage;
             nowPlayingMoviesNextImageView = nextImage;
-        } else if (title.equals(getString(R.string.movies_sort_by_upcoming))) {
+        } else if (title.equals(getString(R.string.movies_sort_by_upcoming_in_theatres))) {
             upcomingMoviesPreviousImageView = previousImage;
             upcomingMoviesNextImageView = nextImage;
         } else if (title.equals(getString(R.string.movies_sort_by_online))) {
@@ -908,6 +911,7 @@ public class MainActivity extends AppCompatActivity implements
      *                      ViewFlipper.
      * @return true if viewFlipper is displaying at least one element, false otherwise.
      */
+    @SuppressLint("ClickableViewAccessibility")
     @SuppressWarnings("unchecked")
     private boolean inflateViewFlipperChildren(final ArrayList<?> data,
                                                final ViewFlipper viewFlipper,
@@ -1115,6 +1119,33 @@ public class MainActivity extends AppCompatActivity implements
                     break;
             }
 
+/*            viewFlipper.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    viewFlipper.stopFlipping();
+                    float initialX = 0;
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            initialX = motionEvent.getX();
+                            break;
+
+                        case MotionEvent.ACTION_UP:
+                            float finalX = motionEvent.getX();
+                            if (initialX > finalX) {
+                                if (viewFlipper.getDisplayedChild() == 1)
+                                    break;
+                                viewFlipper.showNext();
+                            } else {
+                                if (viewFlipper.getDisplayedChild() == 0)
+                                    break;
+                                viewFlipper.showPrevious();
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });*/
+
             return true;
         } else
             return false;
@@ -1272,39 +1303,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         /**
-         * Called when a previously created loaderId has finished its load.  Note
-         * that normally an application is <em>not</em> allowed to commit fragment
-         * transactions while in this call, since it can happen after an
-         * activity's state is saved.  See {@link FragmentManager#beginTransaction()
-         * FragmentManager.openTransaction()} for further discussion on this.
-         * <p>
-         * <p>This function is guaranteed to be called prior to the release of
-         * the last data that was supplied for this Loader.  At this point
-         * you should remove all use of the old data (since it will be released
-         * soon), but should not do your own release of the data since its Loader
-         * owns it and will take care of that.  The Loader will take care of
-         * management of its data so you don't have to.  In particular:
-         * <p>
-         * <ul>
-         * <li> <p>The Loader will monitor for changes to the data, and report
-         * them to you through new calls here.  You should not monitor the
-         * data yourself.  For example, if the data is a {@link Cursor}
-         * and you place it in a {@link CursorAdapter}, use
-         * the {@link CursorAdapter(Context, Cursor, int)} constructor <em>without</em> passing
-         * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
-         * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
-         * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
-         * from doing its own observing of the Cursor, which is not needed since
-         * when a change happens you will get a new Cursor throw another call
-         * here.
-         * <li> The Loader will release the data once it knows the application
-         * is no longer using it.  For example, if the data is
-         * a {@link Cursor} from a {@link CursorLoader},
-         * you should not call close() on it yourself.  If the Cursor is being placed in a
-         * {@link CursorAdapter}, you should use the
-         * {@link CursorAdapter#swapCursor(Cursor)}
-         * method so that the old Cursor is not closed.
-         * </ul>
+         * Called when a previously created loaderId has finished its load.
          *
          * @param loader The Loader that has finished.
          * @param data   The data generated by the Loader.

@@ -2,13 +2,10 @@ package com.example.android.popularmoviesstage2.fragments;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
@@ -18,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +22,7 @@ import android.widget.Toast;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.activities.MovieDetailsActivity;
 import com.example.android.popularmoviesstage2.adapters.MoviesListAdapter;
-import com.example.android.popularmoviesstage2.asynctaskloaders.TmdbMoviesAsyncTaskLoader;
+import com.example.android.popularmoviesstage2.asynctaskloaders.GenericAsyncTaskLoader;
 import com.example.android.popularmoviesstage2.classes.MyCustomToast;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
@@ -44,8 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MoviesFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<ArrayList<TmdbMovie>> {
+@SuppressWarnings("unchecked")
+public class MoviesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object> {
     private static final String TAG = MoviesFragment.class.getSimpleName();
     private static final int RESULT_CODE_MOVIE_DETAILS = 0;
 
@@ -65,7 +61,7 @@ public class MoviesFragment extends Fragment
     private boolean isLoading, appendToEnd;
     private ArrayList<TmdbMovie> moviesArrayList;
     private Unbinder unbinder;
-    private Loader<ArrayList<TmdbMovie>> loader = null;
+    private Loader<Object> loader = null;
     private Toast customToast = null;
     private ViewPager viewPager;
     private FloatingActionButton floatingActionButton;
@@ -98,6 +94,7 @@ public class MoviesFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.movies_fab);
@@ -126,7 +123,7 @@ public class MoviesFragment extends Fragment
             getFragmentManager().beginTransaction().remove(this).commit();
         }
 
-        Log.i(TAG, "(onCreate) Fragment created");
+        Log.i(methodTag, "Fragment created");
         return rootView;
     }
 
@@ -172,17 +169,19 @@ public class MoviesFragment extends Fragment
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Override
-    public Loader<ArrayList<TmdbMovie>> onCreateLoader(int id, Bundle args) {
+    public Loader<Object> onCreateLoader(int id, Bundle args) {
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             isLoading = true;
             progressBar.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.INVISIBLE);
-            loader = new TmdbMoviesAsyncTaskLoader(getContext(), contentType, null,
-                    currentPage, tmdbMoviesParameters);
+            loader = new GenericAsyncTaskLoader(getContext(), contentType, null,
+                    currentPage, tmdbMoviesParameters,
+                    GenericAsyncTaskLoader.ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST);
         } else {
             // There is no connection. Restart everything and show error message.
-            Log.i(TAG, "(onCreateLoader) No internet connection.");
+            Log.i(methodTag, "No internet connection.");
             initVariables();
             setRecyclerView();
             progressBar.setVisibility(View.INVISIBLE);
@@ -194,45 +193,15 @@ public class MoviesFragment extends Fragment
     }
 
     /**
-     * Called when a previously created loader has finished its load.  Note
-     * that normally an application is <em>not</em> allowed to commit fragment
-     * transactions while in this call, since it can happen after an
-     * activity's state is saved.  See {@link FragmentManager#beginTransaction()
-     * FragmentManager.openTransaction()} for further discussion on this.
-     * <p>
-     * <p>This function is guaranteed to be called prior to the release of
-     * the last data that was supplied for this Loader.  At this point
-     * you should remove all use of the old data (since it will be released
-     * soon), but should not do your own release of the data since its Loader
-     * owns it and will take care of that.  The Loader will take care of
-     * management of its data so you don't have to.  In particular:
-     * <p>
-     * <ul>
-     * <li> <p>The Loader will monitor for changes to the data, and report
-     * them to you through new calls here.  You should not monitor the
-     * data yourself.  For example, if the data is a {@link Cursor}
-     * and you place it in a {@link CursorAdapter}, use
-     * the  constructor <em>without</em> passing
-     * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
-     * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
-     * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
-     * from doing its own observing of the Cursor, which is not needed since
-     * when a change happens you will get a new Cursor throw another call
-     * here.
-     * <li> The Loader will release the data once it knows the application
-     * is no longer using it.  For example, if the data is
-     * a {@link Cursor} from a {@link CursorLoader},
-     * you should not call close() on it yourself.  If the Cursor is being placed in a
-     * {@link CursorAdapter}, you should use the
-     * {@link CursorAdapter#swapCursor(Cursor)}
-     * method so that the old Cursor is not closed.
-     * </ul>
+     * Called when a previously created loader has finished its load.
      *
      * @param loader The Loader that has finished.
      * @param data   The data generated by the Loader.
      */
     @Override
-    public void onLoadFinished(final Loader<ArrayList<TmdbMovie>> loader, ArrayList<TmdbMovie> data) {
+    public void onLoadFinished(final Loader<Object> loader, Object data) {
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+
         // Hide progress bar.
         progressBar.setVisibility(View.INVISIBLE);
         isLoading = false;
@@ -247,18 +216,19 @@ public class MoviesFragment extends Fragment
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid list of {@link TmdbMovie} objects, add them to the adapter's data
             // set.
-            if (data != null && data.size() > 0) {
-                Log.i(TAG, "(onLoadFinished) Search results not null.");
+            ArrayList<TmdbMovie> movies = (ArrayList<TmdbMovie>) data;
+            if (data != null && movies.size() > 0) {
+                Log.i(methodTag, "Search results not null.");
 
                 // Get movies_menu list and display it.
-                moviesListAdapter.updateMoviesArrayList(data, appendToEnd);
+                moviesListAdapter.updateMoviesArrayList(movies, appendToEnd);
                 moviesListAdapter.notifyDataSetChanged();
 
                 // Show a message with search results, only when displaying the first page in the
                 // currently visible fragment.
-                if (getUserVisibleHint() && data.get(0).getPage() == 1) {
+                if (getUserVisibleHint() && movies.get(0).getPage() == 1) {
                     // Set text.
-                    int results = data.get(0).getTotal_results();
+                    int results = movies.get(0).getTotal_results();
                     String title = "";
                     String htmlText = "";
                     NumberFormat numberFormat = NumberFormat.getNumberInstance();
@@ -310,7 +280,7 @@ public class MoviesFragment extends Fragment
                             break;
 
                         default:
-                            Log.i(TAG, "(onLoadFinished) No valid loader.");
+                            Log.i(methodTag, "No valid loader.");
                             floatingActionButton.setVisibility(View.GONE);
                             noResultsTextView.setVisibility(View.VISIBLE);
                             noResultsTextView.setText(getResources().getString(R.string.no_results));
@@ -324,13 +294,13 @@ public class MoviesFragment extends Fragment
                     }
                 }
             } else {
-                Log.i(TAG, "(onLoadFinished) No search results.");
+                Log.i(methodTag, "No search results.");
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getResources().getString(R.string.no_results));
             }
         } else {
             // There is no connection. Show error message.
-            Log.i(TAG, "(onLoadFinished) No connection to internet.");
+            Log.i(methodTag, "No connection to internet.");
             floatingActionButton.setVisibility(View.GONE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getResources().getString(R.string.no_connection));
@@ -344,7 +314,7 @@ public class MoviesFragment extends Fragment
      * @param loader The Loader that is being reset.
      */
     @Override
-    public void onLoaderReset(Loader<ArrayList<TmdbMovie>> loader) {
+    public void onLoaderReset(Loader<Object> loader) {
         isLoading = false;
     }
 
