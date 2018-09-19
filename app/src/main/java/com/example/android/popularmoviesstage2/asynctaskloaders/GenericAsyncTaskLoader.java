@@ -13,6 +13,9 @@ import com.example.android.popularmoviesstage2.classes.TmdbTVSeriesParameters;
 import java.util.ArrayList;
 
 public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
+    private final String TAG = GenericAsyncTaskLoader.class.getSimpleName();
+
+    // Public constants.
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_LIST = 1;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_CAST_CREW = 2;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MEDIA = 3;
@@ -22,8 +25,8 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE = 7;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_REVIEWS = 8;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_SERIES_LIST = 9;
-    private final String TAG = GenericAsyncTaskLoader.class.getSimpleName();
 
+    // Member variables.
     private Object mData;
     private String mContentType, mIMDBid, mLanguage, mRegion;
     private int mAsyncTaskLoaderType, mCurrentPage, mMovieId, mCollectionId;

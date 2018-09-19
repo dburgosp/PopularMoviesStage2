@@ -33,10 +33,10 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      * @param listener          is the listener for receiving the clicks.
      */
     public CastAdapter(ArrayList<TmdbCast> tmdbCastArrayList, OnItemClickListener listener) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbCastArrayList = tmdbCastArrayList;
         this.listener = listener;
-        Log.i(TAG + "." + methodName, "Object created");
+        Log.i(methodTag, "Object created");
     }
 
     /**
@@ -45,9 +45,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      * @param personsArrayList is the new list of persons.
      */
     public void setCastArray(ArrayList<TmdbCast> personsArrayList) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         this.tmdbCastArrayList = personsArrayList;
-        Log.i(TAG + "." + methodName, "TmdbCast list updated");
+        Log.i(methodTag, "TmdbCast list updated");
     }
 
     /**
@@ -81,8 +81,8 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      */
     @Override
     public CastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.i(TAG + "." + methodName, "ViewHolder created");
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(methodTag, "ViewHolder created");
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.list_item_person_thumbnail_horizontal, parent, false);
         return new CastViewHolder(view);
@@ -108,15 +108,16 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      */
     @Override
     public void onBindViewHolder(CastViewHolder viewHolder, int position) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.i(TAG + "." + methodName, "Displaying data at position " + position);
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(methodTag, "Displaying data at position " + position);
         if (!tmdbCastArrayList.isEmpty()) {
             TmdbCast currentTmdbCast = tmdbCastArrayList.get(position);
 
             // Set position in the adapter for current person.
             //currentTmdbCast.setPosition(position);
 
-            // Update CastViewHolder with the person movie_details_menu at current position in the adapter.
+            // Update CastViewHolder with the person movie_details_menu at current position in the
+            // adapter.
             viewHolder.bind(currentTmdbCast, listener);
 
             // Save current position.
@@ -131,9 +132,9 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
      */
     @Override
     public int getItemCount() {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         int itemCount = tmdbCastArrayList.size();
-        Log.i(TAG + "." + methodName, "Number of items in this adapter: " + itemCount);
+        Log.i(methodTag, "Number of items in this adapter: " + itemCount);
         return itemCount;
     }
 
@@ -171,11 +172,11 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
          */
         CastViewHolder(View itemView) {
             super(itemView);
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
             ButterKnife.bind(this, itemView);
             viewHolder = itemView;
             context = itemView.getContext();
-            Log.i(TAG + "." + methodName, "New ViewHolder created");
+            Log.i(methodTag, "New ViewHolder created");
         }
 
         /**
@@ -186,8 +187,8 @@ public class CastAdapter extends RecyclerView.Adapter<CastAdapter.CastViewHolder
          * @param listener      is the listener for click events.
          */
         public void bind(final TmdbCast currentPerson, final CastAdapter.OnItemClickListener listener) {
-            String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-            Log.i(TAG + "." + methodName, "Binding data for the current CastViewHolder.");
+            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(methodTag, "Binding data for the current CastViewHolder.");
 
             // Draw profile image for current person and resize image to fit screen size and orientation.
             String profilePath = Tmdb.TMDB_POSTER_SIZE_W185_URL + currentPerson.getProfile_path();

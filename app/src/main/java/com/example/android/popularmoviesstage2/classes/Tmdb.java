@@ -1678,4 +1678,22 @@ public class Tmdb {
         // no result, this array will be empty.
         return tmdbImages;
     }
+
+    /**
+     * Public method to get all the TMDB networks that provide VOD (Video On Demand) services.
+     *
+     * @return an ArrayList with the VOD network codes.
+     */
+    static public ArrayList<String> getVODNetworks() {
+        ArrayList<String> networks = new ArrayList<>();
+
+        networks.add(Tmdb.TMDB_NETWORK_CODE_NETFLIX);
+        networks.add(Tmdb.TMDB_NETWORK_CODE_HBO);
+        networks.add(Tmdb.TMDB_NETWORK_CODE_MOVISTAR_PLUS);
+        networks.add(Tmdb.TMDB_NETWORK_CODE_YOUTUBE);
+        networks.add(Tmdb.TMDB_NETWORK_CODE_AMAZON);
+        networks.add(Tmdb.TMDB_NETWORK_CODE_SKY_TV);
+
+        return networks;
+    }
 }
