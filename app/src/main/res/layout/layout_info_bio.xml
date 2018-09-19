@@ -14,5 +14,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/normal_plus_text_size"
-        tools:text="There is no bio for this person in the current language right now." />
+        tools:text="There is no bio for this person in the current mLanguage right now." />
 </LinearLayout>

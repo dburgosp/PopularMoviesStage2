@@ -73,7 +73,7 @@ public class MoviesListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AnimatedViewsUtils.setTransitions(getWindow());
+        AnimatedViewsUtils.setSlideTransitions(getWindow());
 
         setContentView(R.layout.activity_movies_list);
         unbinder = ButterKnife.bind(this);

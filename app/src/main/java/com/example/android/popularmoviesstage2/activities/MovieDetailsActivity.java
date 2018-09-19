@@ -84,7 +84,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
-        AnimatedViewsUtils.setTransitions(getWindow());
+        AnimatedViewsUtils.setSlideTransitions(getWindow());
 
         setContentView(R.layout.activity_movie_details);
         unbinder = ButterKnife.bind(this);

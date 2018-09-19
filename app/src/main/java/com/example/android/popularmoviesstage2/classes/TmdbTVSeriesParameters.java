@@ -1,105 +1,95 @@
 package com.example.android.popularmoviesstage2.classes;
 
+import java.util.ArrayList;
+
 /**
  * Class for managing the parameters to use in a search for a movies list from TMDB.
  */
 public class TmdbTVSeriesParameters {
-    private String language;
-    private String sortBy;
-    private Double voteAverage;
-    private int voteCount;
-    private String region;
-    private String releaseType;
-    private String initAirDate;
-    private String endAirDate;
+    private String mLanguage;
+    private String mSortBy;
+    private Double mVoteAverage;
+    private int mVoteCount;
+    private String mInitAirDate;
+    private String mEndAirDate;
+    private ArrayList<String> mNetworks;
 
     /**
      * Constructor for objects of this class.
      *
-     * @param language    is the language of the results.
+     * @param language    is the mLanguage of the results.
      * @param sortBy      is the sort order for the list of results.
-     * @param voteAverage is the minimum users rating of the movies_menu in the list.
-     * @param voteCount   is the minimum number of users votes of the movies_menu in the list.
-     * @param region      is the region for getting results.
-     * @param releaseType is the value or list of values to filter release types by.
-     * @param initAirDate is the initial date of the time range to filter movies_menu, if needed.
-     * @param endAirDate  is the end date of the time range to filter movies_menu, if needed.
+     * @param voteAverage is the minimum users rating of the TV series in the list.
+     * @param voteCount   is the minimum number of users votes of the TV series in the list.
+     * @param initAirDate is the initial date of the time range to filter TV series, if needed.
+     * @param endAirDate  is the end date of the time range to filter TV series, if needed.
+     * @param networks    is the list of mNetworks to filter TV series, if needed.
      */
     public TmdbTVSeriesParameters(String language, String sortBy, Double voteAverage, int voteCount,
-                                  String region, String releaseType, String initAirDate,
-                                  String endAirDate) {
-        this.language = language;
-        this.sortBy = sortBy;
-        this.voteAverage = voteAverage;
-        this.voteCount = voteCount;
-        this.region = region;
-        this.releaseType = releaseType;
-        this.initAirDate = initAirDate;
-        this.endAirDate = endAirDate;
+                                  String initAirDate, String endAirDate, ArrayList<String> networks) {
+        mLanguage = language;
+        mSortBy = sortBy;
+        mVoteAverage = voteAverage;
+        mVoteCount = voteCount;
+        mInitAirDate = initAirDate;
+        mEndAirDate = endAirDate;
+        mNetworks = networks;
     }
 
     // Getters and setters.
     public String getLanguage() {
-        return language;
+        return mLanguage;
     }
 
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setLanguage(String mLanguage) {
+        mLanguage = mLanguage;
     }
 
     public String getSortBy() {
-        return sortBy;
+        return mSortBy;
     }
 
     public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
+        mSortBy = sortBy;
     }
 
     public Double getVoteAverage() {
-        return voteAverage;
+        return mVoteAverage;
     }
 
     public void setVoteAverage(Double voteAverage) {
-        this.voteAverage = voteAverage;
+        mVoteAverage = voteAverage;
     }
 
     public int getVoteCount() {
-        return voteCount;
+        return mVoteCount;
     }
 
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public String getReleaseType() {
-        return releaseType;
-    }
-
-    public void setReleaseType(String releaseType) {
-        this.releaseType = releaseType;
+    public void setVoteCount(int mVoteCount) {
+        mVoteCount = mVoteCount;
     }
 
     public String getInitAirDate() {
-        return initAirDate;
+        return mInitAirDate;
     }
 
     public void setInitAirDate(String initAirDate) {
-        this.initAirDate = initAirDate;
+        mInitAirDate = initAirDate;
     }
 
     public String getEndAirDate() {
-        return endAirDate;
+        return mEndAirDate;
     }
 
-    public void setEndAirDate(String endAirDate) {
-        this.endAirDate = endAirDate;
+    public void setEndAirDate(String mEndAirDate) {
+        mEndAirDate = mEndAirDate;
+    }
+
+    public ArrayList<String> getNetworks() {
+        return mNetworks;
+    }
+
+    public void setNetworks(ArrayList<String> networks) {
+        mNetworks = networks;
     }
 }

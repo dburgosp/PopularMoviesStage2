@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
+import android.transition.Fade;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.View;
@@ -68,13 +69,23 @@ public final class AnimatedViewsUtils {
     }
 
     /**
-     * Define transitions to exit/enter from/to an activity.
+     * Define slide transitions to exit/enter from/to an activity.
      */
-    public static void setTransitions(Window window) {
+    public static void setSlideTransitions(Window window) {
         window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         window.setBackgroundDrawableResource(R.color.colorPrimaryDark);
         window.setEnterTransition(new Slide(Gravity.END));
         window.setExitTransition(new Slide(Gravity.START));
+    }
+
+    /**
+     * Define fade transitions to exit/enter from/to an activity.
+     */
+    public static void setFadeTransitions(Window window) {
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        window.setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        window.setEnterTransition(new Fade(Fade.IN));
+        window.setExitTransition(new Fade(Fade.OUT));
     }
 
     /**
@@ -152,7 +163,7 @@ public final class AnimatedViewsUtils {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                rootLayout.setVisibility(View.INVISIBLE);
+                //rootLayout.setVisibility(View.INVISIBLE);
                 if (activity != null)
                     activity.finish();
             }

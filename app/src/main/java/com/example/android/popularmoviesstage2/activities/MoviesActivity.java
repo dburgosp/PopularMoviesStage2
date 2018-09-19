@@ -20,6 +20,7 @@ import android.view.View;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.MyNavigationDrawer;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MoviesFragmentPagerAdapter;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,8 +47,8 @@ public class MoviesActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //AnimatedViewsUtils.setTransitions(getWindow());
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
+        AnimatedViewsUtils.setSlideTransitions(getWindow());
+        //AnimatedViewsUtils.setFadeTransitions(getWindow());
         setContentView(R.layout.activity_movies);
         unbinder = ButterKnife.bind(this);
 
@@ -163,6 +164,12 @@ public class MoviesActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return MyNavigationDrawer.onNavigationItemSelected(item.getItemId(),
                 (DrawerLayout) findViewById(R.id.movies_drawer_layout));
+    }
+
+    @Override
+    public void onBackPressed() {
+        supportFinishAfterTransition();
+        super.onBackPressed();
     }
 
     @Override

@@ -59,6 +59,7 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //AnimatedViewsUtils.setSlideTransitions(getWindow());
         setContentView(R.layout.activity_config_filtered_movies);
         unbinder = ButterKnife.bind(this);
 
@@ -158,6 +159,8 @@ public class ConfigFilteredMoviesActivity extends AppCompatActivity {
         // Reverse circular reveal animation and finish this activity.
         AnimatedViewsUtils.circularUnrevealLayout(rootLayout, revealX, revealY,
                 ConfigFilteredMoviesActivity.this, AnimatedViewsUtils.ANIM_DURATION_SHORT);
+
+        super.onBackPressed();
     }
 
     @Override

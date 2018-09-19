@@ -40,37 +40,6 @@
             android:drawableStart="@drawable/ic_local_movies_white_18dp"
             tools:text="@string/movies" />
 
-        <ImageView
-            android:id="@+id/layout_main_cardview_content_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="-12dp"
-            android:alpha="0.6"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:paddingBottom="@dimen/small_padding"
-            android:paddingEnd="-4dp"
-            android:paddingStart="4dp"
-            android:paddingTop="@dimen/small_padding"
-            android:src="@drawable/ic_keyboard_arrow_left_white_36dp" />
-
-        <ImageView
-            android:id="@+id/layout_main_cardview_content_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="-12dp"
-            android:alpha="0.6"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:paddingBottom="@dimen/small_padding"
-            android:paddingEnd="4dp"
-            android:paddingStart="-4dp"
-            android:paddingTop="@dimen/small_padding"
-            android:src="@drawable/ic_keyboard_arrow_right_white_36dp" />
-
         <TextView
             android:id="@+id/layout_main_cardview_content_message"
             android:layout_width="match_parent"

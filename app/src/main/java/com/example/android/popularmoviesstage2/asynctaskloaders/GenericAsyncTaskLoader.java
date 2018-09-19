@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.android.popularmoviesstage2.classes.Omdb;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMoviesParameters;
+import com.example.android.popularmoviesstage2.classes.TmdbTVSeriesParameters;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_MOVIES_COLLECTION = 6;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_PEOPLE = 7;
     public static final int ASYNC_TASK_LOADER_TYPE_TMDB_REVIEWS = 8;
+    public static final int ASYNC_TASK_LOADER_TYPE_TMDB_SERIES_LIST = 9;
     private final String TAG = GenericAsyncTaskLoader.class.getSimpleName();
 
     private Object mData;
@@ -27,6 +29,7 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
     private int mAsyncTaskLoaderType, mCurrentPage, mMovieId, mCollectionId;
     private ArrayList<Integer> mValues;
     private TmdbMoviesParameters mTMDBMoviesParameters;
+    private TmdbTVSeriesParameters mTMDBTVSeriesParameters;
 
     /**
      * Constructor for this class (fetching a TmdbMovieDetails object or an ArrayList<TmdbPerson>
@@ -74,6 +77,29 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
         mValues = values;
         mCurrentPage = currentPage;
         mTMDBMoviesParameters = tmdbMoviesParameters;
+        mAsyncTaskLoaderType = asyncTaskLoaderType;
+    }
+
+    /**
+     * Constructor for this class (fetching an ArrayList<TmdbTVSeries> from TMDB).
+     *
+     * @param context                is the context of the activity.
+     * @param contentType            is the content type to fetch from TMDB.
+     * @param values                 is the list of possible mValues to assign to the mContentType
+     *                               parameter.
+     * @param currentPage            is the current page to fetch results from TMDB.
+     * @param tmdbTVSeriesParameters are the parameters to append to the url for fetching the TV
+     *                               series list.
+     * @param asyncTaskLoaderType    ASYNC_TASK_LOADER_TYPE_TMDB_SERIES_LIST.
+     */
+    public GenericAsyncTaskLoader(Context context, String contentType, ArrayList<Integer> values,
+                                  int currentPage, TmdbTVSeriesParameters tmdbTVSeriesParameters,
+                                  int asyncTaskLoaderType) {
+        super(context);
+        mContentType = contentType;
+        mValues = values;
+        mCurrentPage = currentPage;
+        mTMDBTVSeriesParameters = tmdbTVSeriesParameters;
         mAsyncTaskLoaderType = asyncTaskLoaderType;
     }
 
@@ -179,6 +205,22 @@ public class GenericAsyncTaskLoader extends AsyncTaskLoader<Object> {
                             mCurrentPage);
                     return Tmdb.getTmdbMovies(mContentType, mValues, mCurrentPage,
                             mTMDBMoviesParameters);
+                } else {
+                    // Wrong parameters.
+                    Log.i(methodTag, "Wrong parameters.");
+                    return null;
+                }
+
+            case ASYNC_TASK_LOADER_TYPE_TMDB_SERIES_LIST:
+                // We are fetching an ArrayList<TmdbTVSeries> from TMDB.
+                Log.i(methodTag, "Fetching an ArrayList<TmdbTVSeries> from TMDB...");
+                if (Tmdb.isAllowedSortOrder(mContentType) && mCurrentPage > 0 &&
+                        mCurrentPage <= Tmdb.TMDB_MAX_PAGES) {
+                    // Perform the network request, parse the response, and extract results.
+                    Log.i(methodTag, "Sort by: " + mContentType + ". Page number: " +
+                            mCurrentPage);
+                    return Tmdb.getTmdbTVSeries(mContentType, mValues, mCurrentPage,
+                            mTMDBTVSeriesParameters);
                 } else {
                     // Wrong parameters.
                     Log.i(methodTag, "Wrong parameters.");

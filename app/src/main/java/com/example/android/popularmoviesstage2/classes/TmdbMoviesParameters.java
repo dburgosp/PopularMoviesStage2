@@ -4,15 +4,15 @@ package com.example.android.popularmoviesstage2.classes;
  * Class for managing the parameters to use in a search for a movies list from TMDB.
  */
 public class TmdbMoviesParameters {
-    private String language;
-    private String sortBy;
-    private String certification;
-    private Double voteAverage;
-    private int voteCount;
-    private String region;
-    private String releaseType;
-    private String initDate;
-    private String endDate;
+    private String mLanguage;
+    private String mSortBy;
+    private String mCertification;
+    private Double mVoteAverage;
+    private int mVoteCount;
+    private String mRegion;
+    private String mReleaseType;
+    private String mInitDate;
+    private String mEndDate;
 
     /**
      * Constructor for objects of this class.
@@ -31,87 +31,87 @@ public class TmdbMoviesParameters {
     public TmdbMoviesParameters(String language, String sortBy, String certification,
                                 Double voteAverage, int voteCount, String region,
                                 String releaseType, String initDate, String endDate) {
-        this.language = language;
-        this.sortBy = sortBy;
-        this.certification = certification;
-        this.voteAverage = voteAverage;
-        this.voteCount = voteCount;
-        this.region = region;
-        this.releaseType = releaseType;
-        this.initDate = initDate;
-        this.endDate = endDate;
+        mLanguage = language;
+        mSortBy = sortBy;
+        mCertification = certification;
+        mVoteAverage = voteAverage;
+        mVoteCount = voteCount;
+        mRegion = region;
+        mReleaseType = releaseType;
+        mInitDate = initDate;
+        mEndDate = endDate;
     }
 
     // Getters and setters.
     public String getLanguage() {
-        return language;
+        return mLanguage;
     }
 
     public void setLanguage(String language) {
-        this.language = language;
+        mLanguage = language;
     }
 
     public String getSortBy() {
-        return sortBy;
+        return mSortBy;
     }
 
     public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
+        mSortBy = sortBy;
     }
 
     public String getCertification() {
-        return certification;
+        return mCertification;
     }
 
     public void setCertification(String certification) {
-        this.certification = certification;
+        mCertification = certification;
     }
 
     public Double getVoteAverage() {
-        return voteAverage;
+        return mVoteAverage;
     }
 
     public void setVoteAverage(Double voteAverage) {
-        this.voteAverage = voteAverage;
+        mVoteAverage = voteAverage;
     }
 
     public int getVoteCount() {
-        return voteCount;
+        return mVoteCount;
     }
 
     public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
+        mVoteCount = voteCount;
     }
 
     public String getRegion() {
-        return region;
+        return mRegion;
     }
 
     public void setRegion(String region) {
-        this.region = region;
+        mRegion = region;
     }
 
     public String getReleaseType() {
-        return releaseType;
+        return mReleaseType;
     }
 
     public void setReleaseType(String releaseType) {
-        this.releaseType = releaseType;
+        mReleaseType = releaseType;
     }
 
     public String getInitDate() {
-        return initDate;
+        return mInitDate;
     }
 
     public void setInitDate(String initDate) {
-        this.initDate = initDate;
+        mInitDate = initDate;
     }
 
     public String getEndDate() {
-        return endDate;
+        return mEndDate;
     }
 
     public void setEndDate(String endDate) {
-        this.endDate = endDate;
+        mEndDate = endDate;
     }
 }

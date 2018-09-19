@@ -20,10 +20,10 @@ public final class NetworkUtils {
 
     // Unique identifiers for loaders.
     public static final int TMDB_NOW_PLAYING_MOVIES_LOADER_ID = 0;
-    public static final int TMDB_THIS_WEEK_RELEASES_MOVIES_LOADER_ID = 1;
+    public static final int TMDB_ON_THE_AIR_SERIES_LOADER_ID = 1;
     public static final int TMDB_UPCOMING_MOVIES_LOADER_ID = 2;
-    public static final int TMDB_POPULAR_MOVIES_LOADER_ID = 3;
-    public static final int TMDB_TOP_RATED_MOVIES_LOADER_ID = 4;
+    public static final int TMDB_BUY_AND_RENT_SERIES_LOADER_ID = 3;
+    public static final int TMDB_AIRING_TODAY_SERIES_LOADER_ID = 4;
     public static final int TMDB_BUY_AND_RENT_MOVIES_LOADER_ID = 5;
     public static final int TMDB_FAVORITE_MOVIES_LOADER_ID = 6;
     public static final int TMDB_MOVIE_DETAILS_LOADER_ID = 7;

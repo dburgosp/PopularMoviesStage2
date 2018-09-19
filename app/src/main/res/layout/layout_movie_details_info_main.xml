@@ -73,7 +73,7 @@
         android:id="@+id/movie_details_info_main_original_title_content"
         style="@style/SectionContentWhite"
         android:layout_marginBottom="@dimen/small_padding"
-        tools:text="Movie title in its original language" />
+        tools:text="Movie title in its original mLanguage" />
 
     <TextView
         android:id="@+id/movie_details_info_main_production_companies_header"

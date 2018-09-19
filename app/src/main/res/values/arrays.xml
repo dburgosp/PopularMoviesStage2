@@ -503,7 +503,7 @@
         <item>SS</item>
     </string-array>
 
-    <!-- Arrays for language preferences -->
+    <!-- Arrays for mLanguage preferences -->
     <string-array name="preferences_language_list_array">
         <item>@string/preferences_language_locale_title</item>
         <item>@string/preferences_language_xx_title</item>

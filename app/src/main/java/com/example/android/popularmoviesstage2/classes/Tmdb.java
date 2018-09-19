@@ -34,12 +34,16 @@ public class Tmdb {
     public final static String TMDB_CONTENT_TYPE_TOP_RATED = "top_rated";
     public final static String TMDB_CONTENT_TYPE_FAVORITES = "favorites";
     public final static String TMDB_CONTENT_TYPE_NOW_PLAYING = "now_playing";
+    public final static String TMDB_CONTENT_TYPE_NOW_PLAYING_IN_THEATERS = "now_playing_in_theaters";
     public final static String TMDB_CONTENT_TYPE_UPCOMING = "upcoming";
+    public final static String TMDB_CONTENT_TYPE_UPCOMING_IN_THEATERS = "upcoming_in_theaters";
     public final static String TMDB_CONTENT_TYPE_THIS_WEEK_RELEASES = "this_week_releases";
     public final static String TMDB_CONTENT_TYPE_NEXT_WEEK_RELEASES = "next_week_releases";
     public final static String TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT = "buy_and_rent";
     public final static String TMDB_CONTENT_TYPE_GENRES = "genre";
     public final static String TMDB_CONTENT_TYPE_KEYWORDS = "keyword";
+    public final static String TMDB_CONTENT_TYPE_ON_THE_AIR = "on_the_air";
+    public final static String TMDB_CONTENT_TYPE_AIRING_TODAY = "airing_today";
 
     // Paths for appending to urls.
     private final static String TMDB_MOVIE_PATH = "movie";
@@ -59,6 +63,8 @@ public class Tmdb {
     private final static String TMDB_PARAM_LANGUAGE = "language";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS = "primary_release_date.lte";
     private final static String TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER = "primary_release_date.gte";
+    private final static String TMDB_PARAM_AIR_DATE_LESS = "air_date.lte";
+    private final static String TMDB_PARAM_AIR_DATE_GREATER = "air_date.gte";
     private final static String TMDB_PARAM_RELEASE_DATE_LESS = "release_date.lte";
     private final static String TMDB_PARAM_RELEASE_DATE_GREATER = "release_date.gte";
     private final static String TMDB_PARAM_RELEASE_TYPE = "with_release_type";
@@ -70,6 +76,7 @@ public class Tmdb {
     private final static String TMDB_PARAM_CERTIFICATION = "certification.lte";
     private final static String TMDB_PARAM_VOTE_COUNT = "vote_count.gte";
     private final static String TMDB_PARAM_VOTE_AVERAGE = "vote_average.gte";
+    private final static String TMDB_PARAM_WITH_NETWORKS = "with_networks";
 
     // Values for parameters.
     public final static String TMDB_VALUE_POPULARITY_DESC = "popularity.desc";
@@ -78,6 +85,14 @@ public class Tmdb {
     public final static String TMDB_VALUE_PRIMARY_RELEASE_DATE_ASC = "primary_release_date.asc";
     public final static String TMDB_VALUE_VOTE_AVERAGE_DESC = "vote_average.desc";
     public final static String TMDB_VALUE_VOTE_AVERAGE_ASC = "vote_average.asc";
+
+    // VOD network TMDB codes.
+    public final static String TMDB_NETWORK_CODE_NETFLIX = "213";
+    public final static String TMDB_NETWORK_CODE_HBO = "49";
+    public final static String TMDB_NETWORK_CODE_MOVISTAR_PLUS = "1242";
+    public final static String TMDB_NETWORK_CODE_YOUTUBE = "247";
+    public final static String TMDB_NETWORK_CODE_AMAZON = "1024";
+    public final static String TMDB_NETWORK_CODE_SKY_TV = "2954";
 
     // Values.
     public final static int TMDB_MAX_PAGES = 1000;
@@ -115,13 +130,13 @@ public class Tmdb {
                                                           int currentPage,
                                                           TmdbTVSeriesParameters tmdbTVSeriesParameters) {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.i(TAG + "." + methodName, "Content type: " + contentType + ". Page number: " +
-                currentPage + ". Language: " + tmdbTVSeriesParameters.getLanguage() + ". Region: " +
-                tmdbTVSeriesParameters.getRegion() + ". Sort order: " +
-                tmdbTVSeriesParameters.getSortBy() + ". Release types: " +
-                tmdbTVSeriesParameters.getReleaseType() + ". Init date: " +
-                tmdbTVSeriesParameters.getInitAirDate() + ". End date: " +
-                tmdbTVSeriesParameters.getEndAirDate());
+        Log.i(TAG + "." + methodName, "Content type: " + contentType);
+        Log.i(TAG + "." + methodName, "Page number: " + currentPage);
+        Log.i(TAG + "." + methodName, "Language: " + tmdbTVSeriesParameters.getLanguage());
+        Log.i(TAG + "." + methodName, "Sort order: " + tmdbTVSeriesParameters.getSortBy());
+        Log.i(TAG + "." + methodName, "Init air date: " + tmdbTVSeriesParameters.getInitAirDate());
+        Log.i(TAG + "." + methodName, "End air date: " + tmdbTVSeriesParameters.getEndAirDate());
+        Log.i(TAG + "." + methodName, "Network list is " + tmdbTVSeriesParameters.getNetworks() == null ? "empty" : "not empty");
 
         /* ------------ */
         /* Get the JSON */
@@ -137,11 +152,11 @@ public class Tmdb {
         // Append dates range, if required.
         if (!tmdbTVSeriesParameters.getInitAirDate().equals("") &&
                 !tmdbTVSeriesParameters.getInitAirDate().isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_GREATER,
+            builder.appendQueryParameter(TMDB_PARAM_AIR_DATE_GREATER,
                     tmdbTVSeriesParameters.getInitAirDate());
         if (!tmdbTVSeriesParameters.getEndAirDate().equals("") &&
                 !tmdbTVSeriesParameters.getEndAirDate().isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_PRIMARY_RELEASE_DATE_LESS,
+            builder.appendQueryParameter(TMDB_PARAM_AIR_DATE_LESS,
                     tmdbTVSeriesParameters.getEndAirDate());
 
         // Append filters for number of votes and/or users rating, if required.
@@ -151,12 +166,6 @@ public class Tmdb {
         if (tmdbTVSeriesParameters.getVoteAverage() > 0.0)
             builder.appendQueryParameter(TMDB_PARAM_VOTE_AVERAGE,
                     Double.toString(tmdbTVSeriesParameters.getVoteAverage()));
-
-        // Append filter for release type (on theaters, on DVD, etc.) if required.
-        if (!tmdbTVSeriesParameters.getReleaseType().equals("") &&
-                !tmdbTVSeriesParameters.getReleaseType().isEmpty())
-            builder.appendQueryParameter(TMDB_PARAM_RELEASE_TYPE,
-                    tmdbTVSeriesParameters.getReleaseType());
 
         // Filter tv series with genres or keywords = list of comma-separated values.
         if (contentType.equals(TMDB_CONTENT_TYPE_GENRES) ||
@@ -180,10 +189,16 @@ public class Tmdb {
                 !tmdbTVSeriesParameters.getLanguage().isEmpty())
             builder.appendQueryParameter(TMDB_PARAM_LANGUAGE, tmdbTVSeriesParameters.getLanguage());
 
-        // Append region filter, if required.
-        if (!tmdbTVSeriesParameters.getRegion().equals("") &&
-                !tmdbTVSeriesParameters.getRegion().isEmpty()) {
-            builder.appendQueryParameter(TMDB_PARAM_REGION, tmdbTVSeriesParameters.getRegion());
+        // Append network list filter, if required.
+        if (tmdbTVSeriesParameters.getNetworks() != null &&
+                !tmdbTVSeriesParameters.getNetworks().isEmpty()) {
+            StringBuilder networks = new StringBuilder();
+            for (int i = 0; i < tmdbTVSeriesParameters.getNetworks().size(); i++) {
+                networks.append(tmdbTVSeriesParameters.getNetworks().get(i));
+                if ((i + 1) < tmdbTVSeriesParameters.getNetworks().size())
+                    networks.append("|");
+            }
+            builder.appendQueryParameter(TMDB_PARAM_WITH_NETWORKS, networks.toString());
         }
 
         // Paging information.
@@ -262,27 +277,26 @@ public class Tmdb {
      * @param page             is the current page of the movie element.
      * @param total_pages      is the number of pages of the current query.
      * @param total_results    is the number of movies of the current query.
-     * @return the {@link TmdbMovie} object parsed from the JSON.
+     * @return the {@link TmdbTVSeries} object parsed from the JSON.
      * @throws JSONException from getJSONArray and getJSONObject calls.
      */
     private static TmdbTVSeries getTVSeries(JSONObject baseJSONResponse, int n, int page,
                                             int total_pages,
                                             int total_results) throws JSONException {
         // Extract the required values for the corresponding keys.
-        boolean adult = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "adult");
-        String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
-        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
-        String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
-        String original_title = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_title");
-        String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
+        String original_name = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_name");
+        String name = NetworkUtils.getStringFromJSON(baseJSONResponse, "name");
         Double popularity = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "popularity");
-        String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
-        String release_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "release_date");
-        String title = NetworkUtils.getStringFromJSON(baseJSONResponse, "title");
-        Boolean video = NetworkUtils.getBooleanFromJSON(baseJSONResponse, "video");
-        Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
         int vote_count = NetworkUtils.getIntFromJSON(baseJSONResponse, "vote_count");
+        String first_air_date = NetworkUtils.getStringFromJSON(baseJSONResponse, "first_air_date");
+        String backdrop_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "backdrop_path");
+        String original_language = NetworkUtils.getStringFromJSON(baseJSONResponse, "original_language");
+        int id = NetworkUtils.getIntFromJSON(baseJSONResponse, "id");
+        Double vote_average = NetworkUtils.getDoubleFromJSON(baseJSONResponse, "vote_average");
+        String overview = NetworkUtils.getStringFromJSON(baseJSONResponse, "overview");
+        String poster_path = NetworkUtils.getStringFromJSON(baseJSONResponse, "poster_path");
 
+        // TODO: take genre_ids and origin_country into account.
         // Extract the JSONArray associated with the key called "genres" or "genre_ids", which
         // represents the list of genres which the movie belongs to.
         ArrayList<TmdbGenre> genres = new ArrayList<>();
@@ -317,11 +331,9 @@ public class Tmdb {
         }
 
         // Return the {@link TmdbMovie} object parsed from the JSON.
-        return new TmdbTVSeries(poster_path, popularity, id, backdrop_path,
-                vote_average, overview, release_date,
-                null, null,
-                original_language, vote_count, title, original_title,
-                0, page, total_pages, total_results);
+        return new TmdbTVSeries(poster_path, popularity, id, backdrop_path, vote_average, overview,
+                first_air_date, null, null, original_language, vote_count,
+                name, original_name, 0, page, total_pages, total_results);
     }
 
     /**
@@ -1612,7 +1624,9 @@ public class Tmdb {
                 sortOrder.equals(TMDB_CONTENT_TYPE_GENRES) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_KEYWORDS) ||
                 sortOrder.equals(TMDB_CONTENT_TYPE_ALL) ||
-                sortOrder.equals(TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT);
+                sortOrder.equals(TMDB_CONTENT_TYPE_FOR_BUY_AND_RENT) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_ON_THE_AIR) ||
+                sortOrder.equals(TMDB_CONTENT_TYPE_AIRING_TODAY);
     }
 
     /**
