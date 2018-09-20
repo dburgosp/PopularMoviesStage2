@@ -23,7 +23,8 @@ public class TmdbVideo implements Parcelable {
      * @param key        is the path for appending to the YouTube base url to get the video file.
      * @param name       is the name of the video.
      * @param site       is the site where the video file is hosted. Allowed values: YouTube.
-     * @param size       is the vertical resolution of the video. Allowed Values: 360, 480, 720, 1080.
+     * @param size       is the vertical resolution of the video. Allowed Values: 360, 480, 720,
+     *                   1080.
      * @param type       is type of the video. Allowed Values: Trailer, Teaser, Clip, Featurette.
      */
     public TmdbVideo(String id, String iso_639_1, String iso_3166_1, String key, String name,

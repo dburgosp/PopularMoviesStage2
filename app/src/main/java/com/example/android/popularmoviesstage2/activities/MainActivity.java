@@ -55,6 +55,7 @@ import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -274,14 +275,14 @@ public class MainActivity extends AppCompatActivity implements
      * Helper method for setting fixed parameters for fetching results from the main activity.
      */
     private void setSearchParameters() {
+        Date currentDate = DateTimeUtils.getCurrentDate();
+        String currentLanguage = MyPreferences.getIsoLanguage(this);
         String today = DateTimeUtils.getStringCurrentDate();
-        String tomorrow = DateTimeUtils.getStringAddedDaysToDate(
-                DateTimeUtils.getCurrentDate(), 1);
-        String fortyFiveDaysAgo = DateTimeUtils.getStringAddedDaysToDate(
-                DateTimeUtils.getCurrentDate(), -45);
-        String nextWeek = DateTimeUtils.getStringAddedDaysToDate(
-                DateTimeUtils.getCurrentDate(), 7);
-        String sortBy = MyPreferences.getMoviesSortOrder(this);
+        String tomorrow = DateTimeUtils.getStringAddedDaysToDate(currentDate, 1);
+        String fortyFiveDaysAgo = DateTimeUtils.getStringAddedDaysToDate(currentDate, -45);
+        String nextWeek = DateTimeUtils.getStringAddedDaysToDate(currentDate, 7);
+        String currentSortOrder = MyPreferences.getMoviesSortOrder(this);
+        ArrayList<String> VODNetworks = Tmdb.getVODNetworks();
 
         // Fixed parameters for now playing movies in theaters.
         tmdbNowPlayingMoviesParameters =
@@ -292,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements
         tmdbNowPlayingMoviesParameters.setReleaseType(moviesNowPlayingReleaseType);
         tmdbNowPlayingMoviesParameters.setInitDate(fortyFiveDaysAgo);
         tmdbNowPlayingMoviesParameters.setEndDate(today);
+        tmdbNowPlayingMoviesParameters.setVoteCount(1);
 
         // Fixed parameters for upcoming movies in theaters.
         tmdbUpcomingMoviesParameters =
@@ -313,21 +315,19 @@ public class MainActivity extends AppCompatActivity implements
         tmdbBuyAndRentMoviesParameters.setInitDate("");
         tmdbBuyAndRentMoviesParameters.setEndDate(today);
 
-        // Fixed parameters for currently on the air TV series.
-        tmdbOnTheAirTVSeriesParameters = new TmdbTVSeriesParameters(
-                MyPreferences.getIsoLanguage(this), sortBy, 0.0, 0,
-                today, nextWeek, null);
+        // Fixed parameters for currently on the air TV series (any TV show that has an episode
+        // with an air date in the next 7 days).
+        tmdbOnTheAirTVSeriesParameters = new TmdbTVSeriesParameters(currentLanguage,
+                currentSortOrder, 0.0, 0, today, nextWeek, null);
 
         // Fixed parameters for airing today TV series.
-        tmdbAiringTodayTVSeriesParameters = new TmdbTVSeriesParameters(
-                MyPreferences.getIsoLanguage(this), sortBy, 0.0, 0,
-                today, today, null);
+        tmdbAiringTodayTVSeriesParameters = new TmdbTVSeriesParameters(currentLanguage,
+                currentSortOrder, 0.0, 0, today, today, null);
 
-        // Fixed parameters for TV series to watch online.
-        ArrayList<String> networks = Tmdb.getVODNetworks();
-        tmdbBuyAndRentTVSeriesParameters = new TmdbTVSeriesParameters(
-                MyPreferences.getIsoLanguage(this), sortBy, 0.0, 0,
-                "", "", networks);
+        // Fixed parameters for TV series to watch online on VOD networks.
+        tmdbBuyAndRentTVSeriesParameters = new TmdbTVSeriesParameters(currentLanguage,
+                currentSortOrder, 0.0, 0, "", "",
+                VODNetworks);
     }
 
     /**
@@ -342,22 +342,20 @@ public class MainActivity extends AppCompatActivity implements
                 (2 * getResources().getDimensionPixelSize(R.dimen.small_padding));
         int backdropHeightPixels = (backdropWidthPixels * 9 / 16);
 
-        backdropLinearLayoutParams = new LinearLayout.LayoutParams(
-                backdropWidthPixels, backdropHeightPixels);
-        backdropRelativeLayoutParams = new RelativeLayout.LayoutParams(
-                backdropWidthPixels, backdropHeightPixels +
-                getResources().getDimensionPixelSize(R.dimen.big_padding));
+        backdropLinearLayoutParams = new LinearLayout.LayoutParams(backdropWidthPixels,
+                backdropHeightPixels);
+        backdropRelativeLayoutParams = new RelativeLayout.LayoutParams(backdropWidthPixels,
+                backdropHeightPixels + getResources().getDimensionPixelSize(R.dimen.big_padding));
 
         // Sizes and layouts for posters.
         int posterWidthPixels = (displayUtils.getFullDisplayBackdropWidthPixels() -
                 (3 * getResources().getDimensionPixelSize(R.dimen.small_padding))) / 2;
         int posterHeightPixels = posterWidthPixels * 3 / 2;
 
-        posterLinearLayoutParams =
-                new LinearLayout.LayoutParams(posterWidthPixels, posterHeightPixels);
-        posterRelativeLayoutParams =
-                new RelativeLayout.LayoutParams(posterWidthPixels, posterHeightPixels +
-                        getResources().getDimensionPixelSize(R.dimen.big_padding));
+        posterLinearLayoutParams = new LinearLayout.LayoutParams(posterWidthPixels,
+                posterHeightPixels);
+        posterRelativeLayoutParams = new RelativeLayout.LayoutParams(posterWidthPixels,
+                posterHeightPixels + getResources().getDimensionPixelSize(R.dimen.big_padding));
     }
 
     /**
@@ -462,12 +460,12 @@ public class MainActivity extends AppCompatActivity implements
                 public void onClick(View v) {
                     // Set preferences for "Now Playing Movies" to show "In Theaters" and "In my
                     // country".
-                    MyPreferences.setonTheAir(context,
+/*                    MyPreferences.setonTheAir(context,
                             MyPreferences.MOVIES_NOW_PLAYING_HOW_THEATERS_INDEX,
                             MyPreferences.TYPE_MOVIES_HOW);
                     MyPreferences.setonTheAir(context,
                             MyPreferences.MOVIES_UPCOMING_WHERE_THIS_REGION_INDEX,
-                            MyPreferences.TYPE_MOVIES_WHERE);
+                            MyPreferences.TYPE_MOVIES_WHERE);*/
 
                     // Set intent for calling TVSeriesActivity.
                     Intent intent = new Intent(context, TVSeriesActivity.class);
@@ -1067,8 +1065,8 @@ public class MainActivity extends AppCompatActivity implements
                                     } else {
                                         // This is a single click. Open a new activity to show
                                         // detailed info about the current movie/series/person.
-                                        Intent intent;
-                                        Bundle option;
+                                        Intent intent = null;
+                                        Bundle option = null;
                                         switch (loaderId) {
                                             case NetworkUtils.TMDB_NOW_PLAYING_MOVIES_LOADER_ID:
                                             case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:
@@ -1090,8 +1088,7 @@ public class MainActivity extends AppCompatActivity implements
                                             // At present, you get an error if you click on a TV
                                             // series element.
 
-                                            default:
-                                                // case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
+                                            case NetworkUtils.TMDB_POPULAR_PEOPLE_LOADER_ID:
                                                 intent = new Intent(context,
                                                         PersonDetailsActivity.class);
                                                 TmdbPerson currentPerson =
@@ -1111,7 +1108,12 @@ public class MainActivity extends AppCompatActivity implements
 
                                         // Animate view when clicked and navigate to next activity.
                                         AnimatedViewsUtils.animateOnClick(context, imageView);
-                                        startActivity(intent, option);
+                                        if (intent != null) {
+                                            if (option != null)
+                                                startActivity(intent, option);
+                                            else
+                                                startActivity(intent);
+                                        }
                                     }
                             }
                             return true;
@@ -1175,7 +1177,7 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public Loader<Object> onCreateLoader(int id, Bundle args) {
             String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
-            Context context = context;
+            Context context = MainActivity.this;
 
             switch (id) {
                 case NetworkUtils.TMDB_UPCOMING_MOVIES_LOADER_ID:

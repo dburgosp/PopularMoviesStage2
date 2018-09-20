@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.R;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbPerson;
+import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -59,7 +60,7 @@ public class PersonDetailsActivity extends AppCompatActivity {
         String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
-        setTransitions();
+        AnimatedViewsUtils.setSlideTransitions(getWindow());
 
         setContentView(R.layout.activity_person_details);
         unbinder = ButterKnife.bind(this);
@@ -70,6 +71,9 @@ public class PersonDetailsActivity extends AppCompatActivity {
             // Get current person simple information.
             person = intent.getParcelableExtra(EXTRA_PARAM_PERSON);
         }
+
+        // Write the basic person info on activity_person_details.xml header.
+        setPersonInfo();
 
         // Set the custom tool bar and show the back button.
         setSupportActionBar(toolbar);
@@ -98,17 +102,6 @@ public class PersonDetailsActivity extends AppCompatActivity {
             }
         };
         appBarLayout.addOnOffsetChangedListener(listener);
-
-        // Write the basic person info on activity_person_details.xml header.
-        setPersonInfo();
-
-        // Set TabLayout and ViewPager to manage the fragments with info for the current person.
-/*        tabLayout.setupWithViewPager(viewPager);
-        PersonDetailsFragmentPagerAdapter adapter = new PersonDetailsFragmentPagerAdapter(
-                getSupportFragmentManager(), PersonDetailsActivity.this, person);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);*/
-
         Log.i(TAG + "." + methodName, "Activity created");
     }
 
@@ -213,18 +206,6 @@ public class PersonDetailsActivity extends AppCompatActivity {
     /* -------------- */
     /* HELPER METHODS */
     /* -------------- */
-
-    /**
-     * Define transitions to exit/enter from/to this activity.
-     */
-    private void setTransitions() {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        getWindow().setBackgroundDrawableResource(R.color.colorPrimaryDark);
-        Slide slideIn = new Slide(Gravity.END);
-        getWindow().setEnterTransition(slideIn.setDuration(250));
-        Slide slideOut = new Slide(Gravity.START);
-        getWindow().setExitTransition(slideOut.setDuration(250));
-    }
 
     /**
      * Helper method to display current person information in the header of this activity.

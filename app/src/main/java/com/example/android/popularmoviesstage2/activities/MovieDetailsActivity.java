@@ -139,15 +139,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         };
         appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener);
-
-        // Set TabLayout and ViewPager to manage the fragments with info for the current movie.
-        tabLayout.setupWithViewPager(viewPager);
-        MovieDetailsFragmentPagerAdapter adapter =
-                new MovieDetailsFragmentPagerAdapter(getSupportFragmentManager(),
-                        MovieDetailsActivity.this, movie);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
-
         Log.i(TAG + "." + methodName, "Activity created");
     }
 
@@ -327,28 +318,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-        // Set movie title and year. Hide text by default and show it using an animation.
-        titleTextView.setVisibility(View.INVISIBLE);
-        String title = movie.getTitle();
-        String year = DateTimeUtils.getYear(movie.getRelease_date());
-        if (title != null && !title.equals("") && !title.isEmpty())
-            if (year != null && !year.equals("") && !year.isEmpty()) {
-                int labelColor = getResources().getColor(R.color.colorGrey);
-                String color = String.format("%X", labelColor).substring(2);
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
-                        " </big></strong><small><font color=\"#" + color + "\">(" + year +
-                        ")</font></small>");
-            } else
-                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
-                        "</big></strong>");
-        else
-            titleTextView.setText(getResources().getString(R.string.no_title));
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_right);
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
-        animation.setInterpolator(interpolator);
-        titleTextView.setVisibility(View.VISIBLE);
-        titleTextView.startAnimation(animation);
-
         // Set users rating.
         String rating = String.valueOf(movie.getVote_average());
         if (!rating.equals("0.0")) {
@@ -374,5 +343,48 @@ public class MovieDetailsActivity extends AppCompatActivity {
             scoreDonutProgress.setVisibility(View.GONE);
             scoreDonutProgress.setDonut_progress("0");
         }
+
+        // Set movie title and year. Hide text by default and show it using an animation.
+        titleTextView.setVisibility(View.INVISIBLE);
+        String title = movie.getTitle();
+        String year = DateTimeUtils.getYear(movie.getRelease_date());
+        if (title != null && !title.equals("") && !title.isEmpty())
+            if (year != null && !year.equals("") && !year.isEmpty()) {
+                int labelColor = getResources().getColor(R.color.colorGrey);
+                String color = String.format("%X", labelColor).substring(2);
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
+                        " </big></strong><small><font color=\"#" + color + "\">(" + year +
+                        ")</font></small>");
+            } else
+                TextViewUtils.setHtmlText(titleTextView, "<strong><big>" + title +
+                        "</big></strong>");
+        else
+            titleTextView.setText(getResources().getString(R.string.no_title));
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_right);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
+        animation.setInterpolator(interpolator);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                titleTextView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                // When animation ends, set TabLayout and ViewPager to manage the fragments with
+                // info for the current movie.
+                tabLayout.setupWithViewPager(viewPager);
+                MovieDetailsFragmentPagerAdapter adapter = new MovieDetailsFragmentPagerAdapter(
+                        getSupportFragmentManager(), MovieDetailsActivity.this, movie);
+                viewPager.setAdapter(adapter);
+                viewPager.setCurrentItem(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        titleTextView.startAnimation(animation);
     }
 }
