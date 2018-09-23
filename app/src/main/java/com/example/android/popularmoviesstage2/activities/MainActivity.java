@@ -72,13 +72,16 @@ public class MainActivity extends AppCompatActivity implements
     private static final int CONTENT_TYPE_MOVIES = 0;
     private static final int CONTENT_TYPE_SERIES = 1;
     private static final int CONTENT_TYPE_PEOPLE = 2;
-/*    private static final int RESULT_CODE_UPCOMING_MOVIES = 100;
-    private static final int RESULT_CODE_POPULAR_PEOPLE = 101;
-    private static final int RESULT_CODE_ON_THE_AIR_SERIES = 102;
-    private static final int RESULT_CODE_NOW_PLAYING_MOVIES = 103;
-    private static final int RESULT_CODE_BUY_AND_RENT_MOVIES = 104;
-    private static final int RESULT_CODE_BUY_AND_RENT_SERIES = 105;
-    private static final int RESULT_CODE_AIRING_TODAY_SERIES = 106;*/
+    /*    private static final int RESULT_CODE_UPCOMING_MOVIES = 100;
+        private static final int RESULT_CODE_POPULAR_PEOPLE = 101;
+        private static final int RESULT_CODE_ON_THE_AIR_SERIES = 102;
+        private static final int RESULT_CODE_NOW_PLAYING_MOVIES = 103;
+        private static final int RESULT_CODE_BUY_AND_RENT_MOVIES = 104;
+        private static final int RESULT_CODE_BUY_AND_RENT_SERIES = 105;
+        private static final int RESULT_CODE_AIRING_TODAY_SERIES = 106;*/
+    private static final int FLIP_INTERVAL_SHORT = 3000;
+    private static final int FLIP_INTERVAL_MEDIUM = 4000;
+    private static final int FLIP_INTERVAL_LONG = 5000;
 
     // Annotate fields with @BindView and views ID for Butter Knife to find and automatically cast
     // the corresponding views.
@@ -382,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements
         // Now playing movies section.
         nowPlayingMoviesLayout = setCardView(nowPlayingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_now_playing_in_theatres),
-                5000);
+                FLIP_INTERVAL_LONG);
         if (nowPlayingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             nowPlayingMoviesViewFlipper = (MyViewFlipperIndicator) nowPlayingMoviesLayout.findViewById(
@@ -424,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         popularPeopleLayout = setCardView(popularPeopleCardView, CONTENT_TYPE_PEOPLE,
-                true, getString(R.string.popular), 3000);
+                true, getString(R.string.popular), FLIP_INTERVAL_SHORT);
         if (popularPeopleLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             popularPeopleViewFlipper = (MyViewFlipperIndicator) popularPeopleLayout.findViewById(
@@ -439,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         onTheAirLayout = setCardView(onTheAirCardView, CONTENT_TYPE_SERIES, true,
-                getString(R.string.tv_on_the_air), 4000);
+                getString(R.string.tv_on_the_air), FLIP_INTERVAL_MEDIUM);
         if (onTheAirLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             onTheAirViewFlipper = (MyViewFlipperIndicator) onTheAirLayout.findViewById(
@@ -483,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements
         // Upcoming movies section.
         upcomingMoviesLayout = setCardView(upcomingMoviesCardView, CONTENT_TYPE_MOVIES,
                 true, getString(R.string.movies_sort_by_upcoming_in_theatres),
-                5000);
+                FLIP_INTERVAL_LONG);
         if (upcomingMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             upcomingMoviesViewFlipper = (MyViewFlipperIndicator) upcomingMoviesLayout.findViewById(
@@ -529,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         buyAndRentSeriesLayout = setCardView(buyAndRentSeriesCardView, CONTENT_TYPE_SERIES,
-                true, getString(R.string.movies_sort_by_online), 4000);
+                true, getString(R.string.movies_sort_by_online), FLIP_INTERVAL_MEDIUM);
         if (buyAndRentSeriesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             buyAndRentSeriesViewFlipper = (MyViewFlipperIndicator) buyAndRentSeriesLayout.findViewById(
@@ -544,7 +547,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         buyAndRentMoviesLayout = setCardView(buyAndRentMoviesCardView, CONTENT_TYPE_MOVIES,
-                true, getString(R.string.movies_sort_by_online), 4000);
+                true, getString(R.string.movies_sort_by_online), FLIP_INTERVAL_MEDIUM);
         if (buyAndRentMoviesLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             buyAndRentMoviesViewFlipper = (MyViewFlipperIndicator) buyAndRentMoviesLayout.findViewById(
@@ -587,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         airingTodayLayout = setCardView(airingTodayCardView, CONTENT_TYPE_SERIES, true,
-                getString(R.string.tv_airing_today), 5000);
+                getString(R.string.tv_airing_today), FLIP_INTERVAL_LONG);
         if (airingTodayLayout != null) {
             // Extract all layout elements and assign them to their corresponding private variables.
             airingTodayViewFlipper = (MyViewFlipperIndicator) airingTodayLayout.findViewById(
@@ -829,14 +832,17 @@ public class MainActivity extends AppCompatActivity implements
      *                     therefore the type of information that must be shown.
      * @param maxElements  is the maximum number of elements to be displayed into the
      *                     ViewFlipper.
+     * @param flipInterval is the delay for the handler to restart ViewFlipper animation, in
+     *                     milliseconds.
      * @return true if viewFlipper is displaying at least one element, false otherwise.
      */
     private boolean inflateViewFlipperChildren(final ArrayList<?> data,
                                                final ViewFlipper viewFlipper,
                                                LinearLayout.LayoutParams layoutParams,
-                                               final int loaderId, int maxElements) {
+                                               final int loaderId, int maxElements, int flipInterval) {
         final String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         final Context context = MainActivity.this;
+        final Long delayMillis = Long.valueOf(flipInterval);
 
         // Initially clear ViewFlipper.
         viewFlipper.removeAllViews();
@@ -1048,23 +1054,29 @@ public class MainActivity extends AppCompatActivity implements
                                 case MotionEvent.ACTION_CANCEL:
                                     // Set the runnable again to be dispatched after 5 seconds, so
                                     // the automatic ViewFlipper animation restarts again.
-                                    handler.postDelayed(runnable, 5000);
+                                    handler.postDelayed(runnable, delayMillis);
 
                                     float finalX = motionEvent.getX();
-                                    if (initialX > finalX) {
+                                    if (initialX > (finalX + 50)) {
                                         // Show next element with an animation from right to left.
+                                        // Give a minimum margin of 50 points to consider a swipe to
+                                        // left gesture.
                                         viewFlipper.setInAnimation(animationInFromRight);
                                         viewFlipper.setOutAnimation(animationOutFromRight);
                                         viewFlipper.showNext();
-                                    } else if (initialX < finalX) {
+                                    } else if ((initialX + 50) < finalX) {
                                         // Show previous element with an animation from left to
-                                        // right.
+                                        // right. Give a minimum margin of 50 points to consider a
+                                        // swipe to right gesture.
                                         viewFlipper.setInAnimation(animationInFromLeft);
                                         viewFlipper.setOutAnimation(animationOutFromLeft);
                                         viewFlipper.showPrevious();
-                                    } else {
+                                    } else if ((finalX <= (initialX + 10)) &&
+                                            (initialX <= (finalX + 10))) {
                                         // This is a single click. Open a new activity to show
-                                        // detailed info about the current movie/series/person.
+                                        // detailed info about the current movie/series/person. Give
+                                        // a maximum margin of 10 points to consider that this is a
+                                        // click gesture and not a swipe gesture.
                                         Intent intent = null;
                                         Bundle option = null;
                                         switch (loaderId) {
@@ -1346,7 +1358,7 @@ public class MainActivity extends AppCompatActivity implements
                             upcomingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(movies,
                                     upcomingMoviesViewFlipper, backdropLinearLayoutParams,
-                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN);
+                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN, FLIP_INTERVAL_LONG);
                         } else {
                             Log.i(methodTag,
                                     "No search results for upcoming movies.");
@@ -1383,7 +1395,7 @@ public class MainActivity extends AppCompatActivity implements
                             nowPlayingMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(movies,
                                     nowPlayingMoviesViewFlipper, backdropLinearLayoutParams,
-                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN);
+                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN, FLIP_INTERVAL_LONG);
                         } else {
                             Log.i(methodTag,
                                     "No search results for now playing movies.");
@@ -1419,7 +1431,7 @@ public class MainActivity extends AppCompatActivity implements
                             buyAndRentMoviesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(movies,
                                     buyAndRentMoviesViewFlipper, posterLinearLayoutParams,
-                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS);
+                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS, FLIP_INTERVAL_MEDIUM);
                         } else {
                             Log.i(methodTag, "No search results for buy and rent movies.");
                             hasData = false;
@@ -1451,7 +1463,7 @@ public class MainActivity extends AppCompatActivity implements
                             Log.i(methodTag, "Search results not null.");
                             inflateViewFlipperChildren(people, popularPeopleViewFlipper,
                                     posterLinearLayoutParams, loader.getId(),
-                                    MAX_HALF_SCREEN_ELEMENTS);
+                                    MAX_HALF_SCREEN_ELEMENTS, FLIP_INTERVAL_SHORT);
                             break;
                         } else {
                             Log.i(methodTag, "No search results.");
@@ -1481,7 +1493,7 @@ public class MainActivity extends AppCompatActivity implements
                             onTheAirMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(series,
                                     onTheAirViewFlipper, posterLinearLayoutParams,
-                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS);
+                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS, FLIP_INTERVAL_MEDIUM);
                         } else {
                             Log.i(methodTag, "No search results for on the air series.");
                             hasData = false;
@@ -1515,7 +1527,7 @@ public class MainActivity extends AppCompatActivity implements
                             airingTodayMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(series,
                                     airingTodayViewFlipper, backdropLinearLayoutParams,
-                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN);
+                                    loader.getId(), MAX_ELEMENTS_FULL_SCREEN, FLIP_INTERVAL_LONG);
                         } else {
                             Log.i(methodTag, "No search results for airing today series.");
                             hasData = false;
@@ -1549,7 +1561,7 @@ public class MainActivity extends AppCompatActivity implements
                             buyAndRentSeriesMessage.setVisibility(View.GONE);
                             hasValidData = inflateViewFlipperChildren(series,
                                     buyAndRentSeriesViewFlipper, posterLinearLayoutParams,
-                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS);
+                                    loader.getId(), MAX_HALF_SCREEN_ELEMENTS, FLIP_INTERVAL_MEDIUM);
                         } else {
                             Log.i(methodTag, "No search results for buy and rent series.");
                             hasData = false;

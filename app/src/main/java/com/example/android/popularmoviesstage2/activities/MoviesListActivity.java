@@ -176,8 +176,8 @@ public class MoviesListActivity extends AppCompatActivity
         Context packageContext = MoviesListActivity.this;
         Class<?> cls;
         int id = item.getItemId();
-        switch (id) {
-            case (R.id.movies_list_menu_home): {
+/*        switch (id) {
+            case (R.id.movies_list_menu_settings): {
                 // Navigate to the main_menu activity.
                 cls = MainActivity.class;
                 intent = new Intent(packageContext, cls);
@@ -195,7 +195,7 @@ public class MoviesListActivity extends AppCompatActivity
                 // case (android.R.id.home)
                 onBackPressed();
             }
-        }
+        }*/
         return true;
     }
 

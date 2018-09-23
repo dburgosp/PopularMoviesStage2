@@ -48,34 +48,39 @@
         </LinearLayout>
 
         <!-- Views to be shown while retrieving info -->
-
-        <ImageView
-            android:id="@+id/info_no_result_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/big_padding"
-            android:contentDescription="@string/content_description_icon"
-            android:src="@drawable/ic_sentiment_dissatisfied_black_48dp"
-            android:tint="@color/colorGrey" />
-
-        <TextView
-            android:id="@+id/info_no_result_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/info_no_result_image_view"
+        <LinearLayout
+            android:id="@+id/info_loading_layout"
+            android:orientation="vertical"
             android:gravity="center"
-            android:padding="@dimen/regular_padding"
-            android:text="@string/no_movie_info"
-            android:textColor="@color/colorGrey"
-            android:textSize="@dimen/alert_text_size" />
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content">
 
-        <ProgressBar
-            android:id="@+id/info_loading_indicator"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/info_no_result_text_view"
-            android:layout_centerHorizontal="true" />
+            <ImageView
+                android:id="@+id/info_no_result_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/big_padding"
+                android:contentDescription="@string/content_description_icon"
+                android:src="@drawable/ic_sentiment_dissatisfied_black_48dp"
+                android:tint="@color/colorGrey" />
+
+            <TextView
+                android:id="@+id/info_no_result_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/regular_padding"
+                android:gravity="center"
+                android:padding="@dimen/regular_padding"
+                android:text="@string/no_movie_info"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/normal_plus_text_size" />
+
+            <ProgressBar
+                android:id="@+id/info_loading_indicator"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

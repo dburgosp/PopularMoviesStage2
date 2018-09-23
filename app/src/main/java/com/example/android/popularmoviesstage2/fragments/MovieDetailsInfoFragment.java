@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
@@ -16,6 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,13 +36,13 @@ import com.example.android.popularmoviesstage2.classes.Imdb;
 import com.example.android.popularmoviesstage2.classes.Instagram;
 import com.example.android.popularmoviesstage2.classes.OmdbMovie;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
+import com.example.android.popularmoviesstage2.classes.TmdbGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbKeyword;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCollection;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCompany;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieCountry;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieDetails;
-import com.example.android.popularmoviesstage2.classes.TmdbGenre;
 import com.example.android.popularmoviesstage2.classes.TmdbMovieLanguage;
 import com.example.android.popularmoviesstage2.classes.TmdbRelease;
 import com.example.android.popularmoviesstage2.classes.Twitter;
@@ -62,7 +66,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link Fragment} that displays the main_menu information about the current movieDetails.
+ * {@link Fragment} that displays the main information about the current movieDetails.
  */
 public class MovieDetailsInfoFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Object> {
@@ -76,9 +80,15 @@ public class MovieDetailsInfoFragment extends Fragment
     TextView noResultsTextView;
     @BindView(R.id.info_no_result_image_view)
     ImageView noResultsImageView;
+    @BindView(R.id.info_loading_layout)
+    LinearLayout infoLoadingLayout;
 
     @BindView(R.id.movie_details_info_scores_layout)
     LinearLayout scoresLinearLayout;
+    @BindView(R.id.movie_details_info_tmdb_layout)
+    LinearLayout tmdbLinearLayout;
+    @BindView(R.id.movie_details_info_tmdb_score)
+    DonutProgress tmdbDonutProgress;
     @BindView(R.id.movie_details_info_imdb_layout)
     LinearLayout imdbLinearLayout;
     @BindView(R.id.movie_details_info_imdb_score)
@@ -193,6 +203,8 @@ public class MovieDetailsInfoFragment extends Fragment
     private int movieId;
     private MoviesListAdapter recommendedMoviesAdapter, collectionAdapter;
     String ageRating = "";
+    private ArrayList<View> animatedViews = new ArrayList<>();
+    private int animatedViewCurrentIndex = 0;
 
     /**
      * Required empty public constructor.
@@ -261,11 +273,15 @@ public class MovieDetailsInfoFragment extends Fragment
     @Override
     public Loader<Object> onCreateLoader(int id, Bundle args) {
         String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.in_from_top);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
             noResultsTextView.setText(getString(R.string.fetching_movie_info));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
+            infoLoadingLayout.startAnimation(animation);
             Log.i(methodTag, "Movie ID: " + movieId);
             return new GenericAsyncTaskLoader(getContext(), movieId,
                     Locale.getDefault().getLanguage(),
@@ -276,6 +292,7 @@ public class MovieDetailsInfoFragment extends Fragment
             noResultsTextView.setText(getString(R.string.no_connection));
             noResultsTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
+            infoLoadingLayout.startAnimation(animation);
             Log.i(methodTag, "No internet connection.");
             return null;
         }
@@ -302,10 +319,6 @@ public class MovieDetailsInfoFragment extends Fragment
     public void onLoadFinished(Loader<Object> loader, Object data) {
         String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
 
-        // Hide progress status.
-        progressBar.setVisibility(View.GONE);
-        noResultsTextView.setVisibility(View.GONE);
-
         // Check if there is an available connection.
         if (NetworkUtils.isConnected(getContext())) {
             // If there is a valid result, then update its data into the current
@@ -313,19 +326,18 @@ public class MovieDetailsInfoFragment extends Fragment
             if (data != null) {
                 Log.i(methodTag, "Search results not null.");
 
-                // Get movieDetails info and display it.
+                // Get movieDetails info.
                 movieDetails = (TmdbMovieDetails) data;
-                setMovieInfo();
-
                 String imdbId = movieDetails.getImdb_id();
-                if (imdbId != null && !imdbId.equals("")) {
-                    // Create an instance of an OMDBinfo class in order to fetch additional info for
-                    // this movieDetails from OMDB API, using the just retrieved IMDB identifier of
-                    // the movie.
-                    new OMDBinfo(imdbId);
-                }
+                //if (imdbId != null && !imdbId.equals("")) {
+                // Create an instance of an OMDBinfo class in order to fetch additional info for
+                // this movieDetails from OMDB API, using the just retrieved IMDB identifier of
+                // the movie.
+                new OMDBinfo(imdbId);
+
             } else {
                 Log.i(methodTag, "No search results.");
+                progressBar.setVisibility(View.GONE);
                 noResultsImageView.setVisibility(View.VISIBLE);
                 noResultsTextView.setVisibility(View.VISIBLE);
                 noResultsTextView.setText(getString(R.string.no_movie_info));
@@ -333,6 +345,7 @@ public class MovieDetailsInfoFragment extends Fragment
         } else {
             // There is no connection. Show error message.
             Log.i(methodTag, "No connection to internet.");
+            progressBar.setVisibility(View.GONE);
             noResultsImageView.setVisibility(View.VISIBLE);
             noResultsTextView.setVisibility(View.VISIBLE);
             noResultsTextView.setText(getString(R.string.no_connection));
@@ -411,14 +424,15 @@ public class MovieDetailsInfoFragment extends Fragment
                             // Create an ActivityOptions to transition between Activities using
                             // cross-Activity scene animations.
                             Bundle option = ActivityOptions.makeSceneTransitionAnimation(
-                                    getActivity(), clickedView, getString(R.string.transition_poster)).toBundle();
+                                    getActivity(), clickedView,
+                                    getString(R.string.transition_poster)).toBundle();
 
                             // Animate view when clicked and navigate to next activity.
                             AnimatedViewsUtils.animateOnClick(getActivity(), clickedView);
                             startActivityForResult(intent, 0, option);
                         } else {
                             // If we are clicking on the current movie (it may be shown again as
-                            // part of the collection or in the recommended movies_menu list), we
+                            // part of the collection or in the recommended movies list), we
                             // don't need to move from here.
                             Toast.makeText(getContext(), getString(R.string.dont_open_this_again),
                                     Toast.LENGTH_SHORT).show();
@@ -436,48 +450,6 @@ public class MovieDetailsInfoFragment extends Fragment
                 R.layout.list_item_poster_horizontal_layout_3, new ArrayList<TmdbMovie>(),
                 recommendedMovieListener);
         collectionRecyclerView.setAdapter(collectionAdapter);
-    }
-
-    /**
-     * Helper method to display all the movieDetails information in this fragment.
-     */
-    void setMovieInfo() {
-        // Set collection section. This must be at the beginning of this method to save some time,
-        // because it opens another thread to retrieve info.
-        if (setCollectionSection())
-            collectionLayout.setVisibility(View.VISIBLE);
-
-        // Set overview section.
-        if (setOverviewSection())
-            overviewLinearLayout.setVisibility(View.VISIBLE);
-
-        // Set main_menu info section.
-        if (setMainInfoSection())
-            mainLinearLayout.setVisibility(View.VISIBLE);
-
-        // Set external links section.
-        if (setLinksSection())
-            linksLayout.setVisibility(View.VISIBLE);
-
-        // Main info and external links section are into the same layout. Make it visible if any
-        // of the inner sections has data.
-        if (mainLinearLayout.getVisibility() == View.VISIBLE ||
-                linksLayout.getVisibility() == View.VISIBLE)
-            dataLayout.setVisibility(View.VISIBLE);
-
-        // Recommended movies_menu section.
-        if (setRecommendedMoviesSection())
-            recommendedMoviesLayout.setVisibility(View.VISIBLE);
-
-        // Set keywords section.
-        if (setKeywordsSection())
-            keywordsLayout.setVisibility(View.VISIBLE);
-
-        // Recommended movies and keywords section are into the same layout. Make it visible if any
-        // of the inner sections has data.
-        if (recommendedMoviesLayout.getVisibility() == View.VISIBLE ||
-                keywordsLayout.getVisibility() == View.VISIBLE)
-            recommendedMoviesKeywordsLayout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -890,8 +862,8 @@ public class MovieDetailsInfoFragment extends Fragment
      */
     private boolean setCollectionSection() {
         if (movieDetails.getBelongs_to_collection() != null) {
-            // Retrieve the list of movies_menu that belong to the collection, and return.
-            new CollectionMoviesList(movieDetails.getBelongs_to_collection().getId());
+            // Retrieve the list of movies that belong to the collection, and return.
+            //new CollectionMoviesList(movieDetails.getBelongs_to_collection().getId());
             return true;
         } else
             return false;
@@ -961,7 +933,7 @@ public class MovieDetailsInfoFragment extends Fragment
     }
 
     /**
-     * Set recommended movies_menu section.
+     * Set recommended movies section.
      *
      * @return true if any of the elements of this section has been set, false otherwise.
      */
@@ -1090,7 +1062,7 @@ public class MovieDetailsInfoFragment extends Fragment
     /* INNER CLASSES */
     /* ------------- */
 
-    // Private inner class to retrieve the list of movies_menu of a given collection.
+    // Private inner class to retrieve the list of movies of a given collection.
     private class CollectionMoviesList implements LoaderManager.LoaderCallbacks<Object> {
         private final String TAG = MovieDetailsInfoFragment.CollectionMoviesList.class.getSimpleName();
         private int collectionID;
@@ -1099,7 +1071,7 @@ public class MovieDetailsInfoFragment extends Fragment
         CollectionMoviesList(int collectionID) {
             this.collectionID = collectionID;
 
-            // Create an AsyncTaskLoader for retrieving the list of movies_menu.
+            // Create an AsyncTaskLoader for retrieving the list of movies.
             getLoaderManager().initLoader(NetworkUtils.TMDB_COLLECTION_LOADER_ID, null, this);
 
         }
@@ -1173,7 +1145,7 @@ public class MovieDetailsInfoFragment extends Fragment
                     else
                         collectionOverviewTextView.setVisibility(View.GONE);
 
-                    // Order the movies_menu list by release date and set adapter to show it.
+                    // Order the movies list by release date and set adapter to show it.
                     ArrayList<TmdbMovie> movieCollection = collection.getParts();
                     Collections.sort(movieCollection, new Comparator<TmdbMovie>() {
                         @Override
@@ -1212,14 +1184,14 @@ public class MovieDetailsInfoFragment extends Fragment
      * Inner class for fetching info from OMDB API.
      */
     class OMDBinfo implements LoaderManager.LoaderCallbacks<Object> {
-        private final String TAG = OMDBinfo.class.getSimpleName();
+        private final String TAG2 = TAG + "." + OMDBinfo.class.getSimpleName();
         private OmdbMovie omdbMovie;
         private String imdbId;
 
         OMDBinfo(String imdbId) {
             this.imdbId = imdbId;
-            // Create an AsyncTaskLoader for retrieving additional movieDetails information from OMDB in a
-            // separate thread.
+            // Create an AsyncTaskLoader for retrieving additional movieDetails information from
+            // OMDB in a separate thread.
             getLoaderManager().initLoader(NetworkUtils.OMDB_MOVIES_LOADER_ID, null, this);
         }
 
@@ -1232,7 +1204,7 @@ public class MovieDetailsInfoFragment extends Fragment
          */
         @Override
         public Loader<Object> onCreateLoader(int id, Bundle args) {
-            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            String methodTag = TAG2 + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
             if (NetworkUtils.isConnected(getContext())) {
                 // There is an available connection. Fetch results from OMDB.
                 Log.i(methodTag, "Search OMDB for IMDB id: " + imdbId);
@@ -1264,32 +1236,49 @@ public class MovieDetailsInfoFragment extends Fragment
          */
         @Override
         public void onLoadFinished(Loader<Object> loader, Object data) {
-            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            String methodTag = TAG2 + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            boolean scoreTMDB = false, scoreOMDB = false;
+
+            // Vote average from TMDB API.
+            if (!String.valueOf(movieDetails.getMovie().getVote_average()).equals("0.0"))
+                scoreTMDB = true;
 
             // Check if there is an available connection.
             if (NetworkUtils.isConnected(getContext())) {
-                // If there is a valid result, then update its data into the current {@link OmdbMovie}
-                // object.
+                // If there is a valid result, then update its data into the current
+                // {@link OmdbMovie} object.
                 if (data != null) {
                     Log.i(methodTag, "Search results not null.");
                     omdbMovie = (OmdbMovie) data;
 
                     // Vote average from OMDB API.
-                    if (setUserScores())
-                        scoresLinearLayout.setVisibility(View.VISIBLE);
-                    else
-                        scoresLinearLayout.setVisibility(View.GONE);
-
-                    // Set age rating to US rating from OMDB, if it has not been previously set.
-                    if (setAgeRating())
-                        ageRatingContentTextView.setVisibility(View.VISIBLE);
+                    if (!String.valueOf(omdbMovie.getImdb_vote_average()).equals("0.0") ||
+                            !String.valueOf(omdbMovie.getRt_vote_average()).equals("0.0") ||
+                            !String.valueOf(omdbMovie.getMc_vote_average()).equals("0.0"))
+                        scoreOMDB = true;
                 } else {
                     Log.i(methodTag, "No search results.");
-                    scoresLinearLayout.setVisibility(View.GONE);
+                    if (!scoreTMDB)
+                        scoresLinearLayout.setVisibility(View.GONE);
                 }
             } else {
                 // There is no connection.
                 Log.i(methodTag, "No connection to internet.");
+                if (!scoreTMDB)
+                    scoresLinearLayout.setVisibility(View.GONE);
+            }
+
+            // Add loading layout to the animation queue for being the first layout to be hidden and
+            // all movie info layouts to be displayed later.
+            animatedViews.add(infoLoadingLayout);
+            setMovieInfo();
+
+            // Display scores and movie info if there is something to display.
+            if (scoreTMDB || scoreOMDB) {
+                // Add scores LinearLayout to animation queue.
+                animatedViews.add(scoresLinearLayout);
+            } else {
+                // Hide scores LinearLayout.
                 scoresLinearLayout.setVisibility(View.GONE);
             }
         }
@@ -1311,31 +1300,237 @@ public class MovieDetailsInfoFragment extends Fragment
         /* --------------------------------- */
 
         /**
-         * Helper method for setting the user ratings from OMDB API.
+         * Helper method to display all the movieDetails information in this fragment. The first layout
+         * to be shown will be animated.
+         */
+        void setMovieInfo() {
+            boolean recommendedMoviesSection = false, keywordsSection = false,
+                    collectionSection = false, mainInfoSection = false, linksSection = false,
+                    overviewSection = false;
+
+            // Recommended movies section.
+            recommendedMoviesSection = setRecommendedMoviesSection();
+            if (recommendedMoviesSection)
+                recommendedMoviesLayout.setVisibility(View.VISIBLE);
+
+            // Set keywords section.
+            keywordsSection = setKeywordsSection();
+            if (keywordsSection)
+                keywordsLayout.setVisibility(View.VISIBLE);
+
+            // Recommended movies and keywords section are into the same layout. Make it visible if any
+            // of the inner sections has data.
+            if (recommendedMoviesSection || keywordsSection)
+                animatedViews.add(recommendedMoviesKeywordsLayout);
+
+            // Set collection section.
+            collectionSection = setCollectionSection();
+            if (collectionSection)
+                animatedViews.add(collectionLayout);
+
+            // Set main info section.
+            mainInfoSection = setMainInfoSection();
+            if (mainInfoSection)
+                mainLinearLayout.setVisibility(View.VISIBLE);
+
+            // Set external links section.
+            linksSection = setLinksSection();
+            if (linksSection)
+                linksLayout.setVisibility(View.VISIBLE);
+
+            // Main info and external links section are into the same layout. Make it visible if any
+            // of the inner sections has data.
+            if (mainInfoSection || linksSection)
+                animatedViews.add(dataLayout);
+
+            // Set overview section.
+            overviewSection = setOverviewSection();
+            if (overviewSection)
+                animatedViews.add(overviewLinearLayout);
+
+            if (recommendedMoviesSection || keywordsSection || collectionSection || mainInfoSection
+                    || linksSection || overviewSection) {
+                // Animate layouts in order.
+                processAnimationQueue(0);
+            }
+        }
+
+        /**
+         * Display animations for every view included in animatedViews array.
          *
-         * @return true if at least one of the three external scores (IMDB, Rotten Tomatoes or
-         * Metacritic) is set, false otherwise.
+         * @param delayMillis is the delay (in milliseconds) to wait before displaying current
+         *                    animation.
+         */
+        private void processAnimationQueue(final int delayMillis) {
+            final String methodTag =
+                    TAG2 + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(methodTag, "Processing layout " + animatedViewCurrentIndex + " of " +
+                    animatedViews.size());
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation animation;
+                    final View currentView = animatedViews.get(animatedViewCurrentIndex);
+                    if (currentView == infoLoadingLayout)
+                        animation = AnimationUtils.loadAnimation(getContext(), R.anim.out_from_top);
+                    else
+                        animation = AnimationUtils.loadAnimation(getContext(), R.anim.in_from_top);
+                    animation.setDuration(1000);
+                    animation.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation arg0) {
+                            if (currentView == collectionLayout) {
+                                // Retrieve the list of movies that belong to the collection.
+                                Log.i(methodTag, "Processing collectionLayout");
+                                new CollectionMoviesList(
+                                        movieDetails.getBelongs_to_collection().getId());
+                            }
+
+                            // Order animation for next view, if there's still another one in the
+                            // queue.
+                            animatedViewCurrentIndex++;
+                            if (animatedViewCurrentIndex < animatedViews.size())
+                                processAnimationQueue(delayMillis);
+                            else
+                                Log.i(methodTag, "No more layouts");
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation arg0) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation arg0) {
+                            if (currentView == scoresLinearLayout) {
+                                // Set scores when the appropriate layout is displayed.
+                                setUserScores();
+                            } else if (currentView == infoLoadingLayout) {
+                                // Hide loading layout.
+                                currentView.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+
+                    // Animate current view after delayMillis from start.
+                    View view = animatedViews.get(animatedViewCurrentIndex);
+                    Log.i(methodTag, "Animating layout " + view.toString());
+                    view.setVisibility(View.VISIBLE);
+                    view.startAnimation(animation);
+                }
+            }, delayMillis);
+        }
+
+        /**
+         * Helper method for setting the user ratings from TMDB and OMDB API.
+         *
+         * @return true if at least one of the scores (TMDB, IMDB, Rotten Tomatoes or Metacritic) is
+         * set, false otherwise.
          */
         private boolean setUserScores() {
-            boolean imdbRating = ScoreUtils.setDonutProgressRating(getContext(),
-                    String.valueOf(omdbMovie.getImdb_vote_average()),
-                    imdbDonutProgress);
-            boolean rottenTomatoesRating = ScoreUtils.setDonutProgressRating(getContext(),
-                    String.valueOf(omdbMovie.getRt_vote_average()),
-                    rottenTomatoesDonutProgress);
-            boolean metacriticRating = ScoreUtils.setDonutProgressRating(getContext(),
-                    String.valueOf(omdbMovie.getMc_vote_average()),
-                    metacriticDonutProgress);
+            ArrayList<View> scoreViews = new ArrayList<>();
+            boolean scoreIsSet = false;
 
-            // Set transparency for score sections if there is no score.
-            if (!imdbRating)
-                imdbLinearLayout.setAlpha(0.2f);
-            if (!rottenTomatoesRating)
-                rottenTomatoesLinearLayout.setAlpha(0.2f);
-            if (!metacriticRating)
-                metacriticLinearLayout.setAlpha(0.2f);
+            if (movieDetails != null) {
+                String tmdbRating = String.valueOf(movieDetails.getMovie().getVote_average());
+                if (!tmdbRating.equals("0.0")) {
+                    scoreIsSet = true;
+                    scoreViews.add(tmdbLinearLayout);
+                }
+            }
 
-            return (imdbRating || rottenTomatoesRating || metacriticRating);
+            if (omdbMovie != null) {
+                String imdbRating = String.valueOf(omdbMovie.getImdb_vote_average());
+                if (!imdbRating.equals("0.0")) {
+                    scoreIsSet = true;
+                    scoreViews.add(imdbLinearLayout);
+                }
+
+                String rottenTomatoesRating = String.valueOf(omdbMovie.getRt_vote_average());
+                if (!rottenTomatoesRating.equals("0.0")) {
+                    scoreIsSet = true;
+                    scoreViews.add(rottenTomatoesLinearLayout);
+                }
+
+                String metacriticRating = String.valueOf(omdbMovie.getMc_vote_average());
+                if (!metacriticRating.equals("0.0")) {
+                    scoreIsSet = true;
+                    scoreViews.add(metacriticLinearLayout);
+                }
+            }
+
+            if (scoreIsSet)
+                processScoresQueue(scoreViews, 0, 100);
+            return (scoreIsSet);
+        }
+
+        /**
+         * Helper method for animating a queue of layouts containing users score info.
+         *
+         * @param scoreViews            is the array of layouts with users score info to be
+         *                              animated.
+         * @param scoreViewCurrentIndex is the index of the current element in scoreViews array.
+         * @param delayMillis           is the number of milliseconds between current animation and
+         *                              the next one, if it exists.
+         */
+        private void processScoresQueue(final ArrayList<View> scoreViews,
+                                        final int scoreViewCurrentIndex, final int delayMillis) {
+            final String methodTag =
+                    TAG2 + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            Log.i(methodTag, "Processing layout " + scoreViewCurrentIndex + " of " +
+                    scoreViews.size());
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    final View currentView = scoreViews.get(scoreViewCurrentIndex);
+                    final Animation animation =
+                            AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
+                    animation.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation arg0) {
+                            // Display current score with an animation from the default alpha value,
+                            // 0.2, to the maximum value, 1.
+                            if (currentView == tmdbLinearLayout)
+                                ScoreUtils.setDonutProgressRating(getContext(),
+                                        String.valueOf(movieDetails.getMovie().getVote_average()),
+                                        tmdbDonutProgress);
+                            else if (currentView == imdbLinearLayout)
+                                ScoreUtils.setDonutProgressRating(getContext(),
+                                        String.valueOf(omdbMovie.getImdb_vote_average()),
+                                        imdbDonutProgress);
+                            else if (currentView == rottenTomatoesLinearLayout)
+                                ScoreUtils.setDonutProgressRating(getContext(),
+                                        String.valueOf(omdbMovie.getRt_vote_average()),
+                                        rottenTomatoesDonutProgress);
+                            else if (currentView == metacriticLinearLayout)
+                                ScoreUtils.setDonutProgressRating(getContext(),
+                                        String.valueOf(omdbMovie.getMc_vote_average()),
+                                        metacriticDonutProgress);
+                            currentView.setAlpha(1);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation arg0) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation arg0) {
+                            // Order animation for next view, if there's still another one in the
+                            // queue.
+                            if ((scoreViewCurrentIndex + 1) < scoreViews.size())
+                                processScoresQueue(scoreViews,
+                                        scoreViewCurrentIndex + 1, delayMillis);
+                        }
+                    });
+
+                    // Animate current view after delayMillis from start.
+                    Log.i(methodTag, "Animating layout " + currentView.toString());
+                    currentView.startAnimation(animation);
+                }
+            }, delayMillis);
         }
 
         /**
@@ -1345,7 +1540,7 @@ public class MovieDetailsInfoFragment extends Fragment
          * @return true if the age rating has been set here, false otherwise.
          */
         private boolean setAgeRating() {
-            String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+            String methodTag = TAG2 + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
             if (ageRating.equals("")) {
                 Log.i(methodTag, "The age rating has not been previously set");
                 String omdbAgeRating = omdbMovie.getRated();

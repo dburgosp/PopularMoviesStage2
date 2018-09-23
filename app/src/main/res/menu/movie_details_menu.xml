@@ -4,13 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activities.MovieDetailsActivity">
     <item
+        android:id="@+id/action_home"
         android:icon="@drawable/ic_home_white_24dp"
-        android:orderInCategory="100"
-        android:title="@string/share_this"
+        android:orderInCategory="200"
+        android:title="@string/menu_home"
         app:showAsAction="ifRoom" />
     <item
-        android:icon="@drawable/ic_share_white_24dp"
-        android:orderInCategory="200"
-        android:title="@string/share_this"
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/action_search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:orderInCategory="300"
+        android:title="@string/menu_settings"
         app:showAsAction="ifRoom" />
 </menu>

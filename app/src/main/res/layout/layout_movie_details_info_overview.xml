@@ -7,11 +7,6 @@
     android:layout_marginBottom="@dimen/big_padding"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorLightGrey" />
-
     <TextView
         android:id="@+id/movie_details_info_tagline"
         android:layout_width="match_parent"

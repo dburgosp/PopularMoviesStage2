@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public final class AnimatedViewsUtils {
     private static final String TAG = AnimatedViewsUtils.class.getSimpleName();
     public static final int ANIM_DURATION_SHORT = 500;
+    public static final int ANIM_DURATION_MEDIUM = 750;
     public static final int ANIM_DURATION_LONG = 1000;
 
     /**

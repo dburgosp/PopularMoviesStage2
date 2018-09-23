@@ -20,22 +20,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.R;
-import com.example.android.popularmoviesstage2.classes.MyBounceInterpolator;
 import com.example.android.popularmoviesstage2.classes.Tmdb;
 import com.example.android.popularmoviesstage2.classes.TmdbMovie;
 import com.example.android.popularmoviesstage2.fragmentpageradapters.MovieDetailsFragmentPagerAdapter;
 import com.example.android.popularmoviesstage2.utils.AnimatedViewsUtils;
 import com.example.android.popularmoviesstage2.utils.DateTimeUtils;
 import com.example.android.popularmoviesstage2.utils.DisplayUtils;
-import com.example.android.popularmoviesstage2.utils.ScoreUtils;
 import com.example.android.popularmoviesstage2.utils.TextViewUtils;
-import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
-import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,18 +52,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     ImageView posterImageView;
     @BindView(R.id.movie_details_title)
     TextView titleTextView;
-    @BindView(R.id.movie_details_score_votes)
-    TextView votesTextView;
-    @BindView(R.id.movie_details_score_title)
-    TextView scoreTextView;
     @BindView(R.id.movie_details_cardview)
     CardView posterCardView;
     @BindView(R.id.movie_details_viewpager)
     ViewPager viewPager;
     @BindView(R.id.movie_details_tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.movie_details_score)
-    DonutProgress scoreDonutProgress;
     @BindView(R.id.movie_details_toolbar)
     Toolbar toolbar;
     @BindView(R.id.movie_details_collapsing_toolbar_layout)
@@ -81,7 +71,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
         super.onCreate(savedInstanceState);
 
         AnimatedViewsUtils.setSlideTransitions(getWindow());
@@ -139,7 +129,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
         };
         appBarLayout.addOnOffsetChangedListener(onOffsetChangedListener);
-        Log.i(TAG + "." + methodName, "Activity created");
+        Log.i(methodTag, "Activity created");
     }
 
     /**
@@ -238,11 +228,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home: {
+            case android.R.id.home:
                 // Back button.
                 onBackPressed();
                 return true;
-            }
+
+            case R.id.action_home:
+                // Go home.
+                Intent intent =
+                        new Intent(MovieDetailsActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+
+            case R.id.action_search:
+                // Search button.
+                Toast.makeText(this, "Search option selected", Toast.LENGTH_SHORT).show();
+                return true;
+
+            case R.id.action_settings:
+                // Search button.
+                Toast.makeText(this, "Settings option selected", Toast.LENGTH_SHORT).show();
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -257,8 +264,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
      * Helper method to display current movie information in the header of this activity.
      */
     private void setMovieInfo() {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        Log.i(TAG + "." + methodName, "Display movie information on the header");
+        String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
+        Log.i(methodTag, "Display movie information on the header");
 
         // Set background image. Also set its size, according to display measures, and its
         // transition between the backdrop in calling activity and this. The background is invisible
@@ -305,7 +312,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                         AnimatedViewsUtils.circularRevealLayout(backgroundImageView,
                                                 backgroundImageView.getMeasuredWidth() / 2,
                                                 backgroundImageView.getMeasuredHeight() / 2,
-                                                AnimatedViewsUtils.ANIM_DURATION_LONG);
+                                                AnimatedViewsUtils.ANIM_DURATION_MEDIUM);
                                         return true;
                                     }
                                 });
@@ -317,32 +324,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         startPostponedEnterTransition();
                     }
                 });
-
-        // Set users rating.
-        String rating = String.valueOf(movie.getVote_average());
-        if (!rating.equals("0.0")) {
-            // Set custom progress bar.
-            ScoreUtils.setDonutProgressRating(this, rating, scoreDonutProgress);
-            scoreDonutProgress.setVisibility(View.VISIBLE);
-
-            // Set number of votes with decimal separator according to the current regional
-            // configuration.
-            int votes = movie.getVote_count();
-            if (votes > 0) {
-                NumberFormat numberFormat = NumberFormat.getNumberInstance();
-                votesTextView.setText(getResources().getQuantityString(R.plurals.score_votes, votes,
-                        numberFormat.format(votes)));
-            } else {
-                votesTextView.setVisibility(View.GONE);
-            }
-        } else {
-            // Clear and hide score section if we get "0.0", which means that there is no score for
-            // the current movie.
-            scoreTextView.setVisibility(View.GONE);
-            votesTextView.setVisibility(View.GONE);
-            scoreDonutProgress.setVisibility(View.GONE);
-            scoreDonutProgress.setDonut_progress("0");
-        }
 
         // Set movie title and year. Hide text by default and show it using an animation.
         titleTextView.setVisibility(View.INVISIBLE);
@@ -360,9 +341,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         "</big></strong>");
         else
             titleTextView.setText(getResources().getString(R.string.no_title));
+
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.in_from_right);
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 20);
-        animation.setInterpolator(interpolator);
+        animation.setDuration(AnimatedViewsUtils.ANIM_DURATION_MEDIUM);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {

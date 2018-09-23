@@ -97,6 +97,7 @@
     <string name="score_imdb">IMDB</string>
     <string name="score_rotten_tomatoes">Rotten Tomatoes</string>
     <string name="score_metacritic">Metacritic</string>
+    <string name="score_tmdb">The Movie Database</string>
     <string name="series">Series</string>
     <string name="share_this">Share this</string>
     <string name="sort_movies_by_genre">Movies by genre</string>
