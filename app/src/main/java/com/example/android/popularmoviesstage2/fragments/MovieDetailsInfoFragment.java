@@ -273,8 +273,9 @@ public class MovieDetailsInfoFragment extends Fragment
     @Override
     public Loader<Object> onCreateLoader(int id, Bundle args) {
         String methodTag = TAG + "." + Thread.currentThread().getStackTrace()[2].getMethodName();
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.in_from_top);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setDuration(1000);
 
         if (NetworkUtils.isConnected(getContext())) {
             // There is an available connection. Fetch results from TMDB.
@@ -1268,19 +1269,14 @@ public class MovieDetailsInfoFragment extends Fragment
                     scoresLinearLayout.setVisibility(View.GONE);
             }
 
-            // Add loading layout to the animation queue for being the first layout to be hidden and
-            // all movie info layouts to be displayed later.
-            animatedViews.add(infoLoadingLayout);
-            setMovieInfo();
-
             // Display scores and movie info if there is something to display.
-            if (scoreTMDB || scoreOMDB) {
-                // Add scores LinearLayout to animation queue.
-                animatedViews.add(scoresLinearLayout);
-            } else {
+            if (!(scoreTMDB || scoreOMDB)) {
                 // Hide scores LinearLayout.
                 scoresLinearLayout.setVisibility(View.GONE);
             }
+
+            // Display movie information.
+            setMovieInfo(scoreTMDB || scoreOMDB);
         }
 
         /**
@@ -1303,56 +1299,79 @@ public class MovieDetailsInfoFragment extends Fragment
          * Helper method to display all the movieDetails information in this fragment. The first layout
          * to be shown will be animated.
          */
-        void setMovieInfo() {
-            boolean recommendedMoviesSection = false, keywordsSection = false,
-                    collectionSection = false, mainInfoSection = false, linksSection = false,
-                    overviewSection = false;
+        void setMovieInfo(final boolean showScores) {
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out);
+            animation.setDuration(1000);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                boolean recommendedMoviesSection = false, keywordsSection = false,
+                        collectionSection = false, mainInfoSection = false, linksSection = false,
+                        overviewSection = false;
 
-            // Recommended movies section.
-            recommendedMoviesSection = setRecommendedMoviesSection();
-            if (recommendedMoviesSection)
-                recommendedMoviesLayout.setVisibility(View.VISIBLE);
+                @Override
+                public void onAnimationStart(Animation arg0) {
+                }
 
-            // Set keywords section.
-            keywordsSection = setKeywordsSection();
-            if (keywordsSection)
-                keywordsLayout.setVisibility(View.VISIBLE);
+                @Override
+                public void onAnimationRepeat(Animation arg0) {
+                }
 
-            // Recommended movies and keywords section are into the same layout. Make it visible if any
-            // of the inner sections has data.
-            if (recommendedMoviesSection || keywordsSection)
-                animatedViews.add(recommendedMoviesKeywordsLayout);
+                @Override
+                public void onAnimationEnd(Animation arg0) {
+                    infoLoadingLayout.setVisibility(View.GONE);
 
-            // Set collection section.
-            collectionSection = setCollectionSection();
-            if (collectionSection)
-                animatedViews.add(collectionLayout);
+                    // Recommended movies section.
+                    recommendedMoviesSection = setRecommendedMoviesSection();
+                    if (recommendedMoviesSection)
+                        recommendedMoviesLayout.setVisibility(View.VISIBLE);
 
-            // Set main info section.
-            mainInfoSection = setMainInfoSection();
-            if (mainInfoSection)
-                mainLinearLayout.setVisibility(View.VISIBLE);
+                    // Set keywords section.
+                    keywordsSection = setKeywordsSection();
+                    if (keywordsSection)
+                        keywordsLayout.setVisibility(View.VISIBLE);
 
-            // Set external links section.
-            linksSection = setLinksSection();
-            if (linksSection)
-                linksLayout.setVisibility(View.VISIBLE);
+                    // Recommended movies and keywords section are into the same layout. Make it
+                    // visible if any of the inner sections has data.
+                    if (recommendedMoviesSection || keywordsSection)
+                        animatedViews.add(recommendedMoviesKeywordsLayout);
 
-            // Main info and external links section are into the same layout. Make it visible if any
-            // of the inner sections has data.
-            if (mainInfoSection || linksSection)
-                animatedViews.add(dataLayout);
+                    // Set collection section.
+                    collectionSection = setCollectionSection();
+                    if (collectionSection)
+                        animatedViews.add(collectionLayout);
 
-            // Set overview section.
-            overviewSection = setOverviewSection();
-            if (overviewSection)
-                animatedViews.add(overviewLinearLayout);
+                    // Set main info section.
+                    mainInfoSection = setMainInfoSection();
+                    if (mainInfoSection)
+                        mainLinearLayout.setVisibility(View.VISIBLE);
 
-            if (recommendedMoviesSection || keywordsSection || collectionSection || mainInfoSection
-                    || linksSection || overviewSection) {
-                // Animate layouts in order.
-                processAnimationQueue(0);
-            }
+                    // Set external links section.
+                    linksSection = setLinksSection();
+                    if (linksSection)
+                        linksLayout.setVisibility(View.VISIBLE);
+
+                    // Main info and external links section are into the same layout. Make it visible if any
+                    // of the inner sections has data.
+                    if (mainInfoSection || linksSection)
+                        animatedViews.add(dataLayout);
+
+                    // Set overview section.
+                    overviewSection = setOverviewSection();
+                    if (overviewSection)
+                        animatedViews.add(overviewLinearLayout);
+
+                    // Show scores section if required
+                    if (showScores)
+                        animatedViews.add(scoresLinearLayout);
+
+                    if (recommendedMoviesSection || keywordsSection || collectionSection ||
+                            mainInfoSection || linksSection || overviewSection || showScores) {
+                        // Animate layouts in order.
+                        processAnimationQueue(0);
+                    }
+                }
+            });
+            infoLoadingLayout.startAnimation(animation);
         }
 
         /**
@@ -1510,6 +1529,12 @@ public class MovieDetailsInfoFragment extends Fragment
                                         String.valueOf(omdbMovie.getMc_vote_average()),
                                         metacriticDonutProgress);
                             currentView.setAlpha(1);
+
+                            // Order animation for next view, if there's still another one in the
+                            // queue.
+                            if ((scoreViewCurrentIndex + 1) < scoreViews.size())
+                                processScoresQueue(scoreViews,
+                                        scoreViewCurrentIndex + 1, delayMillis);
                         }
 
                         @Override
@@ -1518,11 +1543,6 @@ public class MovieDetailsInfoFragment extends Fragment
 
                         @Override
                         public void onAnimationEnd(Animation arg0) {
-                            // Order animation for next view, if there's still another one in the
-                            // queue.
-                            if ((scoreViewCurrentIndex + 1) < scoreViews.size())
-                                processScoresQueue(scoreViews,
-                                        scoreViewCurrentIndex + 1, delayMillis);
                         }
                     });
 
