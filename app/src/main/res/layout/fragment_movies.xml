@@ -11,6 +11,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_movies_recycler_view"
         android:layout_width="match_parent"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
         android:layout_height="match_parent"
         android:scrollbars="none" />
 
